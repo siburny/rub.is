@@ -76,8 +76,4 @@ jQuery(function() {
 });
 
 </script>
-<?php if($large): ?>
-<div id="countdown_<?php echo $uniqueId; ?>" style="text-align:center;"></div>
-<?php else: ?>
-<span id="countdown_<?php echo $uniqueId; ?>" style=""></span>
-<?php endif; ?>
+<?php if($large): ?><div id="countdown_<?php echo $uniqueId; ?>" style="text-align:center;"></div><?php else: ?><span id="countdown_<?php echo $uniqueId; ?>" style=""></span><?php endif; ?>
