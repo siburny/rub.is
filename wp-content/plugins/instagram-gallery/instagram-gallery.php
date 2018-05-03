@@ -277,4 +277,29 @@ function gallery_func( $atts )
 	}
 }
 
+function init_plugin() {
+	if ( current_user_can('edit_posts') || current_user_can('edit_pages') ) {
+		add_action( 'print_media_templates', 'print_media_templates' );
+		add_action( 'admin_head', 'admin_head' );
+	}
+}
+
+function print_media_templates() {
+	$current_screen = get_current_screen();
+	if ( ! isset( $current_screen->id ) || $current_screen->base !== 'post' ) {
+		return;
+	}
+	include_once('preview.html');
+}
+
+function admin_head() {
+	$current_screen = get_current_screen();
+	if ( ! isset( $current_screen->id ) || $current_screen->base !== 'post' ) {
+		return;
+	}
+	wp_enqueue_script( 'gallery-editor-view', plugins_url( 'js/gallery-editor-view.js', __FILE__ ), array( 'shortcode', 'wp-util', 'jquery' ), false, true );
+	
+}
+
 add_shortcode( 'gallery', 'gallery_func' );
+add_action( 'admin_init', 'init_plugin', 20 );

@@ -33,7 +33,7 @@
 }
 .bx-wrapper .bx-controls-direction a.bx-prev, .bx-wrapper .bx-controls-direction a.bx-next {
 	text-indent: 0;
-	color: #444;
+	/*color: #444;*/
 	font-size: 4em;
 	background: #fff;
 	text-align: center;
