@@ -42,6 +42,22 @@ function countdownup_func( $atts )
 		return '';
 	}
 	
+	$loop_time = '';
+	$loop_range = '';
+	if($date && array_key_exists('loop', $atts))
+	{
+		if(strtolower(substr($atts['loop'], -1, 1)) == 'd')
+		{
+			$loop_time = substr($atts['loop'], 0, -1);
+			$loop_range = 'd';
+		}
+		else if(strtolower(substr($atts['loop'], -1, 1)) == 'h')
+		{
+			$loop_time = substr($atts['loop'], 0, -1);
+			$loop_range = 'h';
+		}
+	}
+	
 	$delimiter = ' ';
 	if(array_key_exists('delimiter', $atts))
 	{

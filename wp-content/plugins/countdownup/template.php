@@ -2,6 +2,8 @@
 jQuery(function() {
 	var start = new Date('<?php echo $date->format('c'); ?>');
 	var increment = 1 * '<?php echo $increment; ?>';
+	var loop_time = 1 * '<?php echo $loop_time; ?>';
+	var loop_range = '<?php echo $loop_range; ?>';
 	var expire = !!<?php echo $expire; ?>;
 	var large = !!<?php echo $large; ?>;
 	
@@ -21,20 +23,38 @@ jQuery(function() {
 		var text = '';
 		
 		if(!expire) {
-			start2.setFullYear(today.getFullYear());
-			diff =  start2 - today;
-			
-			if(increment < 0) {
-				if(diff < 0) {
-					start2.setFullYear(today.getFullYear() + 1);
+			if(!!loop_time && !!loop_range) {
+				if(loop_range == 'h') {
+					loop_range = seconds['hour'];
 				} else {
-					start2.setFullYear(today.getFullYear());
+					loop_range = seconds['day'];
 				}
-			} else if(increment > 0) {
-				if(diff > 0) {
-					start2.setFullYear(today.getFullYear() - 1);
+
+				if(start2 > today) {
+					while(start2 > new Date(today.getTime() + loop_time * loop_range)) {
+						today = new Date(today.getTime() + loop_time * loop_range);
+					}
 				} else {
-					start2.setFullYear(today.getFullYear());
+					while(start2 < today) {
+						today = new Date(today.getTime() - loop_time * loop_range);
+					}
+				}
+			} else {
+				start2.setFullYear(today.getFullYear());
+				diff =  start2 - today;
+				
+				if(increment < 0) {
+					if(diff < 0) {
+						start2.setFullYear(today.getFullYear() + 1);
+					} else {
+						start2.setFullYear(today.getFullYear());
+					}
+				} else if(increment > 0) {
+					if(diff > 0) {
+						start2.setFullYear(today.getFullYear() - 1);
+					} else {
+						start2.setFullYear(today.getFullYear());
+					}
 				}
 			}
 
