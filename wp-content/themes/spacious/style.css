@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.5
+Version: 1.5.2
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -1984,7 +1984,7 @@ h3#site-title {
 
 .search-wrap button {
 	border-radius: 0;
-	line-height: 32px;
+	height: 32px;
 	margin-bottom: 0;
 	margin-left: -6px;
 	padding: 0;
@@ -1997,7 +1997,7 @@ h3#site-title {
 	font: normal 18px/1 'Genericons';
 	content: '\f400';
 	vertical-align: middle;
-	padding: 0 7px;
+	padding: 3px 7px;
 }
 
 /* =NAVIGATION
@@ -2010,7 +2010,7 @@ nav li > ol {
 
 .main-navigation {
 	float: right;
-	padding-top: 5px;
+	padding-top: 20px;
 }
 
 .main-navigation li {
@@ -2066,15 +2066,24 @@ li.default-menu {
 .main-navigation ul li .sub-toggle {
 	position: absolute;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%) rotate(90deg);
+	transform: translateY(-50%) rotate(90deg);
 	margin-left: 5px;
 	margin-top: -4px;
+}
+
+.main-navigation ul li ul li .sub-toggle {
+	-webkit-transform: translateY(-50%) rotate(0deg);
+	transform: translateY(-50%) rotate(0deg);
 }
 
 .main-navigation ul li > ul .sub-toggle {
 	margin: 0;
 	right: 10px;
+}
+
+.main-navigation ul li > ul.spacious-menu--left {
+	left: -100%;
 }
 
 .main-navigation ul ul li:hover ul {
@@ -2200,10 +2209,14 @@ li.default-menu {
 	margin-right: 10px;
 }
 
+.spacious-header-style-two .main-small-navigation {
+	background-color: #000000;
+	padding-top: 0;
+}
+
 .main-small-navigation {
 	float: none;
 	padding-top: 0;
-	background-color: #000000;
 	margin-top: 5px;
 }
 
@@ -2387,7 +2400,7 @@ li.default-menu {
 	margin-top: 1px;
 	margin-left: 0;
 	right: 7px;
-	color: #444444;
+	color: #a1b1bc;
 }
 
 .spacious-header-style-two .main-navigation ul li ul.sub-menu {
@@ -2824,6 +2837,40 @@ li.default-menu {
 		line-height: 30px;
 		margin-left: 0;
 	}
+	.better-responsive-menu #header-right-section {
+		float: right;
+		margin-top: 15px;
+		max-width: 100%;
+	}
+	.better-responsive-menu #site-navigation {
+		float: right;
+		margin-top: 10px;
+		padding: 0;
+	}
+	.better-responsive-menu .main-small-navigation {
+		margin-top: 10px;
+	}
+	.better-responsive-menu #header-logo-image {
+		float: left;
+		margin-bottom: 0;
+		margin-right: 10px;
+	}
+	.better-responsive-menu #header-left-section {
+		float: left;
+		margin-top: 10px;
+	}
+	.better-responsive-menu #header-text {
+		margin: 13px 0 0;
+		float: left;
+		text-align: left;
+	}
+	.better-responsive-menu #site-description {
+		font-size: 13px;
+		margin-bottom: 0;
+	}
+	.better-responsive-menu #site-title a {
+		font-size: 28px;
+	}
 	.better-responsive-menu .site-header .menu-toggle {
 		background: #3a3a3a none repeat scroll 0 0;
 		color: #fff;
@@ -2867,46 +2914,8 @@ li.default-menu {
 		width: 100%;
 		z-index: 9999;
 	}
-	.better-responsive-menu #header-text {
-		float: left;
-		text-align: left;
-	}
-}
-
-@media (min-width: 600px) and (max-width: 768px) {
-	.better-responsive-menu #header-right-section {
-		float: right;
-		margin-top: 15px;
-		max-width: 100%;
-	}
-	.better-responsive-menu #site-navigation {
-		float: right;
-		margin-top: 10px;
-		padding: 0;
-	}
-	.better-responsive-menu .main-small-navigation {
-		margin-top: 10px;
-	}
-	.better-responsive-menu #header-logo-image {
-		float: left;
-		margin-bottom: 0;
-		margin-right: 10px;
-	}
-	.better-responsive-menu #header-left-section {
-		float: left;
-		margin-top: 10px;
-	}
-	.better-responsive-menu #header-text {
-		float: left;
-		margin: 13px 0 0;
-		text-align: left;
-	}
-	.better-responsive-menu #site-description {
-		font-size: 13px;
-		margin-bottom: 0;
-	}
-	.better-responsive-menu #site-title a {
-		font-size: 28px;
+	.better-responsive-menu .spacious-header-style-two #header-right-section {
+		margin-top: 0;
 	}
 }
 
@@ -2930,6 +2939,39 @@ li.default-menu {
 }
 
 @media screen and (max-width: 600px) {
+	.better-responsive-menu #header-logo-image {
+		display: block;
+		float: none;
+	}
+	.better-responsive-menu #header-text {
+		display: block;
+		float: none;
+		margin-top: 12px;
+		text-align: center;
+	}
+	.better-responsive-menu #header-left-section,
+	.better-responsive-menu #header-right-section {
+		padding-top: 10px;
+		text-align: center;
+		float: none;
+	}
+	.better-responsive-menu #header-right-sidebar {
+		float: right;
+		margin-top: 10px;
+	}
+	.better-responsive-menu #site-navigation {
+		float: none;
+	}
+	.better-responsive-menu .spacious-header-style-two #header-right-section {
+		padding-top: 0;
+	}
+	.better-responsive-menu .spacious-header-style-two .main-small-navigation {
+		background-color: transparent;
+	}
+	.main-navigation,
+	.main-small-navigation {
+		padding-top: 8px;
+	}
 	#featured-slider .entry-description-container {
 		padding: 3px 6px;
 		padding: 0.3rem 0.6rem;
@@ -2961,23 +3003,6 @@ li.default-menu {
 	.gallery-columns-8 .gallery-item,
 	.gallery-columns-9 .gallery-item {
 		width: 25%;
-	}
-	.better-responsive-menu #header-logo-image {
-		display: inline-block;
-	}
-	.better-responsive-menu #header-text {
-		display: inline-block;
-		float: none;
-		margin-top: 12px;
-		vertical-align: top;
-	}
-	.better-responsive-menu #header-left-section {
-		padding-top: 10px;
-		text-align: center;
-	}
-	.better-responsive-menu #header-right-sidebar {
-		float: right;
-		margin-top: 10px;
 	}
 }
 

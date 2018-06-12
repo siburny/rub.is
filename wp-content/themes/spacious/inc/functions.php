@@ -373,7 +373,7 @@ function spacious_custom_css() {
 			#site-title a:hover { color: ' . $primary_color . '; }
 			.main-navigation ul li.current_page_item a, .main-navigation ul li:hover > a { color: ' . $primary_color . '; }
 			.main-navigation ul li ul { border-top: 1px solid ' . $primary_color . '; }
-			.main-navigation ul li ul li a:hover, .main-navigation ul li ul li:hover > a, .main-navigation ul li.current-menu-item ul li a:hover { color: ' . $primary_color . '; }
+			.main-navigation ul li ul li a:hover, .main-navigation ul li ul li:hover > a, .main-navigation ul li.current-menu-item ul li a:hover, .main-navigation ul li:hover > .sub-toggle { color: ' . $primary_color . '; }
 			.site-header .menu-toggle:hover.entry-meta a.read-more:hover,#featured-slider .slider-read-more-button:hover,.call-to-action-button:hover,.entry-meta .read-more-link:hover,.spacious-button:hover, input[type="reset"]:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover { background: ' . $primary_dark . '; }
 			.main-small-navigation li:hover { background: ' . $primary_color . '; }
 			.main-small-navigation ul > .current_page_item, .main-small-navigation ul > .current-menu-item { background: ' . $primary_color . '; }
@@ -385,7 +385,7 @@ function spacious_custom_css() {
 			.breadcrumb a:hover { color: ' . $primary_color . '; }
 			.tg-one-half .widget-title a:hover, .tg-one-third .widget-title a:hover, .tg-one-fourth .widget-title a:hover { color: ' . $primary_color . '; }
 			.pagination span ,.site-header .menu-toggle:hover{ background-color: ' . $primary_color . '; }
-			.pagination a span:hover { color: ' . $primary_color . '; border-color: .' . $primary_color . '; }
+			.pagination a span:hover { color: ' . $primary_color . '; border-color: ' . $primary_color . '; }
 			.widget_testimonial .testimonial-post { border-color: ' . $primary_color . ' #EAEAEA #EAEAEA #EAEAEA; }
 			.call-to-action-content-wrapper { border-color: #EAEAEA #EAEAEA #EAEAEA ' . $primary_color . '; }
 			.call-to-action-button { background-color: ' . $primary_color . '; }
@@ -548,7 +548,7 @@ if ( ! function_exists( 'spacious_footer_copyright' ) ) :
 
 		$wp_link = '<a href="' . esc_url( 'https://wordpress.org' ) . '" target="_blank" title="' . esc_attr__( 'WordPress', 'spacious' ) . '"><span>' . __( 'WordPress', 'spacious' ) . '</span></a>';
 
-		$tg_link = '<a href="' . esc_url( 'https://themegrill.com/themes/spacious' ) . '" target="_blank" title="' . esc_attr__( 'ThemeGrill', 'spacious' ) . '" rel="designer"><span>' . __( 'ThemeGrill', 'spacious' ) . '</span></a>';
+		$tg_link = '<a href="' . esc_url( 'https://themegrill.com/themes/spacious' ) . '" target="_blank" title="' . esc_attr__( 'ThemeGrill', 'spacious' ) . '" rel="author"><span>' . __( 'ThemeGrill', 'spacious' ) . '</span></a>';
 
 		$default_footer_value = sprintf( __( 'Copyright &copy; %1$s %2$s.', 'spacious' ), date( 'Y' ), $site_link ) . ' ' . sprintf( __( 'Powered by %s.', 'spacious' ), $wp_link ) . ' ' . sprintf( __( 'Theme: %1$s by %2$s.', 'spacious' ), 'Spacious', $tg_link );
 

@@ -95,7 +95,7 @@ h3#site-title {
 
 .search-wrap button {
 	border-radius: 0;
-	line-height: 32px;
+	height: 32px;
 	margin-bottom: 0;
 	margin-left: -6px;
 	padding: 0;
@@ -108,7 +108,7 @@ h3#site-title {
 	font: normal 18px/1 'Genericons';
 	content: '\f400';
 	vertical-align: middle;
-	padding: 0 7px;
+	padding: 3px 7px;
 }
 
 /* =NAVIGATION
@@ -124,7 +124,7 @@ nav li > {
 
 .main-navigation {
 	float: right;
-	padding-top: 5px;
+	padding-top: 20px;
 
 	li {
 		float: left;
@@ -185,16 +185,32 @@ li.default-menu {
 			.sub-toggle {
 				position: absolute;
 				top: 50%;
-				-ms-transform: translateY(-50%);
-				-webkit-transform: translateY(-50%);
-				transform: translateY(-50%);
+				-ms-transform: translateY(-50%) rotate(90deg);
+				-webkit-transform: translateY(-50%) rotate(90deg);
+				transform: translateY(-50%) rotate(90deg);
 				margin-left: 5px;
 				margin-top: -4px;
+			}
+
+			ul {
+
+				li {
+
+					.sub-toggle {
+						-ms-transform: translateY(-50%) rotate(0deg);
+						-webkit-transform: translateY(-50%) rotate(0deg);
+						transform: translateY(-50%) rotate(0deg);
+					}
+				}
 			}
 
 			> ul .sub-toggle {
 				margin: 0;
 				right: 10px;
+			}
+
+			> ul.spacious-menu--left {
+				left: -100%;
 			}
 		}
 
@@ -337,10 +353,17 @@ li.default-menu {
 	}
 }
 
+.spacious-header-style-two {
+
+	.main-small-navigation {
+		background-color: #000000;
+		padding-top: 0;
+	}
+}
+
 .main-small-navigation {
 	float: none;
 	padding-top: 0;
-	background-color: #000000;
 	margin-top: 5px;
 
 	ul {
@@ -549,7 +572,7 @@ li.default-menu {
 					margin-top: 1px;
 					margin-left: 0;
 					right: 7px;
-					color: #444444;
+					color: #a1b1bc;
 				}
 
 				ul.sub-menu {

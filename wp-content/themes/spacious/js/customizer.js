@@ -30,7 +30,7 @@
 			} );
 		} );
 	} );
-	
+
 	// Primary color option
 	wp.customize( 'spacious[spacious_primary_color]', function ( value ) {
 		value.bind( function ( primaryColor ) {
@@ -42,7 +42,7 @@
 			'#site-title a:hover { color: ' + primaryColor + '; }' +
 			'.main-navigation ul li.current_page_item a, .main-navigation ul li:hover > a { color: ' + primaryColor + '; }' +
 			'.main-navigation ul li ul { border-top: 1px solid ' + primaryColor + '; }' +
-			'.main-navigation ul li ul li a:hover, .main-navigation ul li ul li:hover > a, .main-navigation ul li.current-menu-item ul li a:hover { color: ' + primaryColor + '; }' +
+			'.main-navigation ul li ul li a:hover, .main-navigation ul li ul li:hover > a, .main-navigation ul li.current-menu-item ul li a:hover, .main-navigation ul li:hover > .sub-toggle { color: ' + primaryColor + '; }' +
 			'.main-small-navigation li:hover { background: ' + primaryColor + '; }' +
 			'.main-small-navigation ul > .current_page_item, .main-small-navigation ul > .current-menu-item { background: ' + primaryColor + '; }' +
 			'.main-navigation a:hover, .main-navigation ul li.current-menu-item a, .main-navigation ul li.current_page_ancestor a, .main-navigation ul li.current-menu-ancestor a, .main-navigation ul li.current_page_item a, .main-navigation ul li:hover > a  { color: ' + primaryColor + '; }' +
@@ -52,7 +52,7 @@
 			'.breadcrumb a:hover { color: ' + primaryColor + '; }' +
 			'.tg-one-half .widget-title a:hover, .tg-one-third .widget-title a:hover, .tg-one-fourth .widget-title a:hover { color: ' + primaryColor + '; }' +
 			'.pagination span ,.site-header .menu-toggle:hover{ background-color: ' + primaryColor + '; }' +
-			'.pagination a span:hover { color: ' + primaryColor + '; border-color: .' + primaryColor + '; }' +
+			'.pagination a span:hover { color: ' + primaryColor + '; border-color: ' + primaryColor + '; }' +
 			'.widget_testimonial .testimonial-post { border-color: ' + primaryColor + ' #EAEAEA #EAEAEA #EAEAEA; }' +
 			'.call-to-action-content-wrapper { border-color: #EAEAEA #EAEAEA #EAEAEA ' + primaryColor + '; }' +
 			'.call-to-action-button { background-color: ' + primaryColor + '; }' +
