@@ -34,55 +34,66 @@ function gallery_func( $atts )
 			
 			$url = 'https://www.instagram.com/explore/tags/'.substr($atts['at'], 1).'/';
 
-			try
+			$cache = get_transient(VENDOR_CACHE.$url.$popular);
+			//$cache = false;
+			if($cache !== FALSE)
 			{
-				$html = @file_get_contents($url);
+				$images = $images;
 			}
-			catch(Exception $ex)
+			else 
 			{
-				$html = "";
-			}
-			
-			if(!empty($html))
-			{		
-				preg_match('/<script type="text\/javascript">(.*?)<\/script>/', $html, $matches);
-				for($i=1;$i<count($matches);$i++)
+				try
 				{
-					if(strpos($matches[$i], "window._sharedData") !== FALSE)
+					$html = @file_get_contents($url);
+				}
+				catch(Exception $ex)
+				{
+					$html = "";
+				}
+				
+				if(!empty($html))
+				{		
+					preg_match('/<script type="text\/javascript">(.*?)<\/script>/', $html, $matches);
+					for($i=1;$i<count($matches);$i++)
 					{
-						$data = substr($matches[$i], 21, -1);
-						$data = json_decode($data);
-						
-						if(!empty($data))
+						if(strpos($matches[$i], "window._sharedData") !== FALSE)
 						{
-							if($popular)
+							$data = substr($matches[$i], 21, -1);
+							$data = json_decode($data);
+							
+							if(!empty($data))
 							{
-								$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges;
-							}
-							else
-							{
-								$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_media->edges;
-							}
-
-							if(count($data) > 0)
-							{
-								$c = 0;
-								foreach($data as $entry)
+								if($popular)
 								{
-									$cache = array('url' => '', 'caption' => '', 'name' => '', 'instagram' => false);
-									$cache['url'] = $entry->node->display_url;
-									$cache['caption'] = $entry->node->edge_media_to_caption->edges[0]->node->text;
-									$cache['name'] = 'https://www.instagram.com/p/'.$entry->node->shortcode.'/';
-									$images[] = $cache;
-									
-									if(++$c == $photos) break;
+									$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges;
+								}
+								else
+								{
+									$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_media->edges;
+								}
+
+								if(count($data) > 0)
+								{
+									$c = 0;
+									foreach($data as $entry)
+									{
+										$cache = array('url' => '', 'caption' => '', 'link' => '', 'instagram' => true);
+										$cache['url'] = $entry->node->display_url;
+										$cache['caption'] = $entry->node->edge_media_to_caption->edges[0]->node->text;
+										$cache['link'] = 'https://www.instagram.com/p/'.$entry->node->shortcode.'/';
+										$images[] = $cache;
+										
+										if(++$c == $photos) break;
+									}
 								}
 							}
+							
+							break;
 						}
-						
-						break;
 					}
 				}
+			
+				set_transient(VENDOR_CACHE.$url.$popular, $images, WEEK_IN_SECONDS);
 			}
 		}
 		else if(substr($atts['at'], 0, 5) === 'user:')
@@ -95,59 +106,62 @@ function gallery_func( $atts )
 			
 			$url = 'https://www.instagram.com/'.substr($atts['at'], 5).'/';
 
-			try
+			$cache = get_transient(VENDOR_CACHE.$url);
+			//$cache = false;
+			if($cache !== FALSE && !empty($cache))
 			{
-				$html = @file_get_contents($url);
+				$images = $cache;
 			}
-			catch(Exception $ex)
+			else 
 			{
-				$html = "";
-			}
-			
-			if(!empty($html))
-			{		
-				preg_match('/<script type="text\/javascript">(.*?)<\/script>/', $html, $matches);
-				for($i=1;$i<count($matches);$i++)
-				{
-					if(strpos($matches[$i], "window._sharedData") !== FALSE)
-					{
-						$data = substr($matches[$i], 21, -1);
-						$data = json_decode($data);
-						
-						if(!empty($data))
-						{
-							/*if($popular)
-							{
-								$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges;
-							}
-							else
-							{
-								$data = $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_media->edges;
-							}*/
 
-							$data = $data->entry_data->ProfilePage[0]->graphql->user->edge_owner_to_timeline_media->edges;
-							if(count($data) > 0)
+				try
+				{
+					$html = @file_get_contents($url);
+				}
+				catch(Exception $ex)
+				{
+					$html = "";
+				}
+				
+				if(!empty($html))
+				{		
+					preg_match('/<script type="text\/javascript">(.*?)<\/script>/', $html, $matches);
+					for($i=1;$i<count($matches);$i++)
+					{
+						if(strpos($matches[$i], "window._sharedData") !== FALSE)
+						{
+							$data = substr($matches[$i], 21, -1);
+							$data = json_decode($data);
+							
+							if(!empty($data))
 							{
-								$c = 0;
-								foreach($data as $entry)
+								$data = $data->entry_data->ProfilePage[0]->graphql->user->edge_owner_to_timeline_media->edges;
+								if(count($data) > 0)
 								{
-									$cache = array('url' => '', 'caption' => '', 'name' => '', 'instagram' => false);
-									$cache['url'] = $entry->node->display_url;
-									$cache['caption'] = $entry->node->edge_media_to_caption->edges[0]->node->text;
-									$cache['name'] = 'https://www.instagram.com/p/'.$entry->node->shortcode.'/';
-									$images[] = $cache;
-									
-									if(++$c == $photos) break;
+									$c = 0;
+									foreach($data as $entry)
+									{
+										$cache = array('url' => '', 'caption' => '', 'link' => '', 'instagram' => true);
+										$cache['url'] = $entry->node->display_url;
+										$cache['caption'] = $entry->node->edge_media_to_caption->edges[0]->node->text;
+										$cache['link'] = 'https://www.instagram.com/p/'.$entry->node->shortcode.'/';
+										$cache['title'] = substr($atts['at'], 5);
+										$images[] = $cache;
+										
+										if(++$c == $photos) break;
+									}
 								}
 							}
+							
+							break;
 						}
-						
-						break;
 					}
 				}
+
+				set_transient(VENDOR_CACHE.$url, $images, WEEK_IN_SECONDS);
 			}
 		}
-
 		//print_r($images);
 	}
 	elseif( !empty($atts['ids']) )
