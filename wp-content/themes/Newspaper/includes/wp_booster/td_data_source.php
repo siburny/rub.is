@@ -255,14 +255,19 @@ class td_data_source {
 				if(count($date) == 2) {
 					$date = $post_custom_field_value.'/';
 				} else if(count($date) == 1 && is_numeric($post_custom_field_value)) {
-					$date = $post_custom_field_value.'/';
+					if($post_custom_field_value > 999) {
+						$date = '/'.$post_custom_field_value;
+						$wp_query_args['meta_value'] = preg_quote($date).'$';
+					} else {
+						$date = $post_custom_field_value.'/';
+					}
 				} else {
 					$date = $post_custom_field_value;
 				}
 			}
 			
 			$wp_query_args['meta_key'] = $post_custom_field_name;
-			$wp_query_args['meta_value'] = '^'.preg_quote($date);
+			$wp_query_args['meta_value'] = $wp_query_args['meta_value'] ? $wp_query_args['meta_value'] : '^'.preg_quote($date);
 			$wp_query_args['meta_compare'] = 'RLIKE';
 		}
 
