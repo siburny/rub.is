@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.5.2
+Version: 1.5.3
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -41,8 +41,8 @@ html {
 }
 
 * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 article, aside, details, figcaption, figure, footer, header, main, nav, section {
@@ -876,7 +876,7 @@ body {
 ----------------------------------------------- */
 
 .sticky {
-  display: block;
+	display: block;
 }
 
 .extra-hatom-entry-title {
@@ -1393,7 +1393,7 @@ body {
 }
 
 .bypostauthor {
-  display: block;
+	display: block;
 }
 
 #comments {
@@ -1620,6 +1620,51 @@ body {
 
 .required {
 	color: red;
+}
+
+.related-posts-main-title {
+	padding-bottom: 30px;
+}
+.related-posts {
+	margin: 0 -2.46305419%;
+
+	.entry-title {
+		font-size: 18px;
+		line-height: 1.4;
+		padding-bottom: 0;
+		a {
+			color: #444444;
+
+			&:hover {
+				color: #0FBE7C;
+			}
+		}
+	}
+
+	.entry-meta {
+		border: none 0;
+		font-size: 14px;
+
+		.by-author,
+		.date,
+		.category,
+		.comments,
+		.edit-link {
+			padding:5px 4px 5px 0;
+
+			&:before {
+				font: 12px/20px "FontAwesome";
+			}
+
+			a {
+				color: #666666;
+
+				&:hover {
+					color: #0FBE7C;
+				}
+			}
+		}
+	}
 }
 
 /* =WIDGETS
@@ -2008,6 +2053,24 @@ a#scroll-up {
 
 	.edit-link:before {
 		content: '\f411';
+	}
+}
+
+
+
+.author-box {
+	padding: 20px;
+	border: 1px solid #EAEAEA;
+
+	.author-img {
+
+		img {
+			margin-bottom: 0;
+		}
+	}
+
+	.author-description-wrapper {
+		margin-left: 120px;
 	}
 }
 

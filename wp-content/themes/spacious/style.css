@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.5.2
+Version: 1.5.3
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -1481,6 +1481,65 @@ body {
 	color: red;
 }
 
+.related-posts-main-title {
+	padding-bottom: 30px;
+}
+
+.related-posts {
+	margin: 0 -2.46305419%;
+}
+
+.related-posts .entry-title {
+	font-size: 18px;
+	line-height: 1.4;
+	padding-bottom: 0;
+}
+
+.related-posts .entry-title a {
+	color: #444444;
+}
+
+.related-posts .entry-title a:hover {
+	color: #0FBE7C;
+}
+
+.related-posts .entry-meta {
+	border: none 0;
+	font-size: 14px;
+}
+
+.related-posts .entry-meta .by-author,
+.related-posts .entry-meta .date,
+.related-posts .entry-meta .category,
+.related-posts .entry-meta .comments,
+.related-posts .entry-meta .edit-link {
+	padding: 5px 4px 5px 0;
+}
+
+.related-posts .entry-meta .by-author:before,
+.related-posts .entry-meta .date:before,
+.related-posts .entry-meta .category:before,
+.related-posts .entry-meta .comments:before,
+.related-posts .entry-meta .edit-link:before {
+	font: 12px/20px "FontAwesome";
+}
+
+.related-posts .entry-meta .by-author a,
+.related-posts .entry-meta .date a,
+.related-posts .entry-meta .category a,
+.related-posts .entry-meta .comments a,
+.related-posts .entry-meta .edit-link a {
+	color: #666666;
+}
+
+.related-posts .entry-meta .by-author a:hover,
+.related-posts .entry-meta .date a:hover,
+.related-posts .entry-meta .category a:hover,
+.related-posts .entry-meta .comments a:hover,
+.related-posts .entry-meta .edit-link a:hover {
+	color: #0FBE7C;
+}
+
 /* =WIDGETS
 ----------------------------------------------- */
 #secondary .widget ul li {
@@ -1825,6 +1884,19 @@ a#scroll-up:hover {
 
 .post .entry-meta .edit-link:before {
 	content: '\f411';
+}
+
+.author-box {
+	padding: 20px;
+	border: 1px solid #EAEAEA;
+}
+
+.author-box .author-img img {
+	margin-bottom: 0;
+}
+
+.author-box .author-description-wrapper {
+	margin-left: 120px;
 }
 
 .single #content .tags {
@@ -2216,8 +2288,6 @@ li.default-menu {
 
 .main-small-navigation {
 	float: none;
-	padding-top: 0;
-	margin-top: 5px;
 }
 
 .main-small-navigation ul {
@@ -2295,7 +2365,7 @@ li.default-menu {
 	color: #0FBE7C;
 }
 
-/* =HEADER STYLE 2: 
+/* =HEADER STYLE 2:
 ----------------------------------------------- */
 .spacious-header-style-two #header-meta {
 	background-color: #01101B;
@@ -2775,6 +2845,9 @@ li.default-menu {
 	.main-navigation ul {
 		display: none;
 	}
+	.spacious-header-style-two .main-navigation {
+		float: none;
+	}
 	#featured-slider .entry-container {
 		max-width: 70%;
 	}
@@ -2841,6 +2914,9 @@ li.default-menu {
 		float: right;
 		margin-top: 15px;
 		max-width: 100%;
+	}
+	.better-responsive-menu #header-right-section .widget {
+		margin-bottom: 10px;
 	}
 	.better-responsive-menu #site-navigation {
 		float: right;
@@ -2936,6 +3012,9 @@ li.default-menu {
 	.wide-978 #primary, .narrow-978 #primary, .wide-978 #secondary, .narrow-978 #secondary {
 		width: 100%;
 	}
+	.related-posts {
+		margin: 0;
+	}
 }
 
 @media screen and (max-width: 600px) {
@@ -2949,15 +3028,17 @@ li.default-menu {
 		margin-top: 12px;
 		text-align: center;
 	}
-	.better-responsive-menu #header-left-section,
-	.better-responsive-menu #header-right-section {
+	.better-responsive-menu #header-left-section {
 		padding-top: 10px;
 		text-align: center;
 		float: none;
 	}
+	.better-responsive-menu #header-right-section {
+		padding-top: 10px;
+		float: none;
+	}
 	.better-responsive-menu #header-right-sidebar {
 		float: right;
-		margin-top: 10px;
 	}
 	.better-responsive-menu #site-navigation {
 		float: none;
@@ -3003,6 +3084,12 @@ li.default-menu {
 	.gallery-columns-8 .gallery-item,
 	.gallery-columns-9 .gallery-item {
 		width: 25%;
+	}
+	.author-box .author-img img {
+		margin-bottom: 20px;
+	}
+	.author-box .author-description-wrapper {
+		margin-left: 0;
 	}
 }
 
