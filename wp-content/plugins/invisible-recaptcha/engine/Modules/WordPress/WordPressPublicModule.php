@@ -19,15 +19,7 @@ class WordPressPublicModule extends BasePublicModule
 		if($this->getOption(WordPressAdminModule::OPTION_COMMENTS_FORM_PROTECTION_ENABLED))
 		{
 
-//			if(MchWpUtils::installedVersionIs('>=', '4.5.2'))
-//			{
-//				$this->addFilterHook('comment_form_submit_button', array($this, 'filterCommentsSubmit'), PHP_INT_MAX);
-//			}
-//			else
-//			{
-				$this->addActionHook( 'comment_form', array( $this, 'renderReCaptchaHolderHtmlCode' ) );
-//			}
-
+			$this->addActionHook( 'comment_form', array( $this, 'renderReCaptchaHolderHtmlCode' ) );
 			$this->commentValidationHookIndex = $this->addFilterHook('preprocess_comment', array($this, 'validateCommentsRequest'), -10);
 
 		}
@@ -163,7 +155,7 @@ class WordPressPublicModule extends BasePublicModule
 
 	public function validateCommentsRequest($arrComment)
 	{
-		if(is_admin() && current_user_can( 'moderate_comments' ))
+		if(is_admin() && is_user_logged_in())
 			return $arrComment;
 
 		$arrWordPressCommentsType = array('pingback' => 1, 'trackback' => 1);
