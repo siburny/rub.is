@@ -5,6 +5,12 @@
 
 function countdownup_func( $atts )
 {
+	// defaults
+	$delimiter = ' ';
+	$large = 0;
+	$showzero = 0;
+	$expire = 0;
+
 	if(empty($atts))
 	{
 		$atts = array();
@@ -58,25 +64,21 @@ function countdownup_func( $atts )
 		}
 	}
 	
-	$delimiter = ' ';
 	if(array_key_exists('delimiter', $atts))
 	{
 		$delimiter = $atts['delimiter'];
 	}
 
-	$large = 0;
 	if(array_key_exists('large', $atts) && ($atts['large'] == 'yes' || $atts['large'] == '1' || $atts['large'] == 'true'))
 	{
 		$large = 1;
 	}
 	
-	$showzero = 0;
 	if(array_key_exists('showzero', $atts) && ($atts['showzero'] == 'yes' || $atts['showzero'] == '1' || $atts['showzero'] == 'true'))
 	{
 		$showzero = 1;
 	}
 	
-	$expire = 0;
 	if(array_key_exists('expire', $atts) && ($atts['expire'] == 'yes' || $atts['expire'] == '1' || $atts['expire'] == 'true'))
 	{
 		$expire = 1;
@@ -94,8 +96,7 @@ function countdownup_func( $atts )
 		$display = explode(',', $atts['display']);
 	}
 		
-	
-	$uniqueId = uniqid();
+	$uniqueId = str_replace('.', '_', uniqid("", TRUE));	
 	ob_start();
 	require("template.php");
 	return ob_get_clean();

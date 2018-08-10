@@ -18,7 +18,7 @@ jQuery(function() {
 	function updateCountdown() {
 		var today = new Date();
 		var start2 = new Date(start);
-		var diff =  today - start2;
+		var diff =  increment * (today - start2);
 		var abs_diff = Math.abs(diff);
 		var text = '';
 		
