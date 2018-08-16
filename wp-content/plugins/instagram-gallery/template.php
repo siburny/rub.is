@@ -1,7 +1,7 @@
-<link rel='stylesheet' href='/wp-content/plugins/instagram-gallery/css/jquery.bxslider.min.css' type='text/css'> 
+<link rel='stylesheet' href='/wp-content/plugins/instagram-gallery/css/jquery.bxslider.css' type='text/css'> 
 <link rel='stylesheet' href='/wp-content/plugins/instagram-gallery/css/vendor/css/font-awesome.min.css' type='text/css'> 
 
-<script src="/wp-content/plugins/instagram-gallery/js/jquery.bxslider.min.js"></script>
+<script src="/wp-content/plugins/instagram-gallery/js/jquery.bxslider.js"></script>
 
 <style>
 .slider > div {
