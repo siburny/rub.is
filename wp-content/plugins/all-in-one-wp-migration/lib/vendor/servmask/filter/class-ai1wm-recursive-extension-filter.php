@@ -23,32 +23,28 @@
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
 
-abstract class Ai1wm_Http_Abstract {
+class Ai1wm_Recursive_Extension_Filter extends RecursiveFilterIterator {
 
-	protected $headers = array(
-		'Accept'          => '*/*',
-		'Accept-Encoding' => '*',
-		'Accept-Charset'  => '*',
-		'Accept-Language' => '*',
-		'User-Agent'      => 'Mozilla/5.0',
-	);
+	protected $include = array();
 
-	public function __construct() {
-		// Set user agent
-		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$this->headers['User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+	public function __construct( RecursiveIterator $iterator, $include = array() ) {
+		parent::__construct( $iterator );
+
+		// Set include filter
+		$this->include = $include;
+	}
+
+	public function accept() {
+		if ( $this->getInnerIterator()->isFile() ) {
+			if ( ! in_array( pathinfo( $this->getInnerIterator()->getFilename(), PATHINFO_EXTENSION ), $this->include ) ) {
+				return false;
+			}
 		}
+
+		return true;
 	}
 
-	public function set_header( $key, $value ) {
-		$this->headers[ $key ] = $value;
-
-		return $this;
+	public function getChildren() {
+		return new self( $this->getInnerIterator()->getChildren(), $this->include );
 	}
-
-	public function get_header( $key ) {
-		return $this->headers[ $key ];
-	}
-
-	abstract public function get( $url, $blocking = false );
 }
