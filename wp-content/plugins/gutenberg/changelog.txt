@@ -1,5 +1,17 @@
 == Changelog ==
 
+= 3.6.2 =
+
+* Restore min-width to popover.
+* Fix wide toolbar regression
+* Add e2e test for publishing a page
+* Fix typo for removing excerpt block stripping
+
+= 3.6.1 =
+
+* Fixed an issue that caused page publishing to fail.
+* Fixed an issue with the block options menu appearing too narrow.
+
 = 3.6.0 =
 
 * Updated block inserter and library with new icons for all core blocks.
