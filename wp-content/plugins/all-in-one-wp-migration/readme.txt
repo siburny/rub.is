@@ -4,7 +4,7 @@ Tags: move, transfer, copy, migrate, backup, clone, restore, db migration, wordp
 Requires at least: 3.3
 Tested up to: 4.9
 Requires PHP: 5.2.17
-Stable tag: 6.74
+Stable tag: 6.75
 License: GPLv2 or later
 
 Move, transfer, copy, migrate, and backup a site with 1-click. Quick, easy, and reliable.
@@ -60,7 +60,7 @@ Mobile device compatible: All in One WP Plugin is the first plugin to offer true
 * [Microsoft Azure Storage](https://servmask.com/products/microsoft-azure-storage-extension)
 
 = Supported hosting providers =
-**The plugin does not have any dependancies, making it compatible with all PHP hosting providers. We support a vast range of hosting providers. Some of the most popular include:**
+**The plugin does not have any dependencies, making it compatible with all PHP hosting providers. We support a vast range of hosting providers. Some of the most popular include:**
 
 * DigitalOcean
 * Bluehost
@@ -103,6 +103,13 @@ Alternatively you can download the plugin using the download button on this page
 All-in-One WP Migration **asks for your consent** to collect **requester's email address** when filling plugin's contact form. [GDPR Compliant Privacy Policy](https://www.iubenda.com/privacy-policy/946881)
 
 == Changelog ==
+= 6.74 =
+**Fixed**
+
+* WP-CLI export/import missing data
+* Serialization in PHP 7.2
+* Missing <staticContent> entry in the web.config file
+
 = 6.74 =
 **Added**
 
