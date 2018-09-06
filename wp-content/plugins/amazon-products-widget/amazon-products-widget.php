@@ -37,6 +37,7 @@ class Amazon_Products_Widget extends WP_Widget
 			$title          = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 			
 			$tag = ( ! empty( $instance['tag'] ) ) ? $instance['tag'] : 'rubis09-20';
+			$width = ( ! empty( $instance['width'] ) ) ? $instance['width'] : '100';
 	
 			echo $args['before_widget'];
 			if ( $title ) {
@@ -56,7 +57,7 @@ amzn_assoc_linkid = "bcae2949b17be18b4be41f3cccaa09d6";
 amzn_assoc_asins = "<?php echo $amazon_value; ?>";
 amzn_assoc_size = "x1200";
 </script>
-<div style="width:95%">
+<div style="width:<?php echo $width; ?>%">
 	<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>	
 </div>
 		<?php
@@ -69,6 +70,7 @@ amzn_assoc_size = "x1200";
         $instance                   = $old_instance;
         $instance['title']          = strip_tags( $new_instance['title'] );
         $instance['tag']          = strip_tags( $new_instance['tag'] );
+        $instance['width']          = !empty($new_instance['width']) ? intval( $new_instance['width'] ) : '';
 
         return $instance;
     }
@@ -77,6 +79,7 @@ amzn_assoc_size = "x1200";
     {
         $title      = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
         $tag      = isset( $instance['tag'] ) ? esc_attr( $instance['tag'] ) : '';
+        $width      = isset( $instance['width'] ) ? esc_attr( $instance['width'] ) : '';
 
         ?>
         <p>
@@ -86,6 +89,10 @@ amzn_assoc_size = "x1200";
         <p>
             <label for="<?php echo $this->get_field_id( 'tag' ); ?>"><?php _e( 'Amazon Associate Tag:' ); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'tag' ); ?>" name="<?php echo $this->get_field_name( 'tag' ); ?>" type="text" value="<?php echo $tag; ?>" />
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'wudth' ); ?>"><?php _e( 'Widget Width (%):' ); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id( 'width' ); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" value="<?php echo $width; ?>" />
         </p>
 		<?php
     }
