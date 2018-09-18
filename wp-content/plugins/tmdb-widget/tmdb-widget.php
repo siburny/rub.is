@@ -23,6 +23,21 @@ class TMDB_Widget extends WP_Widget
         );
     }
 
+    private function get_url($id)
+    {
+        $args = array(
+            'meta_key' => 'imdb',
+            'meta_value' => $id
+        );
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            return get_permalink($query->post);
+        }
+
+        return null;
+    }
+
     /**
      * Front-end display of widget.
      *
@@ -41,11 +56,20 @@ class TMDB_Widget extends WP_Widget
         $res = $this->callApi(array('apiKey' => $instance['apiKey'], 'type' => $instance['type'], 'limit' => $instance['limit']));
         if (!empty($res) && count($res) > 0) {
             foreach ($res as $index => $item) {
-				echo ($index+1).'. '.($item->title ? $item->title : $item->name).'<br />';
+                $url = $this->get_url($item->id);
+                
+                if(!empty($url)) {
+                    echo '<a href="'.$url.'">';
+                }
+                echo ($index + 1) . '. ' . ($item->title ? $item->title : $item->name);
+                if(!empty($url)) {
+                    echo '</a>';
+                }
+                echo '<br/>';
             }
-		}
-		
-		//var_dump($res);
+        }
+
+        //var_dump($res);
 
         echo $args['after_widget'];
     }
@@ -121,8 +145,8 @@ class TMDB_Widget extends WP_Widget
         $args['type'] = !empty($args['type']) ? $args['type'] : 1;
         $args['limit'] = !empty($args['limit']) ? $args['limit'] : 5;
 
-		$url = TMDB_Widget::BASE_URL;
-		
+        $url = TMDB_Widget::BASE_URL;
+
         switch ($args['type']) {
             case 1:
                 $url .= '/discover/movie?sort_by=popularity.desc&region=US';
@@ -131,24 +155,24 @@ class TMDB_Widget extends WP_Widget
                 $url .= '/discover/movie?sort_by=vote_average.desc&&vote_count.gte=100&region=US';
                 break;
             case 3:
-				$url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.gte='.(new DateTime())->add(new DateInterval('P7D'))->format('Y-m-d').
-					'&primary_release_date.lte='.(new DateTime())->add(new DateInterval('P14D'))->format('Y-m-d').'&region=US';
+                $url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.gte=' . (new DateTime())->add(new DateInterval('P7D'))->format('Y-m-d') .
+                '&primary_release_date.lte=' . (new DateTime())->add(new DateInterval('P14D'))->format('Y-m-d') . '&region=US';
                 break;
             case 4:
-                $url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.lte='.(new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d').'&primary_release_date.gte='.(new DateTime())->sub(new DateInterval('P21D'))->format('Y-m-d').'&region=US';
+                $url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.lte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d') . '&primary_release_date.gte=' . (new DateTime())->sub(new DateInterval('P21D'))->format('Y-m-d') . '&region=US';
                 break;
             case 5:
                 $url .= '/discover/tv?sort_by=popularity.desc';
                 break;
             case 6:
-                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte='.(new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->add(new DateInterval('P1D'))->format('Y-m-d');
+                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->add(new DateInterval('P1D'))->format('Y-m-d');
                 break;
             case 7:
-                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte='.(new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d').'&air_date.lte='.(new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d');
+                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d') . '&air_date.lte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d');
                 break;
             default:
                 return array();
-		}
+        }
 
         if (false) {
 
