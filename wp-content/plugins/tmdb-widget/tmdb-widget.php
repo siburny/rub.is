@@ -27,7 +27,7 @@ class TMDB_Widget extends WP_Widget
     {
         $args = array(
             'meta_key' => 'imdb',
-            'meta_value' => $id
+            'meta_value' => $id,
         );
         $query = new WP_Query($args);
 
@@ -48,6 +48,18 @@ class TMDB_Widget extends WP_Widget
      */
     public function widget($args, $instance)
     {
+        $config = get_transient('tmdb_widget_configuration');
+        if ($config === false) {
+            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/configuration?api_key=' . $instance['apiKey']));
+            if (!empty($json) && !empty($json->images)) {
+                $config = $json->images;
+                set_transient('tmdb_widget_configuration', $config, WEEK_IN_SECONDS);
+            } else {
+                return '';
+            }
+        }
+        //var_dump($config);
+
         echo $args['before_widget'];
         if (!empty($instance['title'])) {
             echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
@@ -55,18 +67,35 @@ class TMDB_Widget extends WP_Widget
 
         $res = $this->callApi(array('apiKey' => $instance['apiKey'], 'type' => $instance['type'], 'limit' => $instance['limit']));
         if (!empty($res) && count($res) > 0) {
+
+            echo '<style>.tmdb-table td { border: none; }</style>';
+            echo '<table class="tmdb-table">';
+            echo '<tr>';
+
             foreach ($res as $index => $item) {
-                $url = $this->get_url($item->id);
-                
-                if(!empty($url)) {
-                    echo '<a href="'.$url.'">';
+                if ($index > 0 && $index % $instance['columns'] == 0) {
+                    echo '</tr><tr>';
                 }
-                echo ($index + 1) . '. ' . ($item->title ? $item->title : $item->name);
-                if(!empty($url)) {
+
+                echo '<td>';
+                $url = $this->get_url($item->id);
+
+                if (!empty($url)) {
+                    echo '<a href="' . $url . '">';
+                }
+                echo ($index + 1) . '. ';
+                echo ($item->title ? $item->title : $item->name);
+                if (!empty($instance['thumbnail']) && !empty($item->poster_path)) {
+                    echo '<br /><img src="' . $config->secure_base_url . 'w185' . $item->poster_path . '" alt="" style="height:100px;" />';
+                }
+                if (!empty($url)) {
                     echo '</a>';
                 }
-                echo '<br/>';
+                echo '</td>';
             }
+
+            echo '</tr>';
+            echo '</table>';
         }
 
         //var_dump($res);
@@ -87,6 +116,8 @@ class TMDB_Widget extends WP_Widget
         $title = !empty($instance['title']) ? $instance['title'] : '';
         $type = !empty($instance['type']) ? $instance['type'] : 1;
         $limit = !empty($instance['limit']) ? $instance['limit'] : 5;
+        $thumbnail = !empty($instance['thumbnail']) ? $instance['thumbnail'] : 0;
+        $columns = !empty($instance['columns']) ? $instance['columns'] : 2;
         ?>
 		<p>
     		<label for="<?php echo esc_attr($this->get_field_id('apiKey')); ?>"><?php esc_attr_e('API Key:', 'text_domain');?></label>
@@ -112,6 +143,19 @@ class TMDB_Widget extends WP_Widget
     		<label for="<?php echo esc_attr($this->get_field_id('limit')); ?>"><?php esc_attr_e('Number of items to display:', 'text_domain');?></label>
 	    	<input class="widefat" id="<?php echo esc_attr($this->get_field_id('limit')); ?>" name="<?php echo esc_attr($this->get_field_name('limit')); ?>" type="text" value="<?php echo esc_attr($limit); ?>">
 		</p>
+		<p>
+    		<label for="<?php echo esc_attr($this->get_field_id('thumbnail')); ?>"><?php esc_attr_e('Show thumbnail?', 'text_domain');?></label>
+	    	<input class="widefat" id="<?php echo esc_attr($this->get_field_id('thumbnail')); ?>" name="<?php echo esc_attr($this->get_field_name('thumbnail')); ?>" type="checkbox" value="1" <?php echo !empty($thumbnail) ? 'checked="checked"' : ''; ?>>
+		</p>
+		<p>
+			<label for="<?php echo esc_attr($this->get_field_id('columns')); ?>"><?php esc_attr_e('Number of columns:', 'text_domain');?></label>
+	    	<select class="widefat" id="<?php echo esc_attr($this->get_field_id('columns')); ?>" name="<?php echo esc_attr($this->get_field_name('columns')); ?>">
+				<option value="1" <?php echo $columns == 1 ? 'selected' : ''; ?>>1</option>
+				<option value="2" <?php echo $columns == 2 ? 'selected' : ''; ?>>2</option>
+				<option value="3" <?php echo $columns == 3 ? 'selected' : ''; ?>>3</option>
+				<option value="4" <?php echo $columns == 4 ? 'selected' : ''; ?>>4</option>
+			</select>
+		</p>
 		<?php
 }
 
@@ -132,6 +176,8 @@ class TMDB_Widget extends WP_Widget
         $instance['title'] = (!empty($new_instance['title'])) ? sanitize_text_field($new_instance['title']) : '';
         $instance['type'] = (!empty($new_instance['type'])) ? sanitize_text_field($new_instance['type']) : 1;
         $instance['limit'] = (!empty($new_instance['limit'])) ? sanitize_text_field($new_instance['limit']) : 5;
+        $instance['thumbnail'] = (!empty($new_instance['thumbnail'])) ? 1 : 0;
+        $instance['columns'] = (!empty($new_instance['columns'])) ? sanitize_text_field($new_instance['columns']) : 2;
 
         return $instance;
     }
