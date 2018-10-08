@@ -9,6 +9,11 @@
 
 function spacious_customize_register( $wp_customize ) {
 
+	// Include control classes.
+	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-image-radio-control.php';
+	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-custom-css-control.php';
+	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-text-area-control.php';
+
 	// Transport postMessage variable set
 	$customizer_selective_refresh = isset( $wp_customize->selective_refresh ) ? 'postMessage' : 'refresh';
 
@@ -35,8 +40,8 @@ function spacious_customize_register( $wp_customize ) {
 	 */
 	class SPACIOUS_Upsell_Section extends WP_Customize_Section {
 		public $type = 'spacious-upsell-section';
-		public $url  = '';
-		public $id   = '';
+		public $url = '';
+		public $id = '';
 
 		/**
 		 * Gather the parameters passed to client JavaScript via JSON.
@@ -56,7 +61,8 @@ function spacious_customize_register( $wp_customize ) {
 		 */
 		protected function render_template() {
 			?>
-			<li id="accordion-section-{{ data.id }}" class="spacious-upsell-accordion-section control-section-{{ data.type }} cannot-expand accordion-section">
+			<li id="accordion-section-{{ data.id }}"
+				class="spacious-upsell-accordion-section control-section-{{ data.type }} cannot-expand accordion-section">
 				<h3 class="accordion-section-title"><a href="{{{ data.url }}}" target="_blank">{{ data.title }}</a></h3>
 			</li>
 			<?php
@@ -98,22 +104,6 @@ function spacious_customize_register( $wp_customize ) {
 		'panel'    => 'spacious_header_options',
 	) );
 
-	if ( ! function_exists( 'the_custom_logo' ) ) {
-		$wp_customize->add_setting( $spacious_themename . '[spacious_header_logo_image]', array(
-			'default'           => '',
-			'type'              => 'option',
-			'capability'        => 'edit_theme_options',
-			'sanitize_callback' => 'esc_url_raw',
-		) );
-
-		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, $spacious_themename . '[spacious_header_logo_image]', array(
-			'label'       => __( 'Upload logo for your header. Recommended image size is 100 X 100 pixels.', 'spacious' ),
-			'description' => sprintf( __( '%sInfo:%s This option will be removed in upcoming update. Please go to Site Identity section to upload the theme logo.', 'spacious' ), '<strong>', '</strong>' ),
-			'section'     => 'spacious_header_logo',
-			'setting'     => $spacious_themename . '[spacious_header_logo_image]',
-		) ) );
-	}
-
 	// Header logo and text display type option
 	$wp_customize->add_section( 'spacious_show_option', array(
 		'priority' => 2,
@@ -131,7 +121,7 @@ function spacious_customize_register( $wp_customize ) {
 	$wp_customize->add_control( $spacious_themename . '[spacious_show_header_logo_text]', array(
 		'type'    => 'radio',
 		'label'   => __( 'Choose the option that you want.', 'spacious' ),
-		'section' => 'spacious_show_option',
+		'section' => 'title_tagline',
 		'choices' => array(
 			'logo_only' => __( 'Header Logo Only', 'spacious' ),
 			'text_only' => __( 'Header Text Only', 'spacious' ),
@@ -139,6 +129,31 @@ function spacious_customize_register( $wp_customize ) {
 			'none'      => __( 'Disable', 'spacious' ),
 		),
 	) );
+
+	// Header display type option
+	$wp_customize->add_section( 'spacious_header_display_type_option', array(
+		'priority' => 2,
+		'title'    => __( 'Header Display Type', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+
+	$wp_customize->add_setting( 'spacious[spacious_header_display_type]', array(
+		'default'           => 'one',
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_radio_select_sanitize',
+	) );
+
+	$wp_customize->add_control( new Spacious_Image_Radio_Control( $wp_customize, 'spacious[spacious_header_display_type]', array(
+		'type'     => 'radio',
+		'label'    => __( 'Choose the header display type that you want.', 'spacious' ),
+		'section'  => 'spacious_header_display_type_option',
+		'settings' => 'spacious[spacious_header_display_type]',
+		'choices'  => array(
+			'one'  => SPACIOUS_ADMIN_IMAGES_URL . '/header-left.png',
+			'four' => SPACIOUS_ADMIN_IMAGES_URL . '/menu-bottom.png',
+		),
+	) ) );
 
 	// Header image position option
 	$wp_customize->add_section( 'spacious_header_image_position_section', array(
@@ -184,60 +199,7 @@ function spacious_customize_register( $wp_customize ) {
 		'section' => 'spacious_new_menu',
 	) );
 
-	// Header designs
-	$wp_customize->add_section( 'spacious_header_design_options', array(
-		'priority' => 2,
-		'title'    => __( 'Header Designs', 'spacious' ),
-		'panel'    => 'spacious_header_options',
-	) );
-	$wp_customize->add_setting( $spacious_themename . '[spacious_header_design]', array(
-		'default'           => 'style_one',
-		'type'              => 'option',
-		'capability'        => 'edit_theme_options',
-		'sanitize_callback' => 'spacious_radio_select_sanitize',
-	) );
-	$wp_customize->add_control( $spacious_themename . '[spacious_header_design]', array(
-		'type'    => 'radio',
-		'label'   => esc_html__( 'Choose a header design.', 'spacious' ),
-		'section' => 'spacious_header_design_options',
-		'choices' => array(
-			'style_one' => esc_html__( 'Style 1', 'spacious' ),
-			'style_two' => esc_html__( 'Style 2', 'spacious' ),
-		),
-	) );
-
 	// End of Header Options
-
-	/****************************************Start of the Footer Options****************************************/
-
-	$wp_customize->add_panel( 'spacious_footer_options', array(
-		'capabitity' => 'edit_theme_options',
-		'priority'   => 500,
-		'title'      => __( 'Footer', 'spacious' ),
-	) );
-
-	// Footer designs
-	$wp_customize->add_section( 'spacious_footer_design_options', array(
-		'priority' => 5,
-		'title'    => __( 'Footer Designs', 'spacious' ),
-		'panel'    => 'spacious_footer_options',
-	) );
-	$wp_customize->add_setting( $spacious_themename . '[spacious_footer_design]', array(
-		'default'           => 'style_one',
-		'type'              => 'option',
-		'capability'        => 'edit_theme_options',
-		'sanitize_callback' => 'spacious_radio_select_sanitize',
-	) );
-	$wp_customize->add_control( $spacious_themename . '[spacious_footer_design]', array(
-		'type'    => 'radio',
-		'label'   => esc_html__( 'Choose a footer design.', 'spacious' ),
-		'section' => 'spacious_footer_design_options',
-		'choices' => array(
-			'style_one' => esc_html__( 'Style 1', 'spacious' ),
-			'style_two' => esc_html__( 'Style 2', 'spacious' ),
-		),
-	) );
-	// End of Footer Options
 
 	/****************************************Start of the Design Options****************************************/
 	$wp_customize->add_panel( 'spacious_design_options', array(
@@ -271,72 +233,6 @@ function spacious_customize_register( $wp_customize ) {
 		),
 		'section' => 'spacious_site_layout_setting',
 	) );
-
-	class Spacious_Image_Radio_Control extends WP_Customize_Control {
-
-		public function render_content() {
-
-			if ( empty( $this->choices ) ) {
-				return;
-			}
-
-			$name = '_customize-radio-' . $this->id;
-
-			?>
-			<style>
-				#spacious-img-container .spacious-radio-img-img {
-					border: 3px solid #DEDEDE;
-					margin: 0 5px 5px 0;
-					cursor: pointer;
-					border-radius: 3px;
-					-moz-border-radius: 3px;
-					-webkit-border-radius: 3px;
-				}
-
-				#spacious-img-container .spacious-radio-img-selected {
-					border: 3px solid #AAA;
-					border-radius: 3px;
-					-moz-border-radius: 3px;
-					-webkit-border-radius: 3px;
-				}
-
-				input[type=checkbox]:before {
-					content: '';
-					margin: -3px 0 0 -4px;
-				}
-			</style>
-			<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-			<ul class="controls" id='spacious-img-container'>
-				<?php
-				foreach ( $this->choices as $value => $label ) :
-					$class = ( $this->value() == $value ) ? 'spacious-radio-img-selected spacious-radio-img-img' : 'spacious-radio-img-img';
-					?>
-					<li style="display: inline;">
-						<label>
-							<input <?php $this->link(); ?>style='display:none' type="radio"
-							       value="<?php echo esc_attr( $value ); ?>"
-							       name="<?php echo esc_attr( $name ); ?>" <?php $this->link();
-							checked( $this->value(), $value ); ?> />
-							<img src='<?php echo esc_html( $label ); ?>' class='<?php echo $class; ?>' />
-						</label>
-					</li>
-				<?php
-				endforeach;
-				?>
-			</ul>
-			<script type="text/javascript">
-				jQuery( document ).ready( function ( $ ) {
-					$( '.controls#spacious-img-container li img' ).click( function () {
-						$( '.controls#spacious-img-container li' ).each( function () {
-							$( this ).find( 'img' ).removeClass( 'spacious-radio-img-selected' );
-						} );
-						$( this ).addClass( 'spacious-radio-img-selected' );
-					} );
-				} );
-			</script>
-			<?php
-		}
-	}
 
 	// default layout setting
 	$wp_customize->add_section( 'spacious_default_layout_setting', array(
@@ -494,22 +390,6 @@ function spacious_customize_register( $wp_customize ) {
 
 	if ( ! function_exists( 'wp_update_custom_css_post' ) ) {
 		// Custom CSS setting
-		class spacious_Custom_CSS_Control extends WP_Customize_Control {
-
-			public $type = 'custom_css';
-
-			public function render_content() {
-				?>
-				<label>
-					<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-					<textarea rows="5"
-					          style="width:100%;" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
-				</label>
-				<?php
-			}
-
-		}
-
 		$wp_customize->add_section( 'spacious_custom_css_setting', array(
 			'priority' => 8,
 			'title'    => __( 'Custom CSS', 'spacious' ),
@@ -538,51 +418,6 @@ function spacious_customize_register( $wp_customize ) {
 		'priority'   => 510,
 		'title'      => __( 'Additional', 'spacious' ),
 	) );
-
-	if ( ! function_exists( 'has_site_icon' ) || ( ! has_site_icon() && ( spacious_options( 'spacious_favicon', '' ) != '' ) ) ) {
-
-		// Favicon activate option
-		$wp_customize->add_section( 'spacious_additional_activate_section', array(
-			'priority' => 1,
-			'title'    => __( 'Activate favicon', 'spacious' ),
-			'panel'    => 'spacious_additional_options',
-		) );
-
-		$wp_customize->add_setting( $spacious_themename . '[spacious_activate_favicon]', array(
-			'default'           => 0,
-			'type'              => 'option',
-			'capability'        => 'edit_theme_options',
-			'sanitize_callback' => 'spacious_checkbox_sanitize',
-		) );
-
-		$wp_customize->add_control( $spacious_themename . '[spacious_activate_favicon]', array(
-			'type'     => 'checkbox',
-			'label'    => __( 'Check to activate favicon. Upload fav icon from below option', 'spacious' ),
-			'section'  => 'spacious_additional_activate_section',
-			'settings' => $spacious_themename . '[spacious_activate_favicon]',
-		) );
-
-		// Fav icon upload option
-		$wp_customize->add_section( 'spacious_favicon_upload_section', array(
-			'priority' => 2,
-			'title'    => __( 'Upload favicon', 'spacious' ),
-			'panel'    => 'spacious_additional_options',
-		) );
-
-		$wp_customize->add_setting( $spacious_themename . '[spacious_favicon]', array(
-			'default'           => 0,
-			'type'              => 'option',
-			'capability'        => 'edit_theme_options',
-			'sanitize_callback' => 'esc_url_raw',
-		) );
-
-		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, $spacious_themename . '[spacious_favicon]', array(
-			'label'    => __( 'Upload favicon for your site.', 'spacious' ),
-			'section'  => 'spacious_favicon_upload_section',
-			'settings' => $spacious_themename . '[spacious_favicon]',
-		) ) );
-		// End of Additional Options
-	}
 
 	//Related post
 	$wp_customize->add_section( 'spacious_related_posts_section', array(
@@ -686,22 +521,6 @@ function spacious_customize_register( $wp_customize ) {
 		'settings' => $spacious_themename . '[spacious_author_bio]',
 	) );
 
-	// Adding Text Area Control For Use In Customizer
-	class Spacious_Text_Area_Control extends WP_Customize_Control {
-
-		public $type = 'text_area';
-
-		public function render_content() {
-			?>
-			<label>
-				<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-				<textarea rows="5"
-				          style="width:100%;" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
-			</label>
-			<?php
-		}
-	}
-
 	/****************************************Start of the Slider Options****************************************/
 	$wp_customize->add_panel( 'spacious_slider_options', array(
 		'capabitity' => 'edit_theme_options',
@@ -759,7 +578,7 @@ function spacious_customize_register( $wp_customize ) {
 		'settings' => $spacious_themename . '[spacious_blog_slider]',
 	) );
 
-	for ( $i = 1; $i <= 5; $i ++ ) {
+	for ( $i = 1; $i <= 5; $i++ ) {
 		// adding slider section
 		$wp_customize->add_section( 'spacious_slider_number_section' . $i, array(
 			'priority' => 10,
@@ -946,7 +765,7 @@ function spacious_customizer_custom_scripts() { ?>
 			display: block;
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
-			text-decoration: none!important;
+			text-decoration: none !important;
 		}
 
 		li#accordion-section-spacious_upsell_section h3.accordion-section-title a {
@@ -994,19 +813,19 @@ function spacious_customizer_custom_scripts() { ?>
 	</style>
 
 	<script>
-		( function ( $, api ) {
-			api.sectionConstructor['spacious-upsell-section'] = api.Section.extend( {
+			( function( $, api ) {
+				api.sectionConstructor['spacious-upsell-section'] = api.Section.extend( {
 
-				// No events for this type of section.
-				attachEvents : function () {
-				},
+					// No events for this type of section.
+					attachEvents: function() {
+					},
 
-				// Always make the section active.
-				isContextuallyActive : function () {
-					return true;
-				}
-			} );
-		} )( jQuery, wp.customize );
+					// Always make the section active.
+					isContextuallyActive: function() {
+						return true;
+					}
+				} );
+			} )( jQuery, wp.customize );
 
 	</script>
 	<?php
