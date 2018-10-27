@@ -63,6 +63,33 @@ class TMDB_Widget extends WP_Widget
             }
         }
 
+        $genres = get_transient('tmdb_widget_genres');
+        if ($genres === false) {
+            $genres = array();
+
+            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/genre/movie/list?api_key=' . $instance['apiKey']));
+            if (!empty($json) && !empty($json->genres)) {
+                $genres = array_merge($genres, $json->genres);
+            } else {
+                return '';
+            }
+
+            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/genre/tv/list?api_key=' . $instance['apiKey']));
+            if (!empty($json) && !empty($json->genres)) {
+                $genres = array_merge($genres, $json->genres);
+            } else {
+                return '';
+            }
+
+            if (empty($genres)) {
+                return '';
+            }
+
+            $genres = array_column($genres, 'name', 'id');
+
+            set_transient('tmdb_widget_genres', $genres, WEEK_IN_SECONDS);
+        }
+
         echo $args['before_widget'];
         if (!empty($instance['title'])) {
             echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
@@ -76,7 +103,7 @@ class TMDB_Widget extends WP_Widget
 
         if (!empty($res) && count($res) > 0) {
 
-            echo '<style>.tmdb-table td { border: none; }</style>';
+            echo '<style>.tmdb-table td { border: none; } .tmdb-table img { margin: 0px; } .tmdb-table td { padding-bottom: 1em; }</style>';
             echo '<table class="tmdb-table">';
             echo '<tr>';
 
@@ -85,19 +112,41 @@ class TMDB_Widget extends WP_Widget
                     echo '</tr><tr>';
                 }
 
-                echo '<td>';
+                echo '<td style="width:' . ($instance['columns'] == 1 ? '100%' : '50%') . ';">';
                 $url = $this->get_url($instance['apiKey'], $item->id);
 
                 if (!empty($url)) {
                     echo '<a href="' . $url . '">';
                 }
-                echo '<h3>'.($item->title ? $item->title : $item->name).'</h3>';
                 if (!empty($instance['thumbnail']) && !empty($item->poster_path)) {
-                    echo '<br /><img src="' . $config->secure_base_url . 'w185' . $item->poster_path . '" alt="" style="height:100px;" />';
+                    echo '<img src="' . $config->secure_base_url . 'w185' . $item->poster_path . '" alt="" style="' . ($instance['columns'] == 1 ? 'width:33%;float:left;margin-right:0.5em;' : 'width:75%;') . '" />';
+                    if ($instance['columns'] == 1) {
+                        echo '';
+                    } else {
+                        echo '<br />';
+                    }
                 }
+                echo ($instance['columns'] == 1 ? '<h3>' : '') . ($item->title ? $item->title : $item->name) . ($instance['columns'] == 1 ? '</h3>' : '');
                 if (!empty($url)) {
                     echo '</a>';
                 }
+
+                if ($instance['columns'] == 1) {
+                    if (!empty($instance['release_date']) && isset($item->release_date) && strtotime($item->release_date)) {
+                        echo '<span style="font-size: 0.8em;">' . date('F j, Y', strtotime($item->release_date)) . '</span><br />';
+                    }
+
+                    if (!empty($instance['genres']) && !empty($item->genre_ids)) {
+                        $g = array();
+                        foreach (array_unique($item->genre_ids) as $id) {
+                            if (isset($genres[$id])) {
+                                $g[] = $genres[$id];
+                            }
+                        }
+                        echo '<span style="font-size: 0.8em;">' . implode(', ', $g) . '</span>';
+                    }
+                }
+
                 echo '</td>';
             }
 
@@ -122,6 +171,8 @@ class TMDB_Widget extends WP_Widget
         $type = !empty($instance['type']) ? $instance['type'] : 1;
         $limit = !empty($instance['limit']) ? $instance['limit'] : 5;
         $thumbnail = !empty($instance['thumbnail']) ? $instance['thumbnail'] : 0;
+        $release_date = !empty($instance['release_date']) ? $instance['release_date'] : 0;
+        $genres = !empty($instance['genres']) ? $instance['genres'] : 0;
         $columns = !empty($instance['columns']) ? $instance['columns'] : 2;
         ?>
 		<p>
@@ -153,12 +204,18 @@ class TMDB_Widget extends WP_Widget
 	    	<input class="widefat" id="<?php echo esc_attr($this->get_field_id('thumbnail')); ?>" name="<?php echo esc_attr($this->get_field_name('thumbnail')); ?>" type="checkbox" value="1" <?php echo !empty($thumbnail) ? 'checked="checked"' : ''; ?>>
 		</p>
 		<p>
+    		<label for="<?php echo esc_attr($this->get_field_id('release_date')); ?>"><?php esc_attr_e('Show release date?', 'text_domain');?></label>
+	    	<input class="widefat" id="<?php echo esc_attr($this->get_field_id('release_date')); ?>" name="<?php echo esc_attr($this->get_field_name('release_date')); ?>" type="checkbox" value="1" <?php echo !empty($release_date) ? 'checked="checked"' : ''; ?>>
+		</p>
+		<p>
+    		<label for="<?php echo esc_attr($this->get_field_id('genres')); ?>"><?php esc_attr_e('Show genres?', 'text_domain');?></label>
+	    	<input class="widefat" id="<?php echo esc_attr($this->get_field_id('genres')); ?>" name="<?php echo esc_attr($this->get_field_name('genres')); ?>" type="checkbox" value="1" <?php echo !empty($genres) ? 'checked="checked"' : ''; ?>>
+		</p>
+		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('columns')); ?>"><?php esc_attr_e('Number of columns:', 'text_domain');?></label>
 	    	<select class="widefat" id="<?php echo esc_attr($this->get_field_id('columns')); ?>" name="<?php echo esc_attr($this->get_field_name('columns')); ?>">
 				<option value="1" <?php echo $columns == 1 ? 'selected' : ''; ?>>1</option>
 				<option value="2" <?php echo $columns == 2 ? 'selected' : ''; ?>>2</option>
-				<option value="3" <?php echo $columns == 3 ? 'selected' : ''; ?>>3</option>
-				<option value="4" <?php echo $columns == 4 ? 'selected' : ''; ?>>4</option>
 			</select>
 		</p>
 		<?php
@@ -182,6 +239,8 @@ class TMDB_Widget extends WP_Widget
         $instance['type'] = (!empty($new_instance['type'])) ? sanitize_text_field($new_instance['type']) : 1;
         $instance['limit'] = (!empty($new_instance['limit'])) ? sanitize_text_field($new_instance['limit']) : 5;
         $instance['thumbnail'] = (!empty($new_instance['thumbnail'])) ? 1 : 0;
+        $instance['release_date'] = (!empty($new_instance['release_date'])) ? 1 : 0;
+        $instance['genres'] = (!empty($new_instance['genres'])) ? 1 : 0;
         $instance['columns'] = (!empty($new_instance['columns'])) ? sanitize_text_field($new_instance['columns']) : 2;
 
         return $instance;
@@ -200,26 +259,25 @@ class TMDB_Widget extends WP_Widget
 
         switch ($args['type']) {
             case 1:
-                $url .= '/discover/movie?sort_by=popularity.desc&region=US';
+                $url .= '/movie/popular?region=US&language=en-US';
                 break;
             case 2:
-                $url .= '/discover/movie?sort_by=vote_average.desc&&vote_count.gte=100&region=US';
+                $url .= '/movie/top_rated?region=US&language=en-US';
                 break;
             case 3:
-                $url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.gte=' . (new DateTime())->add(new DateInterval('P7D'))->format('Y-m-d') .
-                '&primary_release_date.lte=' . (new DateTime())->add(new DateInterval('P14D'))->format('Y-m-d') . '&region=US';
+                $url .= '/movie/upcoming?region=US&language=en-US';
                 break;
             case 4:
-                $url .= '/discover/movie?sort_by=popularity.desc&primary_release_date.lte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d') . '&primary_release_date.gte=' . (new DateTime())->sub(new DateInterval('P21D'))->format('Y-m-d') . '&region=US';
+                $url .= '/movie/now_playing?region=US&language=en-US';
                 break;
             case 5:
-                $url .= '/discover/tv?sort_by=popularity.desc';
+                $url .= '/tv/popular?language=en-US';
                 break;
             case 6:
-                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->add(new DateInterval('P1D'))->format('Y-m-d');
+                $url .= '/tv/on_the_air?language=en-US';
                 break;
             case 7:
-                $url .= '/discover/tv?sort_by=popularity.desc&language=en-US&timezone=America%2FNew_York&air_date.gte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d') . '&air_date.lte=' . (new DateTime('now', new DateTimeZone(get_option('timezone_string'))))->format('Y-m-d');
+                $url .= '/tv/airing_today?language=en-US';
                 break;
             case 'id':
                 break;
