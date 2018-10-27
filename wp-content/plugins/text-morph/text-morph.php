@@ -38,9 +38,24 @@ function morph_func($atts, $content = '')
         $ret = $gender_values[$ret][$atts['option']];
     }
 
+    if (array_key_exists('clean', $atts) && !empty($atts['clean'])) {
+        $ret = str_replace(array('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '\'', '"', ',', '.', '/', '?', '\\', '|', '{', '}', '[', ']', '`', '~', ':', ';'),
+            '', $ret);
+    }
+
     if (array_key_exists('random', $atts) && !empty($atts['random'])) {
         $values = explode($atts['random'], $ret);
         $ret = $values[mt_rand(0, count($values) - 1)];
+    }
+
+    if (array_key_exists('description', $atts) && !empty($atts['description'])) {
+        $options = wp_load_alloptions();
+        for ($z = 0; $z < 100; $z++) {
+            if (isset($options['text-morph-settings-find-' . $z]) && $options['text-morph-settings-find-' . $z] == $ret) {
+                $ret = isset($options['text-morph-settings-replace-' . $z]) ? nl2br($options['text-morph-settings-replace-' . $z]) : '';
+                break;
+            }
+        }
     }
 
     if (array_key_exists('transform', $atts)) {
@@ -64,4 +79,49 @@ function morph_func($atts, $content = '')
     return $ret;
 }
 
+function text_morph_settings_page()
+{
+    ?>
+<div class="wrap">
+     <form action="options.php" method="post">
+     <h2>Text Substitutions</h2>
+       <?php
+settings_fields('text-morph-settings');
+    ?>
+        <table class="form-table">
+            <tr>
+                <td><?php submit_button();?></td>
+            </tr>
+            <tr>
+                <td><b>Match</b></td>
+                <td><b>Replace</b></td>
+            </tr>
+<?php for ($z = 0; $z < 100; $z++) {?>
+            <tr>
+                <td><textarea placeholder="" name="text-morph-settings-find-<?php echo $z; ?>" rows="4" cols="30"><?php echo esc_attr(get_option('text-morph-settings-find-' . $z)); ?></textarea></td>
+                <td><textarea placeholder="" name="text-morph-settings-replace-<?php echo $z; ?>" rows="4" cols="100"><?php echo esc_attr(get_option('text-morph-settings-replace-' . $z)); ?></textarea></td>
+            </tr>
+<?php }?>
+            <tr>
+                <td><?php submit_button();?></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<?php
+
+}
+
+// Init
 add_shortcode('morph', 'morph_func');
+
+add_action('admin_menu', function () {
+    add_options_page('Text Morph Settings', 'Text Morph', 'manage_options', 'text-morph-settings', 'text_morph_settings_page');
+});
+
+add_action('admin_init', function () {
+    for ($z = 0; $z < 100; $z++) {
+        register_setting('text-morph-settings', 'text-morph-settings-find-' . $z);
+        register_setting('text-morph-settings', 'text-morph-settings-replace-' . $z);
+    }
+});
