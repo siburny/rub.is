@@ -4,7 +4,7 @@ Tags: move, transfer, copy, migrate, backup, clone, restore, db migration, wordp
 Requires at least: 3.3
 Tested up to: 4.9
 Requires PHP: 5.2.17
-Stable tag: 6.78
+Stable tag: 6.79
 License: GPLv2 or later
 
 Move, transfer, copy, migrate, and backup a site with 1-click. Quick, easy, and reliable.
@@ -107,6 +107,18 @@ Alternatively you can download the plugin using the download button on this page
 All-in-One WP Migration **asks for your consent** to collect **requester's email address** when filling plugin's contact form. [GDPR Compliant Privacy Policy](https://www.iubenda.com/privacy-policy/946881)
 
 == Changelog ==
+= 6.79 =
+**Added**
+
+* File import has been re-added with limits imposed by server using wp_max_upload_size(). This article describes how to adjust the limits [How-to: Increase maximum upload file size](https://help.servmask.com/2018/10/27/how-to-increase-maximum-upload-file-size-in-wordpress/)
+* Clean storage directory of files and folders created more than 24 hours ago
+* Support for force-https-littlebizzy plugin
+* Support for wp-simple-firewall
+
+**Fixed**
+
+* The restore a backup message explains to users how to restore their backups without having to use an premium extension
+
 = 6.78 =
 **Added**
 

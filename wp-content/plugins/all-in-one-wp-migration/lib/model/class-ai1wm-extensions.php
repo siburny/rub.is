@@ -93,7 +93,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMDE_PLUGIN_ABOUT,
 				'basename' => AI1WMDE_PLUGIN_BASENAME,
 				'version'  => AI1WMDE_VERSION,
-				'requires' => '3.32',
+				'requires' => '3.33',
 				'short'    => AI1WMDE_PLUGIN_SHORT,
 			);
 		}
@@ -106,7 +106,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMTE_PLUGIN_ABOUT,
 				'basename' => AI1WMTE_PLUGIN_BASENAME,
 				'version'  => AI1WMTE_VERSION,
-				'requires' => '1.0',
+				'requires' => '1.1',
 				'short'    => AI1WMTE_PLUGIN_SHORT,
 			);
 		}
@@ -119,7 +119,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMFE_PLUGIN_ABOUT,
 				'basename' => AI1WMFE_PLUGIN_BASENAME,
 				'version'  => AI1WMFE_VERSION,
-				'requires' => '2.37',
+				'requires' => '2.40',
 				'short'    => AI1WMFE_PLUGIN_SHORT,
 			);
 		}
@@ -145,7 +145,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMGE_PLUGIN_ABOUT,
 				'basename' => AI1WMGE_PLUGIN_BASENAME,
 				'version'  => AI1WMGE_VERSION,
-				'requires' => '2.36',
+				'requires' => '2.38',
 				'short'    => AI1WMGE_PLUGIN_SHORT,
 			);
 		}
@@ -197,7 +197,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMME_PLUGIN_ABOUT,
 				'basename' => AI1WMME_PLUGIN_BASENAME,
 				'version'  => AI1WMME_VERSION,
-				'requires' => '3.60',
+				'requires' => '3.61',
 				'short'    => AI1WMME_PLUGIN_SHORT,
 			);
 		}
@@ -249,7 +249,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMUE_PLUGIN_ABOUT,
 				'basename' => AI1WMUE_PLUGIN_BASENAME,
 				'version'  => AI1WMUE_VERSION,
-				'requires' => '2.19',
+				'requires' => '2.20',
 				'short'    => AI1WMUE_PLUGIN_SHORT,
 			);
 		}
@@ -262,7 +262,7 @@ class Ai1wm_Extensions {
 				'about'    => AI1WMLE_PLUGIN_ABOUT,
 				'basename' => AI1WMLE_PLUGIN_BASENAME,
 				'version'  => AI1WMLE_VERSION,
-				'requires' => '2.27',
+				'requires' => '2.29',
 				'short'    => AI1WMLE_PLUGIN_SHORT,
 			);
 		}
