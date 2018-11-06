@@ -23,9 +23,9 @@ class TMDB_Widget extends WP_Widget
         );
     }
 
-    private function get_url($apiKey, $id)
+    private function get_url($apiKey, $id, $is_movie)
     {
-        $imdb = $this->getIMDB($apiKey, $id);
+        $imdb = $this->getIMDB($apiKey, $id, $is_movie);
 
         if (!empty($imdb)) {
             $args = array(
@@ -90,6 +90,8 @@ class TMDB_Widget extends WP_Widget
             set_transient('tmdb_widget_genres', $genres, WEEK_IN_SECONDS);
         }
 
+        $is_movie = $instance['type'] <= 4;
+
         echo $args['before_widget'];
         if (!empty($instance['title'])) {
             echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
@@ -113,7 +115,7 @@ class TMDB_Widget extends WP_Widget
                 }
 
                 echo '<td style="width:' . ($instance['columns'] == 1 ? '100%' : '50%') . ';">';
-                $url = $this->get_url($instance['apiKey'], $item->id);
+                $url = $this->get_url($instance['apiKey'], $item->id, $is_movie);
 
                 if (!empty($url)) {
                     echo '<a href="' . $url . '">';
@@ -293,7 +295,7 @@ class TMDB_Widget extends WP_Widget
         }
     }
 
-    public function getIMDB($apiKey, $id)
+    public function getIMDB($apiKey, $id, $is_movie)
     {
         if (empty($apiKey) || empty($id)) {
             return '';
@@ -304,7 +306,7 @@ class TMDB_Widget extends WP_Widget
             return $imdb;
         }
 
-        $json = json_decode(file_get_contents('https://api.themoviedb.org/3/movie/' . $id . '/external_ids?api_key=' . $apiKey));
+        $json = json_decode(file_get_contents('https://api.themoviedb.org/3/'.($is_movie ? 'movie' : 'tv').'/' . $id . '/external_ids?api_key=' . $apiKey));
         if (!empty($json) && is_object($json)) {
             if (!empty($json->imdb_id)) {
                 $imdb = $json->imdb_id;
