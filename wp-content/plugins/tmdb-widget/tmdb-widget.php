@@ -128,7 +128,7 @@ class TMDB_Widget extends WP_Widget
                         echo '<br />';
                     }
                 }
-                echo ($instance['columns'] == 1 ? '<h3>' : '') . ($item->title ? $item->title : $item->name) . ($instance['columns'] == 1 ? '</h3>' : '');
+                echo ($instance['columns'] == 1 ? '<h3>' : '') . (isset($item->title) ? $item->title : $item->name) . ($instance['columns'] == 1 ? '</h3>' : '');
                 if (!empty($url)) {
                     echo '</a>';
                 }
