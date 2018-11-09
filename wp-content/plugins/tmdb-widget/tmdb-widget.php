@@ -42,6 +42,17 @@ class TMDB_Widget extends WP_Widget
         return null;
     }
 
+    private function make_http_request($url)
+    {
+        $response = wp_remote_get($url);
+
+        if (is_array($response) && !is_wp_error($response)) {
+            return $response['body'];
+        } else {
+            return '';
+        }
+    }
+
     /**
      * Front-end display of widget.
      *
@@ -54,7 +65,7 @@ class TMDB_Widget extends WP_Widget
     {
         $config = get_transient('tmdb_widget_configuration');
         if ($config === false) {
-            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/configuration?api_key=' . $instance['apiKey']));
+            $json = json_decode($this->make_http_request('https://api.themoviedb.org/3/configuration?api_key=' . $instance['apiKey']));
             if (!empty($json) && !empty($json->images)) {
                 $config = $json->images;
                 set_transient('tmdb_widget_configuration', $config, WEEK_IN_SECONDS);
@@ -67,14 +78,14 @@ class TMDB_Widget extends WP_Widget
         if ($genres === false) {
             $genres = array();
 
-            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/genre/movie/list?api_key=' . $instance['apiKey']));
+            $json = json_decode($this->make_http_request('https://api.themoviedb.org/3/genre/movie/list?api_key=' . $instance['apiKey']));
             if (!empty($json) && !empty($json->genres)) {
                 $genres = array_merge($genres, $json->genres);
             } else {
                 return '';
             }
 
-            $json = json_decode(file_get_contents('https://api.themoviedb.org/3/genre/tv/list?api_key=' . $instance['apiKey']));
+            $json = json_decode($this->make_http_request('https://api.themoviedb.org/3/genre/tv/list?api_key=' . $instance['apiKey']));
             if (!empty($json) && !empty($json->genres)) {
                 $genres = array_merge($genres, $json->genres);
             } else {
@@ -100,7 +111,7 @@ class TMDB_Widget extends WP_Widget
         $res = get_transient('tmdb_widget_search_' . $instance['type'] . '_' . $instance['limit']);
         if ($res === false) {
             $res = $this->callApi(array('apiKey' => $instance['apiKey'], 'type' => $instance['type'], 'limit' => $instance['limit']));
-            set_transient('tmdb_widget_search_' . $instance['type'] . '_' . $instance['limit'], $res, DAY_IN_SECONDS);
+            set_transient('tmdb_widget_search_' . $instance['type'] . '_' . $instance['limit'], $res, empty($res) ? 5 * MINUTE_IN_SECONDS : DAY_IN_SECONDS);
         }
 
         if (!empty($res) && count($res) > 0) {
@@ -287,7 +298,7 @@ class TMDB_Widget extends WP_Widget
                 return array();
         }
 
-        $json = json_decode(file_get_contents($url . '&api_key=' . $args['apiKey']));
+        $json = json_decode($this->make_http_request($url . '&api_key=' . $args['apiKey']));
         if (!empty($json) && is_object($json) && !empty($json->results) && is_array($json->results)) {
             return array_slice($json->results, 0, $args['limit']);
         } else {
@@ -306,7 +317,7 @@ class TMDB_Widget extends WP_Widget
             return $imdb;
         }
 
-        $json = json_decode(file_get_contents('https://api.themoviedb.org/3/'.($is_movie ? 'movie' : 'tv').'/' . $id . '/external_ids?api_key=' . $apiKey));
+        $json = json_decode($this->make_http_request('https://api.themoviedb.org/3/' . ($is_movie ? 'movie' : 'tv') . '/' . $id . '/external_ids?api_key=' . $apiKey));
         if (!empty($json) && is_object($json)) {
             if (!empty($json->imdb_id)) {
                 $imdb = $json->imdb_id;
