@@ -10,6 +10,10 @@ class td_block_author extends td_block {
         $raw_css =
             "<style>
 
+                /* @photo_size */
+				.$unique_block_class .avatar {
+					width: @photo_size;
+				}
                 /* @photo_radius */
 				.$unique_block_class .avatar {
 					border-radius: @photo_radius;
@@ -27,6 +31,11 @@ class td_block_author extends td_block {
 				
 
 
+				/* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_name */
 				.$unique_block_class .td-author-name {
 					@f_name
@@ -49,6 +58,13 @@ class td_block_author extends td_block {
     static function cssMedia( $res_ctx ) {
 
         /*-- IMAGE -- */
+        // author image size
+        $author_photo_size = $res_ctx->get_shortcode_att('photo_size');
+        $res_ctx->load_settings_raw( 'photo_size', $author_photo_size );
+        if( $author_photo_size != '' && is_numeric( $author_photo_size ) ) {
+            $res_ctx->load_settings_raw( 'photo_size', $author_photo_size . 'px' );
+        }
+
         // author image radius
         $author_photo_radius = $res_ctx->get_shortcode_att('photo_radius');
         $res_ctx->load_settings_raw( 'photo_radius', $author_photo_radius );
@@ -68,6 +84,7 @@ class td_block_author extends td_block {
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_name' );
         $res_ctx->load_font_settings( 'f_descr' );
 

@@ -47,6 +47,7 @@ function td_js_generator() {
 		if (current_user_can('edit_theme_options')) {
 			td_js_buffer::add_variable('tdWpAdminPanelBoxNonce', wp_create_nonce('td-panel-box'));          // load ajax box
 			td_js_buffer::add_variable('tdWpAdminSidebarOpsNonce', wp_create_nonce('td-sidebar-ops'));      // sidebar operations in theme panel
+			td_js_buffer::add_variable('tdWpAdminTdLogSwitchNonce', wp_create_nonce('td-log-switch'));      // td log turn on/off switch in system status
 		}
 	}
 

@@ -631,6 +631,13 @@
 .td_block_13 {
   margin-bottom: 40px;
 
+  //fix for one column mobile
+  .td_block_inner:after {
+    content: '';
+    clear: both;
+    display: table;
+  }
+
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
     margin-bottom: 30px;
@@ -1712,6 +1719,13 @@
   .td_module_wrap:last-child {
     margin-bottom: 0;
   }
+
+  // fix for one column mobile
+  .td_block_inner:after {
+    content: '';
+    clear: both;
+    display: table;
+  }
 }
 
 
@@ -1996,6 +2010,7 @@
         /* responsive portrait phone */
         @media (max-width: @responsive_p_phone_max) {
           height: 100%;
+          width: auto;
         }
       }
     }
@@ -2235,9 +2250,31 @@
       margin-bottom: 7px;
     }
   }
-
-
 }
+// 09.10.2018 - try fix on TDC editor news ticker element
+.td-main-page-wrap .tdc-row:first-child .tdc-elements {
+  .td_block_trending_now:first-of-type {
+    position: relative;
+    margin: -24px 0 24px;
+    z-index: 1;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      margin-bottom: 0;
+      padding: 4px 0 12px;
+    }
+
+    &.td-trending-style2 {
+      /* responsive portrait phone */
+      @media (max-width: @responsive_p_phone_max) {
+        padding: 12px 2px !important;
+        margin-bottom: 7px;
+      }
+    }
+  }
+}
+
+
 // style 2
 .td-trending-style2 {
   border: 1px solid #eaeaea;
@@ -2998,6 +3035,14 @@
     Block list menu
 */
 .td_block_list_menu {
+  ul {
+    margin-left: 12px;
+
+    li {
+      margin-left: 0;
+    }
+  }
+
   .sub-menu {
     padding-left: 22px;
 
@@ -3406,10 +3451,53 @@
   }
 }
 
+// hover effects
+.td-h-effect-up-shadow {
+  .entry-thumb,
+  .td-category-pos-image .td-post-category,
+  .td-admin-edit {
+    .transition(box-shadow .3s ease, transform .3s ease);
+  }
+
+  .entry-thumb {
+    .box-shadow(0 3px 12px -1px rgba(7,10,25,.2), 0 22px 27px -20px rgba(7,10,25,.2));
+  }
+
+  .td_module_wrap:hover {
+    .entry-thumb,
+    .td-category-pos-image .td-post-category,
+    .td-admin-edit {
+      .transform(translate(0, -2px));
+    }
+
+    .entry-thumb {
+      .box-shadow(0 15px 45px -5px rgba(7,10,25,.25));
+    }
+  }
+}
+.td-h-effect-shadow {
+  .entry-thumb {
+    .transition(all .3s ease-out);
+  }
+
+  .td_module_wrap:hover {
+    .entry-thumb {
+      -webkit-box-shadow: rgba(108,108,108,.2) 0 2px 2px, rgba(108,108,108,.2) 0 4px 4px, rgba(108,108,108,.2) 0 8px 8px, rgba(108,108,108,.2) 0 16px 16px;
+      -moz-box-shadow: rgba(108,108,108,.2) 0 2px 2px, rgba(108,108,108,.2) 0 4px 4px, rgba(108,108,108,.2) 0 8px 8px, rgba(108,108,108,.2) 0 16px 16px;
+      box-shadow: rgba(108,108,108,.2) 0 2px 2px, rgba(108,108,108,.2) 0 4px 4px, rgba(108,108,108,.2) 0 8px 8px, rgba(108,108,108,.2) 0 16px 16px;
+    }
+  }
+}
+
+
+
 /*  ----------------------------------------------------------------------------
     Flex Block 1
 */
-.td_module_flex_1 {
+.td_module_flex_1,
+.td_module_flex_3,
+.td_module_flex_4,
+.td_module_flex_5 {
   display: inline-block;
   width: 100%;
   padding-bottom: 0;
@@ -3432,12 +3520,11 @@
   .td-image-wrap {
     display: block;
     position: relative;
-    padding-bottom: 50%;
   }
 
   .td-image-container {
     position: relative;
-    flex: 0 0 100%;
+    flex: 0 0 auto;
     width: 100%;
     height: 100%;
   }
@@ -3447,10 +3534,16 @@
   }
 
   .td-module-meta-info {
-    padding: 13px 0 0 0;
+    width: 100%;
     margin-bottom: 0;
     z-index: 1;
     border: 0 solid #eaeaea;
+    min-height: 0;
+  }
+
+  .td-author-photo {
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .td-thumb-css {
@@ -3484,6 +3577,55 @@
     content: '';
     display: table;
     clear: both;
+  }
+}
+
+.td_module_flex_1,
+.td_module_flex_5 {
+  .td-image-wrap {
+    padding-bottom: 50%;
+  }
+
+  .td-module-meta-info {
+    padding: 13px 0 0 0;
+  }
+}
+
+.td_module_flex_3,
+.td_module_flex_4 {
+  .td-image-wrap {
+    padding-bottom: 70%;
+  }
+
+  .td-module-meta-info {
+    padding: 0 0 0 16px;
+  }
+
+  .entry-title {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+}
+/* responsive landscape tablet */
+@media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
+  .td_module_flex_3 {
+    .entry-title {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+}
+.td_flex_block_1.td_with_ajax_pagination {
+  &,
+  .td_block_inner {
+    overflow: initial !important;
   }
 }
 
@@ -3554,6 +3696,8 @@
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    width: 100%;
     margin-bottom: 0;
     color: #fff;
   }
@@ -3620,4 +3764,93 @@
 .td-flb-meta-bottom .td_module_flex_2 .td-module-meta-info {
   top: auto;
   bottom: 0;
+}
+
+
+
+/*  ----------------------------------------------------------------------------
+    Flex Block 3 & 4
+*/
+.td_flex_block_3,
+.td_flex_block_4 {
+  .td_module_column {
+    float: left;
+  }
+
+  .td_module_flex_1 {
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      .entry-title {
+        font-size: 17px;
+        line-height: 22px;
+      }
+    }
+
+    .td-excerpt {
+      margin-top: 16px;
+    }
+  }
+
+  .td_module_flex_3 {
+    .td-module-container {
+      flex-direction: row;
+    }
+  }
+
+  .td-read-more {
+    display: none;
+  }
+}
+
+
+
+/*  ----------------------------------------------------------------------------
+    Flex Block 3
+*/
+.td_flex_block_3 {
+  .td_module_flex_1 {
+    .td-image-wrap {
+      padding-bottom: 72%;
+    }
+  }
+}
+
+
+
+/*  ----------------------------------------------------------------------------
+    Flex Block 4
+*/
+.td_flex_block_4 {
+  .td_module_flex_4 {
+    .td-module-container {
+      flex-direction: row;
+    }
+
+    /* responsive landscape tablet */
+    @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
+      .entry-title {
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+  }
+}
+
+
+
+/*  ----------------------------------------------------------------------------
+    Flex Block 5
+*/
+.td_flex_block_5 {
+  .td-module-meta-info-top {
+    padding: 0;
+  }
+}
+
+
+
+
+// default color for tel a
+a[href^="tel"] {
+  color: inherit;
 }

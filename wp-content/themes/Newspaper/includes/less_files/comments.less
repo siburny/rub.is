@@ -131,6 +131,24 @@
     display: block;
   }
 }
+.comment-edit-link {
+  font-size: 11px;
+  line-height: 1;
+//  color: #b4b4b4;
+  padding-left: 10px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+  /* responsive 500px phone */
+  @media (max-width: 500px) {
+    padding-left: 0;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    display: block;
+  }
+}
+
 
 .comment-meta {
   margin-top: 3px;
@@ -319,5 +337,13 @@
     @media (max-width: @responsive_p_phone_max) {
       border: none;
     }
+  }
+}
+
+.comment-form-cookies-consent {
+  label {
+    margin-left: 8px;
+    position: relative;
+    top:-1px;
   }
 }

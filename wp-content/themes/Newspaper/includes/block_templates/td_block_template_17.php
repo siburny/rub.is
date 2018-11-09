@@ -20,12 +20,6 @@ class td_block_template_17 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
-            /* @header_text_color */
-            .$unique_block_class .td-block-title > *,
-            .$unique_block_class .td-pulldown-filter-display-option,
-            .$unique_block_class .td-pulldown-filter-display-option i {
-                color: @header_text_color !important;
-            }
 
             /* @header_color */
             .$unique_block_class .td-block-title {
@@ -54,7 +48,9 @@ class td_block_template_17 extends td_block_template {
             .$unique_block_class .td-opacity-author .td-post-author-name a:hover,
             .$unique_block_class .td-instagram-user a,
             .$unique_block_class .td-pulldown-filter-item .td-cur-simple-item,
-            .$unique_block_class .td-pulldown-filter-link:hover {
+            .$unique_block_class .td-pulldown-filter-link:hover,
+            .$unique_block_class .td-pulldown-filter-display-option:hover,
+            .$unique_block_class .td-pulldown-filter-display-option:hover i {
                 color: @accent_text_color !important;
             }
 
@@ -71,6 +67,15 @@ class td_block_template_17 extends td_block_template {
             .td-footer-wrapper .$unique_block_class .td-post-category,
             .$unique_block_class .td-post-category:hover {
                 background-color: @accent_text_color !important;
+            }
+            
+            /* @header_text_color */
+            .$unique_block_class .td-block-title > *,
+            .$unique_block_class .td-pulldown-filter-item .td-cur-simple-item,
+            .$unique_block_class .td-pulldown-filter-link:hover,
+            .$unique_block_class .td-pulldown-filter-display-option:hover,
+            .$unique_block_class .td-pulldown-filter-display-option:hover i {
+                color: @header_text_color !important;
             }
         </style>
     ";
@@ -97,9 +102,14 @@ class td_block_template_17 extends td_block_template {
 
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
+        $title_tag = 'h4';
 
-
-
+        // title_tag used only on Title shortcode
+        $block_title_tag = $this->get_att('title_tag');
+        if(!empty($block_title_tag)) {
+            $title_tag = $block_title_tag ;
+        }
+        
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {
@@ -113,13 +123,13 @@ class td_block_template_17 extends td_block_template {
 
         // there is a custom title
         $buffy = '';
-        $buffy .= '<h4 class="td-block-title">';
+        $buffy .= '<' . $title_tag . ' class="td-block-title">';
         if (!empty($custom_url)) {
             $buffy .= '<a href="' . esc_url($custom_url) . '">' . esc_html($custom_title) . '</a>';
         } else {
             $buffy .= '<span>' . esc_html($custom_title) . '</span>';
         }
-        $buffy .= '</h4>';
+        $buffy .= '</' . $title_tag . '>';
         return $buffy;
     }
 

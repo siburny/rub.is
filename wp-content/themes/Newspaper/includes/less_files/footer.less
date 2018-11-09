@@ -140,11 +140,15 @@
 
 .td-footer-page {
   padding: 0;
-  background-color: transparent;
+  background-color: transparent !important;
 
   p:empty {
     display: none;
   }
+}
+// fix for boxed templates - we have a stretched footer page
+.td-boxed-layout .td-footer-page {
+  width: 100%;
 }
 
 .td-footer-info {
@@ -154,6 +158,15 @@
   @media (max-width: @responsive_p_phone_max) {
     margin-bottom: 38px;
     text-align: center;
+  }
+
+  .footer-text-wrap a {
+
+    color: @td_theme_color;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

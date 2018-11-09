@@ -348,22 +348,58 @@ require_once "td_view_header.php";
 
     }
 
+    //mod_substitute (apache_get_modules function may be missing on some servers)
+    if (function_exists('apache_get_modules')) {
+	    if (in_array('mod_substitute', apache_get_modules())) {
+		    td_system_status::add('php.ini configuration', array(
+			    'check_name' => 'mod_substitute',
+			    'tooltip' => 'Apache mod_substitute module is active on your server and it may cause possible issues.',
+			    'value' =>  'Apache <i>mod_substitute</i> module is active on your server - <span class="td-status-small-text">It\'s default configuration may cause a timeout error on TD Composer when loading large pages. For more details please check our <a target="_blank" href="http://forum.tagdiv.com/' . (TD_THEME_NAME === "Newspaper" ? "requirements-for-newspaper" : "newsmag-requirements-for-newsmag") . '/#td-mod-substitute">documentation</a></span>',
+			    'status' => 'yellow'
+		    ));
+	    }
+    } else {
+        //todo - display something when apache_get_modules function is missing???
+    }
 
+
+
+
+    /*  ----------------------------------------------------------------------------
+        PHP extensions
+    */
     // mbstring
     if (extension_loaded('mbstring')) {
-        td_system_status::add('php.ini configuration', array(
+        td_system_status::add('PHP extensions', array(
             'check_name' => 'mbstring',
-            'tooltip' => 'mbstring extension is loaded. The thmeme uses it\'s functions for various string operations.',
+            'tooltip' => 'mbstring extension is loaded. The theme uses it\'s functions for various string operations.',
             'value' => 'available',
             'status' => 'green'
         ));
     } else {
-        td_system_status::add('php.ini configuration', array(
+        td_system_status::add('PHP extensions', array(
             'check_name' => 'mbstring',
-            'tooltip' => 'mbstring extension is not available. The thmeme uses it\'s functions for various string operations. Functionality is not broken, we use alternative functions.',
-            'value' => 'not available',
-            'status' => 'yellow'
+            'tooltip' => 'mbstring extension is not available. The theme uses it\'s functions for various string operations.' ,
+            'value' => 'not available - For details on how to enable this extension please check the <a target="_blank" href="https://forum.tagdiv.com/' . (TD_THEME_NAME === "Newspaper" ? "requirements-for-newspaper" : "newsmag-requirements-for-newsmag") . '/#td-ss-parameters-guide">System status parameters guide</a>',
+            'status' => 'red'
         ));
+    }
+
+    //GD
+    if (extension_loaded('gd')) {
+	    td_system_status::add('PHP extensions', array(
+		    'check_name' => 'GD library',
+		    'tooltip' => 'GD library extension is loaded. The theme uses it\'s functions for various image related operations.',
+		    'value' => 'available',
+		    'status' => 'green'
+	    ));
+    } else {
+	    td_system_status::add('PHP extensions', array(
+		    'check_name' => 'GD library',
+		    'tooltip' => 'GD library extension is not available. The theme uses it\'s functions for various image related operations.',
+		    'value' => 'not available - For details on how to enable this extension please check the <a target="_blank" href="https://forum.tagdiv.com/' . (TD_THEME_NAME === "Newspaper" ? "requirements-for-newspaper" : "newsmag-requirements-for-newsmag") . '/#td-ss-parameters-guide">System status parameters guide</a>',
+		    'status' => 'red'
+	    ));
     }
 
 
@@ -530,7 +566,7 @@ require_once "td_view_header.php";
         update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', array());
         ?>
         <!-- redirect page -->
-        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-remote-cache-table';?>");</script>
 
     <?php
     }
@@ -542,7 +578,20 @@ require_once "td_view_header.php";
         }
         ?>
         <!-- redirect page -->
-        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-video-cache-table';?>");</script>
+
+    <?php
+    }
+
+    // Clear td_log data - only if the reset button is used
+    if(!empty($_REQUEST['clear_td_log_data']) && $_REQUEST['clear_td_log_data'] == 1) {
+
+        //clear td log data
+        update_option(TD_THEME_OPTIONS_NAME . '_log', array());
+
+        ?>
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-log-table';?>");</script>
 
     <?php
     }
@@ -643,6 +692,41 @@ require_once "td_view_header.php";
             });
 
         })();
+
+        jQuery().ready(function() {
+
+            var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+
+            var element = document.querySelector( "input[name='td_option[td_log_status]']" );
+
+            var observer = new MutationObserver( function( mutations ) {
+                mutations.forEach( function( mutation ) {
+                    if ( mutation.type === "attributes" ) {
+                        var value = element.value;
+
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: td_ajax_url,
+                            data: {
+                                action: 'td_ajax_system_status_toggle_td_log',
+                                td_log_status: value,
+                                td_magic_token: tdWpAdminTdLogSwitchNonce
+                            },
+                            success: function(data, textStatus, XMLHttpRequest){
+                                console.log(data);
+                            },
+                            error: function(MLHttpRequest, textStatus, errorThrown){
+                                console.log(errorThrown);
+                            }
+                        });
+                    }
+                });
+            });
+
+            if( typeof( element ) !== 'undefined' && element !== null ) {
+                observer.observe( element, { attributes: true } );
+            }
+        });
 
     </script>
 
@@ -778,22 +862,38 @@ require_once "td_view_header.php";
        static function render_td_log($td_log_content) {
            if (!empty($td_log_content) and is_array($td_log_content)) {
                ?>
-               <table class="widefat td-system-status-table td-log-table" cellspacing="0">
+               <!-- TD Log data -->
+               <table id="td-log-table" class="widefat td-system-status-table td-log-table" cellspacing="0">
                    <thead>
                    <tr>
-                       <th colspan="5">TD Log</th>
+                       <th colspan="2" style="border-right: 1px solid #dadada;">
+                           <div class="td-admin-checkbox td-small-checkbox" style="border: none !important;">
+                               <div class="td-demo-install-content">
+                                   <p style="margin: 0 10px 0 0; vertical-align: middle;">TD Log</p>
+                                   <?php
+                                   echo td_panel_generator::checkbox(array(
+                                       'ds' => 'td_option',
+                                       'option_id' => 'td_log_status',
+                                       'true_value' => 'on',
+                                       'false_value' => 'off'
+                                   ));
+                                   ?>
+                               </div>
+                           </div>
+                       </th>
+                       <th colspan="3" style="border-right: 1px solid #dadada;">TD Log clear data: <a class="td-remote-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_td_log_data=1">Clear TD Log data</a>
+                       </th>
                    </tr>
                    <tr>
-                       <th class="td-log-header_file">File</th>
-                       <th class="td-log-header_function">Function:</th>
-                       <th class="td-log-header_msg">Msg:</th>
-                       <th class="td-log-header_more_data">More_data:</th>
-                       <th class="td-log-header-timestamp">Timestamp:</th>
+                       <th class="td-log-header_file" style="border-right: 1px solid #dadada;">File</th>
+                       <th class="td-log-header_function" style="border-right: 1px solid #dadada;">Function:</th>
+                       <th class="td-log-header_msg" style="border-right: 1px solid #dadada;">Msg:</th>
+                       <th class="td-log-header_more_data" style="border-right: 1px solid #dadada;">More_data:</th>
+                       <th class="td-log-header-timestamp" style="border-right: 1px solid #dadada;">Timestamp:</th>
                    </tr>
                    </thead>
                    <tbody>
-                   <?php
-                   foreach ($td_log_content as $td_log_params) {
+                   <?php foreach ($td_log_content as $td_log_params) {
 
                        if (empty($td_log_params['file'])) {
                            $td_log_params['file'] = '';
@@ -816,16 +916,16 @@ require_once "td_view_header.php";
                        }
                        ?>
                        <tr>
-                           <td>
+                           <td style="border-right: 1px solid #dadada;">
                                <?php
                                // explode the url and echo only the file name
                                $td_log_url_parts = explode('\\',$td_log_params['file']);
                                echo '<div title="' . $td_log_params['file'] . '">' . end($td_log_url_parts) . '</div>';
                                ?>
                            </td>
-                           <td><?php echo $td_log_params['function']; ?></td>
-                           <td><?php echo $td_log_params['msg']; ?></td>
-                           <td class="td_log_more_data">
+                           <td style="border-right: 1px solid #dadada;"><?php echo $td_log_params['function']; ?></td>
+                           <td style="border-right: 1px solid #dadada;"><?php echo $td_log_params['msg']; ?></td>
+                           <td class="td_log_more_data" style="border-right: 1px solid #dadada;">
                                <div class="td_log_more_data_container">
                                    <?php
                                    //array or object display it in a container
@@ -862,26 +962,59 @@ require_once "td_view_header.php";
                                </div>
                            </td>
 
-                           <td><?php echo gmdate("H:i:s", time() - $td_log_params['timestamp'])?> ago</td>
+                           <td style="border-right: 1px solid #dadada;"><?php echo gmdate("H:i:s", time() - $td_log_params['timestamp'])?> ago</td>
                        </tr>
                    <?php
-                   }
-                   ?>
-
-
+                   } ?>
                    </tbody>
                </table>
            <?php
+           }
+
+           if ( empty( $td_log_content ) ) {
+               ?>
+
+               <!-- TD Log no data -->
+               <table id="td-log-table" class="widefat td-system-status-table td-log-table" cellspacing="0">
+                   <tr>
+                       <td><p style="padding: 10px 0 0 10px;">There is no log data stored!</p></td>
+                   </tr>
+                   <tr>
+                       <td>
+                           <div class="td-admin-checkbox td-small-checkbox">
+                               <div class="td-demo-install-content">
+                                   <p style="margin: 0 10px 0 0; vertical-align: middle;">Turn on system status data logging: </p>
+                                   <?php
+                                   echo td_panel_generator::checkbox(array(
+                                       'ds' => 'td_option',
+                                       'option_id' => 'td_log_status',
+                                       'true_value' => 'on',
+                                       'false_value' => 'off'
+                                   ));
+                                   ?>
+                               </div>
+                           </div>
+                       </td>
+                   </tr>
+
+               </table>
+
+               <?php
            }
        }
 
        static function render_td_remote_cache($td_remote_cache_content) {
            if (!empty($td_remote_cache_content) and is_array($td_remote_cache_content)) {
                ?>
-               <table class="widefat td-system-status-table" cellspacing="0">
+               <!-- TD Remote Cache data -->
+               <table id="td-remote-cache-table" class="widefat td-system-status-table" cellspacing="0">
                    <thead>
                    <tr>
-                       <th colspan="5">TD Remote Cache</th>
+                       <th colspan="2" style="border-right: 1px solid #dadada;">TD Remote Cache</th>
+                       <th colspan="3">
+                           TD Remote Cache clear data:
+                           <a class="td-remote-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_remote_cache=1">Clear the Remote cache</a>
+                       </th>
                    </tr>
                    <tr>
                        <th>Group</th>
@@ -941,23 +1074,18 @@ require_once "td_view_header.php";
                    } ?>
                    </tbody>
                </table>
-           <?php } ?>
+           <?php }
 
-           <!-- Remote cache reset button -->
-           <table class="widefat td-system-status-table td-cache-reset-table" cellspacing="0">
-               <thead>
-               <tr>
-                   <th colspan="1">Remote cache reset</th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr>
-                   <td><a class="td-remote-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_remote_cache=1">Clear the Remote cache</a></td>
-               </tr>
-               </tbody>
-           </table>
+           if ( empty($td_remote_cache_content) ) {
+               ?>
 
+               <!-- TD Remote Cache no data -->
+               <table id="td-remote-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                   <?php echo '<tr><td>There is no remote cached data stored!</td></tr>'; ?>
+               </table>
 
+               <?php
+           } ?>
 
 <?php
        }
@@ -974,82 +1102,73 @@ require_once "td_view_header.php";
            ?>
 
            <!-- Video playlist cached youtube and vimeo ids from the DB -->
-           <table class="widefat td-system-status-table td-video-table" cellspacing="0">
-               <?php if (!empty($td_playlist_videos)) {?>
-               <thead>
-               <tr>
-                   <th colspan="3">Video playlist cached youtube and vimeo ids</th>
-               </tr>
-               <tr>
-                   <th>Item ID:</th>
-                   <th>Youtube ids:</th>
-                   <th>Vimeo ids:</th>
-               </tr>
-               </thead>
-               <tbody>
-               <?php foreach ($td_playlist_videos as $post_id => $post_video_data) { ?>
-                   <tr>
-                       <td><?php echo $post_id; ?></td>
+           <?php if ( !empty( $td_playlist_videos ) ) { ?>
+                    <table id="td-video-cache-table" class="widefat td-system-status-table td-video-table" cellspacing="0">
+                        <thead>
+                           <tr>
+                               <th colspan="2" style="border-right: 1px solid #dadada;">Video playlist cached youtube and vimeo ids</th>
+                               <th colspan="3">Video playlist cache reset:<a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_video_cache=1">Clear the Video playlist cache</a></th>
+                           </tr>
+                           <tr>
+                               <th colspan="1">Item ID:</th>
+                               <th colspan="2">Youtube ids:</th>
+                               <th colspan="2">Vimeo ids:</th>
+                           </tr>
+                       </thead>
+                        <tbody>
+                    <?php foreach ($td_playlist_videos as $post_id => $post_video_data) { ?>
+                       <tr>
+                           <td><?php echo $post_id; ?></td>
 
-                       <?php
-                       foreach ( $post_video_data as $video_service => $video_service_ids ) {
-                           if ( $video_service === "youtube_ids" ) {
-                               echo "<td>";
-                               foreach ($video_service_ids as $video_service_id => $data ) {
-                                   echo '<div class="td-remote-value-data-container">';
-                                   // the youtube video ID
-                                   echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
-                                   // details button
-                                   echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
-                                   // array data container
-                                   echo '<div class="td-array-viewer"><pre>';
-                                   print_r($data);
-                                   echo '</pre></div>';
-                                   echo '</div>';
+                           <?php
+                           foreach ( $post_video_data as $video_service => $video_service_ids ) {
+                               if ( $video_service === "youtube_ids" ) {
+                                   echo '<td colspan="2">';
+                                   foreach ($video_service_ids as $video_service_id => $data ) {
+                                       echo '<div class="td-remote-value-data-container">';
+                                       // the youtube video ID
+                                       echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
+                                       // details button
+                                       echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
+                                       // array data container
+                                       echo '<div class="td-array-viewer"><pre>';
+                                       print_r($data);
+                                       echo '</pre></div>';
+                                       echo '</div>';
+                                   }
+                                   echo "</td>";
                                }
-                               echo "</td>";
-                           }
 
-                           if ( $video_service === "vimeo_ids" ) {
-                               echo "<td>";
-                               foreach ($video_service_ids as $video_service_id => $data ) {
-                                   echo '<div class="td-remote-value-data-container">';
-                                   // the vimeo video ID
-                                   echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
-                                   // details button
-                                   echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
-                                   // array data container
-                                   echo '<div class="td-array-viewer"><pre>';
-                                   print_r($data);
-                                   echo '</pre></div>';
-                                   echo '</div>';
+                               if ( $video_service === "vimeo_ids" ) {
+                                   echo '<td colspan="2">';
+                                   foreach ($video_service_ids as $video_service_id => $data ) {
+                                       echo '<div class="td-remote-value-data-container">';
+                                       // the vimeo video ID
+                                       echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
+                                       // details button
+                                       echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
+                                       // array data container
+                                       echo '<div class="td-array-viewer"><pre>';
+                                       print_r($data);
+                                       echo '</pre></div>';
+                                       echo '</div>';
+                                   }
+                                   echo "</td>";
                                }
-                               echo "</td>";
                            }
-                       }
-                       ?>
-                   </tr>
+                           ?>
+                       </tr>
+                   <?php } ?>
+                   </tbody>
+                    </table>
+           <?php } else { ?>
+
+                   <!-- video playlists no data -->
+                   <table id="td-video-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                       <?php echo '<tr><td>There is no cached data for youtube and/or vimeo video playlists!</td></tr>'; ?>
+                   </table>
+
                <?php } ?>
-               </tbody>
-               <?php } else {
-               echo '<tr><td>There is no cached data for youtube and/or vimeo video playlists!</td></tr>';
-               }
-               ?>
-           </table>
-
-           <!-- Video playlist cache reset button -->
-           <table class="widefat td-system-status-table td-video-reset-table" cellspacing="0">
-               <thead>
-               <tr>
-                   <th colspan="1">Video playlist cache reset</th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr>
-                   <td><a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_video_cache=1">Clear the Video playlist cache</a></td>
-               </tr>
-               </tbody>
-           </table>
 
            <?php
        }

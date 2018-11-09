@@ -37,6 +37,11 @@ class td_block_image_box extends td_block {
 		
 		
 
+				/* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_titles */
 				.$unique_block_class .entry-title {
 					@f_titles
@@ -75,6 +80,7 @@ class td_block_image_box extends td_block {
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_titles' );
 
     }

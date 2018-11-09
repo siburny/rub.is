@@ -36,9 +36,9 @@ class tdc_state {
 	 * @param $new_state bool
 	 */
 	public static function set_is_live_editor_iframe( $new_state ) {
-		if ( isset( self::$is_live_editor_iframe ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$is_live_editor_iframe is already set' );
-		}
+        if ( isset( self::$is_live_editor_iframe ) ) {
+            echo 'The tdc_state::$is_live_editor_iframe is already set';
+        }
 		self::$is_live_editor_iframe = $new_state;
 	}
 
@@ -48,9 +48,9 @@ class tdc_state {
 	 * @return bool
 	 */
 	public static function is_live_editor_iframe() {
-		if ( ! isset( self::$is_live_editor_iframe ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$is_live_editor_iframe is NOT set' );
-		}
+        if ( ! isset( self::$is_live_editor_iframe ) ) {
+            echo 'The tdc_state::$is_live_editor_iframe is NOT set';
+        }
 		return self::$is_live_editor_iframe;
 	}
 
@@ -59,9 +59,9 @@ class tdc_state {
 	 * @param $new_state
 	 */
 	public static function set_is_live_editor_ajax( $new_state ) {
-		if ( isset( self::$is_live_editor_ajax ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$is_live_editor_ajax is already set' );
-		}
+        if ( isset( self::$is_live_editor_ajax ) ) {
+            echo 'The tdc_state::$is_live_editor_ajax is already set';
+        }
 		self::$is_live_editor_ajax = $new_state;
 	}
 
@@ -71,9 +71,9 @@ class tdc_state {
 	 * @return bool
 	 */
 	public static function is_live_editor_ajax() {
-		if ( ! isset( self::$is_live_editor_ajax ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$is_live_editor_ajax is NOT set' );
-		}
+        if ( ! isset( self::$is_live_editor_ajax ) ) {
+            echo 'The tdc_state::$is_live_editor_ajax is NOT set';
+        }
 		return self::$is_live_editor_ajax;
 	}
 
@@ -85,9 +85,9 @@ class tdc_state {
 	 * @return mixed
 	 */
 	public static function get_post() {
-		if ( ! isset( self::$post ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$post is NOT set' );
-		}
+        if ( ! isset( self::$post ) ) {
+            echo 'The tdc_state::$post is NOT set';
+        }
 		return self::$post;
 	}
 
@@ -97,12 +97,12 @@ class tdc_state {
 	 */
 	public static function set_post( $post ) {
 		if ( isset( self::$post ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The tdc_state::$post is already set' );
+		    echo 'The tdc_state::$post is already set';
 		}
 
 		// we can add here additional checks if needed
 		if (get_class($post) != 'WP_Post') {
-			tdc_util::error(__FILE__, __FUNCTION__, '$post is not a WP_Post class');
+		    echo '$post is not a WP_Post class';
 			die;
 		}
 		self::$post = $post;

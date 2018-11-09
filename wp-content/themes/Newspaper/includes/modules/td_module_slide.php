@@ -21,25 +21,35 @@ class td_module_slide extends td_module {
     }
 
     function render($td_column_number, $td_post_count, $td_unique_id_slide) {
+        $image_size = $this->get_shortcode_att('image_size');
+
         $buffy = '';
 
         $buffy .= '<div id="' . $td_unique_id_slide . '_item_' . $td_post_count . '" class = "' . $this->get_module_classes(array("td-image-gradient")) . '">';
-        switch ($td_column_number) {
-            case '1': //one column layout
-                $buffy .= $this->get_image('td_324x400');
-                break;
-            case '2': //two column layout
-                $buffy .= $this->get_image('td_696x385');
-                break;
-            case '3': //three column layout
-                $buffy .= $this->get_image('td_1068x580');
-                break;
-        }
+
+            if ( $image_size == '' ) {
+                switch ($td_column_number) {
+                    case '1': //one column layout
+                        $buffy .= $this->get_image('td_324x400', true);
+                        break;
+                    case '2': //two column layout
+                        $buffy .= $this->get_image('td_696x385', true);
+                        break;
+                    case '3': //three column layout
+                        $buffy .= $this->get_image('td_1068x580', true);
+                        break;
+                    default:
+                        $buffy .= $this->get_image('td_1068x580', true);
+                        break;
+                }
+            } else {
+                $buffy .= $this->get_image($image_size, true);
+            }
 
             $buffy .= '<div class="td-slide-meta">';
                 if (td_util::get_option('tds_category_module_slide') == 'yes') {
                     $buffy .= '<span class="slide-meta-cat">';
-                    $buffy .= $this->get_category();
+                        $buffy .= $this->get_category();
                     $buffy .= '</span>';
                 }
                 $buffy .=  $this->get_title();//$this->get_title_main();

@@ -94,6 +94,8 @@ class td_block_17 extends td_block {
             $td_column_number = td_global::vc_get_column_number(); // get the column width of the block from the page builder API
         }
 
+        $limit = $this->get_att('limit');
+
         $buffy = ''; //output buffer
 
         $buffy .= '<div class="' . $this->get_block_classes() . ' td-column-' . $td_column_number . '" ' . $this->get_block_html_atts() . '>';
@@ -111,7 +113,7 @@ class td_block_17 extends td_block {
             $buffy .= '</div>';
 
 	        $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-column-' . $td_column_number . '">';
-	        $buffy .= $this->inner($this->td_query->posts, $td_column_number); //inner content of the block
+	        $buffy .= $this->inner($this->td_query->posts, $td_column_number, $limit); //inner content of the block
 	        $buffy .= '</div>';
 
 	        //get the ajax pagination for this block
@@ -120,13 +122,19 @@ class td_block_17 extends td_block {
         return $buffy;
     }
 
-    function inner($posts, $td_column_number = '') {
+    function inner($posts, $td_column_number = '', $limit) {
 
         $buffy = '';
 
         $td_block_layout = new td_block_layout();
         $td_post_count = 0; // the number of posts rendered
 
+        if( $limit > 5 ) {
+            if( $limit % 2 != 0 ) {
+                $limit = $limit+1;
+            }
+            $limit = $limit / 2;
+        }
 
         if (!empty($posts)) {
             foreach ($posts as $post) {
@@ -168,7 +176,7 @@ class td_block_17 extends td_block {
                             $buffy .= $td_block_layout->open4();
                             $buffy .= $td_module_8->render();
 
-                            if ($td_post_count == 4) { //make new column
+                            if ( $td_post_count == $limit ) { //make new column
                                 $buffy .= $td_block_layout->close4();
                             }
                         }

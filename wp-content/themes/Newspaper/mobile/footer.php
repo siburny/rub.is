@@ -5,6 +5,7 @@
     ?>
 
     <!-- footer -->
+    <?php if ( td_util::get_option( 'tds_footer' ) != 'no' ) { ?>
     <div class="td-mobile-footer-wrap">
         <div class="td-container">
             <?php
@@ -12,7 +13,7 @@
             $td_footer_retina_logo = td_util::get_option('tds_footer_retina_logo_upload');
             $td_top_logo = td_util::get_option('tds_logo_upload');
             $td_top_retina_logo = td_util::get_option('tds_logo_upload_r');
-            $td_footer_text = td_util::get_option('tds_footer_text');
+            $td_footer_text = td_util::parse_footer_texts(td_util::get_option('tds_footer_text'));
             $td_footer_email = td_util::get_option('tds_footer_email');
 
             // read alt and title for the logo
@@ -83,7 +84,7 @@
             ?>
         </div><!-- close td-container -->
     </div><!-- close footer -->
-
+<?php } ?>
     <!-- sub footer -->
     <?php if (td_util::get_option('tds_sub_footer') != 'no') { ?>
         <div class="td-mobile-sub-footer-wrap">
@@ -106,7 +107,7 @@
 
                     <div class="td-sub-footer-copy">
                         <?php
-                        $tds_footer_copyright = stripslashes(td_util::get_option('tds_footer_copyright'));
+                        $tds_footer_copyright = stripslashes(td_util::parse_footer_texts(td_util::get_option('tds_footer_copyright')));
                         $tds_footer_copy_symbol = td_util::get_option('tds_footer_copy_symbol');
 
                         //show copyright symbol

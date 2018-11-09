@@ -158,10 +158,18 @@ ul.sf-menu li li.sfHover li ul {
 .sf-menu > .current-menu-ancestor > a, //current menu parent (top)
 .sf-menu > .current-category-ancestor > a,
 .sf-menu > li > a:hover, //normal hover
+.sf-menu > .sfHover,
+.sf-menu > .sfHover > a //when the submenu is opend
+{
+  z-index: 999;
+}
+.sf-menu > .current-menu-item > a, // current top menu
+.sf-menu > .current-menu-ancestor > a, //current menu parent (top)
+.sf-menu > .current-category-ancestor > a,
+.sf-menu > li > a:hover, //normal hover
 .sf-menu > .sfHover > a //when the submenu is opend
 {
   background-color: transparent;
-  z-index: 999;
 }
 
 

@@ -519,7 +519,9 @@ class td_util {
 	        // strip_shortcodes(); this remove all shortcodes and we don't use it, is nor ok to remove all shortcodes like dropcaps
 	        // this remove the caption from images
 	        $post_content = preg_replace("/\[caption(.*)\[\/caption\]/i", '', $post_content);
-	        // this remove the shortcodes but leave the text from shortcodes
+            // this remove any script from raw html
+            $post_content = preg_replace("/\[vc_raw_html\](.*)\[\/vc_raw_html\]/i",'',$post_content);
+            // this remove the shortcodes but leave the text from shortcodes
             $post_content = preg_replace('`\[[^\]]*\]`','',$post_content);
         }
 
@@ -539,6 +541,8 @@ class td_util {
 
         //excerpt for letters
         if (td_util::get_option('tds_excerpts_type') == 'letters') {
+
+            $post_content = strip_tags( $post_content );
 
             $ret_excerpt = mb_substr($post_content, 0, $limit);
             if (mb_strlen($post_content)>=$limit) {
@@ -596,7 +600,7 @@ class td_util {
         if (empty(self::$td_category2id_array_walker_buffer)) {
             $categories = get_categories(array(
                 'hide_empty' => 0,
-                'number' => 1000
+                'number' => 1500
             ));
 
             $td_category2id_array_walker = new td_category2id_array_walker;
@@ -1432,6 +1436,28 @@ class td_util {
 		return $list;
 	}
 
+
+
+
+
+	static function parse_footer_texts($in_text) {
+        $replace_array = array (
+            '##copy##' => '&copy;',
+            '##privacy_policy##' => get_the_privacy_policy_link(),
+            '##year##' => date('Y'),
+            '##sitename##' => get_bloginfo('name'),
+            '##siteurl##' => get_home_url(),
+            '##sitelink##' => '<a href="' . get_home_url() . '">' . get_bloginfo('name') . '</a>'
+        );
+
+        foreach ($replace_array as $search_for => $replace_with) {
+            $in_text = str_replace($search_for, $replace_with, $in_text);
+        }
+
+        return $in_text;
+    }
+
+
 }//end class td_util
 
 
@@ -1498,7 +1524,40 @@ if (!function_exists('mb_convert_encoding')) {
         return htmlspecialchars_decode(utf8_decode(htmlentities($string, ENT_QUOTES | ENT_HTML5, 'utf-8', false)));
     }
 }
+if ( !function_exists('mb_detect_encoding')) {
+	function mb_detect_encoding ($string, $enc=null, $ret=null) {
 
+		static $enclist = array(
+			'UTF-8', 'ASCII',
+			'ISO-8859-1', 'ISO-8859-2', 'ISO-8859-3', 'ISO-8859-4', 'ISO-8859-5',
+			'ISO-8859-6', 'ISO-8859-7', 'ISO-8859-8', 'ISO-8859-9', 'ISO-8859-10',
+			'ISO-8859-13', 'ISO-8859-14', 'ISO-8859-15', 'ISO-8859-16',
+			'Windows-1251', 'Windows-1252', 'Windows-1254',
+		);
+
+		$result = false;
+
+		foreach ($enclist as $enc_type) {
+			$sample = @iconv($enc_type, $enc_type, $string);
+			if (md5($sample) == md5($string)) {
+				if ($ret === NULL) { $result = $enc_type; } else { $result = true; }
+				break;
+			}
+		}
+
+		return $result;
+	}
+}
+
+
+/**
+ * Placeholder function for older versions of wordpress ( before wp 4.9.6 )
+ */
+if (!function_exists('get_the_privacy_policy_link')) {
+    function get_the_privacy_policy_link($before = '', $after = '') {
+        return '';
+    }
+}
 
 /**
  * legacy code for our Aurora plugin framework that was removed from the theme in Newspaper 7.5

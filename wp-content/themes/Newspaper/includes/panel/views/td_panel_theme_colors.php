@@ -3,7 +3,7 @@
     echo td_panel_generator::ajax_box('GENERAL theme colors', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_general_theme_colors'
-        )
+        ), '', 'td_panel_box_general_theme_colors'
     );
 ?>
 
@@ -20,7 +20,7 @@
 echo td_panel_generator::ajax_box('Top menu', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_top_menu'
-    )
+    ), '', 'td_panel_box_top_menu'
 );
 ?>
 
@@ -30,7 +30,7 @@ echo td_panel_generator::ajax_box('Top menu', array(
 echo td_panel_generator::ajax_box('Main menu', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_main_menu'
-    )
+    ), '','td_panel_box_main_menu'
 );
 ?>
 
@@ -40,7 +40,7 @@ echo td_panel_generator::ajax_box('Main menu', array(
 echo td_panel_generator::ajax_box('Sub menu', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_sub_menu'
-    )
+    ), '', 'td_panel_box_sub_menu'
 );
 ?>
 
@@ -49,7 +49,7 @@ echo td_panel_generator::ajax_box('Sub menu', array(
 echo td_panel_generator::ajax_box('Mega menu', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_mega_menu'
-    )
+    ), '', 'td_panel_box_mega_menu'
 );
 ?>
 
@@ -58,7 +58,7 @@ echo td_panel_generator::ajax_box('Mega menu', array(
 echo td_panel_generator::ajax_box('Live search', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_live_search'
-    )
+    ), '', 'td_panel_box_live_search'
 );
 ?>
 
@@ -68,7 +68,7 @@ echo td_panel_generator::ajax_box('Live search', array(
 echo td_panel_generator::ajax_box('Mobile menu / Mobile search', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_mobile_menu'
-    )
+    ), '', 'td_panel_box_mobile_menu_mobile_search'
 );
 ?>
 
@@ -136,7 +136,7 @@ echo td_panel_generator::ajax_box('Mobile menu / Mobile search', array(
 echo td_panel_generator::ajax_box('Sign in / Join modal', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_login_modal'
-    )
+    ), '', 'td_panel_box_sign_in_join_modal'
 );
 ?>
 
@@ -307,7 +307,7 @@ echo td_panel_generator::ajax_box('Sign in / Join modal', array(
 echo td_panel_generator::ajax_box('Posts', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_posts'
-    )
+    ), '', 'td_panel_box_posts'
 );
 ?>
 
@@ -319,6 +319,6 @@ echo td_panel_generator::ajax_box('Posts', array(
 echo td_panel_generator::ajax_box('Pages', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_pages'
-    )
+    ), '', 'td_panel_box_pages'
 );
 ?>

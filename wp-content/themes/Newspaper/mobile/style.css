@@ -1743,6 +1743,18 @@ blockquote.pull-right:after {
 .td-icon-minus:before {
   content: '\ea0b';
 }
+.td-icon-dailymotion:before {
+  content: '\e908';
+}
+.td-icon-twitch:before {
+  content: '\e909';
+}
+.td-icon-xing:before {
+  content: '\e90a';
+}
+.td-icon-ebay:before {
+  content: '\e90b';
+}
 /*  ----------------------------------------------------------------------------
     Module general
 */
@@ -2107,7 +2119,7 @@ blockquote.pull-right:after {
   text-align: left;
 }
 .td-category-header .td-category {
-  max-height: 50px;
+  max-height: none;
 }
 .td-category-header .td-category a {
   text-transform: uppercase;
@@ -3745,6 +3757,11 @@ header .td-module-meta-info .td-post-comments a {
 .comment-reply-link {
   font-size: 11px;
   color: #b4b4b4;
+}
+.comment-form-cookies-consent label {
+  margin-left: 8px;
+  position: relative;
+  top: -1px;
 }
 .single .comments {
   margin-bottom: 48px;

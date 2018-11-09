@@ -13,7 +13,8 @@ class vc_column extends tdc_composer_block {
 		parent::render($atts);
 
 		$atts = shortcode_atts( array(
-			'width' => '1/1'
+			'width' => '1/1',
+			'is_sticky' => ''
 		), $atts);
 
 
@@ -60,6 +61,9 @@ class vc_column extends tdc_composer_block {
 		global $td_column_count;
 		$td_column_count = $atts['width'];
 
+		if ( ! empty( $atts['is_sticky'] ) ) {
+			$td_pb_class .= ' td-is-sticky';
+		}
 
 
 		$buffy = '<div class="' . $this->get_block_classes(array('wpb_column', 'vc_column_container', 'tdc-column', $td_pb_class)) . '">';

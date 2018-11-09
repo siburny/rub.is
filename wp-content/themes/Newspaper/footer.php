@@ -59,8 +59,15 @@ if ( $footer_page instanceof WP_Post ) {
 
 		$content = apply_filters( 'the_content', $footer_page->post_content );
 		$content = str_replace( ']]>', ']]&gt;', $content );
-		echo $content;
 
+	//bbpress removes all the filters
+	//if is bbpress template run do_shortcode()
+	if (td_global::$current_template == 'bbpress') {
+		echo do_shortcode($content);
+	}
+	else {
+		echo $content;
+	}
 		wp_reset_query();
 
 	?>

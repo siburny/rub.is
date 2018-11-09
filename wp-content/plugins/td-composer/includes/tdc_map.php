@@ -17,6 +17,50 @@ if ( 'Newsmag' === TD_THEME_NAME ) {
 	}
 }
 
+/**
+ * @param $param_name - param for which fonts' params will be rendered
+ * @param $shadow_title
+ * @param $shadow_size
+ * @param $shadow_offset_h
+ * @param $shadow_offset_v
+ * @param string $group
+ * @param string $index_style
+ *
+ * @return mixed
+ */
+
+function get_shadow_group_params( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '' ) {
+    $params = tdc_config::$group_params[ 'shadow' ];
+
+    foreach ( $params as &$param ) {
+
+        if( $param['param_name'] == 'shadow_size' || $param['param_name'] == 'shadow_color' ) {
+            $param['heading'] = $shadow_title . ' ' . $param['heading'];
+        }
+
+        if( $param['param_name'] == 'shadow_size' ) {
+            $param['placeholder'] = $shadow_size;
+        } else if( $param['param_name'] == 'shadow_offset_horizontal' ) {
+            $param['value'] = $shadow_offset_h;
+
+        } else if( $param['param_name'] == 'shadow_offset_vertical' ) {
+            $param['value'] = $shadow_offset_v;
+        }
+        if ( ! empty( $group ) ) {
+            $param['group'] = $group;
+        }
+
+        $param['param_name'] = $param_name . '_' . $param['param_name'];
+
+        if ( ! empty( $index_style ) ) {
+            $param['param_name'] .= '-' . $index_style;
+        }
+
+    }
+
+    return $params;
+}
+
 $external_shortcodes = array(
 	'td_block_social_counter' => array(
 		"name" => 'Social Counter',
@@ -26,6 +70,20 @@ $external_shortcodes = array(
         "category" => __('Blocks', TD_THEME_NAME),
 		'tdc_category' => 'External',
         'icon' => 'icon-pagebuilder-td_social_counter',
+        'tdc_style_params' => array(
+            'custom_title',
+            'custom_url',
+            'facebook',
+            'twitter',
+            'youtube',
+            'googleplus',
+            'instagram',
+            'pinterest',
+            'soundcloud',
+            'rss',
+            'rss_url',
+            'el_class'
+        ),
         "params" => array_merge(
 			$block_general_params_array,
             array(
@@ -38,6 +96,9 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-dropdown-extrabig"
                 ),
+            ),
+            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header'),
+            array(
                 array(
                     "param_name" => "separator",
                     "type" => "horizontal_separator",
@@ -48,12 +109,12 @@ $external_shortcodes = array(
                     "param_name" => "facebook",
                     "type" => "textfield",
                     "value" => "",
-                    "heading" => __("Facebook id", TD_THEME_NAME) . '&nbsp<a href="http://forum.tagdiv.com/tagdiv-social-counter-tutorial/" target="_blank">How to get the App Id and the Security Key</a>',
+                    "heading" => __("Facebook id", TD_THEME_NAME)/* . '&nbsp<a href="http://forum.tagdiv.com/tagdiv-social-counter-tutorial/" target="_blank">How to get the App Id and the Security Key</a>'*/,
                     "description" => "",
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
-	            array(
+	            /*array(
 		            "param_name" => "facebook_app_id",
 		            "type" => "textfield",
 		            "value" => "",
@@ -79,7 +140,7 @@ $external_shortcodes = array(
 		            "description" => "",
 		            "holder" => "div",
 		            "class" => "tdc-textfield-big"
-	            ),
+	            ),*/
                 array(
                     "param_name" => "twitter",
                     "type" => "textfield",
@@ -125,6 +186,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "pinterest",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Pinterest id", TD_THEME_NAME),
+					"description" => "",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
                 array(
                     "param_name" => "soundcloud",
                     "type" => "textfield",
@@ -143,6 +213,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "rss_url",
+					"type" => "textfield",
+					"value" => '',
+					"heading" => __("Feed custom url", TD_THEME_NAME),
+					"description" => "Custom url if using a RSS plugin ",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
                 array(
                     "param_name" => "open_in_new_window",
                     "type" => "dropdown",
@@ -152,6 +231,20 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-dropdown-extrabig"
                 ),
+				array(
+					"param_name" => "social_rel",
+					"type" => "dropdown",
+					"value" => array(
+						'Disable' => '',
+						'Nofollow' => 'nofollow',
+						'Noopener' => 'noopener',
+						'Noreferrer' => 'noreferrer'
+					),
+					"heading" => "Set nofollow, noopener or noreferrer",
+					"description" => "",
+					"holder" => "div",
+					"class" => "tdc-dropdown-big"
+				),
                 array(
                     "param_name" => "separator",
                     "type" => "horizontal_separator",
@@ -319,7 +412,6 @@ function tdc_load_internal_shortcodes() {
 	td_global_blocks::add_lazy_shortcode('vc_column');
 	td_global_blocks::add_lazy_shortcode('vc_row_inner');
 	td_global_blocks::add_lazy_shortcode('vc_column_inner');
-
 	td_global_blocks::add_lazy_shortcode('vc_column_text');
 	td_global_blocks::add_lazy_shortcode('vc_raw_html');
 	td_global_blocks::add_lazy_shortcode('vc_empty_space');
@@ -345,7 +437,8 @@ $rowColumns = array (
 	),
 );
 
-if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
+//if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
+if ( 'Newsmag' !== TD_THEME_NAME ) {
 	$rowColumns = array_merge( $rowColumns, array(
 		'1/2 + 1/2' => '12_12',
         '7/12 + 5/12' => '7_5',
@@ -357,454 +450,390 @@ if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi
 	));
 }
 
-$rowParams = array(
-	// internal modifier - does not update atts
-	array (
-		'param_name' => 'tdc_row_columns_modifier',
-		'heading' => 'Layout',
-		'type' => 'dropdown',
-		'value' => $rowColumns,
-		'tdc_dropdown_images' => true, // show image selector instead of classic dropdown
-		'class' => 'tdc-row-col-dropdown tdc-visual-selector',
-	),
+$rowParams = array_merge(
+    array(
+        // internal modifier - does not update atts
+        array (
+            'param_name' => 'tdc_row_columns_modifier',
+            'heading' => 'Layout',
+            'type' => 'dropdown',
+            'value' => $rowColumns,
+            'tdc_dropdown_images' => true, // show image selector instead of classic dropdown
+            'class' => 'tdc-row-col-dropdown tdc-visual-selector',
+        ),
 
-	array(
-		'param_name' => 'gap',
-		'type' => 'textfield',
-		'value' => '',
-		'heading' => 'Columns gap',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-	),
+        array(
+            'param_name' => 'gap',
+            'type' => 'textfield-responsive',
+            'value' => '',
+            'heading' => 'Columns gap',
+            'description' => '',
+            'class' => 'tdc-textfield-small',
+        ),
 
-	array(
-		"param_name" => "content_align_vertical",
-		"type" => "dropdown",
-		"value" => array(
-			'Top' => 'content-vert-top',
-			'Center' => 'content-vert-center',
-			'Bottom' => 'content-vert-bottom'
-		),
-		"heading" => 'Vertical align',
-		"description" => "",
-		"holder" => "div",
-		'tdc_dropdown_images' => true,
-		"class" => "tdc-visual-selector tdc-add-class",
-	),
+        array(
+            "param_name" => "content_align_vertical",
+            "type" => "dropdown",
+            "value" => array(
+                'Top' => 'content-vert-top',
+                'Center' => 'content-vert-center',
+                'Bottom' => 'content-vert-bottom'
+            ),
+            "heading" => 'Vertical align',
+            "description" => "",
+            "holder" => "div",
+            'tdc_dropdown_images' => true,
+            "class" => "tdc-visual-selector tdc-add-class",
+        ),
 
-	array(
-		"param_name" => "row_full_height",
-		"type" => "checkbox",
-		"value" => '',
-		"heading" => "Full height",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-	),
+        array(
+            "param_name" => "row_full_height",
+            "type" => "checkbox-responsive",
+            "value" => '',
+            "heading" => "Full height",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+        ),
 
-	array(
-		"param_name" => "row_parallax",
-		"type" => "checkbox",
-		"value" => '',
-		"heading" => "Add parallax",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-	),
+        array(
+            "param_name" => "row_parallax",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Add parallax",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+        ),
 
-	array(
-		"param_name" => "row_fixed",
-		"type" => "checkbox",
-		"value" => '',
-		"heading" => "Fixed background image",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-	),
+        array(
+            "param_name" => "row_fixed",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Fixed background image",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+        ),
 
-	array(
-		"param_name" => "separator",
-		"type" => "text_separator",
-		"value" => "",
-		"heading" => "Video background",
-		"class" => ""
-	),
+        array(
+            "param_name" => "separator",
+            "type" => "text_separator",
+            "value" => "",
+            "heading" => "Video background",
+            "class" => ""
+        ),
 
-	array(
-		'param_name' => 'video_background',
-		'type' => 'textfield',
-		'value' => '',
-		'heading' => 'Youtube ID',
-		'description' => '',
-		'class' => 'tdc-textfield-big',
-	),
+        array(
+            'param_name' => 'video_background',
+            'type' => 'textfield',
+            'value' => '',
+            'heading' => 'Youtube ID',
+            'description' => '',
+            'class' => 'tdc-textfield-big',
+        ),
 
-	array(
-		'param_name' => 'video_scale',
-		'type' => 'textfield',
-		'value' => '',
-		'heading' => 'Scale',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-	),
+        array(
+            'param_name' => 'video_scale',
+            'type' => 'textfield',
+            'value' => '',
+            'heading' => 'Scale',
+            'description' => '',
+            'class' => 'tdc-textfield-small',
+        ),
 
-	array(
-		'param_name' => 'video_opacity',
-		'type' => 'range',
-		'value' => '1',
-		'heading' => 'Opacity',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '0',
-		'range_max' => '1',
-		'range_step' => '0.02',
-	),
+        array(
+            'param_name' => 'video_opacity',
+            'type' => 'range',
+            'value' => '1',
+            'heading' => 'Opacity',
+            'description' => '',
+            'class' => 'tdc-textfield-small',
+            'range_min' => '0',
+            'range_max' => '1',
+            'range_step' => '0.02',
+        ),
 
-	array(
-		"param_name" => "separator",
-		"type" => "horizontal_separator",
-		"value" => "",
-		"description" => "",
-        "holder" => "div",
-        "class" => "",
-	),
+        array(
+            "param_name" => "separator",
+            "type" => "horizontal_separator",
+            "value" => "",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+        ),
 
-	array (
-		'param_name' => 'full_width',
-		'heading' => 'Row stretch',
-		'type' => 'dropdown',
-		'value' => array (
-			'Default' => '',
-			'Stretch row' => 'stretch_row',
-			'Stretch row and 1200px content' => 'stretch_row_1200 td-stretch-content',
-			'Stretch row and 1400px content' => 'stretch_row_1400 td-stretch-content',
-			'Stretch row and 1600px content' => 'stretch_row_1600 td-stretch-content',
-			'Stretch row and 1800px content' => 'stretch_row_1800 td-stretch-content',
-			'Stretch row and content' => 'stretch_row_content td-stretch-content',
-			'Stretch row and content (with paddings)' => 'stretch_row_content_no_space td-stretch-content',
-		),
-		'class' => 'tdc-row-stretch-dropdown tdc-dropdown-extrabig',
-	),
+        array (
+            'param_name' => 'full_width',
+            'heading' => 'Row stretch',
+            'type' => 'dropdown',
+            'value' => array (
+                'Default' => '',
+                'Stretch row' => 'stretch_row',
+                'Stretch row and 1200px content' => 'stretch_row_1200 td-stretch-content',
+                'Stretch row and 1400px content' => 'stretch_row_1400 td-stretch-content',
+                'Stretch row and 1600px content' => 'stretch_row_1600 td-stretch-content',
+                'Stretch row and 1800px content' => 'stretch_row_1800 td-stretch-content',
+                'Stretch row and content' => 'stretch_row_content td-stretch-content',
+                'Stretch row and content (with paddings)' => 'stretch_row_content_no_space td-stretch-content',
+            ),
+            'class' => 'tdc-row-stretch-dropdown tdc-dropdown-extrabig',
+        ),
 
-	array(
-		'type' => 'textfield', // should have been vc_el_id but we use textfield
-		'heading' => 'Row ID',
-		'param_name' => 'el_id',
-		'description' => 'Make sure that this is unique on the page',
-		'class' => 'tdc-textfield-extrabig',
-	),
+        array(
+            'type' => 'textfield', // should have been vc_el_id but we use textfield
+            'heading' => 'Row ID',
+            'param_name' => 'el_id',
+            'description' => 'Make sure that this is unique on the page',
+            'class' => 'tdc-textfield-extrabig',
+        ),
 
-	array(
-		'type' => 'textfield',
-		'heading' => 'Extra class',
-		'param_name' => 'el_class',
-		'description' => 'Add a class to this row',
-		'class' => 'tdc-textfield-extrabig',
-	),
+        array(
+            'type' => 'textfield',
+            'heading' => 'Extra class',
+            'param_name' => 'el_class',
+            'description' => 'Add a class to this row',
+            'class' => 'tdc-textfield-extrabig',
+        ),
 
-	array(
-		"param_name" => "separator",
-		"type" => "text_separator",
-		"value" => "",
-		"heading" => "Top",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array (
-		'param_name' => 'row_divider_top',
-		'heading' => 'Divider type',
-		'type' => 'dropdown',
-		'value' => array (
-			'- No divider' => '',
-			'01 - Smooth waves' => 'tdc-divider1',
-			'02 - Slope' => 'tdc-divider2',
-			'03 - Slopes' => 'tdc-divider3',
-			'04 - Triangle' => 'tdc-divider4',
-			'05 - Triangles' => 'tdc-divider5',
-			'06 - Side triangle' => 'tdc-divider6',
-			'07 - Side triangles' => 'tdc-divider7',
-			'08 - Waves' => 'tdc-divider8',
-			'09 - Mountain' => 'tdc-divider9',
-			'10 - Mountains' => 'tdc-divider10',
-			'11 - Ramp' => 'tdc-divider11',
-			'12 - Rounded' => 'tdc-divider12',
-			'13 - Rounded side' => 'tdc-divider13',
-			'14 - Rounded lines' => 'tdc-divider14',
-			'15 - Rounded sign' => 'tdc-divider15',
-			'16 - Triangle sign' => 'tdc-divider16',
-			'17 - Zipper' => 'tdc-divider17',
-			'18 - Small zipper' => 'tdc-divider18',
-			'19 - Clouds' => 'tdc-divider19',
-			'20 - Drops' => 'tdc-divider20',
-		),
-		'class' => 'tdc-dropdown-extrabig',
-		'group' => 'Divider',
-	),
-	array(
-		"type" => 'textfield',
-		"param_name" => 'svg_height_top',
-		"value" => '',
-		"heading" => 'Height',
-		"class" => 'tdc-textfield-small',
-		"description" => 'Optional - Choose a custom height for the separator',
-		"placeholder" => "400",
-		'group' => 'Divider',
-	),
-	array(
-		"type" => 'textfield',
-		"param_name" => 'svg_width_top',
-		"value" => '',
-		"heading" => 'Width',
-		"class" => 'tdc-textfield-small',
-		"description" => 'Optional - Choose a custom height for the separator',
-		"placeholder" => "1000",
-		'group' => 'Divider',
-	),
-	array(
-		"param_name" => "svg_flip_top",
-		"type" => "checkbox",
-		"value" => '',
-		"heading" => "Flip",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'space_top',
-		'type' => 'range',
-		'value' => '0',
-		'heading' => 'Space',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '0',
-		'range_max' => '200',
-		'range_step' => '2',
-		'group' => 'Divider',
-	),
-	array(
-		"param_name" => "separator",
-		"type" => "horizontal_separator",
-		"value" => "",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array(
-		"type" => "colorpicker",
-		"holder" => "div",
-		"class" => "",
-		"heading" => 'Background color',
-		"param_name" => "svg_background_color_top",
-		"value" => '#ffffff',
-		"description" => '',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_size_top',
-		'type' => 'textfield',
-		'value' => '',
-		'heading' => 'Shadow size',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'placeholder' => '0',
-		'group' => 'Divider',
-	),
-	array(
-		"type" => "colorpicker",
-		"holder" => "div",
-		"class" => "",
-		"heading" => 'Shadow color',
-		"param_name" => "shadow_color_top",
-		"value" => '',
-		"description" => '',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_offset_horizontal_top',
-		'type' => 'range',
-		'value' => '0',
-		'heading' => 'Offset H',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '-40',
-		'range_max' => '40',
-		'range_step' => '1',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_offset_vertical_top',
-		'type' => 'range',
-		'value' => '2',
-		'heading' => 'Offset V',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '-40',
-		'range_max' => '40',
-		'range_step' => '1',
-		'group' => 'Divider',
-	),
-
-	array(
-		"param_name" => "separator",
-		"type" => "text_separator",
-		"value" => "",
-		"heading" => "Botttom",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array (
-		'param_name' => 'row_divider_bottom',
-		'heading' => 'Divider type',
-		'type' => 'dropdown',
-		'value' => array (
-			'- No divider' => '',
-			'01 - Smooth waves' => 'tdc-divider1',
-			'02 - Slope' => 'tdc-divider2',
-			'03 - Slopes' => 'tdc-divider3',
-			'04 - Triangle' => 'tdc-divider4',
-			'05 - Triangles' => 'tdc-divider5',
-			'06 - Side triangle' => 'tdc-divider6',
-			'07 - Side triangles' => 'tdc-divider7',
-			'08 - Waves' => 'tdc-divider8',
-			'09 - Mountain' => 'tdc-divider9',
-			'10 - Mountains' => 'tdc-divider10',
-			'11 - Ramp' => 'tdc-divider11',
-			'12 - Rounded' => 'tdc-divider12',
-			'13 - Rounded side' => 'tdc-divider13',
-			'14 - Rounded lines' => 'tdc-divider14',
-			'15 - Rounded sign' => 'tdc-divider15',
-			'16 - Triangle sign' => 'tdc-divider16',
-			'17 - Zipper' => 'tdc-divider17',
-			'18 - Small zipper' => 'tdc-divider18',
-			'19 - Clouds' => 'tdc-divider19',
-			'20 - Drops' => 'tdc-divider20',
-		),
-		'class' => 'tdc-dropdown-extrabig',
-		'group' => 'Divider',
-	),
-	array(
-		"type" => 'textfield',
-		"param_name" => 'svg_height_bottom',
-		"value" => '',
-		"heading" => 'Height',
-		"class" => 'tdc-textfield-small',
-		"description" => 'Optional - Choose a custom height for the separator',
-		"placeholder" => "400",
-		'group' => 'Divider',
-	),
-	array(
-		"type" => 'textfield',
-		"param_name" => 'svg_width_bottom',
-		"value" => '',
-		"heading" => 'Width',
-		"class" => 'tdc-textfield-small',
-		"description" => 'Optional - Choose a custom height for the separator',
-		"placeholder" => "1000",
-		'group' => 'Divider',
-	),
-	array(
-		"param_name" => "svg_flip_bottom",
-		"type" => "checkbox",
-		"value" => '',
-		"heading" => "Flip",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'space_bottom',
-		'type' => 'range',
-		'value' => '0',
-		'heading' => 'Space',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '0',
-		'range_max' => '200',
-		'range_step' => '2',
-		'group' => 'Divider',
-	),
-	array(
-		"param_name" => "separator",
-		"type" => "horizontal_separator",
-		"value" => "",
-		"description" => "",
-		"holder" => "div",
-		"class" => "",
-		'group' => 'Divider',
-	),
-	array(
-		"type" => "colorpicker",
-		"holder" => "div",
-		"class" => "",
-		"heading" => 'Background color',
-		"param_name" => "svg_background_color_bottom",
-		"value" => '#ffffff',
-		"description" => '',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_size_bottom',
-		'type' => 'textfield',
-		'value' => '',
-		'heading' => 'Shadow size',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'placeholder' => '0',
-		'group' => 'Divider',
-	),
-	array(
-		"type" => "colorpicker",
-		"holder" => "div",
-		"class" => "",
-		"heading" => 'Shadow color',
-		"param_name" => "shadow_color_bottom",
-		"value" => '',
-		"description" => '',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_offset_horizontal_bottom',
-		'type' => 'range',
-		'value' => '0',
-		'heading' => 'Offset H',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '-40',
-		'range_max' => '40',
-		'range_step' => '1',
-		'group' => 'Divider',
-	),
-	array(
-		'param_name' => 'shadow_offset_vertical_bottom',
-		'type' => 'range',
-		'value' => '2',
-		'heading' => 'Offset V',
-		'description' => '',
-		'class' => 'tdc-textfield-small',
-		'range_min' => '-40',
-		'range_max' => '40',
-		'range_step' => '1',
-		'group' => 'Divider',
-	),
-
-	array (
-		'param_name' => 'css',
-		'value' => '',
-		'type' => 'css_editor',
-		'heading' => 'Css',
-		'group' => 'Design options',
-	),
-
-	array (
-        'param_name' => 'tdc_css',
-        'value' => '',
-        'type' => 'tdc_css_editor',
-        'heading' => '',
-        'group' => 'Design options',
+	    array(
+		    "type" => 'textfield-responsive',
+		    "param_name" => 'svg_z_index',
+		    "value" => '',
+		    "heading" => 'Z-index',
+		    "class" => 'tdc-textfield-small',
+		    "description" => 'Optional - Choose a custom z-index',
+		    "placeholder" => "0",
+		    'group' => 'Divider',
+	    ),
+        array(
+            "param_name" => "separator",
+            "type" => "text_separator",
+            "value" => "",
+            "heading" => "Top",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+	    array(
+		    "param_name" => "row_divider_top",
+		    "type" => "dropdown",
+		    "value" => array(
+			    'No divider' => '',
+			    '01 - Smooth waves' => 'tdc-divider1',
+			    '02 - Slope' => 'tdc-divider2',
+			    '03 - Slopes' => 'tdc-divider3',
+			    '04 - Triangle' => 'tdc-divider4',
+			    '05 - Triangles' => 'tdc-divider5',
+			    '06 - Side triangle' => 'tdc-divider6',
+			    '07 - Side triangles' => 'tdc-divider7',
+			    '08 - Waves' => 'tdc-divider8',
+			    '09 - Mountain' => 'tdc-divider9',
+			    '10 - Mountains' => 'tdc-divider10',
+			    '11 - Ramp' => 'tdc-divider11',
+			    '12 - Rounded' => 'tdc-divider12',
+			    '13 - Rounded side' => 'tdc-divider13',
+			    '14 - Rounded lines' => 'tdc-divider14',
+			    '15 - Rounded sign' => 'tdc-divider15',
+			    '16 - Triangle sign' => 'tdc-divider16',
+			    '17 - Zipper' => 'tdc-divider17',
+			    '18 - Small zipper' => 'tdc-divider18',
+			    '19 - Clouds' => 'tdc-divider19',
+			    '20 - Drops' => 'tdc-divider20',
+		    ),
+		    "heading" => 'Divider type',
+		    "description" => "",
+		    "holder" => "div",
+		    'tdc_dropdown_images' => true,
+		    "class" => "tdc-visual-selector tdc-add-class tdc-dividers-class tdc-dividers-class-top",
+		    'group' => 'Divider',
+	    ),
+        array(
+            "type" => 'textfield-responsive',
+            "param_name" => 'svg_height_top',
+            "value" => '',
+            "heading" => 'Height',
+            "class" => 'tdc-textfield-small',
+            "description" => 'Optional - Choose a custom height for the separator',
+            "placeholder" => "400",
+            'group' => 'Divider',
+        ),
+        array(
+            "type" => 'textfield-responsive',
+            "param_name" => 'svg_width_top',
+            "value" => '',
+            "heading" => 'Width',
+            "class" => 'tdc-textfield-small',
+            "description" => 'Optional - Choose a custom height for the separator',
+            "placeholder" => "1000",
+            'group' => 'Divider',
+        ),
+        array(
+            "param_name" => "svg_flip_top",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Flip",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+        array(
+            'param_name' => 'space_top',
+            'type' => 'range-responsive',
+            'value' => '0',
+            'heading' => 'Space',
+            'description' => '',
+            'class' => 'tdc-textfield-small',
+            'range_min' => '0',
+            'range_max' => '200',
+            'range_step' => '2',
+            'group' => 'Divider',
+        ),
+        array(
+            "param_name" => "separator",
+            "type" => "horizontal_separator",
+            "value" => "",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+        array(
+            "type" => "colorpicker",
+            "holder" => "div",
+            "class" => "",
+            "heading" => 'Background color',
+            "param_name" => "svg_background_color_top",
+            "value" => '',
+            "description" => '',
+            'group' => 'Divider',
+        ),
     ),
+    td_config_helper::get_map_block_shadow_array('shadow_top', 'Shadow', 0, 0, 2, 'Divider' ),
+
+    array(
+        array(
+            "param_name" => "separator",
+            "type" => "text_separator",
+            "value" => "",
+            "heading" => "Botttom",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+	    array(
+		    "param_name" => "row_divider_bottom",
+		    "type" => "dropdown",
+		    "value" => array(
+			    'No divider' => '',
+			    '01 - Smooth waves' => 'tdc-divider1',
+			    '02 - Slope' => 'tdc-divider2',
+			    '03 - Slopes' => 'tdc-divider3',
+			    '04 - Triangle' => 'tdc-divider4',
+			    '05 - Triangles' => 'tdc-divider5',
+			    '06 - Side triangle' => 'tdc-divider6',
+			    '07 - Side triangles' => 'tdc-divider7',
+			    '08 - Waves' => 'tdc-divider8',
+			    '09 - Mountain' => 'tdc-divider9',
+			    '10 - Mountains' => 'tdc-divider10',
+			    '11 - Ramp' => 'tdc-divider11',
+			    '12 - Rounded' => 'tdc-divider12',
+			    '13 - Rounded side' => 'tdc-divider13',
+			    '14 - Rounded lines' => 'tdc-divider14',
+			    '15 - Rounded sign' => 'tdc-divider15',
+			    '16 - Triangle sign' => 'tdc-divider16',
+			    '17 - Zipper' => 'tdc-divider17',
+			    '18 - Small zipper' => 'tdc-divider18',
+			    '19 - Clouds' => 'tdc-divider19',
+			    '20 - Drops' => 'tdc-divider20',
+		    ),
+		    "heading" => 'Divider type',
+		    "description" => "",
+		    "holder" => "div",
+		    'tdc_dropdown_images' => true,
+		    "class" => "tdc-visual-selector tdc-add-class tdc-dividers-class",
+		    'group' => 'Divider',
+	    ),
+        array(
+            "type" => 'textfield-responsive',
+            "param_name" => 'svg_height_bottom',
+            "value" => '',
+            "heading" => 'Height',
+            "class" => 'tdc-textfield-small',
+            "description" => 'Optional - Choose a custom height for the separator',
+            "placeholder" => "400",
+            'group' => 'Divider',
+        ),
+        array(
+            "type" => 'textfield-responsive',
+            "param_name" => 'svg_width_bottom',
+            "value" => '',
+            "heading" => 'Width',
+            "class" => 'tdc-textfield-small',
+            "description" => 'Optional - Choose a custom height for the separator',
+            "placeholder" => "1000",
+            'group' => 'Divider',
+        ),
+        array(
+            "param_name" => "svg_flip_bottom",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Flip",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+        array(
+            'param_name' => 'space_bottom',
+            'type' => 'range-responsive',
+            'value' => '0',
+            'heading' => 'Space',
+            'description' => '',
+            'class' => 'tdc-textfield-small',
+            'range_min' => '0',
+            'range_max' => '200',
+            'range_step' => '2',
+            'group' => 'Divider',
+        ),
+        array(
+            "param_name" => "separator",
+            "type" => "horizontal_separator",
+            "value" => "",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+            'group' => 'Divider',
+        ),
+        array(
+            "type" => "colorpicker",
+            "holder" => "div",
+            "class" => "",
+            "heading" => 'Background color',
+            "param_name" => "svg_background_color_bottom",
+            "value" => '',
+            "description" => '',
+            'group' => 'Divider',
+        )
+    ),
+    td_config_helper::get_map_block_shadow_array('shadow_bot', 'Shadow', 0, 0, 2, 'Divider' ),
+
+    array(
+        array (
+            'param_name' => 'css',
+            'value' => '',
+            'type' => 'css_editor',
+            'heading' => 'Css',
+            'group' => 'Design options',
+        ),
+
+        array (
+            'param_name' => 'tdc_css',
+            'value' => '',
+            'type' => 'tdc_css_editor',
+            'heading' => '',
+            'group' => 'Design options',
+        )
+    )
 );
 
 // Remove the 'Row stretch' option on Newsmag
@@ -825,6 +854,11 @@ tdc_mapper::map_shortcode(
 		'icon' => 'tdc-icon-row',
 		'category' => __('Content', 'td_composer'),
 		'description' => __('Row description', 'td_composer'),
+        'tdc_style_params' => array(
+            'video_background',
+            'el_id',
+            'el_class'
+        ),
 		'params' => $rowParams
 	)
 );
@@ -837,7 +871,20 @@ tdc_mapper::map_shortcode(
 		'is_container' => true,
 		'content_element' => false, // hide from the list of elements on the ui
 		'description' => __( 'Place content elements inside the column', 'td_composer' ),
+        'tdc_style_params' => array(
+        	'width',
+            'el_class'
+        ),
 		'params' => array(
+			array(
+                "param_name" => "is_sticky",
+                "type" => "checkbox",
+                "value" => '',
+                "heading" => "Sticky",
+                "description" => "",
+                "holder" => "div",
+                "class" => "",
+            ),
 			array(
 				'type' => 'textfield',
 				'heading' => 'Extra class',
@@ -881,7 +928,8 @@ $innerRowColumns = array (
 	)
 );
 
-if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
+//if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
+if ( 'Newsmag' !== TD_THEME_NAME ) {
 	$innerRowColumns = array_merge( $innerRowColumns, array(
 		'7/12 + 5/12' => '7_5',
 		'5/12 + 7/12' => '5_7',
@@ -892,6 +940,26 @@ if ( 'Newsmag' !== TD_THEME_NAME && is_plugin_active( 'td-multi-purpose/td-multi
 	));
 }
 
+$absolute_width = array();
+if( 'Newspaper' === TD_THEME_NAME ) {
+    $absolute_width = array(
+        array (
+            'param_name' => 'absolute_width',
+            'heading' => 'Absolute content width',
+            'type' => 'dropdown',
+            'value' => array (
+                'Full width content' => '',
+                '1068px content' => 'absolute_inner_1068 absolute_inner',
+                '1200px content' => 'absolute_inner_1200 absolute_inner',
+                '1400px content' => 'absolute_inner_1400 absolute_inner',
+                '1600px content' => 'absolute_inner_1600 absolute_inner',
+                '1800px content' => 'absolute_inner_1800 absolute_inner',
+            ),
+            'class' => 'tdc-dropdown-big',
+        )
+    );
+}
+
 tdc_mapper::map_shortcode(
 	array(
 		'base' => 'vc_row_inner',
@@ -900,80 +968,119 @@ tdc_mapper::map_shortcode(
 		'is_container' => true,
 		'icon' => 'icon-wpb-row',
 		'description' => __('Place content elements inside the inner row', 'td_composer'),
-		'params' => array(
+        'tdc_style_params' => array(
+            'el_id',
+            'el_class'
+        ),
+		'params' => array_merge(
+		    array(
 
-			// internal modifier - does not update atts
-			array (
-				'param_name' => 'tdc_inner_row_columns_modifier',
-				'heading' => 'Layout',
-				'type' => 'dropdown',
-				'value' => $innerRowColumns,
-				'tdc_dropdown_images' => true, // show image selector instead of classic dropdown
-				'class' => 'tdc-innerRow-col-dropdown tdc-visual-selector'
-			),
+                // internal modifier - does not update atts
+                array (
+                    'param_name' => 'tdc_inner_row_columns_modifier',
+                    'heading' => 'Layout',
+                    'type' => 'dropdown',
+                    'value' => $innerRowColumns,
+                    'tdc_dropdown_images' => true, // show image selector instead of classic dropdown
+                    'class' => 'tdc-innerRow-col-dropdown tdc-visual-selector'
+                ),
 
-			array(
-				'param_name' => 'gap',
-				'type' => 'textfield',
-				'value' => '',
-				'heading' => 'Inner columns gap',
-				'description' => '',
-				'class' => 'tdc-textfield-small',
-			),
+                array(
+                    'param_name' => 'gap',
+                    'type' => 'textfield-responsive',
+                    'value' => '',
+                    'heading' => 'Inner columns gap',
+                    'description' => '',
+                    'class' => 'tdc-textfield-small',
+                ),
 
-			array(
-				"param_name" => "content_align_vertical",
-				"type" => "dropdown",
-				"value" => array(
-					'Top' => 'content-vert-top',
-					'Center' => 'content-vert-center',
-					'Bottom' => 'content-vert-bottom'
-				),
-				"heading" => 'Vertical align',
-				"description" => "",
-				"holder" => "div",
-				'tdc_dropdown_images' => true,
-				"class" => "tdc-visual-selector tdc-add-class",
-			),
+                array(
+                    "param_name" => "content_align_vertical",
+                    "type" => "dropdown",
+                    "value" => array(
+                        'Top' => 'content-vert-top',
+                        'Center' => 'content-vert-center',
+                        'Bottom' => 'content-vert-bottom'
+                    ),
+                    "heading" => 'Vertical align',
+                    "description" => "",
+                    "holder" => "div",
+                    'tdc_dropdown_images' => true,
+                    "class" => "tdc-visual-selector tdc-add-class",
+                ),
 
-			array(
-				"param_name" => "separator",
-				"type" => "horizontal_separator",
-				"value" => "",
-				"class" => ""
-			),
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => ""
+                ),
 
-			array(
-				'type' => 'textfield', // should have been vc_el_id but we use textfield
-				'heading' => 'Row ID',
-				'param_name' => 'el_id',
-				'description' => 'Make sure that this is unique on the page',
-				'class' => 'tdc-textfield-extrabig',
-			),
-			array(
-				'type' => 'textfield',
-				'heading' => 'Extra class',
-				'param_name' => 'el_class',
-				'description' => 'Add a class to this row',
-				'class' => 'tdc-textfield-extrabig',
-			),
+                array(
+                    "param_name" => "absolute_position",
+                    "type" => "checkbox-responsive",
+                    "value" => '',
+                    "heading" => __( "Absolute position",  'td_composer' ),
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "",
+                ),
+
+                array (
+                    'param_name' => 'absolute_align',
+                    'heading' => 'Absolute position align',
+                    'type' => 'dropdown',
+                    'value' => array (
+                        'Top' => '',
+                        'Center' => 'center',
+                        'Bottom' => 'bottom',
+                    ),
+                    'class' => 'tdc-dropdown-big',
+                )
+            ),
+
+            $absolute_width,
+
+            array(
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => ""
+                ),
+
+                array(
+                    'type' => 'textfield', // should have been vc_el_id but we use textfield
+                    'heading' => 'Row ID',
+                    'param_name' => 'el_id',
+                    'description' => 'Make sure that this is unique on the page',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
+                array(
+                    'type' => 'textfield',
+                    'heading' => 'Extra class',
+                    'param_name' => 'el_class',
+                    'description' => 'Add a class to this row',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
 
 
-			array (
-				'param_name' => 'css',
-				'value' => '',
-				'type' => 'css_editor',
-				'heading' => 'Css',
-				'group' => 'Design options',
-			),
-			array (
-	            'param_name' => 'tdc_css',
-	            'value' => '',
-	            'type' => 'tdc_css_editor',
-	            'heading' => '',
-	            'group' => 'Design options',
-	        ),
-		)
+                array (
+                    'param_name' => 'css',
+                    'value' => '',
+                    'type' => 'css_editor',
+                    'heading' => 'Css',
+                    'group' => 'Design options',
+                ),
+                array (
+                    'param_name' => 'tdc_css',
+                    'value' => '',
+                    'type' => 'tdc_css_editor',
+                    'heading' => '',
+                    'group' => 'Design options',
+                ),
+            )
+        )
 	)
 );
 
@@ -986,6 +1093,10 @@ tdc_mapper::map_shortcode(
 		'content_element' => false, // hide from the list of elements on the ui
 		'is_container' => true,
 		'description' => __( 'Place content elements inside the inner column', 'td_composer' ),
+        'tdc_style_params' => array(
+        	'width',
+            'el_class'
+        ),
 		'params' => array(
 			array(
 				'type' => 'textfield',
@@ -1020,6 +1131,10 @@ tdc_mapper::map_shortcode(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Raw html description', 'td_composer' ),
+        'tdc_style_params' => array(
+            'content',
+            'el_class'
+        ),
 		'params' => array(
 			array(
 				"param_name" => "content",
@@ -1110,165 +1225,38 @@ tdc_mapper::map_shortcode(
 		'description' => __( 'Widget sidebar description', 'td_composer' ),
 		'params' => array(
 			array(
-					'param_name' => 'sidebar_id',
-					'heading' => 'Sidebar',
-					'type' => 'dropdown',
+				'param_name' => 'sidebar_id',
+				'heading' => 'Sidebar',
+				'type' => 'dropdown',
 
-					// The parameter is set at 'admin_head' action, there the global $wp_registered_sidebars being set (otherwise it could be set at 'init')
-					// Important! Here is too early to use the global $wp_registered_sidebars, because it isn't set
-					'value' => array(),
-					'class' => 'tdc-widget-sidebar-dropdown tdc-dropdown-extrabig',
-				),
-			array(
-					'type' => 'textfield',
-					'heading' => __( 'Extra class', 'td_composer' ),
-					'param_name' => 'el_class',
-					'description' => __( 'Style particular content element differently - add a class name and refer to it in custom CSS', 'td_composer' ),
-					'value' => '',
-					'class' => 'tdc-textfield-extrabig',
-				)
-		)
-	)
-);
-
-tdc_mapper::map_shortcode(
-	array(
-		'base' => 'vc_single_image',
-		'name' => __( 'Single image', 'td_composer' ),
-		'icon' => 'icon-wpb-empty-space',
-		'category' => __( 'Content', 'td_composer' ),
-		'tdc_category' => 'Extended',
-		'description' => __( 'Single image description', 'td_composer' ),
-		'params' => array(
-			array(
-                "param_name" => "image",
-                "type" => "attach_image",
-                "value" => '',
-                "heading" => __( "Image", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "",
-            ),
-			array(
-                "param_name" => "image_url",
-                "type" => "textfield",
-                "value" => '',
-                "heading" => __( "Image link", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-textfield-extrabig"
-            ),
-			array(
-                "param_name" => "open_in_new_window",
-                "type" => "checkbox",
-                "value" => '',
-                "heading" => __( "Open in new window",  'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "",
-            ),
-			array(
-                "param_name" => "height",
-                "type" => "textfield",
-                "value" => '',
-                "heading" => __( 'Image height', 'td_composer' ),
-                "description" => "Default height: 400px",
-                "holder" => "div",
-                "class" => "tdc-textfield-small"
-            ),
-			array(
-				"param_name" => "repeat",
-				"type" => "dropdown",
-				"value" => array(
-					'No Repeat' => '',
-					'Tile' => 'repeat',
-					'Tile Horizontally' => 'repeat-x',
-					'Tile Vertically' => 'repeat-y'
-				),
-				"heading" => __( 'Image repeat', 'td_composer' ),
-				"description" => "",
-				"holder" => "div",
-				"class" => "tdc-dropdown-big",
+				// The parameter is set at 'admin_head' action, there the global $wp_registered_sidebars being set (otherwise it could be set at 'init')
+				// Important! Here is too early to use the global $wp_registered_sidebars, because it isn't set
+				'value' => array(),
+				'class' => 'tdc-widget-sidebar-dropdown tdc-dropdown-extrabig',
 			),
 			array(
-				"param_name" => "size",
-				"type" => "dropdown",
-				"value" => array(
-					'Cover' => '',
-					'Full Width' => '100% auto',
-					'Full Height' => 'auto 100%',
-					'Auto' => 'auto',
-					'Contain' => 'contain'
-				),
-				"heading" => __( 'Image size', 'td_composer' ),
-				"description" => "",
-				"holder" => "div",
-				"class" => "tdc-dropdown-big",
+				'type' => 'textfield',
+				'heading' => __( 'Extra class', 'td_composer' ),
+				'param_name' => 'el_class',
+				'description' => __( 'Style particular content element differently - add a class name and refer to it in custom CSS', 'td_composer' ),
+				'value' => '',
+				'class' => 'tdc-textfield-extrabig',
 			),
-            array(
-                "param_name" => "alignment",
-                "type" => "dropdown",
-                "value" => array(
-                    'Top' => 'top',
-                    'Center' => '',
-                    'Bottom' => 'bottom'
-                ),
-                "heading" => __( 'Image alignment', 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big",
-            ),
-			array(
-                "param_name" => "style",
-                "type" => "dropdown",
-                "value" => array(
-                    'Default' => '',
-                    'Rounded' => 'style-rounded',
-                    'Border' => 'style-border',
-                    'Outline' => 'style-outline',
-                    'Shadow' => 'style-shadow',
-                    'Bordered Shadow' => 'style-bordered-shadow',
-                    '3D Shadow' => 'style-3d-shadow',
-                    'Round' => 'style-round',
-                    'Round Border' => 'style-round-border',
-                    'Round Outline' => 'style-round-outline',
-                    'Round Shadow' => 'style-round-shadow',
-                    'Round Border Shadow' => 'style-round-border-shadow',
-                    'Circle' => 'style-circle',
-                    'Circle Border' => 'style-circle-border',
-                    'Circle Outline' => 'style-circle-outline',
-                    'Circle Shadow' => 'style-circle-shadow',
-                    'Circle Border Shadow' => 'style-circle-border-shadow',
-                ),
-                "heading" => __( 'Box style', 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big",
-            ),
-			array(
-                'param_name' => 'el_class',
-                'type' => 'textfield',
-                'value' => '',
-                'heading' => 'Extra class',
-                'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
-                'class' => 'tdc-textfield-extrabig'
-            ),
-
 			array (
-                'param_name' => 'css',
-                'value' => '',
-                'type' => 'css_editor',
-                'heading' => 'Css',
-                'group' => 'Design options',
-            ),
-            array (
-                'param_name' => 'tdc_css',
-                'value' => '',
-                'type' => 'tdc_css_editor',
-                'heading' => '',
-                'group' => 'Design options',
-            ),
-		),
+				'param_name' => 'css',
+				'value' => '',
+				'type' => 'css_editor',
+				'heading' => 'Css',
+				'group' => 'Design options',
+			),
+			array (
+				'param_name' => 'tdc_css',
+				'value' => '',
+				'type' => 'tdc_css_editor',
+				'heading' => '',
+				'group' => 'Design options',
+			),
+		)
 	)
 );
 
@@ -1280,6 +1268,9 @@ tdc_mapper::map_shortcode(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Separator description', 'td_composer' ),
+        'tdc_style_params' => array(
+            'el_class'
+        ),
 		'params' => array(
 			array(
                 "param_name" => "color",
@@ -1394,6 +1385,20 @@ $tdc_api_blocks = array(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Description', 'td_composer' ),
+        'tdc_style_params' => array(
+            'custom_title',
+            'custom_url',
+            'el_class'
+        ),
+        'tdc_start_values'       => base64_encode(
+            json_encode(
+                array(
+                    array(
+                        'com_divider' => 'dashed',
+                    ),
+                )
+            )
+        ),
 		'params' => array_merge(
 			$block_general_params_array,
 	        array(
@@ -1406,6 +1411,137 @@ $tdc_api_blocks = array(
 					"holder" => "div",
 					'class' => 'tdc-textfield-small'
 	            ),
+
+                array(
+                    "param_name" => "separator",
+                    "type"       => "text_separator",
+                    'heading'    => 'Style',
+                    "value"      => "",
+                    "class"      => "",
+                ),
+                array(
+                    "param_name"  => "com_margin",
+                    "type"        => "textfield-responsive",
+                    "value"       => '',
+                    "heading"     => 'Comments margin',
+                    "description" => "",
+                    "holder"      => "div",
+                    "class"       => "tdc-textfield-big",
+                    "placeholder" => "10px 12px",
+                    "group"       => "",
+                ),
+                array(
+                    "param_name"  => "com_padding",
+                    "type"        => "textfield-responsive",
+                    "value"       => '',
+                    "heading"     => 'Comments padding',
+                    "description" => "",
+                    "holder"      => "div",
+                    "class"       => "tdc-textfield-big",
+                    "placeholder" => "0 0 13px",
+                    "group"       => "",
+                ),
+                array(
+                    "param_name"  => "com_divider",
+                    "type"        => "dropdown",
+                    "value"       => array(
+                        'None'   => '',
+                        'Solid'  => 'solid',
+                        'Dotted' => 'dotted',
+                        'Dashed' => 'dashed',
+                    ),
+                    "heading"     => 'Comments divider',
+                    "description" => "",
+                    "holder"      => "div",
+                    "class"       => "tdc-dropdown-big",
+                    "group"       => "",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Comments divider color',
+                    "param_name"  => "com_divider_color",
+                    "value"       => '#eaeaea',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "param_name" => "separator",
+                    "type"       => "horizontal_separator",
+                    "value"      => "",
+                    "class"      => "tdc-separator-small",
+                    "group"       => '',
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Linking word color',
+                    "param_name"  => "link_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Author name color',
+                    "param_name"  => "auth_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Author name hover color',
+                    "param_name"  => "auth_h_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Post title color',
+                    "param_name"  => "title_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Post title hover color',
+                    "param_name"  => "title_h_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "",
+                ),
+                array(
+                    "param_name" => "separator",
+                    "type"       => "horizontal_separator",
+                    "value"      => "",
+                    "class"      => "tdc-separator-small",
+                    "group"       => '',
+                ),
+            ),
+            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+            td_config_helper::get_map_block_font_array( 'f_link', false, 'Linking word text' ),
+            td_config_helper::get_map_block_font_array( 'f_auth', false, 'Author name text' ),
+            td_config_helper::get_map_block_font_array( 'f_title', false, 'Post title text' ),
+            array(
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => ""
+                ),
 				array(
 	                'param_name' => 'el_class',
 	                'type' => 'textfield',
@@ -1414,7 +1550,6 @@ $tdc_api_blocks = array(
 	                'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
 	                'class' => 'tdc-textfield-extrabig'
 	            ),
-
 				array (
 	                'param_name' => 'css',
 	                'value' => '',
@@ -1439,6 +1574,12 @@ $tdc_api_blocks = array(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Column text description', 'td_composer' ),
+        'tdc_style_params' => array(
+            'custom_title',
+            'custom_url',
+            'content',
+            'el_class'
+        ),
 		'params' => array_merge(
 			$block_general_params_array,
 			array(
@@ -1451,6 +1592,75 @@ $tdc_api_blocks = array(
 					"value" => __('Html code here! Replace this with any non empty html code and that\'s it', 'td_composer' ),
 					"description" => 'Enter your content'
 				),
+                array(
+                    "param_name" => "separator",
+                    "type"       => "text_separator",
+                    'heading'    => 'Style',
+                    "value"      => "",
+                    "class"      => "",
+                ),
+                array(
+                    "param_name"  => "post_color",
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Post content color',
+                    "value"       => '',
+                    "description" => '',
+                ),
+                array(
+                    "param_name"  => "h_color",
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'H1-6 color',
+                    "value"       => '',
+                    "description" => '',
+                ),
+                array(
+                    "param_name"  => "a_color",
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Links color',
+                    "value"       => '',
+                    "description" => '',
+                ),
+                array(
+                    "param_name"  => "a_hover_color",
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Links hover color',
+                    "value"       => '',
+                    "description" => '',
+                ),
+                array(
+                    "param_name"  => "bq_color",
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => 'Default blockquote color',
+                    "value"       => '',
+                    "description" => '',
+                ),
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => "tdc-separator-small"
+                ),
+            ),
+            td_config_helper::get_map_block_font_array( 'f_post', true, 'Post content' ),
+            td_config_helper::get_map_block_font_array( 'f_h1', false, 'H1' ),
+            td_config_helper::get_map_block_font_array( 'f_h2', false, 'H2' ),
+            td_config_helper::get_map_block_font_array( 'f_h3', false, 'H3' ),
+            td_config_helper::get_map_block_font_array( 'f_h4', false, 'H4' ),
+            td_config_helper::get_map_block_font_array( 'f_h5', false, 'H5' ),
+            td_config_helper::get_map_block_font_array( 'f_h6', false, 'H6' ),
+            td_config_helper::get_map_block_font_array( 'f_list', false, 'Lists' ),
+            td_config_helper::get_map_block_font_array( 'f_bq', false, 'Default blockquote' ),
+            array(
 				array(
 					"param_name" => "separator",
 					"type" => "horizontal_separator",
@@ -1465,7 +1675,6 @@ $tdc_api_blocks = array(
 					'value' => '',
 					'class' => 'tdc-textfield-extrabig',
 				),
-
 				array (
 					'param_name' => 'css',
 					'value' => '',
@@ -1482,6 +1691,272 @@ $tdc_api_blocks = array(
 		        ),
 			)
 		)
+	),
+	array(
+		'base' => 'vc_single_image',
+		'name' => __( 'Single image', 'td_composer' ),
+		'icon' => 'icon-wpb-empty-space',
+		'category' => __( 'Content', 'td_composer' ),
+		'tdc_category' => 'Extended',
+		'description' => __( 'Single image description', 'td_composer' ),
+        'tdc_style_params' => array(
+            'image',
+            'image_url',
+            'el_class'
+        ),
+		'params' => array(
+			array(
+                "param_name" => "image",
+                "type" => "attach_image",
+                "value" => '',
+                "heading" => __( "Image", 'td_composer' ),
+                "description" => "",
+                "holder" => "div",
+                "class" => "",
+            ),
+			array(
+                "param_name" => "image_url",
+                "type" => "textfield",
+                "value" => '',
+                "heading" => __( "Image link", 'td_composer' ),
+                "description" => "",
+                "holder" => "div",
+                "class" => "tdc-textfield-extrabig"
+            ),
+			array(
+                "param_name" => "open_in_new_window",
+                "type" => "checkbox",
+                "value" => '',
+                "heading" => __( "Open in new window",  'td_composer' ),
+                "description" => "",
+                "holder" => "div",
+                "class" => "",
+            ),
+			array(
+				"param_name" => "display_inline",
+				"type" => "checkbox",
+				"value" => '',
+				"heading" => "Display inline",
+				"description" => "",
+				"holder" => "div",
+				"class" => "",
+			),
+            array(
+                "param_name" => "separator",
+                "type"       => "horizontal_separator",
+                "value"      => "",
+                "class"      => "tdc-separator-small",
+            ),
+			array(
+                "param_name" => "height",
+                "type" => "textfield-responsive",
+                "value" => '',
+                "heading" => __( 'Image height', 'td_composer' ),
+                "description" => "Default height: 400px",
+                "holder" => "div",
+                "class" => "tdc-textfield-small",
+                "placeholder" => "400"
+            ),
+			array(
+				"param_name" => "width",
+				"type" => "textfield-responsive",
+				"value" => '',
+				"heading" => __( 'Image width', 'td_composer' ),
+				"description" => "Default width: 100%",
+				"holder" => "div",
+				"class" => "tdc-textfield-small",
+				"placeholder" => "100%"
+			),
+			array(
+				"param_name" => "repeat",
+				"type" => "dropdown",
+				"value" => array(
+					'No Repeat' => '',
+					'Tile' => 'repeat',
+					'Tile Horizontally' => 'repeat-x',
+					'Tile Vertically' => 'repeat-y'
+				),
+				"heading" => __( 'Image repeat', 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big",
+			),
+			array(
+				"param_name" => "size",
+				"type" => "dropdown",
+				"value" => array(
+					'Cover' => '',
+					'Full Width' => '100% auto',
+					'Full Height' => 'auto 100%',
+					'Auto' => 'auto',
+					'Contain' => 'contain'
+				),
+				"heading" => __( 'Image size', 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big",
+			),
+            array(
+                "param_name" => "alignment",
+                "type" => "dropdown",
+                "value" => array(
+                    'Top' => 'top',
+                    'Center' => '',
+                    'Bottom' => 'bottom'
+                ),
+                "heading" => __( 'Image alignment', 'td_composer' ),
+                "description" => "",
+                "holder" => "div",
+                "class" => "tdc-dropdown-big",
+            ),
+			array(
+                "param_name" => "style",
+                "type" => "dropdown",
+                "value" => array(
+                    'Default' => '',
+                    'Rounded' => 'style-rounded',
+                    'Border' => 'style-border',
+                    'Outline' => 'style-outline',
+                    'Shadow' => 'style-shadow',
+                    'Bordered Shadow' => 'style-bordered-shadow',
+                    '3D Shadow' => 'style-3d-shadow',
+                    'Round' => 'style-round',
+                    'Round Border' => 'style-round-border',
+                    'Round Outline' => 'style-round-outline',
+                    'Round Shadow' => 'style-round-shadow',
+                    'Round Border Shadow' => 'style-round-border-shadow',
+                    'Circle' => 'style-circle',
+                    'Circle Border' => 'style-circle-border',
+                    'Circle Outline' => 'style-circle-outline',
+                    'Circle Shadow' => 'style-circle-shadow',
+                    'Circle Border Shadow' => 'style-circle-border-shadow',
+                ),
+                "heading" => __( 'Box style', 'td_composer' ),
+                "description" => "",
+                "holder" => "div",
+                "class" => "tdc-dropdown-big",
+            ),
+            array(
+                "param_name" => "overlay",
+                "holder" => "div",
+                "type" => "gradient",
+                'heading' => "Overlay color",
+                "value" => "",
+                "class" => "",
+            ),
+            array(
+                "param_name" => "separator",
+                "type"       => "horizontal_separator",
+                "value"      => "",
+                "class"      => "tdc-separator-small",
+            ),
+			array(
+                'param_name' => 'el_class',
+                'type' => 'textfield',
+                'value' => '',
+                'heading' => 'Extra class',
+                'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                'class' => 'tdc-textfield-extrabig'
+            ),
+			array(
+				'param_name' => 'fe_brightness',
+				'type' => 'range',
+				'value' => '1',
+				'heading' => 'Brightness',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '3',
+				'range_step' => '0.1',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_contrast',
+				'type' => 'range',
+				'value' => '1',
+				'heading' => 'Contrast',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '3',
+				'range_step' => '0.1',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_grayscale',
+				'type' => 'range',
+				'value' => '0',
+				'heading' => 'Grayscale',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '1',
+				'range_step' => '0.1',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_hue_rotate',
+				'type' => 'range',
+				'value' => '0',
+				'heading' => 'Hue rotate',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '-360',
+				'range_max' => '360',
+				'range_step' => '10',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_saturate',
+				'type' => 'range',
+				'value' => '1',
+				'heading' => 'Saturate',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '3',
+				'range_step' => '0.1',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_sepia',
+				'type' => 'range',
+				'value' => '0',
+				'heading' => 'Sepia',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '1',
+				'range_step' => '0.1',
+				'group' => 'Effects',
+			),
+			array(
+				'param_name' => 'fe_blur',
+				'type' => 'range',
+				'value' => '0',
+				'heading' => 'Blur',
+				'description' => '',
+				'class' => 'tdc-textfield-small',
+				'range_min' => '0',
+				'range_max' => '30',
+				'range_step' => '1',
+				'group' => 'Effects',
+			),
+			array (
+                'param_name' => 'css',
+                'value' => '',
+                'type' => 'css_editor',
+                'heading' => 'Css',
+                'group' => 'Design options',
+            ),
+            array (
+                'param_name' => 'tdc_css',
+                'value' => '',
+                'type' => 'tdc_css_editor',
+                'heading' => '',
+                'group' => 'Design options',
+            ),
+		),
 	)
 );
 
@@ -1490,31 +1965,6 @@ foreach ( $tdc_api_blocks as $tdc_api_block ) {
 	tdc_mapper::map_shortcode( $tdc_api_block );
 }
 
-
-function tdc_fill_group_fonts() {
-
-	// &param ref doesn't work right outside of function (the last array element is right referenced)
-	foreach ( tdc_config::$group_params['font'] as &$param ) {
-
-		if ( ! empty( $param['param_name'] ) ) {
-			switch ( $param['param_name'] ) {
-				case 'font_family':
-					$param['value'] = td_util::get_font_family_list();
-					break;
-				case 'font_style':
-					$param['value'] = td_util::get_font_style_list();
-					break;
-				case 'font_weight':
-					$param['value'] = td_util::get_font_weight_list();
-					break;
-				case 'font_transform':
-					$param['value'] = td_util::get_font_transform_list();
-					break;
-			}
-		}
-	}
-}
-tdc_fill_group_fonts();
 
 
 function register_external_shortcodes() {

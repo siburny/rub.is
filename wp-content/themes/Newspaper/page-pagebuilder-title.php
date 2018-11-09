@@ -44,15 +44,15 @@ if ($td_use_page_builder) {
 		<?php while ( have_posts() ) : the_post(); ?>
 
 			<div class="td-main-content-wrap td-main-page-wrap td-container-wrap">
-				<div class="tdc-content-wrap">
-					<div class="td-page-header td-container">
-						<div class="td-crumb-container">
-							<?php echo td_page_generator::get_page_breadcrumbs(get_the_title()); ?>
-						</div>
-						<h1 class="entry-title td-page-title">
-							<span><?php the_title() ?></span>
-						</h1>
+				<div class="td-page-header td-container">
+					<div class="td-crumb-container">
+						<?php echo td_page_generator::get_page_breadcrumbs(get_the_title()); ?>
 					</div>
+					<h1 class="entry-title td-page-title">
+						<span><?php the_title() ?></span>
+					</h1>
+				</div>
+				<div class="tdc-content-wrap">
 					<div <?php if (!td_util::tdc_is_installed()) { echo 'class="td-container"'; } ?>>
 						<?php the_content(); ?>
 					</div>

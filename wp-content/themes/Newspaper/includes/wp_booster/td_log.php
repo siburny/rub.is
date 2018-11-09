@@ -7,7 +7,6 @@ class td_log {
 	private static $log_cache = array();
 	private static $is_shutdown_hooked = false;
 
-
 	private static $log_info = true;
 
 	/**
@@ -18,6 +17,14 @@ class td_log {
 	 * @param $more_data string|object|array  - more data, it can be string, object or array
 	 */
 	static function log($file, $function, $msg, $more_data = '') {
+
+	    // check td log status
+        $td_log_status = td_options::get('td_log_status');
+
+        // as off version 9.x we don't store logs unless they are turned on from system status > TD Log section
+        if ( $td_log_status === 'off' ) {
+            return;
+        }
 
 		// read the cache from db if needed
 		if (empty(self::$log_cache)) {

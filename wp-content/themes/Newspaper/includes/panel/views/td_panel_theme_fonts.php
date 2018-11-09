@@ -14,7 +14,7 @@
                 'td_ajax_box_id' => 'td_get_font_section_by_section_id',
                 'section_name' => $panel_section,
                 'td_ajax_view' => 'td_theme_fonts'
-            )
+            ), '', 'td_panel_box_' . $panel_section
         );
     }
     ?>

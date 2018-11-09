@@ -12,10 +12,15 @@ class td_exchange {
      */
     static function render_generic($atts) {
 
+	    if (empty($atts['exchange_key'])) {
+		    return td_util::get_block_error('Exchange widget', "<strong>Api key</strong> is empty. Configure this block/widget and enter an api key :)");
+	    }
+
         // prepare the data and do an api call
         $exchange_data = array (
             'api_base' => '',
-            'api_rates' => array()
+            'api_rates' => array(),
+            'api_key' => $atts['exchange_key']
         );
 
         $exchange_data_status = self::get_exchange_data((array)$atts, $exchange_data);
@@ -41,13 +46,14 @@ class td_exchange {
      * @return string - block render
      */
     private static function render_block_template($atts, $exchange_data) {
+
         // stop render when no data is received
         if (empty($exchange_data['api_rates'])){
             $return_currency = 'eur';
             if (!empty($atts['e_base_currency'])) {
                 $return_currency = $atts['e_base_currency'];
             }
-            return self::error('Render failed - no data is received: ' . $return_currency);
+	        return td_util::get_block_error('Exchange widget', '<strong>Render failed - no data is received:</strong> ' . $return_currency);
         }
 
         ob_start();
@@ -210,7 +216,7 @@ class td_exchange {
                 // we have an error in the api
                 $exchange_data = td_remote_cache::get(__CLASS__, $cache_key);
                 if ($exchange_data === false) {    // miss and io error... shit / die
-                    return self::error('Exchange API error: ' . $fixed_api_data);
+	                return td_util::get_block_error('Exchange widget', '<strong>Exchange API error</strong>: ' . $fixed_api_data);
                 }
 
                 td_remote_cache::extend(__CLASS__, $cache_key, self::$caching_time);
@@ -240,7 +246,7 @@ class td_exchange {
     private static function fixer_get_data($atts, &$exchange_data){
 
         // default base currency is eur and it returns all rates
-        $api_url = 'http://api.fixer.io/latest';
+        $api_url = 'http://data.fixer.io/api/latest?access_key=' . $exchange_data['api_key'];
         $json_api_response = td_remote_http::get_page($api_url, __CLASS__);
 
         // check for a response
@@ -256,30 +262,23 @@ class td_exchange {
             return 'Error decoding the json';
         }
 
-        // current base currency
-        if (isset($api_response['base'])) {
-            $exchange_data['api_base'] = $api_response['base'];
+        // error
+	    if (isset($api_response['error'])) {
+		    td_log::log(__FILE__, __FUNCTION__, 'Error response from server, the key may be invalid', $api_response);
+            return 'Error response from server, the key may be invalid';
+	    }
+
+	    // expected data is missing
+	    if (!isset($api_response['base']) || !isset($api_response['rates'])) {
+		    td_log::log(__FILE__, __FUNCTION__, 'Expected data is missing', $api_response);
+		    return 'Expected data is missing';
         }
 
-        // current rates
-        if (isset($api_response['rates'])) {
-            $exchange_data['api_rates'] = $api_response['rates'];
-        }
+        // current base currency
+	    $exchange_data['api_base'] = $api_response['base'];
+	    $exchange_data['api_rates'] = $api_response['rates'];
 
         return true;
-    }
-
-
-    /**
-     * Show an error if the user is logged in. It does not check for admin
-     * @param $msg
-     * @return string
-     */
-    private static function error($msg) {
-        if (is_user_logged_in()) {
-            return $msg;
-        }
-        return '';
     }
 
 }

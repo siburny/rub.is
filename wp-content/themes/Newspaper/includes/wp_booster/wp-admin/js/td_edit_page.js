@@ -30,7 +30,7 @@ var td_edit_page = {
                 setInterval(function () {
 
                     // Disable meta box section when composer is active
-                    if ('undefined' !== typeof window.parent.tdcPostSettings) {
+                    if ('undefined' !== typeof window.parent.tdcPostSettings && 'undefined' !== typeof window.parent.tdcPostSettings.postContent ) {
                         td_page_metabox.addClass('td-disable-settings');
                         return;
                     }

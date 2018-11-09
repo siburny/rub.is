@@ -78,8 +78,8 @@ class td_instagram {
 
         // instagram followers
         $instagram_followers = 0;
-        if (isset($instagram_data['user']['followed_by']['count'])) {
-            $instagram_followers = $instagram_data['user']['followed_by']['count'];
+        if (isset($instagram_data['user']['edge_followed_by']['count'])) {
+            $instagram_followers = $instagram_data['user']['edge_followed_by']['count'];
         }
 
         // instagram followers - check followers count data type
@@ -133,23 +133,26 @@ class td_instagram {
 
         <!-- user shared images -->
         <?php
-        if (isset($instagram_data['user']['media']['nodes'])) {
+
+        $user_shared_images = $instagram_data['user']["edge_owner_to_timeline_media"]["edges"];
+
+        if ( isset( $user_shared_images ) and is_array( $user_shared_images ) ) {
             ?>
             <div class="td-instagram-main td-images-on-row-<?php echo $images_per_row . $image_gap; ?>">
                 <?php
                 $image_count = 0;
-                foreach ($instagram_data['user']['media']['nodes'] as $image) {
+                foreach ( $user_shared_images as $image ) {
                     // display only if the code and thumbnail are set
-                    if ( isset( $image['code'] ) && isset( $image['thumbnail_src'] ) ) {
+                    if ( isset( $image['node']['shortcode'] ) && isset( $image['node']['thumbnail_src'] ) ) {
                         ?>
                         <div class="td-instagram-element">
                             <!-- image -->
-                            <a href="https://www.instagram.com/p/<?php echo $image['code'] ?>" target="_blank">
-                                <img class="td-instagram-image" src="<?php echo $image['thumbnail_src'] ?>"/>
+                            <a href="https://www.instagram.com/p/<?php echo $image['node']['shortcode'] ?>" target="_blank">
+                                <img class="td-instagram-image" src="<?php echo $image['node']['thumbnail_src'] ?>"/>
                             </a>
                             <!-- video icon -->
                             <?php
-                            if ( $image['is_video'] == 1 ) {
+                            if ( $image['node']['is_video'] === true ) {
                                 ?>
                                 <span class="td-video-play-ico">
                                     <img width="40" class="td-retina" src="<?php echo td_global::$get_template_directory_uri . '/images/icons/ico-video-large.png' ?>" alt="video"/>
@@ -265,11 +268,11 @@ class td_instagram {
         }
 
         // current instagram data is not set
-        if (!isset($instagram_json['entry_data']['ProfilePage'][0]['user'])) {
+        if (!isset($instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user'])) {
             return 'Instagram data is not set, plese check the ID';
         }
 
-        $instagram_data['user'] = $instagram_json['entry_data']['ProfilePage'][0]['user'];
+        $instagram_data['user'] = $instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user'];
 
         return true;
     }

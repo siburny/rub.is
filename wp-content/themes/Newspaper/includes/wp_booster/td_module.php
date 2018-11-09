@@ -120,6 +120,13 @@ abstract class td_module {
         return $buffy;
     }
 
+	function get_author_photo() {
+		$buffy = '';
+
+		$buffy .= '<a href="' . $this->post->post_author_url . '" class="td-author-photo">' . get_avatar( $this->post->post_author, '96' ) . '</a>';
+
+		return $buffy;
+	}
 
     function get_author() {
         $buffy = '';
@@ -133,7 +140,6 @@ abstract class td_module {
                 }
                 $buffy .= '</span>';
             }
-
         }
         return $buffy;
 
@@ -150,7 +156,7 @@ abstract class td_module {
         if ($this->is_review and td_util::get_option('tds_m_show_review') != 'hide') {
             //if review show stars
             $buffy .= '<div class="entry-review-stars">';
-            $buffy .=  td_review::render_stars($this->td_review);
+                $buffy .=  td_review::render_stars($this->td_review);
             $buffy .= '</div>';
 
         } else {

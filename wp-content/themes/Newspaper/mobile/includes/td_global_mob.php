@@ -16,5 +16,5 @@ class td_global_mob {
 	static $get_parent_template_directory_uri = '';
 }
 
-td_global_mob::$get_parent_template_directory = get_template_directory() . '..';
+td_global_mob::$get_parent_template_directory = get_template_directory() . '/..';
 td_global_mob::$get_parent_template_directory_uri = td_mobile_theme::$main_uri_path;

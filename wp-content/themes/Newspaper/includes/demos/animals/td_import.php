@@ -131,8 +131,6 @@ td_demo_widgets::add_widget_to_sidebar('default', 'td_block_popular_categories_w
     )
 );
 
-
-
 /*  ---------------------------------------------------------------------------
     categories
 */
@@ -347,7 +345,6 @@ td_demo_content::add_post(array(
     'file' => td_global::$get_template_directory . '/includes/demos/animals/pages/smart_list.txt',
     'categories_id_array' => array(get_cat_ID(TD_FEATURED_CAT), $demo_cat_11_id),
     'featured_image_td_id' => 'td_pic_1',
-    'template' => 'single_template_5',
     'smart_list' => 'td_smart_list_6'
 
 ));

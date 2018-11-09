@@ -8,9 +8,7 @@
 
 define('WP_USE_THEMES', false);
 
-//require_once( '../../../../wp-load.php' );
-$parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
-require_once( $parse_uri[0] . 'wp-load.php' );
+require_once( $_GET['wp_path'] . '/wp-load.php' );
 
 if ( ! is_user_logged_in()) {
 	return;
@@ -158,10 +156,35 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 
 		</style>
 
+        <?php
+
+        if ( is_plugin_active( 'td-test-composer/td-test-composer.php' ) ) {
+            ob_start();
+            ?>
+
+            <style>
+                .media-menu > .media-menu-item,
+                .media-router > .media-menu-item:first-child,
+                .uploader-inline,
+                .edit-attachment,
+                .delete-attachment {
+                    display: none !important;
+                }
+
+            </style>
+
+            <?php
+
+            echo ob_get_clean();
+        }
+
+        ?>
+
 		<script>
 			window.loadIframe = function() {
 
-				var $body = jQuery( 'body' ),
+
+			    var $body = jQuery( 'body' ),
 					$tdcWpeditor = jQuery( '.tdc-wpeditor' ),
 					$outerDocument = jQuery( window.parent.document ),
 					$tdcIframeWpeditor = $outerDocument.find( '#tdc-iframe-wpeditor' ),
@@ -170,6 +193,23 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 					editorWidth = model.get( 'cssWidth' ),
 					mappedParameterName = $tdcIframeWpeditor.data( 'mapped_parameter_name' ),
 					mappedParameterValue = model.get('attrs')[mappedParameterName];
+
+			    function b64EncodeUnicode(str) {
+                    // first we use encodeURIComponent to get percent-encoded UTF-8,
+                    // then we convert the percent encodings into raw bytes which
+                    // can be fed into btoa.
+                    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+                        function toSolidBytes(match, p1) {
+                            return String.fromCharCode('0x' + p1);
+                    }));
+                }
+
+                function b64DecodeUnicode(str) {
+                    // Going backwards: from bytestream, to percent-encoding, to original string.
+                    return decodeURIComponent(atob(str).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+                }
 
 				// Add $tdcIframeWpeditor css classes to its body element (it's used to properly render the wpeditor and its textarea)
 				var tdcIframeWpeditorClass = $tdcIframeWpeditor.attr( 'class' );
@@ -199,8 +239,19 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 					setTimeout(function() {
 						if ( 'undefined' !== typeof mappedParameterValue ) {
 
+						    // Detect base64 encoding
+                            try {
+
+                                var decodedValue = b64DecodeUnicode( mappedParameterValue );
+                                editor.setContent( decodedValue );
+
+                            } catch( e ) {
+                                editor.setContent( _.unescape( mappedParameterValue ) );
+                            }
+
 							// The content must be unescaped because 'htmlentities' php function was used to encode editor content
-							editor.setContent( _.unescape( mappedParameterValue ) );
+
+							//editor.setContent( _.unescape( mappedParameterValue ) );
 							//editor.setContent( mappedParameterValue );
 						}
 					}, 100);
@@ -358,11 +409,10 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 		do_action( 'admin_footer' );
 		_WP_Editors::editor_js();
 
-		wp_enqueue_media();
-
-		//do_action('admin_print_styles');
-
 		?>
+
+    <script type="text/javascript" src="<?php echo includes_url() ?>/js/mce-view.js"></script>
+    <script type="text/javascript" src="<?php echo includes_url() ?>/js/tinymce/plugins/compat3x/plugin.js"></script>
 
 	</body>
 </html>

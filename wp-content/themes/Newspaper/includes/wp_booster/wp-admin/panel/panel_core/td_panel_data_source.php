@@ -284,6 +284,34 @@ class td_panel_data_source {
                     self::update_social_drag_and_drop($post_value);
                     break;
 
+	            case 'tdb_author_templates':
+		            self::update_tdb_author_templates($post_value);
+		            break;
+
+	            case 'tdb_404_template':
+		            self::update_tdb_template($post_value, '404');
+		            break;
+
+	            case 'tdb_date_template':
+		            self::update_tdb_template($post_value, 'date');
+		            break;
+
+	            case 'tdb_attachment_template':
+		            self::update_tdb_template($post_value, 'attachment');
+		            break;
+
+	            case 'tdb_search_template':
+		            self::update_tdb_template($post_value, 'search');
+		            break;
+
+	            case 'tdb_tag_template':
+		            self::update_tdb_template($post_value, 'tag');
+		            break;
+
+	            case 'tdb_author_template':
+		            self::update_tdb_template($post_value, 'author');
+		            break;
+
                 default:
 	                // here we had aurora hooked - removed in 20 sep 2016
                     //tdx_options::set_data_to_datasource($post_data_source, $post_value);
@@ -820,6 +848,20 @@ class td_panel_data_source {
             }
         }
     }
+
+	private static function update_tdb_author_templates($td_option_array) {
+		$td_options = &td_options::get_all_by_ref();
+
+		foreach ($td_option_array as $author_id => $tdb_template_id) {
+			$td_options['tdb_author_templates'][$author_id] = $tdb_template_id;
+		}
+	}
+
+	private static function update_tdb_template($td_option, $template_type) {
+		$td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_' . $template_type . '_template'] = $td_option;
+	}
+
 
 
 

@@ -90,17 +90,21 @@ function td_css_generator() {
         background-color: @theme_color;
     }
 
-    .global-block-template-4 .td-related-title .td-cur-simple-item:before {
+    .td_block_template_4 .td-related-title .td-cur-simple-item:before {
         border-color: @theme_color transparent transparent transparent !important;
     }
 
     .woocommerce .woocommerce-message .button:hover,
     .woocommerce .woocommerce-error .button:hover,
-    .woocommerce .woocommerce-info .button:hover,
-    .global-block-template-4 .td-related-title .td-cur-simple-item,
-    .global-block-template-3 .td-related-title .td-cur-simple-item,
-    .global-block-template-9 .td-related-title:after {
+    .woocommerce .woocommerce-info .button:hover {
         background-color: @theme_color !important;
+    }
+    
+    
+    .td_block_template_4 .td-related-title .td-cur-simple-item,
+    .td_block_template_3 .td-related-title .td-cur-simple-item,
+    .td_block_template_9 .td-related-title:after {
+        background-color: @theme_color;
     }
 
     .woocommerce .product .onsale,
@@ -193,20 +197,20 @@ function td_css_generator() {
     .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option:hover i,
     .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-link:hover,
     .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-item .td-cur-simple-item,
-    .global-block-template-2 .td-related-title .td-cur-simple-item,
-    .global-block-template-5 .td-related-title .td-cur-simple-item,
-    .global-block-template-6 .td-related-title .td-cur-simple-item,
-    .global-block-template-7 .td-related-title .td-cur-simple-item,
-    .global-block-template-8 .td-related-title .td-cur-simple-item,
-    .global-block-template-9 .td-related-title .td-cur-simple-item,
-    .global-block-template-10 .td-related-title .td-cur-simple-item,
-    .global-block-template-11 .td-related-title .td-cur-simple-item,
-    .global-block-template-12 .td-related-title .td-cur-simple-item,
-    .global-block-template-13 .td-related-title .td-cur-simple-item,
-    .global-block-template-14 .td-related-title .td-cur-simple-item,
-    .global-block-template-15 .td-related-title .td-cur-simple-item,
-    .global-block-template-16 .td-related-title .td-cur-simple-item,
-    .global-block-template-17 .td-related-title .td-cur-simple-item,
+    .td_block_template_2 .td-related-title .td-cur-simple-item,
+    .td_block_template_5 .td-related-title .td-cur-simple-item,
+    .td_block_template_6 .td-related-title .td-cur-simple-item,
+    .td_block_template_7 .td-related-title .td-cur-simple-item,
+    .td_block_template_8 .td-related-title .td-cur-simple-item,
+    .td_block_template_9 .td-related-title .td-cur-simple-item,
+    .td_block_template_10 .td-related-title .td-cur-simple-item,
+    .td_block_template_11 .td-related-title .td-cur-simple-item,
+    .td_block_template_12 .td-related-title .td-cur-simple-item,
+    .td_block_template_13 .td-related-title .td-cur-simple-item,
+    .td_block_template_14 .td-related-title .td-cur-simple-item,
+    .td_block_template_15 .td-related-title .td-cur-simple-item,
+    .td_block_template_16 .td-related-title .td-cur-simple-item,
+    .td_block_template_17 .td-related-title .td-cur-simple-item,
     .td-theme-wrap .sf-menu ul .td-menu-item > a:hover,
     .td-theme-wrap .sf-menu ul .sfHover > a,
     .td-theme-wrap .sf-menu ul .current-menu-ancestor > a,
@@ -342,6 +346,10 @@ function td_css_generator() {
     .td-theme-wrap .td_block_template_4 .td-block-title > *:before,
     .td-theme-wrap .td_block_template_17 .td-block-title::after {
         border-color: @header_color transparent transparent transparent;
+    }
+    
+    .td-theme-wrap .td_block_template_4 .td-related-title .td-cur-simple-item:before {
+        border-color: @header_color transparent transparent transparent !important;
     }
 
     /* @text_header_color */
@@ -745,7 +753,7 @@ function td_css_generator() {
         background: -moz-linear-gradient(top, @mobile_gradient_one_mob 0%, @mobile_gradient_two_mob 100%);
         background: -webkit-gradient(left top, left bottom, color-stop(0%, @mobile_gradient_one_mob), color-stop(100%, @mobile_gradient_two_mob));
         background: -webkit-linear-gradient(top, @mobile_gradient_one_mob 0%, @mobile_gradient_two_mob 100%);
-        background: -o-linear-gradient(top, @mobile_gradient_one_mob 0%, @mobileu_gradient_two_mob 100%);
+        background: -o-linear-gradient(top, @mobile_gradient_one_mob 0%, @mobile_gradient_two_mob 100%);
         background: -ms-linear-gradient(top, @mobile_gradient_one_mob 0%, @mobile_gradient_two_mob 100%);
         background: linear-gradient(to bottom, @mobile_gradient_one_mob 0%, @mobile_gradient_two_mob 100%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@mobile_gradient_one_mob', endColorstr='@mobile_gradient_two_mob', GradientType=0 );
@@ -1222,6 +1230,14 @@ function td_css_generator() {
     /* @mobile_sub_menu */
     .td-mobile-content .sub-menu a {
         @mobile_sub_menu
+    }
+    /* @text_logo */
+    .td-header-wrap .td-logo-text-container .td-logo-text {
+        @text_logo
+    }
+    /* @text_logo_tagline */
+    .td-header-wrap .td-logo-text-container .td-tagline-text {
+        @text_logo_tagline
     }
 
 
@@ -1921,7 +1937,8 @@ function td_css_generator() {
     /* @top-menu-height */
     .top-header-menu > li,
     .td-header-sp-top-menu,
-    #td-outer-wrap .td-header-sp-top-widget {
+    #td-outer-wrap .td-header-sp-top-widget .td-search-btns-wrap,
+    #td-outer-wrap .td-header-sp-top-widget .td-social-icon-wrap {
         line-height: @top-menu-height;
     }
 
@@ -1946,7 +1963,6 @@ function td_css_generator() {
         .td-header-style-6 .td-main-menu-logo a,
         .td-header-style-7 .td-header-sp-logo a,
         .td-header-style-7 .td-header-sp-logo img,
-        .td-header-style-7 .header-search-wrap #td-header-search-button .td-icon-search,
         .td-header-style-12 .td-main-menu-logo a,
         .td-header-style-12 .td-header-menu-wrap .sf-menu > li > a {
             line-height: @main-menu-height;
@@ -1959,8 +1975,7 @@ function td_css_generator() {
             top: 0;
             bottom: 0;
         }
-        .header-search-wrap #td-header-search-button .td-icon-search,
-        .header-search-wrap #td-header-search-button .td-icon-search:before {
+        .td-header-wrap .header-search-wrap #td-header-search-button .td-icon-search {
             line-height: @main-menu-height;
         }
     }

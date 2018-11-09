@@ -37,6 +37,27 @@ class td_global {
 	// set from td_util::is_pagebuilder_content($post);
 	private static $is_page_builder_content;
 
+	// Is 'tdb_templates' custom post type registered by template builder
+	private static $is_tdb_registered;
+
+	//theme plugins 'PLUGIN_CONSTANT' => 'hash'
+	private static $td_plugins = array(
+		'TD_COMPOSER' => '9e241c87ee8782e8f19bb886a935e653',
+		'TD_CLOUD_LIBRARY' => '4dea8d5b26348370b86f315beb853d86',
+		'TD_SOCIAL_COUNTER' => 'd608b7ce86371b999748dbc94bcf2599',
+		'TD_NEWSLETTER' => 'f1b9ea261e2c20cdbc7921f99056a1ba',
+		'TD_AMP' => '8265497c99ed22d437e120d4c6e1687a',
+		'TD_MOBILE_PLUGIN' => '6744d78cb08fb46c9ae845e7a8cb6dc8'
+	);
+
+
+	/**
+	 * Get the $td_plugins hashes array
+	 * @return array
+	 */
+	static function get_td_plugins() {
+		return self::$td_plugins;
+	}
 
 	/**
 	 * Set the $in_row
@@ -313,10 +334,7 @@ class td_global {
         'td_page_options' => '/includes/wp_booster/wp-admin/js/td_page_options.js',
         'td_tooltip' => '/includes/wp_booster/wp-admin/js/tooltip.js',
 	    'td_confirm' => '/includes/wp_booster/wp-admin/js/tdConfirm.js',
-	    'td_detect' => '/includes/wp_booster/js_dev/tdDetect.js',
-
-        'td_edit_post' => '/includes/wp_booster/wp-admin/js/td_edit_post.js',
-
+	    'td_detect' => '/includes/wp_booster/js_dev/tdDetect.js'
     );
 
 
@@ -549,6 +567,57 @@ class td_global {
 
 	//current ad in panel
 	static $current_ad_id = '';
+
+
+	/**
+	 * Detect if 'tdb_templates' custom post type is registered by template builder
+	 * @return bool
+	 */
+    static function is_tdb_registered() {
+    	if ( isset( self::$is_tdb_registered ) ) {
+    		return self::$is_tdb_registered;
+	    }
+
+	    global $wp_post_types;
+    	self::$is_tdb_registered = in_array( 'tdb_templates', array_keys ( $wp_post_types ) );
+
+        return self::$is_tdb_registered;
+    }
+
+
+    /**
+     * determines if a single template id is a tdb template
+     * @param $template_id
+     * @param $and_exist
+     * @return bool
+     */
+    static function is_tdb_template($template_id, $and_exist = false ) {
+    	if ( substr( $template_id, 0, 4 ) == 'tdb_' ) {
+
+    		if ( $and_exist ) {
+			    $query = new WP_Query(
+                    array(
+                        'p' => self::tdb_get_template_id( $template_id ),
+                        'post_type' => 'tdb_templates',
+                    )
+                );
+
+			    return $query->have_posts();
+	        }
+	        return true;
+	    }
+    	return false;
+    }
+
+
+    /**
+     * extract the template id from a api_single_template ID
+     * @param $template_id
+     * @return int
+     */
+    static function tdb_get_template_id($template_id) {
+        return (int) str_replace('tdb_template_', '', $template_id);
+    }
 }
 
 

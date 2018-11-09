@@ -47,7 +47,7 @@ class td_cake {
 
             if ($status_time_delta > $delta_max and $td_cake_lp_status != 'lp_sent') {
                 td_util::update_option_('td_cake_lp_status', 'lp_sent');
-                $td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?cs=' . $td_cake_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
+                //$td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?cs=' . $td_cake_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
                 return;
             }
 
@@ -90,7 +90,7 @@ class td_cake {
             if ($status_time_delta > 0 and empty($td_cake_status)) {
                 td_util::update_option_('td_cake_status_time', time());
                 td_util::update_option_('td_cake_status', '1');
-                $td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false)); // check for updates
+                //$td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false)); // check for updates
                 return;
             }
 
@@ -229,10 +229,10 @@ class td_cake {
                         <!-- Step 2 - Forum Registration -->
                         <div class="td-activate-section td-activate-registration" style="display: none;">
 
-                            <div class="td-activate-subtitle">Register to the Support Center</div>
+                            <div class="td-activate-subtitle">Create your Forum Support Account</div>
 
                             <p class="td-activate-description">
-                                You’re almost there! Fill the form to create your account, and you are ready to access a community of amazing people passionate about WordPress and our outstanding customer support center.
+                                You’re almost there! Fill the form to create your forum account, and you are ready to access a community of amazing people passionate about WordPress and our outstanding customer support center.
                             </p>
 
                             <div class="td-registration-err td-forum-connection-failed" style="display:none;">Forum connection failed, please try again.</div>

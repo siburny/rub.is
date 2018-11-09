@@ -19,11 +19,13 @@ if (td_util::get_option('tds_logo_menu_upload') != '') {
         <div class="td-header-bg td-container-wrap <?php echo td_util::get_option('td_full_header_background'); ?>"></div>
     <?php } ?>
 
-	<div class="td-header-top-menu-full td-container-wrap <?php echo td_util::get_option('td_full_top_bar'); ?>">
-		<div class="td-container td-header-row td-header-top-menu">
-            <?php td_api_top_bar_template::_helper_show_top_bar() ?>
-		</div>
-	</div>
+    <?php if(td_util::get_option('tds_top_bar') == '') { ?>
+        <div class="td-header-top-menu-full td-container-wrap <?php echo td_util::get_option('td_full_top_bar'); ?>">
+            <div class="td-container td-header-row td-header-top-menu">
+                <?php td_api_top_bar_template::_helper_show_top_bar() ?>
+            </div>
+        </div>
+    <?php } ?>
 
     <div class="td-banner-wrap-full td-logo-wrap-full <?php echo $td_logo_mobile?> td-container-wrap <?php echo td_util::get_option('td_full_header'); ?>">
         <div class="td-header-sp-logo">

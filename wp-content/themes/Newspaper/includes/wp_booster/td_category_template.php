@@ -190,9 +190,13 @@ abstract class td_category_template {
 
 
     protected function get_description() {
-        if (!empty($this->current_category_obj->description)) { // is needed?
+        if (!empty($this->current_category_obj->description) && !function_exists('the_archive_description') ) { // is needed?
             return '<div class="td-category-description"><p>' . $this->current_category_obj->description . '</p></div>';
         }
+        elseif (!empty($this->current_category_obj->description)) {
+            return the_archive_description( '<div class="td-category-description">', '</div>');
+        }
+
     }
 
 

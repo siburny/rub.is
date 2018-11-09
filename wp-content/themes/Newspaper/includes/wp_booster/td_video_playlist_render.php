@@ -19,8 +19,12 @@ class td_video_playlist_render {
             $block_uid = td_global::td_generate_unique_id(); //update unique class on each render
         }
         $buffy = ''; //output buffer
+        $el_class = '';
+        if (!empty($atts['el_class'])) {
+            $el_class = $atts['el_class'];
+        }
 
-        $buffy .= '<div class="td_block_wrap td_block_video_playlist">';
+        $buffy .= '<div class="td_block_wrap td_block_video_playlist ' . $el_class . '">';
 	        $buffy .= '<div class="' . $block_uid . ' td_block_inner">';
 
 	            if (empty($atts['playlist_v']) && empty($atts['playlist_yt']) ) {
@@ -114,8 +118,7 @@ class td_video_playlist_render {
 	private static function inner ($atts, $list_type) {
 
 
-
-        if(is_single()) {
+        if(is_single() && 'tdb_templates' !== get_post_type()) {
             //get the column number on single post page
             if(td_global::$cur_single_template_sidebar_pos == 'no_sidebar'){
                 $td_column_number = 3;

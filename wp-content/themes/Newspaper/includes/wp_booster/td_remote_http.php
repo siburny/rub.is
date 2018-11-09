@@ -176,6 +176,7 @@ class td_remote_http {
 		$response = wp_remote_get($url, array(
 			'timeout' => self::http_request_timeout,
 			'sslverify' => false,
+			'headers' => array('Accept-language' => 'en'),
 			'user-agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
 		));
 
@@ -252,6 +253,7 @@ class td_remote_http {
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		// misc
 		curl_setopt($ch,CURLOPT_AUTOREFERER,true); //The referer is a URL for the web page that linked to the requested web page. When following redirects, set this to true and CURL automatically fills in the URL of the page being redirected away from.
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept-Language: en']);
 		curl_setopt($ch,CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0');
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

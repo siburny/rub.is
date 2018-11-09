@@ -147,6 +147,24 @@
     }
   }
 
+  .td-button-update-plugin {
+    display: none;
+    color: #fff;
+
+    &:before {
+      border-color: #0085ba;
+      background-color: #0085ba;
+      opacity: 0.85;
+    }
+
+    &:hover {
+      &:before {
+        opacity: 1;
+        box-shadow: 0 2px 8px 0 rgba(0, 133, 186, 0.6);
+      }
+    }
+  }
+
   .td-button-uninstall-plugin {
     display: none;
   }
@@ -185,6 +203,12 @@
 
 .td-plugin-not-installed {
   .td-button-install-plugin {
+    display: inline-block;
+  }
+}
+
+.td-plugin-update {
+  .td-button-update-plugin {
     display: inline-block;
   }
 }

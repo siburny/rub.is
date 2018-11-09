@@ -226,9 +226,9 @@
 }
 .td-business.home .td-pb-article-list .td_module_wrap.td_module_1 {
   margin-bottom: 40px;
-  -webkit-box-shadow: 0 0 1px rgba(79, 172, 234, 0.4);
-  -moz-box-shadow: 0 0 1px rgba(79, 172, 234, 0.4);
-  box-shadow: 0 0 1px rgba(79, 172, 234, 0.4);
+  -webkit-box-shadow: 0 0 2px rgba(79, 172, 234, 0.4);
+  -moz-box-shadow: 0 0 2px rgba(79, 172, 234, 0.4);
+  box-shadow: 0 0 2px rgba(79, 172, 234, 0.4);
 }
 .td-business.home .td-pb-article-list .td_module_wrap.td_module_1 .entry-title {
   margin: 0 20px 50px 20px;

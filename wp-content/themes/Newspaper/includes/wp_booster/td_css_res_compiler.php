@@ -331,7 +331,7 @@ class td_res_context {
 
 		if ( ! isset( $atts[ $key ] ) ) {
 			var_dump( $atts );
-			td_util::error(__FILE__, 'Internal error: The system tried to use an att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" as "' . $key . '" The list with available atts is in td-multi-purpose.php register_templates()');
+			td_util::error(__FILE__, 'Internal error: The system tried to use an att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" as "' . $key . '"');
 			die;
 		}
 

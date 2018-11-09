@@ -147,6 +147,85 @@
 </div>
 
 
+<div class="td-box-row">
+	<div class="td-box-description"></div>
+	<div class="td-box-control-full"></div>
+</div>
+
+
+<!-- Custom Font name 4 -->
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">CUSTOM FONT FILE 4</span>
+		<p>Add the link to the file ( .woff format )</p>
+	</div>
+	<div class="td-box-control-full td-panel-input-wide">
+		<?php
+		echo td_panel_generator::upload_font_file(array(
+			'ds' => 'td_fonts_user_insert',
+			'option_id' => 'font_file_4'
+		));
+		?>
+	</div>
+</div>
+
+
+<!-- Custom Font name 4 -->
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">CUSTOM FONT FAMILY 4</span>
+		<p>Type your desired name for this font</p>
+	</div>
+	<div class="td-box-control-full">
+		<?php
+		echo td_panel_generator::input(array(
+			'ds' => 'td_fonts_user_insert',
+			'option_id' => 'font_family_4'
+		));
+		?>
+	</div>
+</div>
+
+
+<div class="td-box-row">
+	<div class="td-box-description"></div>
+	<div class="td-box-control-full"></div>
+</div>
+
+
+<!-- Custom Font name 5 -->
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">CUSTOM FONT FILE 5</span>
+		<p>Add the link to the file ( .woff format )</p>
+	</div>
+	<div class="td-box-control-full td-panel-input-wide">
+		<?php
+		echo td_panel_generator::upload_font_file(array(
+			'ds' => 'td_fonts_user_insert',
+			'option_id' => 'font_file_5'
+		));
+		?>
+	</div>
+</div>
+
+
+<!-- Custom Font name 5 -->
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">CUSTOM FONT FAMILY 5</span>
+		<p>Type your desired name for this font</p>
+	</div>
+	<div class="td-box-control-full">
+		<?php
+		echo td_panel_generator::input(array(
+			'ds' => 'td_fonts_user_insert',
+			'option_id' => 'font_family_5'
+		));
+		?>
+	</div>
+</div>
+
 <?php echo td_panel_generator::box_end();?>
 
 
@@ -231,9 +310,33 @@
 <?php echo td_panel_generator::box_start('Google Fonts Settings', false); ?>
 
 
+
+
+
+<!-- google fonts settings-->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">USE GOOGLE FONTS</span>
+        <p>If you don't want to send data to google. Disable the use of google fonts.</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'g_use_google_fonts',
+            'true_value' => '',
+            'false_value' => 'disabled'
+        ));
+        ?>
+    </div>
+</div>
+
+<div class="td-box-section-separator"></div>
+
 <!-- info text -->
 <div class="td-box-row">
 	<div class="td-box-description td-box-full">
+        <span class="td-box-title">Google fonts character subsets</span>
 		<p>You can select from here what character subsets will be loaded for each Google Font. The character subset will be loaded only if the font supports the specific glyphs. Try to enable only the subsets that you use because the site will load slower with each additional subset.</p>
 
 		<p><strong>Notice: </strong> Please note that if a client browser supports <a href="http://caniuse.com/#feat=font-unicode-range" target="_blank" >unicode-range</a> the subset parameter is ignored; the browser will select from the subsets supported by the font to get what it needs to render the text.</p>

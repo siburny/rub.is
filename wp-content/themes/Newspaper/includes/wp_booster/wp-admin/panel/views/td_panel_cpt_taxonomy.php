@@ -20,9 +20,13 @@ $td_custom_post_types_obj = get_post_types(
 
 
 $are_custom_post_types_installed = false;
+
+// add here the slug of the wp cpt you want to exclude from theme's panel cpt settings
+$exclude = array( 'vc_grid_item', 'tdb_templates' );
+
 foreach ($td_custom_post_types_obj as $custom_post_type_obj) {
     if (
-            $custom_post_type_obj->name == 'vc_grid_item'  // do not show settings for visual composer
+            in_array( $custom_post_type_obj->name, $exclude )
             or ( // do not show settings for woocommerce CPT because we set up woocommerce from a different panel
                 td_global::$is_woocommerce_installed === true
                 and (
@@ -41,7 +45,7 @@ foreach ($td_custom_post_types_obj as $custom_post_type_obj) {
             'td_ajax_calling_file' => basename(__FILE__),
             'td_ajax_box_id' => 'td_get_cpt_settings_by_post_type',
             'custom_post_type' => $custom_post_type_obj->name
-        )
+        ), '', 'td_panel_box_' . $custom_post_type_obj->labels->name
     );
 
     $are_custom_post_types_installed = true;
@@ -102,7 +106,7 @@ foreach ($td_taxonomies_obj as $td_taxonomy_obj) {
             'td_ajax_calling_file' => basename(__FILE__),
             'td_ajax_box_id' => 'td_get_tax_settings_by_tax_name',
             'taxonomy_name' => $td_taxonomy_obj->name
-        )
+        ), '', 'td_panel_box_' . $td_taxonomy_obj->labels->name
     );
 
     $are_custom_taxonomies_installed = true;

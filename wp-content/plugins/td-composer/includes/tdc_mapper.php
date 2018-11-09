@@ -23,11 +23,11 @@ class tdc_mapper {
 	static function map_shortcode($attributes) {
 		// 'base' attribute is requiered! is used as a key. It's probably some kind of backwards compatibility in VC
 		if (!isset($attributes['base'])) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'The base attribute is requiered for all the shortcodes', $attributes);
+		    echo 'The base attribute is requiered for all the shortcodes';
 		}
 
 		if (isset(self::$mapped_shortcodes[$attributes['base']])) {
-			tdc_util::error(__FILE__, __FUNCTION__, 'Shortcode ' . $attributes['base'] . ' already mapped, please use the update method to update it!', $attributes);
+		    echo 'Shortcode ' . $attributes['base'] . ' already mapped, please use the update method to update it!';
 		}
 
 		self::$mapped_shortcodes[$attributes['base']] = $attributes;
@@ -54,7 +54,7 @@ class tdc_mapper {
 			return self::$mapped_shortcodes[$base];
 		}
 
-		tdc_util::error(__FILE__, __FUNCTION__, 'Shortcode with base ' . $base . ' is not mapped!');
+		echo 'Shortcode with base ' . $base . ' is not mapped!';
 		return false;
 	}
 

@@ -227,6 +227,10 @@
     .entry-thumb {
       height: auto;
 
+      /* responsive tablet + desktop */
+      @media (min-width: @responsive_p_phone_max) {
+        max-width: 100%;
+      }
       /* responsive portrait tablet */
       @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
         width: 100%;

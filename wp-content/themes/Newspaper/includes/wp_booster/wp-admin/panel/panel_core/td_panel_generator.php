@@ -200,7 +200,6 @@ class td_panel_generator {
         //check for user saved data
         $user_data = td_panel_data_source::read($checkbox_array);
 
-
         //check to see if the checkbox is active when we create it
         if($user_data == $checkbox_array['true_value']) {
             $input_hidden_value = $checkbox_array['true_value'];
@@ -820,12 +819,22 @@ class td_panel_generator {
     }
 
 
-    static function box_start($panel_name, $is_open = true) {
+    static function box_start($panel_name, $is_open = true, $custom_class = false ) {
         $box_uid = td_global::td_generate_unique_id();
+
+        $panel_name_class = $panel_name;
+
+        if ( strpos( $panel_name, 'td-excerpt-arrow' ) !== false ) {
+            $panel_name_explode_array = explode( '<span class="', $panel_name );
+
+            if ( is_array($panel_name_explode_array) && strpos( $panel_name_explode_array[0], 'Module ' ) !== false ) {
+                $panel_name_class = $panel_name_explode_array[0];
+            }
+        }
 
         $buffy = '';
         $buffy .= '
-        <div class="td-box ' . ($is_open === false ? 'td-box-close' : '') . ' ' . sanitize_html_class('td_panel_box_' . strtolower(str_replace(' ', '_', $panel_name))) . '" id="' . $box_uid . '">
+        <div class="td-box ' . ($custom_class === false ? '' : $custom_class) . '  ' . ($is_open === false ? 'td-box-close' : '') . ' ' . sanitize_html_class('td_panel_box_' . strtolower(str_replace(' ', '_', $panel_name_class))) . '" id="' . $box_uid . '">
                         <div class="td-box-header td-box-header-js-inline" data-box-id="' . $box_uid . '" unselectable="on">
                             <div class="td-box-title">' . $panel_name . '</div>
                             <a class="td-box-toggle" data-box-id="' . $box_uid . '" href="#"><div class="td-box-close-open-icon"></div></a>
@@ -852,6 +861,8 @@ class td_panel_generator {
      *  - the ajax views are in /wp-admin/panel/ajax_views
      * @param $panel_text - the display name of the panel
      * @param array $ajax_params - the parameters array that we want to send to the backend. MUST CONTAIN td_ajax_view and td_ajax_call
+     * @param string $custom_unique_id - a custom unique id for the box
+     * @param string $panel_class - a custom class for the box
      * @return string HTML the box
      */
     static function ajax_box($panel_text, $ajax_params = array(), $custom_unique_id = '', $panel_class = '') {
@@ -879,8 +890,8 @@ class td_panel_generator {
 
 
         $buffy = '
-        <div class="td-box td-box-close ' . $panel_class . $ionmag_premium_class . '" id="' . $box_uid . '">
-            <div class="td-box-header td-box-header-js-ajax" data-box-id="' . $box_uid . '"  ' . $tad_ajax_parameters . '  unselectable="on">
+        <div class="td-box td-box-close ' . sanitize_html_class( strtolower( str_replace( array( ' ', '-' ), '_', $panel_class ) ) ) . $ionmag_premium_class . '" id="' . $box_uid . '">
+            <div class="td-box-header td-box-header-js-ajax" data-box-id="' . $box_uid . '"  ' . $tad_ajax_parameters . ' unselectable="on">
                 <div class="td-box-title">' . $panel_text . '</div>
                 <a class="td-box-toggle" data-box-id="' . $box_uid . '" href="#"><div class="td-box-close-open-icon"></div></a>
             </div>

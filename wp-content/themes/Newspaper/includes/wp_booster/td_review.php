@@ -393,8 +393,27 @@ class td_review {
 
                 $buffy .= '</td>';
                 $buffy .= '<td class="td-review-score"><div class="td-review-overall">';
-                $buffy .= '<div class="td-review-final-score">' . self::calculate_total_stars($td_review) . '</div>';
-                $buffy .= '<div class="td-review-final-star">' . self::render_stars($td_review) . '</div>';
+
+            switch ($td_review['has_review']) {
+                case 'rate_stars' :
+                    $buffy .= '<div class="td-review-final-score">' . self::calculate_total_stars($td_review) . '</div>';
+                    $buffy .= '<div class="td-review-final-star">' . self::render_stars($td_review) . '</div>';
+                    break;
+
+                case 'rate_percent' :
+                    $buffy .= '<div class="td-review-final-score">' . self::calculate_total($td_review) . '<span class="td-review-percent-sign">%</span></div>';
+                    $buffy .= '<div class="td-review-final-star">' . self::render_stars($td_review) . '</div>';
+                    break;
+
+                case 'rate_point' :
+                    $buffy .= '<div class="td-review-final-score">' . self::calculate_total($td_review) . '</div>';
+                    $buffy .= '<div class="td-review-final-star">' . self::render_stars($td_review) . '</div>';
+                    break;
+
+            }
+
+
+
                 $buffy .= '<span>' . __td('OVERALL SCORE', TD_THEME_NAME) . '</span>';
                 $buffy .= '</div></td>';
 

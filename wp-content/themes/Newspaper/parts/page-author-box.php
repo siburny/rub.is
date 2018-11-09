@@ -35,7 +35,8 @@ global $part_cur_auth_obj;
             echo '<div class="td-author-url"><a href="' . esc_url($part_cur_auth_obj->user_url) . '">' . esc_url($part_cur_auth_obj->user_url) . '</a></div>';
         }
 
-        echo $part_cur_auth_obj->description;
+        // changed to "get_the_author_meta" for WPML support
+        echo get_the_author_meta('description', $part_cur_auth_obj->ID);
 
         ?>
 

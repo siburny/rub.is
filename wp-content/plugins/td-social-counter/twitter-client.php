@@ -28,10 +28,10 @@ define('SOME_ACCESS_SECRET', 'Dr2Je1rpeLitq0ub81L1bAyLScAiX2yasEFwMjRSLg');
 */
 
 
-define('YOUR_CONSUMER_KEY', 'OWf1jQV8xImnFCffGNQrlTywT');
-define('YOUR_CONSUMER_SECRET', 'D069URcinJrOedWgLHxuJaeLg0BeQngpaKlijCjfCO8ircIX3W');
-define('SOME_ACCESS_KEY', '890610409-J6cR2klAnaBDcEPUDc07qrBMfobGYZktQXf6dHm8');
-define('SOME_ACCESS_SECRET', '1zfCDOdOreNVchkatOioqV8yFcE07R6ukoLzphqx9VJtr');
+define('YOUR_CONSUMER_KEY', '5EW4VikLKVgCR16b8joVruLQq');
+define('YOUR_CONSUMER_SECRET', 'XfXBJoPYJmkzr1dxR4mZPWMVDHZdhcXKK1Q54VRpv1da2sev3u');
+define('SOME_ACCESS_KEY', '1001372546036654081-8TCDGVQuknGeWd3s4Ie3frgFcd1VIE');
+define('SOME_ACCESS_SECRET', '5eP5jGL5mqCYH8yBPtQvY2JbaZqpEyCgOB78FtXEkmHRy');
 
 /**
  * Client for the Twitter REST API 1.1

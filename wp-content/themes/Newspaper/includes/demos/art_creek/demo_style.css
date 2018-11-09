@@ -457,3 +457,6 @@ usage:
 .td-art-creek.td_category_template_7 .td-category-header .td-page-title {
   text-transform: none;
 }
+.td-art-creek .td-footer-instagram-container .td_block_template_12 .td-block-title-wrap {
+  min-height: initial;
+}

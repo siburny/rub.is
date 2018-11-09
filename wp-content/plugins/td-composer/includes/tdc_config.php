@@ -12,6 +12,8 @@ define('TDC_URL',       plugins_url('td-composer'));
 class tdc_config {
 
 
+
+
 	static $js_files_for_wp_admin = array (
 		'tdcWindowFrame'        => '/assets/js/tdcWindowFrame.js',
 		'tdcNotice'             => '/assets/js/tdcNotice.js',
@@ -59,6 +61,7 @@ class tdc_config {
 		'tdcSidebar'            => '/assets/js/tdcSidebar.js',
 		'tdcSidebarController'  => '/assets/js/tdcSidebarController.js',
 		'tdcCss'                => '/assets/js/tdcCssEditor.js',
+		'tdcContextMenu'        => '/assets/js/tdcContextMenu.js',
 
 		'tdcColorPicker'        => '/assets/js/tdcColorPicker.js',
 		'cssJs'                 => '/assets/js/external/css.js',
@@ -128,118 +131,52 @@ class tdc_config {
 			'template_file' => 'td-multipurpose.php',
 			'load' => false,
 		),
+		'font_newspaper' => array(
+			'name' => 'Font Newspaper',
+			'css_file' => '/font-newspaper.css',
+			'template_file' => 'font-newspaper.php',
+			'theme_font' => true,
+		),
 	);
 
-	static $group_params = array(
-		'font' => array(
-			array(
+
+    /**
+     * placeholder images used by the multi-purpose shortcodes
+     * @see td_api_multi_purpose::tdm_get_image - in mapping
+     * @see tdc_ajax::on_ajax_get_image_url - for td-composer sidepanel - small squere image preview in the sidebar
+     * @see tdc_util::get_image_or_placeholder() - the new function that looks for a placeholder before loading the image from wordpress
+     * @var array the list of all the placeholders that we can use in shortcodes
+     */
+	static $default_placeholder_images = array (
+        'tdm_pic_1' => '/assets/images/placeholders/thumb_01.jpg',
+        'tdm_pic_2' => '/assets/images/placeholders/thumb_02.jpg',
+        'tdm_pic_3' => '/assets/images/placeholders/thumb_03.jpg',
+        'tdm_pic_4' => '/assets/images/placeholders/thumb_04.jpg',
+        'tdm_pic_5' => '/assets/images/placeholders/thumb_05.jpg',
+        'tdm_pic_6' => '/assets/images/placeholders/thumb_06.png',
+        'tdm_pic_7' => '/assets/images/placeholders/thumb_07.jpg',
+        'tdm_pic_8' => '/assets/images/placeholders/thumb_08.jpg',
+        'tdm_pic_9' => '/assets/images/placeholders/thumb_09.jpg',
+    );
+
+
+
+
+    /**
+     * !!!! COMPATIBILITY ISSUE WITH Newsletter Plugin V1.0 !!!!!
+     * @since 19.4.2018
+     * @var array
+     */
+    static $group_params = array(
+        'font' => array(
+            array(
                 'param_name' => 'font_family',
                 'type' => 'dropdown-responsive',
                 'value' => '',
                 'heading' => '',
                 'description' => 'Font family',
-				"class" => "tdc-font-dropdown tdc-font-family",
-            ),
-            array(
-                'param_name' => 'font_size',
-                'type' => 'textfield-responsive',
-                'value' => '',
-                'heading' => '',
-                'description' => 'Font size',
-                "class" => "tdc-font-textfield tdc-font-size",
-                'placeholder' => '-',
-            ),
-			array(
-                'param_name' => 'font_line_height',
-                'type' => 'textfield-responsive',
-                'value' => '',
-                'heading' => '',
-                'description' => 'Line height (Use with px or a number that will be multiplied with the current font-size)',
-				"class" => "tdc-font-textfield tdc-font-line-height",
-                'placeholder' => '-',
-            ),
-			array(
-                'param_name' => 'font_style',
-                'type' => 'dropdown-responsive',
-                'value' => '',
-                'heading' => '',
-                'description' => 'Font style',
-				"class" => "tdc-font-dropdown tdc-font-style",
-            ),
-			array(
-                'param_name' => 'font_weight',
-                'type' => 'dropdown-responsive',
-                'value' => '',
-                'heading' => '',
-                'description' => 'Font weight',
-				"class" => "tdc-font-dropdown tdc-font-weight",
-            ),
-			array(
-                'param_name' => 'font_transform',
-                'type' => 'dropdown-responsive',
-                'value' => '',
-                'heading' => '',
-                'description' => 'Font transform',
-				"class" => "tdc-font-dropdown tdc-font-transform",
-            ),
-			array(
-				'param_name' => 'font_spacing',
-				'type' => 'textfield-responsive',
-				'value' => '',
-				'heading' => '',
-				'description' => 'Font spacing',
-				"class" => "tdc-font-textfield tdc-font-spacing",
-				'placeholder' => '-',
-			),
-			array(
-				"param_name" => '',
-				"type" => 'clearfix',
-				'heading' => '',
-				"value" => '',
-				"class" => '',
-			),
-		),
-        'shadow' => array(
-            array(
-                "param_name" => "shadow_size",
-                "type" => "textfield-responsive",
-                "value" => '',
-                "heading" => 'Size',
-                'class' => 'tdc-textfield-small',
-                'description' => 'Change shadow size',
-                'placeholder' => '',
-            ),
-            array(
-                "param_name" => "shadow_color",
-                "type" => "colorpicker",
-                "holder" => "div",
-                "class" => "",
-                "heading" => 'Color',
-                "value" => '',
-                "description" => 'Change shadow color',
-            ),
-            array(
-                'param_name' => 'shadow_offset_horizontal',
-                'type' => 'range-responsive',
-                'value' => '0',
-                'heading' => 'Offset H',
-                'description' => 'Change shadow horizontal offset',
-                'class' => 'tdc-textfield-small',
-                'range_min' => '-40',
-                'range_max' => '40',
-                'range_step' => '1',
-            ),
-            array(
-                'param_name' => 'shadow_offset_vertical',
-                'type' => 'range-responsive',
-                'value' => '0',
-                'heading' => 'Offset V',
-                'description' => 'Change shadow vertical offset',
-                'class' => 'tdc-textfield-small',
-                'range_min' => '-40',
-                'range_max' => '40',
-                'range_step' => '1',
+                "class" => "tdc-font-dropdown tdc-font-family",
             )
         )
-	);
+    );
 }

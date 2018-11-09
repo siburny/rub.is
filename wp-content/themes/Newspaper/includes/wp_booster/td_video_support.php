@@ -6,7 +6,7 @@
 class td_video_support{
 
 	private static $on_save_post_post_id; // here we keep the post_id when the save_post hook runs. We need the post_id to pass it to the other hook @see on_add_attachment_set_featured_image
-	private static $fb_access_token = 'EAAYjbOxCWv8BAGrhRnWIByEBxcO0Jhl8QqZACY5w4fY65rXmunlgtZBy0nenZBB7PDLCoNO1DQDIrx6pwNb3vZBPetuNUWX9vmaROvmwmk4aSp2bvkyuMf7sDOWhiCB37m8ZApHkU2OzHAZBjsF1I8uFDkqdC0XbjyM4ZAgRkgVIgZDZD';
+	private static $fb_access_token = 'EAAC0twN8wjQBAPOUhZAWJohvqwr4iEeGooiNEKoRkkJ0KMik9nSX6xiiMZCZBSgRRai8ZAHjZCzniq36dZBgbJw93Vsom56qBi24CqesirT2sNZBvN6yTylhjDED9ri4iShPON3grZAF0fpUijQTSmzxOO71h70fN7lFpN0YLhV3Ugs2ZCaZAdvfZAd';
 
 	private static $caching_time = 10800; //seconds -> 3 hours
 
@@ -202,7 +202,6 @@ class td_video_support{
 	}
 
 
-
 	/**
 	 * set the last uploaded image as a featured image. We 'upload' the video thumb via the media_sideload_image call from above
 	 * @internal
@@ -294,7 +293,7 @@ class td_video_support{
 			case 'facebook':
 				$facebook_api_json = td_remote_http::get_page('https://graph.facebook.com/v2.7/' . self::get_facebook_id($videoUrl) . '/thumbnails?access_token=' . self::$fb_access_token , __CLASS__);
 
-				if ( $facebook_api_json !== false ) {
+                if ( $facebook_api_json !== false ) {
 					$facebook_api = @json_decode($facebook_api_json);
 					if ($facebook_api === null and json_last_error() !== JSON_ERROR_NONE) {
 						td_log::log(__FILE__, __FUNCTION__, 'json decode failed for facebook api', $videoUrl);

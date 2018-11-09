@@ -78,13 +78,13 @@ class td_panel_core {
                                                 <li>
                                                     <a href="<?php echo $panel_array['url'] ?>" onclick="tdConfirm.modal({
 	                                                        caption: 'You are about to leave the Theme Panel area!',
-	                                                        callbackYes: function( href ) {
-
+                                                            callbackYes: function( href ) {
 											                    window.location.replace(href);
 											                    tb_remove();
 											                },
 	                                                        argsYes: ['<?php echo $panel_array['url'] ?>'],
-	                                                        htmlInfoContent: 'If you have made any changes hit Cancel and Save Settings </br> Do you wish to continue?'
+                                                            textYes: ['Yes'],
+	                                                        htmlInfoContent: 'If you have made any changes hit `No` and Save Settings </br> Do you wish to continue?'
 	                                                    });
 	                                                    return false">
 
@@ -190,7 +190,6 @@ class td_panel_core {
         $td_current_panel_spot_id =  td_util::get_http_post_val('td_current_theme_panel_id');
 
 
-
         $td_ajax_calling_file_id = str_replace('.php', '', $td_ajax_calling_file); //get the calling file id so we can look it up in our td_global panel list array
 
 
@@ -204,6 +203,7 @@ class td_panel_core {
 
 
                 if ($panel_array['type'] == 'in_theme') {
+
                     // if the panel is in theme, we have to look for it in the theme's /panel folder and only after that in the wp-booster panel
                     ob_start();
                     $td_template_found_in_theme_or_child = locate_template('includes/panel/views/ajax_boxes/' . $td_ajax_calling_file_id  . '/' . $td_ajax_box_id . '.php', true);
@@ -211,7 +211,6 @@ class td_panel_core {
                         require_once(TEMPLATEPATH . '/includes/wp_booster/wp-admin/panel/views/ajax_boxes/' . $td_ajax_calling_file_id . '/' . $td_ajax_box_id . '.php');
                     }
                     $buffy = ob_get_clean();
-
 
                 } elseif ($panel_array['type'] == 'in_plugin') {
                     // the panel is in a plugin. Here we look in the plugins folder and we patch the path for this specific plugin

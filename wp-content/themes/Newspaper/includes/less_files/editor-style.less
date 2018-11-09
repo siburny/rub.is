@@ -58,6 +58,10 @@ html .mceContentBody-max-width-big {
     content: '';
   }
 
+  .td-center {
+    max-width: 1116px !important;
+  }
+
   /* responsive Landscape tablet */
   @media (max-width: 1115px) {
     background: none;
@@ -71,6 +75,14 @@ html .mceContentBody-max-width-big {
     height: auto;
     max-width: 100% !important;
     display: block;
+  }
+
+  .td-center {
+    max-width: 744px !important;
+
+    &.alignright {
+      float: none;
+    }
   }
 
   .gallery {

@@ -8,6 +8,118 @@
 
 class vc_wp_recentcomments extends td_block {
 
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = $this->block_uid . '_rand';
+
+        $compiled_css = '';
+
+        $raw_css =
+            "<style>
+
+				/* @com_margin */
+				.$unique_block_class .recentcomments {
+			        margin: @com_margin !important;
+		        }
+				/* @com_padding */
+				.$unique_block_class .recentcomments {
+			        padding: @com_padding !important;
+		        }
+		        
+		        /* @com_divider */
+				.$unique_block_class .recentcomments {
+			        border-bottom: 1px @com_divider #f1f1f1;
+		        }
+		        /* @com_divider_color */
+				.$unique_block_class .recentcomments {
+			        border-bottom-color: @com_divider_color;
+		        }
+
+				/* @link_color */
+				.$unique_block_class .recentcomments {
+			        color: @link_color;
+		        }
+				/* @auth_color */
+				.$unique_block_class .comment-author-link,
+				.$unique_block_class .comment-author-link a {
+			        color: @auth_color;
+		        }
+				/* @title_color */
+				.$unique_block_class .recentcomments > a:last-child {
+			        color: @title_color;
+		        }
+				/* @auth_h_color */
+				.$unique_block_class .comment-author-link a:hover {
+			        color: @auth_h_color;
+		        }
+				/* @title_h_color */
+				.$unique_block_class .recentcomments > a:last-child:hover {
+			        color: @title_h_color;
+		        }
+		        
+		        
+		        /* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
+                /* @f_link */
+				.$unique_block_class .recentcomments {
+					@f_link
+				}
+                /* @f_auth */
+				.$unique_block_class .comment-author-link a {
+					@f_auth
+				}
+                /* @f_title */
+				.$unique_block_class .recentcomments > a:last-child {
+					@f_title
+				}
+
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
+    }
+
+    static function cssMedia( $res_ctx ) {
+
+        // comments space
+        $com_margin = $res_ctx->get_shortcode_att('com_margin');
+        $res_ctx->load_settings_raw( 'com_margin', $com_margin );
+        if( $com_margin != '' && is_numeric( $com_margin ) ) {
+            $res_ctx->load_settings_raw( 'com_margin', $com_margin . 'px' );
+        }
+        // comments padding
+        $com_padding = $res_ctx->get_shortcode_att('com_padding');
+        $res_ctx->load_settings_raw( 'com_padding', $com_padding );
+        if( $com_padding != '' && is_numeric( $com_padding ) ) {
+            $res_ctx->load_settings_raw( 'com_padding', $com_padding . 'px' );
+        }
+
+        // comments divider
+        $res_ctx->load_settings_raw( 'com_divider', $res_ctx->get_shortcode_att('com_divider') );
+
+        // colors
+        $res_ctx->load_settings_raw( 'com_divider_color', $res_ctx->get_shortcode_att('com_divider_color') );
+        $res_ctx->load_settings_raw( 'link_color', $res_ctx->get_shortcode_att('link_color') );
+        $res_ctx->load_settings_raw( 'auth_color', $res_ctx->get_shortcode_att('auth_color') );
+        $res_ctx->load_settings_raw( 'title_color', $res_ctx->get_shortcode_att('title_color') );
+        $res_ctx->load_settings_raw( 'auth_h_color', $res_ctx->get_shortcode_att('auth_h_color') );
+        $res_ctx->load_settings_raw( 'title_h_color', $res_ctx->get_shortcode_att('title_h_color') );
+
+        /*-- fonts -- */
+        $res_ctx->load_font_settings( 'f_header' );
+        $res_ctx->load_font_settings( 'f_link' );
+        $res_ctx->load_font_settings( 'f_auth' );
+        $res_ctx->load_font_settings( 'f_title' );
+
+    }
+
 	/**
 	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.
 	 */

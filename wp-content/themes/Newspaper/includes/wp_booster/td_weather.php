@@ -52,7 +52,7 @@ class td_weather
 		$weather_data = array(
 			'block_uid' => '',
 			'location' => $atts['w_location'],
-			'api_location' => $atts['w_location'],  // the current location. It is updated by the wheater API
+			'api_location' => '',  // the current location. It is updated by the wheater API
 			'api_language' => '', //this is set down bellow
 			'api_key' => $atts['w_key'],
 			'today_icon' => '',
@@ -81,7 +81,7 @@ class td_weather
 
 
 		// disable the cache for debugging
-		//td_remote_cache::_disable_cache();
+		// td_remote_cache::_disable_cache();
 		$weather_data_status = self::get_weather_data($atts, $weather_data);
 
 		// check if we have an error and return that
@@ -146,7 +146,7 @@ class td_weather
 				<span class="td-weather-unit"><?php echo $current_temp_label ?></span>
 			</div>
 			<div class="td-weather-header">
-				<div class="td-weather-city"><?php echo $atts['w_location'] ?></div>
+				<div class="td-weather-city"><?php echo $weather_data['api_location'] ?></div>
 			</div>
 		</div>
 		<?php
@@ -170,7 +170,7 @@ class td_weather
 		?>
 
 		<div class="td-weather-header">
-			<div class="td-weather-city"><?php echo $atts['w_location'] ?></div>
+			<div class="td-weather-city"><?php echo $weather_data['api_location'] ?></div>
 			<div class="td-weather-condition"><?php echo $weather_data['today_icon_text'] ?></div>
 			<i class="td-location-icon td-icons-location" data-block-uid="<?php echo $weather_data['block_uid'] ?>"></i>
 		</div>
@@ -325,10 +325,14 @@ class td_weather
 	 *   - true: if everything is ok
 	 *   - string: the error message, if there was an error
 	 */
-	private static function owm_get_today_data($atts, &$weather_data)
-	{
-		$today_weather_url = 'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&appid=' . $weather_data['api_key'];
+	private static function owm_get_today_data($atts, &$weather_data) {
 
+		if (is_numeric($atts['w_location'])) {
+			$today_weather_url = 'https://api.openweathermap.org/data/2.5/weather?id=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&appid=' . $weather_data['api_key'];
+		}
+		else {
+			$today_weather_url = 'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&appid=' . $weather_data['api_key'];
+		}
 		//print("<pre>".print_r($today_weather_url,true)."</pre>");
 
 		$json_api_response = td_remote_http::get_page($today_weather_url, __CLASS__);
@@ -439,7 +443,7 @@ class td_weather
 
 		return true;  // return true if ~everything is ok
 	}
-	
+
 	/**
 	 * adds to the &$weather_data the information for the next 5 days
 	 * @param $atts - the shortcode atts
@@ -452,8 +456,12 @@ class td_weather
 	private static function owm_get_five_days_data($atts, &$weather_data)
 	{
 		// request 7 days because the current day may be today in a different timezone
-		$today_weather_url = 'https://api.openweathermap.org/data/2.5/forecast?q=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&cnt=35&appid=' . $weather_data['api_key'];
-
+		if (is_numeric($atts['w_location'])) {
+			$today_weather_url = 'https://api.openweathermap.org/data/2.5/forecast?id=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&cnt=35&appid=' . $weather_data['api_key'];
+		}
+		else {
+			$today_weather_url = 'https://api.openweathermap.org/data/2.5/forecast?q=' . urlencode($atts['w_location']) . '&lang=' . $atts['w_language'] . '&units=metric&cnt=35&appid=' . $weather_data['api_key'];
+		}
 		//print("<pre>".print_r($today_weather_url,true)."</pre>");
 
 		$json_api_response = td_remote_http::get_page($today_weather_url, __CLASS__);
@@ -473,10 +481,10 @@ class td_weather
 			td_log::log(__FILE__, __FUNCTION__, 'Error decoding the json', $api_response);
 			return 'Error decoding the json from OpenWeatherMap';
 		}
-		
+
 		// today in format like: 20150210
 		//$today_date = date('Y-m-d', current_time('timestamp', 0));
-		
+
 		if (!empty($api_response['list']) and is_array($api_response['list'])) {
 			$tmp_temps = array();
 
@@ -486,9 +494,9 @@ class td_weather
 					!empty($day_forecast['dt'])
 					and !empty($day_forecast['main']['temp'])
 				) {// because the api return UTC time and we may have different timezones on the server. Avoid showing the same day twice
-					
+
 					$current_day = date('j', $day_forecast['dt']);
-					
+
 					if (!isset($tmp_temps[$current_day])) {
 						$tmp_temps[$current_day]= array (
 							'timestamp' => $day_forecast['dt'],
@@ -500,7 +508,7 @@ class td_weather
 							'owm_day_index' => $index, // used in js to update only the displayed days when we do api calls from JS
 						);
 					} else {
-						
+
 						if ($tmp_temps[$current_day]['day_temp'][0] < round($day_forecast['main']['temp_max'])) {
 
 							$tmp_temps[$current_day]['day_temp'][0] = round($day_forecast['main']['temp_max']);                               // metric

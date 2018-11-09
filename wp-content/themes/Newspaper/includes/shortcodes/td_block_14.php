@@ -98,6 +98,10 @@ class td_block_14 extends td_block {
             //get the ajax pagination for this block
             $buffy .= $this->get_block_pagination();
         $buffy .= '</div> <!-- ./block -->';
+
+        //fix issue - widget disappearing after the block
+        $buffy .= '<div class="clearfix"></div>';
+        
         return $buffy;
     }
 

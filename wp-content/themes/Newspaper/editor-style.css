@@ -363,6 +363,15 @@ img.wp-smiley {
   margin-top: 6px;
   margin-bottom: 6px;
 }
+img.td-center {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 100vw !important;
+  width: auto !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 figure.alignright,
 figure.alignleft,
 figure.aligncenter {
@@ -588,6 +597,21 @@ figure.aligncenter {
 .mce-content-body li {
   font-size: 15px;
   line-height: 26px;
+}
+.td-page-content li[style="text-align: center;"],
+.td-post-content li[style="text-align: center;"],
+.wpb_text_column li[style="text-align: center;"],
+.td_block_text_with_title li[style="text-align: center;"],
+.woocommerce #tab-description li[style="text-align: center;"],
+.mce-content-body li[style="text-align: center;"],
+.td-page-content li[style="text-align: right;"],
+.td-post-content li[style="text-align: right;"],
+.wpb_text_column li[style="text-align: right;"],
+.td_block_text_with_title li[style="text-align: right;"],
+.woocommerce #tab-description li[style="text-align: right;"],
+.mce-content-body li[style="text-align: right;"] {
+  list-style-position: inside;
+  margin-left: -21px;
 }
 .td-page-content p,
 .td-post-content p,
@@ -1458,8 +1482,8 @@ blockquote.pull-right:after {
 }
 @font-face {
   font-family: 'newspaper';
-  src: url('images/icons/newspaper.eot?14');
-  src: url('images/icons/newspaper.eot?14#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?14') format('woff'), url('images/icons/newspaper.ttf?14') format('truetype'), url('images/icons/newspaper.svg?14#newspaper') format('svg');
+  src: url('images/icons/newspaper.eot?15');
+  src: url('images/icons/newspaper.eot?15#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?15') format('woff'), url('images/icons/newspaper.ttf?15') format('truetype'), url('images/icons/newspaper.svg?15#newspaper') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -1712,6 +1736,93 @@ blockquote.pull-right:after {
 }
 .td-icon-ebay:before {
   content: '\e90b';
+}
+.td-icon-acolade:before {
+  content: "\e90c";
+}
+.td-icon-backslash:before {
+  content: "\e90d";
+}
+.td-icon-bracket-square:before {
+  content: "\e90e";
+}
+.td-icon-circle:before {
+  content: "\e90f";
+}
+.td-icon-circle-full:before {
+  content: "\e910";
+}
+.td-icon-circle-line:before {
+  content: "\e911";
+}
+.td-icon-circless:before {
+  content: "\e912";
+}
+.td-icon-comma-round:before {
+  content: "\e913";
+}
+.td-icon-comma-square:before {
+  content: "\e914";
+}
+.td-icon-hash:before {
+  content: "\e915";
+}
+.td-icon-linee:before {
+  content: "\e916";
+}
+.td-icon-pluss:before {
+  content: "\e917";
+}
+.td-icon-point-comma-round:before {
+  content: "\e918";
+}
+.td-icon-point-comma-square:before {
+  content: "\e919";
+}
+.td-icon-point-round:before {
+  content: "\e91a";
+}
+.td-icon-point-square:before {
+  content: "\e91b";
+}
+.td-icon-quote-round:before {
+  content: "\e91c";
+}
+.td-icon-quote-square:before {
+  content: "\e91d";
+}
+.td-icon-romb-full:before {
+  content: "\e91e";
+}
+.td-icon-romb-line:before {
+  content: "\e91f";
+}
+.td-icon-romb-round-full:before {
+  content: "\e920";
+}
+.td-icon-romb-round-line:before {
+  content: "\e921";
+}
+.td-icon-rombs:before {
+  content: "\e922";
+}
+.td-icon-slashh:before {
+  content: "\e923";
+}
+.td-icon-star-full:before {
+  content: "\e924";
+}
+.td-icon-star-line:before {
+  content: "\e925";
+}
+.td-icon-translingual:before {
+  content: "\e926";
+}
+.td-icon-upp:before {
+  content: "\e927";
+}
+.td-icon-vertical-line:before {
+  content: "\e928";
 }
 .td-social-icon-wrap:hover .td-icon-font {
   -webkit-transition: color 0.3s;
@@ -2050,6 +2161,9 @@ html .mceContentBody-max-width-big {
 html .mceContentBody-max-width-big:after {
   content: '';
 }
+html .mceContentBody-max-width-big .td-center {
+  max-width: 1116px !important;
+}
 @media (max-width: 1115px) {
   html .mceContentBody-max-width-big {
     background: none;
@@ -2059,6 +2173,12 @@ html .mceContentBody-max-width-big:after {
   height: auto;
   max-width: 100% !important;
   display: block;
+}
+.mce-content-body .td-center {
+  max-width: 744px !important;
+}
+.mce-content-body .td-center.alignright {
+  float: none;
 }
 .mce-content-body .gallery {
   margin: 0;

@@ -5,10 +5,10 @@ class td_flex_block_2 extends td_block {
     static function cssMedia( $res_ctx ) {
 
         // forced
-        $image_margin_forced = $res_ctx->get_shortcode_att('image_margin_forced');
-        if( $image_margin_forced != '' && is_numeric( $image_margin_forced ) ) {
-            $res_ctx->load_settings_raw( 'image_margin_forced', 1 );
-        }
+//        $image_margin_forced = $res_ctx->get_shortcode_att('image_margin_forced');
+//        if( $image_margin_forced != '' && is_numeric( $image_margin_forced ) ) {
+//            $res_ctx->load_settings_raw( 'image_margin_forced', 1 );
+//        }
 
         // modules height
         $modules_height = $res_ctx->get_shortcode_att('modules_height');
@@ -79,11 +79,10 @@ class td_flex_block_2 extends td_block {
 
 
         /*-- IMAGE-- */
-        // image align
-        $image_align = $res_ctx->get_shortcode_att('image_align');
-        $res_ctx->load_settings_raw( 'image_align', 'top' );
-        if( $image_align != '' ) {
-            $res_ctx->load_settings_raw( 'image_align', $image_align );
+        //image alignment
+        $image_alignment = $res_ctx->get_shortcode_att('image_alignment');
+        if ( $image_alignment != 50 ) {
+            $res_ctx->load_settings_raw( 'image_alignment', $image_alignment . '%' );
         }
 
         // image radius
@@ -98,6 +97,36 @@ class td_flex_block_2 extends td_block {
 
 
         /*-- META INFO-- */
+        // meta info vertical align
+        $meta_info_align = $res_ctx->get_shortcode_att('meta_info_align');
+        if ( $meta_info_align == 'center' ) {
+            $res_ctx->load_settings_raw( 'meta_vert_align_center', 1 );
+        } else if ( $meta_info_align == 'bottom' ) {
+            $res_ctx->load_settings_raw( 'meta_vert_align_bottom', 1 );
+        }
+
+        // meta info horizontal align
+        $content_align = $res_ctx->get_shortcode_att('meta_info_horiz');
+        if ( $content_align == 'content-horiz-center' ) {
+            $res_ctx->load_settings_raw( 'meta_horiz_align_center', 1 );
+        } else if ( $content_align == 'content-horiz-right' ) {
+            $res_ctx->load_settings_raw( 'meta_horiz_align_right', 1 );
+        }
+
+        // meta info width
+        $meta_info_width = $res_ctx->get_shortcode_att('meta_width');
+        $res_ctx->load_settings_raw( 'meta_width', $meta_info_width );
+        if( $meta_info_width != '' && is_numeric( $meta_info_width ) ) {
+            $res_ctx->load_settings_raw( 'meta_width', $meta_info_width . 'px' );
+        }
+
+        // meta info margin
+        $meta_margin = $res_ctx->get_shortcode_att('meta_margin');
+        $res_ctx->load_settings_raw( 'meta_margin', $meta_margin );
+        if ( is_numeric( $meta_margin ) ) {
+            $res_ctx->load_settings_raw( 'meta_margin', $meta_margin . 'px' );
+        }
+
         // meta info padding
         $meta_padding = $res_ctx->get_shortcode_att('meta_padding');
 	    $res_ctx->load_settings_raw( 'meta_padding', $meta_padding );
@@ -133,16 +162,25 @@ class td_flex_block_2 extends td_block {
 
         // category tag space
         $modules_category_padding = $res_ctx->get_shortcode_att('modules_category_padding');
-	    if( is_numeric( $modules_category_padding ) ) {
+        $res_ctx->load_settings_raw( 'modules_category_padding', $modules_category_padding  );
+	    if( $modules_category_padding != '' && is_numeric( $modules_category_padding ) ) {
             $res_ctx->load_settings_raw( 'modules_category_padding', $modules_category_padding . 'px' );
         }
 
 	    // show meta info details
 	    $res_ctx->load_settings_raw( 'show_cat', $res_ctx->get_shortcode_att('show_cat') );
 	    $res_ctx->load_settings_raw( 'show_excerpt', $res_ctx->get_shortcode_att('show_excerpt') );
-	    $res_ctx->load_settings_raw( 'show_author', $res_ctx->get_shortcode_att('show_author') );
-	    $res_ctx->load_settings_raw( 'show_date', $res_ctx->get_shortcode_att('show_date') );
-	    $res_ctx->load_settings_raw( 'show_com', $res_ctx->get_shortcode_att('show_com') );
+        $show_author = $res_ctx->get_shortcode_att('show_author');
+        $show_date = $res_ctx->get_shortcode_att('show_date');
+        $show_review = $res_ctx->get_shortcode_att('show_review');
+        $show_com = $res_ctx->get_shortcode_att('show_com');
+        if( $show_author == 'none' && $show_date == 'none' && $show_com == 'none' && $show_review == 'none' ) {
+            $res_ctx->load_settings_raw( 'hide_author_date', 1 );
+        }
+        $res_ctx->load_settings_raw( 'show_author', $show_author );
+        $res_ctx->load_settings_raw( 'show_date', $show_date );
+        $res_ctx->load_settings_raw( 'show_review', $show_review );
+        $res_ctx->load_settings_raw( 'show_com', $show_com );
 
 
 
@@ -205,10 +243,12 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td_module_wrap {
 					margin-bottom: @modules_space;
 				}
+				.$unique_block_class .td_module_wrap:last-child {
+				    margin-bottom: 0;
+				}
 				/* @block_title_over */
 				.$unique_block_class .td-block-title-over {
 				    position: absolute;
-                    width: 100%;
 				    z-index: 10;
 				}
 				/* @block_title_space */
@@ -225,9 +265,9 @@ class td_flex_block_2 extends td_block {
 				}
 				
 				
-				/* @image_align */
-				.$unique_block_class .td-thumb-css {
-                    background-position: @image_align;
+				/* @image_alignment */
+				.$unique_block_class .entry-thumb {
+					background-position: center @image_alignment;
 				}
 				/* @image_radius */
 				.$unique_block_class .td-module-thumb {
@@ -235,6 +275,51 @@ class td_flex_block_2 extends td_block {
 				}
 				
 				
+				/* @meta_vert_align_center */
+				.$unique_block_class .td-module-meta-info {
+					top: 50%;
+                    transform: translateY(-50%);
+                    -webkit-transform: translateY(-50%);
+                    -moz-transform: translateY(-50%);
+                    -ms-transform: translateY(-50%);
+                    -o-transform: translateY(-50%);
+				}
+				/* @meta_vert_align_bottom */
+				.$unique_block_class .td-module-meta-info {
+					top: auto;
+                    bottom: 0;
+				}
+				/* @meta_horiz_align_center */
+				.$unique_block_class .td-module-meta-info {
+				    margin: 0 auto;
+				}
+				.$unique_block_class .td-module-meta-info,
+				.$unique_block_class .td-next-prev-wrap {
+					text-align: center;
+				}
+				.$unique_block_class .td-image-container {
+					margin-left: auto;
+                    margin-right: auto;
+				}
+				/* @meta_horiz_align_right */
+				.$unique_block_class .td-module-meta-info {
+				    left: auto;
+				}
+				.$unique_block_class .td-module-meta-info,
+				.$unique_block_class .td-next-prev-wrap {
+					text-align: right;
+				}
+				.$unique_block_class .td-ajax-next-page {
+                    margin-right: 0;
+                }   
+                /* @meta_width */
+				.$unique_block_class .td-module-meta-info {
+					width: @meta_width;
+				}
+				/* @meta_margin */
+				.$unique_block_class .td-module-meta-info {
+					margin: @meta_margin;
+				}
 				/* @meta_padding */
 				.$unique_block_class .td-module-meta-info {
 					padding: @meta_padding;
@@ -259,6 +344,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-excerpt {
 					display: @show_excerpt;
 				}
+				/* @hide_author_date */
+				.$unique_block_class .td-author-date {
+					display: none;
+				}
 				/* @show_author */
 				.$unique_block_class .td-post-author-name {
 					display: @show_author;
@@ -267,6 +356,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-post-date,
 				.$unique_block_class .td-post-author-name span {
 					display: @show_date;
+				}
+				/* @show_review */
+				.$unique_block_class .entry-review-stars {
+					display: @show_review;
 				}
 				/* @show_com */
 				.$unique_block_class .td-module-comments {
@@ -299,6 +392,7 @@ class td_flex_block_2 extends td_block {
 				}
 				/* @f_meta */
 				.$unique_block_class .td-editor-date,
+				.$unique_block_class .td-editor-date .td-post-author-name,
 				.$unique_block_class .td-module-comments a {
 					@f_meta
 				}
@@ -432,15 +526,15 @@ class td_flex_block_2 extends td_block {
 
         // forced image
         $image_margin_forced = '';
-        if( $this->get_att( 'image_margin_forced' ) != '' ) {
-            $image_margin_forced = 'td-flb-margin-forced';
-        }
+//        if( $this->get_att( 'image_margin_forced' ) != '' ) {
+//            $image_margin_forced = 'td-flb-margin-forced';
+//        }
 
-        // meta info position
-        $meta_info_align = $this->get_att( 'meta_info_align' );
-        if( $meta_info_align != '' ) {
-            $additional_classes[] = 'td-flb-meta-' . $meta_info_align;
-        }
+//        // meta info position
+//        $meta_info_align = $this->get_att( 'meta_info_align' );
+//        if( $meta_info_align != '' ) {
+//            $additional_classes[] = 'td-flb-meta-' . $meta_info_align;
+//        }
 
 
         $buffy = ''; //output buffer

@@ -22,9 +22,9 @@ class tdc_util {
 		$last_js_file_id = '';
 		foreach ($js_files_array as $js_file_id => $js_file) {
 			if ($last_js_file_id == '') {
-				wp_enqueue_script($js_file_id, $url . $js_file, $dependency_array, TDC_VERSION, true); //first, load it with jQuery dependency
+				wp_enqueue_script($js_file_id, $url . $js_file, $dependency_array, TD_COMPOSER, true); //first, load it with jQuery dependency
 			} else {
-				wp_enqueue_script($js_file_id, $url . $js_file, array($last_js_file_id), TDC_VERSION, true);  //not first - load with the last file dependency
+				wp_enqueue_script($js_file_id, $url . $js_file, array($last_js_file_id), TD_COMPOSER, true);  //not first - load with the last file dependency
 			}
 			$last_js_file_id = $js_file_id;
 		}
@@ -76,35 +76,58 @@ class tdc_util {
     }
 
 
+    /**
+     * @updated on 25.5.2018 - allow the $atts['image'] to be either an ID or URL. This is done to allow the multi purpose shortcodes to load the default placeholder
+     * image by URL, to avoid adding them to the media library just to get an ID
+     * !WARNING: when it gets images by url, it does not return height and width for now...
+     * @param $atts
+     * @return array
+     */
 	static function get_image( $atts ) {
+        $image_info = array(
+            'url'    => '',
+            'height' => '',
+            'width'  => '',
+            'title'  => get_the_title($atts['image']),
+            'alt'    => get_post_meta($atts['image'], '_wp_attachment_image_alt', true)
+        );
+
+	    if (!is_numeric($atts['image'])) {
+            $image_info['url'] = $atts['image'];
+	        return $image_info;
+        }
+
 		$meta = wp_get_attachment_metadata( $atts['image'] );
 
 //		var_dump($atts);
 //		var_dump($meta);
 
-		$image_info = array(
-			'url'    => '',
-			'height' => '',
-			'width'  => '',
-		);
+
 
 		if ( is_array( $meta ) ) {
-			$image_info = array(
-				'url'    => wp_get_attachment_url( $atts['image'] ),
-				'height' => $meta['height'],
-				'width'  => $meta['width'],
-			);
+//			$image_info = array(
+//				'url'    => wp_get_attachment_url( $atts['image'] ),
+//				'height' => $meta['height'],
+//				'width'  => $meta['width'],
+//			);
 
-			if ( isset( $atts['image_width'] ) && isset( $atts['image_height'] ) && ! empty( $meta['sizes'] ) && count( $meta['sizes'] ) ) {
+			$image_info['url']    = wp_get_attachment_url( $atts['image'] );
+            $image_info['height'] = $meta['height'];
+            $image_info['width']  = $meta['width'];
+
+			if ( isset( $atts['media_size_image_width'] ) && isset( $atts['media_size_image_height'] ) && ! empty( $meta['sizes'] ) && count( $meta['sizes'] ) ) {
 
 				foreach ( $meta['sizes'] as $size_id => $size_settings ) {
-					if ( $size_settings['width'] == $atts['image_width'] && $size_settings['height'] == $atts['image_height'] ) {
+					if ( $size_settings['width'] == $atts['media_size_image_width'] && $size_settings['height'] == $atts['media_size_image_height'] ) {
 
 						$image_attributes = wp_get_attachment_image_src( $atts['image'], $size_id );
 						if ( false !== $image_attributes ) {
-							$image_info['url']    = $image_attributes[0];
-							$image_info['width']  = $image_attributes[1];
-							$image_info['height'] = $image_attributes[2];
+//							$image_info['url']    = $image_attributes[0];
+//							$image_info['width']  = $image_attributes[1];
+//							$image_info['height'] = $image_attributes[2];
+                            $image_info['url']    = $image_attributes[0];
+                            $image_info['height'] = $image_attributes[1];
+                            $image_info['width']  = $image_attributes[2];
 						}
 						break;
 					}
@@ -434,7 +457,7 @@ class tdc_util {
 				if ( count( $css_classes ) ) {
 					foreach ( $css_classes as $css_class ) {
 						foreach ( tdc_config::$font_settings as $font_id => &$font_setting ) {
-							if ( $css_class === 'tdc-font-' . $font_setting['family_class'] && ! isset( $font_list[$font_id] ) ) {
+							if ( isset( $font_setting['family_class'] ) && $css_class === 'tdc-font-' . $font_setting['family_class'] && ! isset( $font_list[$font_id] ) ) {
 								$font_setting['load'] = true;
 								$font_list[$font_id] = $font_setting;
 							}
@@ -476,7 +499,7 @@ class tdc_util {
 						if ( count( $css_classes ) ) {
 							foreach ( $css_classes as $css_class ) {
 								foreach ( tdc_config::$font_settings as $font_id => &$font_setting ) {
-									if ( $css_class === 'tdc-font-' . $font_setting['family_class'] && ! isset( $font_list[$font_id] ) ) {
+									if ( isset( $font_setting['family_class'] ) && $css_class === 'tdc-font-' . $font_setting['family_class'] && ! isset( $font_list[$font_id] ) ) {
 										$font_setting['load'] = true;
 										$font_list[$font_id] = $font_setting;
 									}
@@ -542,4 +565,39 @@ class tdc_util {
 
 		return array_unique( $font_list );
 	}
+
+
+    /**
+     * try to load a placeholder image if it exists
+     * @see tdc_config::$default_placeholder_images
+     * @param $id_or_url
+     * @return false|string
+     */
+	static function get_image_or_placeholder($id_or_url) {
+	    if (is_numeric($id_or_url)) {
+	        return wp_get_attachment_url( $id_or_url );
+        }
+
+	    return $id_or_url;
+    }
+
+    /**
+     * gets the td composer edit page link
+     * @param $post_id - the post id
+     * @return mixed
+     */
+    static function get_edit_link( $post_id ) {
+
+        $url = add_query_arg(
+            [
+                'post_id' => $post_id,
+                'td_action' => 'tdc',
+                'tdbTemplateType' => 'page',
+                //'prev_url' => rawurlencode( get_edit_post_link( $post_id ) )
+            ],
+            admin_url( 'post.php' )
+        );
+
+        return $url;
+    }
 }

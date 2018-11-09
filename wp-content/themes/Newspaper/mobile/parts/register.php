@@ -27,6 +27,8 @@ if ($users_can_register == 1) {
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="register_button" id="register_button" class="wpb_button btn td-login-button" value="' . __td('REGISTER', TD_THEME_NAME) . '">
 	                <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
+	                
+	                ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                 </div>
             </div>';
 }
@@ -48,7 +50,11 @@ echo '
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="login_email" id="login_email" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <div class="td-login-inputs"><input class="td-login-input" type="password" name="login_pass" id="login_pass" value="" required><label>' . __td('your password', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="login_button" id="login_button" class="td-login-button" value="' . __td('LOG IN', TD_THEME_NAME) . '">
-	                <div class="td-login-info-text"><a href="#" id="forgot-pass-link">' . __td('Forgot your password?', TD_THEME_NAME) . '</a></div>
+	                <div class="td-login-info-text">
+	                    <a href="#" id="forgot-pass-link">' . __td('Forgot your password?', TD_THEME_NAME) . '</a>
+	                </div>
+	                
+	                 ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                 </div>
             </div>
 

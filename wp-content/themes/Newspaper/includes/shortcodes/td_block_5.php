@@ -29,7 +29,8 @@ class td_block_5 extends td_block {
             "<style>
 
 				/* @f_header */
-				.$unique_block_class .block-title {
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
 					@f_header
 				}
 				/* @f_ajax */

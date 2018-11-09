@@ -36,6 +36,8 @@ function tdc_register_api_routes() {
 		'callback' => array ('tdc_ajax', 'on_ajax_get_image_url'),
 	));
 
+
+
 	register_rest_route($namespace, '/get_image_id/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_get_image_id'),
@@ -44,6 +46,11 @@ function tdc_register_api_routes() {
 	register_rest_route($namespace, '/save_parts/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_save_parts'),
+	));
+
+	register_rest_route($namespace, '/change_template_name/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_change_template_name'),
 	));
 }
 
@@ -170,7 +177,8 @@ class tdc_ajax {
 
 		//tdc_map_not_registered_shortcodes($request->get_param('postId'));
 
-		$reply_html = do_shortcode( stripslashes( $request->get_param( 'shortcode' ) ) );
+		//$reply_html = do_shortcode( stripslashes( $request->get_param( 'shortcode' ) ) );
+		$reply_html = do_shortcode( $request->get_param( 'shortcode' ) );
 
 
 		// read the buffer that was set by the 'td_block__get_block_js' hook above
@@ -288,6 +296,9 @@ class tdc_ajax {
 				// Reset the vc status
 				update_post_meta( $post_id, '_wpb_vc_js_status', false );
 
+				delete_post_meta( $post_id, 'tdb_installed_images' );
+				delete_post_meta( $post_id, 'tdb_install_uid' );
+
 				// Update the live panel settings
 				td_panel_data_source::update();
 
@@ -325,6 +336,12 @@ class tdc_ajax {
 	}
 
 
+    /**
+     * the $_POST['image_id'] can be either an image ID from the media library OR a url for one of the default placeholder images.
+     * This is done to allow the multipurpose plugin to load shortcodes with url placeholders instead of image IDs so we don't have to load them in the media gallery
+     * @see tdc_config::$default_placeholder_images
+     * @param WP_REST_Request $request
+     */
 	static function on_ajax_get_image_url( WP_REST_Request $request ) {
 		if ( ! current_user_can( 'edit_pages' ) ) {
 			//@todo - ceva eroare sa afisam aici
@@ -341,11 +358,20 @@ class tdc_ajax {
 			$parameters['errors'][] = 'Invalid data';
 
 		} else {
-			$parameters['image_url'] = wp_get_attachment_url($image_id);
+		        // if it's a picture id, try to get the attachement url
+		    if (is_numeric($image_id)) {
+                $parameters['image_url'] = wp_get_attachment_url($image_id);
+            } else {
+		        // if it's not numeric, probably it's a url :)
+                $parameters['image_url'] = $image_id;
+            }
 		}
 
 		die( json_encode( $parameters ) );
 	}
+
+
+
 
 
 	static function on_ajax_get_image_id( WP_REST_Request $request ) {
@@ -402,4 +428,79 @@ class tdc_ajax {
 
 		die( json_encode( $parameters ) );
 	}
+
+	static function on_ajax_change_template_name ( WP_REST_Request $request ) {
+
+        // permission check
+        if ( ! current_user_can( 'edit_pages' ) ) {
+            $reply['error'] = 'no permission';
+            die( json_encode( $reply ) );
+        }
+
+        // no empty title templates
+        $template_title = wp_strip_all_tags( $request->get_param( 'newTemplateName' ) );
+        if ( empty( $template_title ) ) {
+            $reply['error'] = 'Please enter a title for your template.';
+            die( json_encode( $reply ) );
+        }
+
+        // check the template type
+        $template_type = $request->get_param('templateType');
+        $template_types = array(
+            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page'
+        );
+
+        if ( in_array( $template_type, $template_types) === false ) {
+            $reply['error'] = 'Invalid template type! Please make sure your are editing a supported template type title.';
+            die( json_encode( $reply ) );
+        }
+
+        $post_type = 'page' === $template_type ? 'page' : 'tdb_templates';
+
+        $posts = get_posts(
+            array(
+                'post_status' => 'publish',
+                'post_type' => $post_type,
+                'numberposts' => -1
+            )
+        );
+
+        foreach ( $posts as $post ) {
+            if ( $post->post_title === $template_title ) {
+                $reply['error'] = 'This ' . $template_type . ' template title is already used!';
+                die( json_encode( $reply ) );
+            }
+        }
+
+        // check the template id
+        $template_id = $request->get_param( 'templateID' );
+        if ( empty( $template_id ) ) {
+            $reply['error'] = 'The template/page id is missing!';
+            die( json_encode( $reply ) );
+        }
+
+        // update post
+        $post_id = wp_update_post( array(
+            'ID'           => $template_id,
+            'post_title'   => $template_title,
+        ));
+
+        // treat errors
+        if ( is_wp_error( $post_id ) ) {
+            $errors = $post_id->get_error_messages();
+            $reply['error'] = array(
+                   'Post update error!'
+            );
+            foreach ( $errors as $error ) {
+                $reply['error'][] = $error;
+            }
+            die( json_encode( $reply ) );
+        }
+
+        $reply['template_title'] = $template_title;
+        $reply['template_type']  = $template_type;
+        $reply['template_id']    = $template_id;
+
+        die( json_encode( $reply ) );
+    }
 }

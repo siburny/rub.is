@@ -12,17 +12,35 @@ class td_page_generator {
 
         //posts and custom posts
         if (is_single()) {
+
+            // return if we are on a single post template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $breadcrumbs_array = self::single_breadcrumbs_array(get_the_title($post->ID));
         }
 
         //author page
         if (is_author()) {
+
+            // return if we are on a author page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $part_cur_auth_obj = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
             $breadcrumbs_array = self::author_breadcrumbs_array($part_cur_auth_obj, true);
         }
 
         //category page
         if (is_category()) {
+
+            // return if we are on a category page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $primary_category_obj = td_global::$current_category_obj;
             $breadcrumbs_array = self::category_breadcrumbs_array($primary_category_obj);
         }
@@ -35,12 +53,24 @@ class td_page_generator {
 
         //tag
         if (is_tag()) {
+
+            // return if we are on a tag page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $current_tag_name = single_tag_title( '', false );
             $breadcrumbs_array = self::tag_breadcrumbs_array($current_tag_name, true);
         }
 
         //date archive
         if (is_date()) {
+
+            // return if we are on a date archive page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $breadcrumbs_array = self::archive_breadcrumbs_array();
         }
 
@@ -56,6 +86,12 @@ class td_page_generator {
 
         //attachment
         if (is_attachment()) {
+
+            // return if we are on a attachment page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             if (!empty($post->post_parent) and !empty($post->post_title)) {
                 $breadcrumbs_array = self::attachment_breadcrumbs_array($post->post_parent, $post->post_title);
             }
@@ -63,6 +99,12 @@ class td_page_generator {
 
         //search
         if (is_search()) {
+
+            // return if we are on a search page template that uses a cloud template, we create json-ld script in the breadcrumbs shortcode
+            if ( self::is_tdb_cloud_template() ) {
+                return '';
+            }
+
             $breadcrumbs_array = self::search_breadcrumbs_array();
         }
 
@@ -138,6 +180,25 @@ class td_page_generator {
         }
     }
 
+    /**
+     * detect cloud templates
+     * @return bool
+     */
+    private static function is_tdb_cloud_template() {
+
+        /*
+         * check first for the template state class,
+         * this is set on td composer's 'tdc_init' hook so we need to make sure we have the td composer plugin active
+         */
+        if ( class_exists( 'tdb_state_template', false ) ) {
+            // if the tdb templates cpt is registered and we have a cloud template set
+            if ( td_global::is_tdb_registered() && tdb_state_template::has_wp_query() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
     /**

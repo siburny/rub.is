@@ -51,6 +51,10 @@ body.tdc #wpfooter {
     height: 100%;
   }
 
+  #screen-meta-links {
+    display: none;
+  }
+
 
   .ie8, .ie9, .ie10, .ie11 {
     a:active,
@@ -71,6 +75,7 @@ body.tdc #wpbody-content {
   height: 100%;
   .transition(padding 0.4s cubic-bezier(0.55, 0, 0.1, 1) 0s);
   .box-sizing(border-box);
+  background-color: #efefef;
 }
 
 .tdc-live-iframe-wrapper-inline {
@@ -78,9 +83,9 @@ body.tdc #wpbody-content {
   position: absolute !important;
   .transition(padding 0.4s ease);
 
-  .tdc-notice-wrapper {
-    padding-left: 300px;
-  }
+  //.tdc-notice-wrapper {
+  //  margin-left: 300px;
+  //}
 }
 
 #tdc-live-iframe {
@@ -89,7 +94,7 @@ body.tdc #wpbody-content {
   opacity: 0;
   -webkit-transition: opacity 0.4s;
   transition: opacity 0.4s;
-  .box-shadow(0 0 24px 0 rgba(0, 0, 0, 0.04));
+  //.box-shadow(0 0 24px 0 rgba(0, 0, 0, 0.04)); - bug in latest Chrome version 66.0.3359.117
 }
 
 .tdc-remove-iframe {
@@ -148,50 +153,141 @@ body.tdc #wpbody-content {
 .tdc-notice-wrapper {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 100%;
+  width: 400px;
+  z-index: 1;
   .box-sizing(border-box);
-  .transition(all 0.4s cubic-bezier(0.55, 0, 0.1, 1) 0s);
+  pointer-events: none;
+  padding-top: 10px;
+  font-family: @font1;
 }
 
 
-.tdc-live-iframe-wrapper-full .tdc-notice-wrapper {
-  padding-left: 300px;
-}
+//.tdc-live-iframe-wrapper-full .tdc-notice-wrapper {
+//  margin-left: 300px;
+//}
 
-.tdc-notice,
-.tdc-notice-error {
-  height: 43px;
-  color: white;
-  margin-bottom: 1px;
-  font-size: 14px;
-  line-height: 43px;
-  padding-left: 20px;
+.tdc-notice {
+  color: #777;
+  font-size: 12px;
   position: relative;
+  left: 50px;
+  pointer-events: auto;
+  background-color: #fff;
+  border-radius: 3px 0 0 3px;
+  margin-top: 8px;
+  box-shadow: 0 3px 12px -1px rgba(10, 13, 25, 0.23), 0 22px 27px -20px rgba(10, 13, 25, 0.23);
+  padding: 22px 60px 18px 100px;
+  transition: all 0.5s ease;
 
   &:before {
     content:'';
     width: 100%;
-    height: 1px;
+    height: 4px;
     position: absolute;
-    top: 43px;
+    top: 0;
     left: 0;
-    background-color: #fff;
+    border-radius: 3px 0 0 0;
   }
 
-  &:last-child {
+  .tdc-msg-tag {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+    border-radius: 50px;
+    position: absolute;
+    top: 11px;
+    left: -30px;
+
+    // msg text
     &:before {
-      display: none;
+      content:'';
+      display: block;
+      padding: 15px 8px;
+      margin-left: 20px;
+      width: 74px;
+      text-align: center;
+    }
+
+    // msg image
+    &:after {
+      content:'';
+      width: 22px;
+      height: 22px;
+      background-size: contain;
+      position: absolute;
+      top: 9px;
+      left: 9px;
     }
   }
 }
 
+// animation
+.tdc-notice-in {
+  .transform(translateX(-100%));
+}
+.tdc-notice-out {
+  margin-top: -58px;
+}
+
 .tdc-notice {
-  background-color: #88be4e;
+  &:before {
+    background: #77c30c;
+    background: -moz-linear-gradient(45deg, #77c30c 0%, #9aea2a  100%);
+    background: -webkit-linear-gradient(45deg, #77c30c 0%, #9aea2a  100%);
+    background: linear-gradient(45deg, #77c30c  0%, #9aea2a  100%);
+  }
+  .tdc-msg-tag {
+    background: #77c30c;
+    box-shadow: 0 3px 12px -1px rgba(119, 195, 12, 0.4), 0 22px 27px -20px rgba(119, 195, 12, 0.4);
+    &:before {
+      content: 'Success';
+    }
+    &:after {
+      background: url('../images/sidebar/icon-success.png?2') no-repeat;
+    }
+  }
 }
 
 .tdc-notice-error {
-  background-color: red !important;
+  &:before {
+    background: #ff3937;
+    background: -moz-linear-gradient(45deg, #ef2124 0%, #f73b93 100%);
+    background: -webkit-linear-gradient(45deg, #ef2124 0%, #f73b93 100%);
+    background: linear-gradient(45deg, #ef2124 0%, #f73b93 100%);
+  }
+  .tdc-msg-tag {
+    background: #ff3937;
+    box-shadow: 0 3px 12px -1px rgba(239, 33, 36, 0.4), 0 22px 27px -20px rgba(239, 33, 36, 0.4);
+    &:before {
+      content: 'Error';
+    }
+    &:after {
+      background: url('../images/sidebar/icon-error.png?2') no-repeat;
+    }
+  }
+}
+
+.tdc-notice-info {
+  &:before {
+    background: #ffc10a;
+    background: -moz-linear-gradient(45deg, #f9c100 0%, #ffe500 100%);
+    background: -webkit-linear-gradient(45deg, #f9c100 0%,#ffe500 100%);
+    background: linear-gradient(45deg, #f9c100 0%,#ffe500 100%);
+  }
+  .tdc-msg-tag {
+    background: #ffc10a;
+    box-shadow: 0 3px 12px -1px rgba(249, 193, 0, 0.4), 0 22px 27px -20px rgba(249, 193, 0, 0.4);
+    &:before {
+      content: 'Notice';
+    }
+    &:after {
+      background: url('../images/sidebar/icon-notice.png?2') no-repeat;
+    }
+  }
 }
 
 .tdc-close-notice {
@@ -205,3 +301,83 @@ body.tdc #wpbody-content {
   .stitches-sprite(-5px, -125px, 20px, 20px);
 }
 
+#tdc-context-menu {
+  display: none;
+  position: fixed;
+  width: 200px;
+  min-height: 100px;
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  z-index: 10000;
+  .box-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
+
+  ul {
+    margin: 0;
+    padding-bottom: 4px;
+  }
+
+  li {
+    position: relative;
+    margin-bottom: 2px;
+    padding-left: 15px;
+    padding-right: 14px;
+    padding-bottom: 1px;
+    color: rgba(95, 95, 95, 0.5);
+    font-size: 11px;
+    line-height: 2.3;
+    cursor: default;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    span {
+      position: relative;
+      top: 2px;
+      float: right;
+      font-size: 10px;
+      color: #e2e2e2;
+      letter-spacing: -0.3px;
+    }
+
+    &.active,
+    &.tdc-current-type {
+      color: #5f5f5f;
+    }
+    &.active,
+    &.tdc-save-shortcode {
+      cursor: pointer;
+
+      &:hover {
+        background-color: #4db2ec;
+        color: #fff;
+      }
+    }
+    &.tdc-current-type {
+      margin-bottom: 5px;
+      padding-top: 2px;
+      padding-bottom: 3px;
+      background-color: #fdfdfd;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+
+    &.separator:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    &.space {
+      margin-bottom: 9px;
+
+      &:after {
+        bottom: -6px;
+      }
+    }
+  }
+}

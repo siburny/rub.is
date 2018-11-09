@@ -83,18 +83,21 @@ class td_social_api {
         switch ($service_id) {
             case 'facebook':
 
-                //old api - v2.5 and older
-                $td_data = @$this->get_json( "https://graph.facebook.com/v2.0/$user_id?access_token=$access_token&fields=likes" );
+                $td_data = td_remote_http::get_page( "https://facebook.com/$user_id", __CLASS__ );
 
-
-                if (!empty($td_data['likes']) && is_numeric($td_data['likes'])) {
-                    $buffy_array = (int)$td_data['likes'];
+                if ( $td_data === false ) {
+                    td_log::log( __FILE__, __FUNCTION__, 'Facebook page html data cannot be retrieved.', $user_id);
                 } else {
-                    //new api - v2.6 and newer, likes was replaced with fan_count
-                    //we have to make 2 separate requests - if you call for both fields (likes,fan_count) you receive an error on older api versions and no result is returned
-                    $td_data = @$this->get_json( "https://graph.facebook.com/v2.9/$user_id?access_token=$access_token&fields=fan_count" );
-                    if (!empty($td_data['fan_count'])) {
-                        $buffy_array = (int)$td_data['fan_count'];
+                    $pattern = '/PagesLikesCountDOMID[^>]+>(.*?)<\/a/s';
+                    preg_match( $pattern, $td_data, $matches );
+
+                    if ( !empty( $matches[1] ) ) {
+                        $page_likes_number = $this->extract_numbers_from_string( strip_tags( $matches[1] ) );
+                        $buffy_array = (int) $page_likes_number;
+
+                        td_log::log( __FILE__, __FUNCTION__, 'Facebook "' . $user_id . '"" page likes data was retrieved successfully.', $buffy_array );
+                    } else {
+                        td_log::log( __FILE__, __FUNCTION__, 'We haven\'t found a match in ' . $user_id . '\'s facebook page html data.', $td_data );
                     }
                 }
 
@@ -110,20 +113,18 @@ class td_social_api {
                 if ($td_data === false) {
                     td_log::log(__FILE__, __FUNCTION__, 'Twitter get_page method FAILED, we are trying again via the api', $td_data);
                 } else {
-                    $pattern = "/title=\"(.*)\"(.*)data-nav=\"followers\"/i";
+
+                    $pattern = "/\/followers(.*)statnum\">([^<]+)/is";
                     preg_match_all($pattern, $td_data, $matches);
-                    if (!empty($matches[1][0])) {
-                        //$td_buffer_counter_fix = str_replace(array('.', ',', ' ', '&nbsp;'), '', htmlentities($matches[1][0]));  //old radu hack to filter numbers 2/2/2015
-                        $td_buffer_counter_fix = $this->extract_numbers_from_string($matches[1][0]);
+	                if (!empty($matches[2][0])) {
+		                $td_buffer_counter_fix = $this->extract_numbers_from_string($matches[2][0]);
 
-                        // $td_buffer_counter_fix = str_replace(',','', $matches[1][0]);
-                        $buffy_array = (int) $td_buffer_counter_fix;
+		                $buffy_array = (int) $td_buffer_counter_fix;
 
-                        if (!empty($buffy_array) and is_numeric($buffy_array)) {
-                            $twitter_worked = true; //skip twitter second check it worked!
-                        }
-                    }
-
+		                if (!empty($buffy_array) and is_numeric($buffy_array)) {
+			                $twitter_worked = true; //skip twitter second check it worked!
+		                }
+	                }
                 }
 
 
@@ -202,7 +203,7 @@ class td_social_api {
                 break;
 
             case 'instagram':
-                $td_data = td_remote_http::get_page("http://instagram.com/$user_id#", __CLASS__);
+                $td_data = td_remote_http::get_page("https://instagram.com/$user_id#", __CLASS__);
                 //$pattern = "/followed_by\":(.*?),\"follows\":/";
                 //$pattern = "/followed_by\"\:\{\"count\"\:(.*?)\}\,\"/";
 
@@ -211,10 +212,19 @@ class td_social_api {
                 preg_match($pattern, $td_data, $matches);
                 if (!empty($matches[1])) {
                     $instagram_json = json_decode($matches[1], true);
-                    if (!empty($instagram_json['entry_data']['ProfilePage'][0]['user']['followed_by']['count'])) {
-                        $buffy_array = (int) $instagram_json['entry_data']['ProfilePage'][0]['user']['followed_by']['count'];
+                    if (!empty($instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user']["edge_followed_by"]['count'])) {
+                        $buffy_array = (int) $instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user']["edge_followed_by"]['count'];
                     }
 
+                }
+                break;
+
+            case 'pinterest':
+                $td_data = td_remote_http::get_page("https://pinterest.com/$user_id", __CLASS__);
+                $pattern = "/followers\" content=([^>]+)/is";
+                preg_match_all($pattern, $td_data, $matches);
+                if (!empty($matches[1][0])) {
+                    $buffy_array = $this->extract_numbers_from_string($matches[1][0]);
                 }
                 break;
 

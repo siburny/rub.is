@@ -19,6 +19,31 @@ class td_block_list_menu extends td_block {
         $raw_css =
             "<style>
 
+                /* @inline */
+				.$unique_block_class li {
+					display: inline-block;
+				}
+				/* @list_padding */
+				.$unique_block_class ul {
+					margin: @list_padding;
+				}
+				/* @item_space_right */
+				.$unique_block_class ul li {
+					margin-right: @item_space_right;
+				}
+				/* @item_space_bottom */
+				.$unique_block_class ul li {
+					margin-bottom: @item_space_bottom;
+				}
+				.$unique_block_class ul li:last-child {
+					margin-right: 0;
+				}
+				/* @item_horiz_align */
+				.$unique_block_class ul {
+					text-align: @item_horiz_align;
+				}
+				
+
                 /* @menu_color */
 				.$unique_block_class a {
 					color: @menu_color;
@@ -30,8 +55,13 @@ class td_block_list_menu extends td_block {
 				
 
 
+                /* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_list */
-				.$unique_block_class a {
+				.$unique_block_class li {
 					@f_list
 				}
 				
@@ -47,6 +77,43 @@ class td_block_list_menu extends td_block {
 
     static function cssMedia( $res_ctx ) {
 
+        // inline list elements
+        $res_ctx->load_settings_raw( 'inline', $res_ctx->get_shortcode_att('inline') );
+
+        // list padding
+        $padding = $res_ctx->get_shortcode_att('list_padding');
+        $res_ctx->load_settings_raw( 'list_padding', $padding );
+        if( $padding != '' && is_numeric( $padding ) ) {
+            $res_ctx->load_settings_raw( 'list_padding', $padding . 'px' );
+        }
+
+        // list item space
+        $item_space = $res_ctx->get_shortcode_att('item_space');
+        $display_inline = $res_ctx->get_shortcode_att('inline');
+        if( $display_inline == 'yes' ) {
+            $res_ctx->load_settings_raw( 'item_space_right', $item_space );
+            if( $item_space != '' && is_numeric( $item_space ) ) {
+                $res_ctx->load_settings_raw( 'item_space_right', $item_space . 'px' );
+            }
+        } else {
+            $res_ctx->load_settings_raw( 'item_space_bottom', $item_space );
+            if( $item_space != '' && is_numeric( $item_space ) ) {
+                $res_ctx->load_settings_raw( 'item_space_bottom', $item_space . 'px' );
+            }
+        }
+
+
+        // menu list horizontal align
+        $item_horiz_align = $res_ctx->get_shortcode_att('item_horiz_align');
+        if( $item_horiz_align == 'content-horiz-center' ) {
+            $res_ctx->load_settings_raw( 'item_horiz_align', 'center' );
+        }
+        if( $item_horiz_align == 'content-horiz-right' ) {
+            $res_ctx->load_settings_raw( 'item_horiz_align', 'right' );
+        }
+
+
+
         // heading text color
         $res_ctx->load_settings_raw( 'menu_color', $res_ctx->get_shortcode_att('menu_color') );
 
@@ -56,6 +123,7 @@ class td_block_list_menu extends td_block {
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_list' );
 
     }

@@ -37,9 +37,9 @@
 	<input type="hidden" id="tdc_content" name="tdc_content" value="">
 	<input type="hidden" id="tdc_customized" name="tdc_customized" value="">
 
+	<?php if (current_user_can("switch_themes")) { ?>
 	<!-- HEADER STYLE -->
 	<?php echo td_panel_generator::box_start('Header Style', false); ?>
-
 
 	<!-- HEADER STYLE -->
 	<div class="td-box-row">
@@ -86,6 +86,7 @@
 		<a href="#" class="tdc-page-settings"> </a>
 	<?php echo td_panel_generator::box_end();?>
 
+    <?php } ?>
 
 	<?php
 

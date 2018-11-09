@@ -1320,3 +1320,33 @@
     }
   }
 }
+
+// hide text share on mobile
+.td-post-sharing-style1,
+.td-post-sharing-style3,
+.td-post-sharing-style5,
+.td-post-sharing-style14,
+.td-post-sharing-style16 {
+  .td-social-share-text .td-social-but-text {
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+        display: none !important;
+    }
+  }
+}
+.td-post-sharing-style2,
+.td-post-sharing-style4,
+.td-post-sharing-style6,
+.td-post-sharing-style7,
+.td-post-sharing-style15,
+.td-post-sharing-style17,
+.td-post-sharing-style18,
+.td-post-sharing-style19,
+.td-post-sharing-style20 {
+  .td-social-share-text {
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      display: none !important;
+    }
+  }
+}

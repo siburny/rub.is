@@ -403,6 +403,36 @@ class td_demo_misc extends td_demo_base {
         td_options::update('tds_user_compile_css', td_css_generator());
 
     }
+
+    static function update_global_category_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_category_template'] = $template_id;
+    }
+
+    static function update_individual_category_template( $category_id, $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['category_options'][$category_id]['tdb_category_template'] = $template_id;
+    }
+
+    static function update_global_author_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_author_template'] = $template_id;
+    }
+
+    static function update_individual_author_template( $author_id, $tdb_template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_author_templates'][$author_id] = $tdb_template_id;
+    }
+
+    static function update_global_404_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_404_template'] = $template_id;
+    }
+
+    static function update_global_search_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_search_template'] = $template_id;
+    }
 }
 
 
@@ -461,11 +491,21 @@ class td_demo_category extends td_demo_base {
 	        $td_options['category_options'][$new_cat_id]['tdc_category_template'] = $params_array['category_template'];
         }
 
+        // update the cloud category template
+        if (!empty($params_array['category_cloud_template'])) {
+	        $td_options['category_options'][$new_cat_id]['tdb_category_template'] = $params_array['category_cloud_template'];
+        }
+
 
         // update the background if needed
         if (!empty($params_array['background_td_pic_id'])) {
 	        $td_options['category_options'][$new_cat_id]['tdc_image'] = td_demo_media::get_image_url_by_td_id($params_array['background_td_pic_id']);
 	        $td_options['category_options'][$new_cat_id]['tdc_bg_repeat'] = 'stretch';
+        }
+
+        //boxed layout
+        if (isset($params_array['boxed_layout']) and !empty($params_array['boxed_layout'])) {
+            $td_options['category_options'][$new_cat_id]['tdb_show_background'] = $params_array['boxed_layout'];
         }
 
 
@@ -636,9 +676,20 @@ class td_demo_content extends td_demo_base {
 		    //echo $file_content;
 	    }
 
+
+	    // assign menu id
+        unset($matches);
+        preg_match_all("/ddd_(.*)_ddd/U", $file_content, $matches, PREG_PATTERN_ORDER);
+
+        if (!empty($matches) and is_array($matches)) {
+            foreach ($matches[1] as $index => $match) {
+                $file_content = str_replace($matches[0][$index], td_demo_media::get_menu_id($match), $file_content);
+            }
+        }
+
+
         return $file_content;
     }
-
 
 	/**
 	 * @param $params
@@ -678,7 +729,7 @@ class td_demo_content extends td_demo_base {
 
         set_post_thumbnail($post_id, td_demo_media::get_by_td_id($params['featured_image_td_id']));
 
-        // set the post template
+        // set the post template > this setting can be a predefined theme single template or a cloud template by id
         if (!empty($params['template'])) {
             $td_post_theme_settings['td_post_template'] = $params['template'];
         }
@@ -686,6 +737,23 @@ class td_demo_content extends td_demo_base {
         // set the smart list  ex: td_smart_list_3    td_smart_list_1    etc
         if (!empty($params['smart_list'])) {
             $td_post_theme_settings['smart_list_template'] = $params['smart_list'];
+        }
+
+        // set the review content
+        if (!empty($params['review'])) {
+            $review = unserialize( $params['review'] );
+
+            $td_post_theme_settings['has_review'] = $review['has_review'];
+
+            if( array_key_exists( 'p_review_stars', $review ) ) {
+                $td_post_theme_settings['p_review_stars'] = $review['p_review_stars'];
+            }
+            if( array_key_exists( 'p_review_percents', $review ) ) {
+                $td_post_theme_settings['p_review_percents'] = $review['p_review_percents'];
+            }
+            if( array_key_exists( 'review', $review ) ) {
+                $td_post_theme_settings['review'] = $review['review'];
+            }
         }
 
         // update the post metadata only if we have something new
@@ -797,9 +865,66 @@ class td_demo_content extends td_demo_base {
     }
 
 
+    static function add_cloud_template($params) {
+
+	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
+		    'title' => 'Param is requiered!',
+		    'file' => 'Param is requiered!',
+		    'template_type' => 'Param is requiered!',
+	    ));
+
+        $template_type = $params['template_type'];
+
+        $template_types = array(
+            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page'
+        );
+
+        if ( in_array( $template_type, $template_types) === false ) {
+            self::kill(__CLASS__, __FUNCTION__, '<strong>' . $template_type . '</strong> is not a valid template type!' );
+        }
+
+
+        $new_post = array(
+            'post_title' => $params['title'],
+            'post_status' => 'publish',
+            'post_type' => 'tdb_templates',
+            'post_content' => self::parse_content_file($params['file']),
+            'comment_status' => 'closed',
+            'meta_input'   => array(
+                'tdb_template_type' => $template_type,
+                'td_demo_content' => true,
+                'tdc_dirty_content' => false
+            ),
+            'guid' => td_global::td_generate_unique_id()
+        );
+
+        //new template
+        $template_id = wp_insert_post ($new_post);
+
+	    if (is_wp_error($template_id)) {
+		    self::kill(__CLASS__, __FUNCTION__, $template_id->get_error_message());
+	    }
+
+	    if ($template_id === 0) {
+		    self::kill(__CLASS__, __FUNCTION__, 'wp_insert_post returned 0. Not ok! Page title: ' . $params['title']);
+	    }
+
+        // set the cloud template template type post meta
+        update_post_meta($template_id, 'tdb_template_type', $template_type);
+
+        // add our demo custom meta field, using this field we will delete all the pages
+        update_post_meta($template_id, 'td_demo_content', true);
+
+	    // Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
+	    update_post_meta($template_id, 'tdc_dirty_content', false);
+
+        return $template_id;
+    }
+
+
     static function remove() {
         $args = array(
-            'post_type' => array('page', 'post'),
+            'post_type' => array( 'page', 'post', 'tdb_templates' ),
             'meta_key'  => 'td_demo_content',
             'posts_per_page' => '-1'
         );
@@ -948,6 +1073,7 @@ class td_demo_menus extends td_demo_base {
         'td-demo-top-menu',
         'td-demo-header-menu',
         'td-demo-footer-menu',
+        'td-demo-custom-menu',
     );
 
 
@@ -1060,7 +1186,7 @@ class td_demo_menus extends td_demo_base {
      * @param $menu_params
      * @return int|WP_Error
      */
-    static function add_mega_menu($menu_params) {
+    static function add_mega_menu($menu_params, $url = false) {
 
 	    // requiered parameters
 	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
@@ -1070,12 +1196,11 @@ class td_demo_menus extends td_demo_base {
 	    ));
 
 
-
 	    $itemData =  array(
             'menu-item-object' => '',
             'menu-item-type'      => 'custom',
             'menu-item-title'    => $menu_params['title'],
-            'menu-item-url' => '#',
+            'menu-item-url' => $url ? get_category_link($menu_params['category_id']) : '#',
             'menu-item-status'    => 'publish'
         );
 
@@ -1241,6 +1366,16 @@ class td_demo_media extends td_demo_base {
 
         }
         return false;
+    }
+
+    static function  get_menu_id($menu_name) {
+        $menu_id = get_term_by('name', $menu_name, 'nav_menu');
+
+        if( $menu_id ) {
+            return $menu_id->term_id;
+        }
+
+        return '';
     }
 
 

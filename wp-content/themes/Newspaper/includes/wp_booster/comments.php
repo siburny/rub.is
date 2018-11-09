@@ -58,7 +58,7 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
 
             $user = wp_get_current_user();
             $user_identity = $user->exists() ? $user->display_name : '';
-
+            $consent  = empty( $commenter['comment_author_email'] ) ? '' : ' checked="checked"';
 	        $fields = array(
 		        'author' =>
 			        '<div class="comment-form-input-wrap td-form-author">
@@ -77,6 +77,8 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
 			        '<div class="comment-form-input-wrap td-form-url">
 			            <input class="" id="url" name="url" placeholder="' . __td('Website:', TD_THEME_NAME) . '" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" />
                      </div>',
+                'cookies' => '<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"' . $consent . ' />' .
+                    '<label for="wp-comment-cookies-consent">' . __td( 'Save my name, email, and website in this browser for the next time I comment.' ) . '</label></p>',
             );
 
 		    $defaults = array('fields' => apply_filters('comment_form_default_fields', $fields));
@@ -167,6 +169,9 @@ function td_comment( $comment, $args, $depth ) {
                     <a class="comment-link" href="#comment-<?php comment_ID() ?>">
                         <time pubdate="<?php echo $td_article_date_unix ?>"><?php comment_date() ?> at <?php comment_time() ?></time>
                     </a>
+
+                    <?php edit_comment_link( __td('Edit', TD_THEME_NAME)) ?>
+                    
                 </footer>
 
                 <div class="comment-content">

@@ -65,11 +65,16 @@ class td_social_icons {
 		    $url = 'mailto:' . $url;
 	    }
 
+        $td_social_rel = td_util::get_option('tds_rel_type');
+        if (!empty($td_social_rel)) {
+            $td_social_rel = ' rel="' . $td_social_rel . '"';
+        }
+
         //if the $show_icon_id parameter is set to true also add the social network name
         if($show_icon_id === true){
             return '
             <span class="td-social-icon-wrap">
-                <a' . $td_a_target . ' href="' . $url . '" title="' . self::$td_social_icons_array[$icon_id] . '">
+                <a' . $td_a_target . $td_social_rel .  ' href="' . $url . '" title="' . self::$td_social_icons_array[$icon_id] . '">
                     <i class="td-icon-font td-icon-' . $icon_id . '"></i>
                     <span class="td-social-name">' . self::$td_social_icons_array[$icon_id] . '</span>
                 </a>
@@ -78,7 +83,7 @@ class td_social_icons {
 
         return '
         <span class="td-social-icon-wrap">
-            <a' . $td_a_target . ' href="' . $url . '" title="' . self::$td_social_icons_array[$icon_id] . '">
+            <a' . $td_a_target . $td_social_rel . ' href="' . $url . '" title="' . self::$td_social_icons_array[$icon_id] . '">
                 <i class="td-icon-font td-icon-' . $icon_id . '"></i>
             </a>
         </span>';

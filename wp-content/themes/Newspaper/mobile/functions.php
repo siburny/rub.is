@@ -12,6 +12,7 @@ require_once (td_global_mob::$get_parent_template_directory . '/td_deploy_mode.p
 
 
 require_once (td_global_mob::$get_parent_template_directory . '/includes/td_config.php');
+require_once (td_global_mob::$get_parent_template_directory . '/includes/td_config_helper.php');
 require_once ('includes/td_config_mob.php');
 
 // Required before 'td_global_after' hook (as main theme booster does), to allow api to get fonts

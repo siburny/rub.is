@@ -15,6 +15,8 @@ class vc_row extends tdc_composer_block {
 		// $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
 		$unique_block_class = $this->get_att('tdc_css_class');
 
+        $compiled_css = '';
+
 		$raw_css =
 			"<style>
                 /* @gap */
@@ -32,6 +34,10 @@ class vc_row extends tdc_composer_block {
                 /* @row_full_height */
                 .$unique_block_class {
                     min-height: 100vh;
+                }
+                /* @row_auto_height */
+                .$unique_block_class {
+                    min-height: 0;
                 }
 
                 /* @row_fixed */
@@ -70,11 +76,17 @@ class vc_row extends tdc_composer_block {
                 .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
                 	vertical-align: bottom;
                 }
+                
+                /* @svg_z_index */
+				.$unique_block_class .tdc-row-divider {
+					z-index: @svg_z_index;
+					pointer-events: none;
+				}
 
-                /* @shadow_size_top */
+                /* @shadow_top */
 				.$unique_block_class .tdc-row-divider-top .tdm-svg {
-					-webkit-filter: drop-shadow( @shadow_offset_horizontal_top @shadow_offset_vertical_top @shadow_size_top @shadow_color_top );
-					filter: drop-shadow( @shadow_offset_horizontal_top @shadow_offset_vertical_top @shadow_size_top @shadow_color_top );
+					-webkit-filter: drop-shadow(@shadow_top);
+					filter: drop-shadow(@shadow_top);
 				}
 				/* @row_divider_top */
 				.$unique_block_class {
@@ -112,10 +124,10 @@ class vc_row extends tdc_composer_block {
 				}
 
 
-				/* @shadow_size_bottom */
+				/* @shadow_bot */
 				.$unique_block_class .tdc-row-divider-bottom .tdm-svg {
-					-webkit-filter: drop-shadow( @shadow_offset_horizontal_bottom @shadow_offset_vertical_bottom @shadow_size_bottom @shadow_color_bottom );
-					filter: drop-shadow( @shadow_offset_horizontal_bottom @shadow_offset_vertical_bottom @shadow_size_bottom @shadow_color_bottom );
+				    -webkit-filter: drop-shadow(@shadow_bot);
+					filter: drop-shadow(@shadow_bot);
 				}
 				/* @row_divider_bottom */
 				.$unique_block_class {
@@ -155,131 +167,113 @@ class vc_row extends tdc_composer_block {
 
 			</style>";
 
-		$td_css_compiler = new td_css_compiler( $raw_css );
 
-		$row_divider_top = $this->atts[ 'row_divider_top' ];
-		$row_divider_bottom = $this->atts[ 'row_divider_bottom' ];
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->atts );
 
-		if ( !empty( $row_divider_top ) ) {
-			// row divider top
-			$td_css_compiler->load_setting_raw( 'svg_width_top', $this->atts['svg_width_top'] );
-			$td_css_compiler->load_setting_raw( 'svg_height_top', $this->atts['svg_height_top'] );
-			$td_css_compiler->load_setting_raw( 'svg_flip_top', $this->atts['svg_flip_top'] );
-			$td_css_compiler->load_setting_raw( 'svg_background_color_top', $this->atts['svg_background_color_top'] );
-			$td_css_compiler->load_setting_raw( 'row_divider_top', $this->atts['row_divider_top'] );
-			// shadow_top svg
-			$td_css_compiler->load_setting_raw( 'shadow_size_top', $this->atts['shadow_size_top'] );
-			$td_css_compiler->load_setting_raw( 'shadow_color_top', 'rgba(0, 0, 0, 0.1)' );
-			$td_css_compiler->load_setting_raw( 'shadow_offset_horizontal_top', 0 );
-			$td_css_compiler->load_setting_raw( 'shadow_offset_vertical_top', '2px' );
-			$td_css_compiler->load_setting_raw( 'space_top', $this->atts['space_top'] );
-
-			// shadow_top variables
-			$shadow_size_top              = $this->atts['shadow_size_top'];
-			$shadow_color_top             = $this->atts['shadow_color_top'];
-			$shadow_offset_horizontal_top = $this->atts['shadow_offset_horizontal_top'];
-			$shadow_offset_vertical_top   = $this->atts['shadow_offset_vertical_top'];
-			$space_top   = $this->atts['space_top'];
-
-			if ( ( $shadow_size_top ) != '' && is_numeric( $shadow_size_top ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_size_top', $shadow_size_top . 'px' );
-			}
-			if ( ! empty( $shadow_color_top ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_color_top', $shadow_color_top );
-			}
-			if ( is_numeric( $shadow_offset_horizontal_top ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_offset_horizontal_top', $shadow_offset_horizontal_top . 'px' );
-			}
-			if ( is_numeric( $shadow_offset_vertical_top ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_offset_vertical_top', $shadow_offset_vertical_top . 'px' );
-			}
-			if ( is_numeric( $space_top ) ) {
-				$td_css_compiler->load_setting_raw( 'space_top', $space_top . 'px' );
-			}
-			$svg_height_top = $this->atts['svg_height_top'];
-			if ( $svg_height_top != "" ) {
-				if ( is_numeric( $svg_height_top ) ) {
-					$td_css_compiler->load_setting_raw( 'svg_height_top', $svg_height_top . 'px' );
-				}
-			}
-			$svg_width_top = $this->atts['svg_width_top'];
-			if ( $svg_width_top != "" ) {
-				if ( is_numeric( $svg_width_top ) ) {
-					$td_css_compiler->load_setting_raw( 'svg_width_top', $svg_width_top . 'px' );
-				}
-			}
-		}
-
-		if ( !empty( $row_divider_bottom ) ) {
-			// row divider bottom
-			$td_css_compiler->load_setting_raw( 'svg_width_bottom', $this->atts['svg_width_bottom'] );
-			$td_css_compiler->load_setting_raw( 'svg_height_bottom', $this->atts['svg_height_bottom'] );
-			$td_css_compiler->load_setting_raw( 'svg_flip_bottom', $this->atts['svg_flip_bottom'] );
-			$td_css_compiler->load_setting_raw( 'svg_background_color_bottom', $this->atts['svg_background_color_bottom'] );
-			$td_css_compiler->load_setting_raw( 'row_divider_bottom', $this->atts['row_divider_bottom'] );
-			// shadow_bottom svg
-			$td_css_compiler->load_setting_raw( 'shadow_size_bottom', $this->atts['shadow_size_bottom'] );
-			$td_css_compiler->load_setting_raw( 'shadow_color_bottom', 'rgba(0, 0, 0, 0.1)' );
-			$td_css_compiler->load_setting_raw( 'shadow_offset_horizontal_bottom', 0 );
-			$td_css_compiler->load_setting_raw( 'shadow_offset_vertical_bottom', '2px' );
-			$td_css_compiler->load_setting_raw( 'space_bottom', $this->atts['space_bottom'] );
-
-			// shadow_bottom variables
-			$shadow_size_bottom              = $this->atts['shadow_size_bottom'];
-			$shadow_color_bottom             = $this->atts['shadow_color_bottom'];
-			$shadow_offset_horizontal_bottom = $this->atts['shadow_offset_horizontal_bottom'];
-			$shadow_offset_vertical_bottom   = $this->atts['shadow_offset_vertical_bottom'];
-			$space_bottom   = $this->atts['space_bottom'];
-
-			if ( ( $shadow_size_bottom ) != '' && is_numeric( $shadow_size_bottom ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_size_bottom', $shadow_size_bottom . 'px' );
-			}
-			if ( ! empty( $shadow_color_bottom ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_color_bottom', $shadow_color_bottom );
-			}
-			if ( is_numeric( $shadow_offset_horizontal_bottom ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_offset_horizontal_bottom', $shadow_offset_horizontal_bottom . 'px' );
-			}
-			if ( is_numeric( $shadow_offset_vertical_bottom ) ) {
-				$td_css_compiler->load_setting_raw( 'shadow_offset_vertical_bottom', $shadow_offset_vertical_bottom . 'px' );
-			}
-			if ( is_numeric( $space_bottom ) ) {
-				$td_css_compiler->load_setting_raw( 'space_bottom', $space_bottom . 'px' );
-			}
-			$svg_height_bottom = $this->atts['svg_height_bottom'];
-			if ( $svg_height_bottom != "" ) {
-				if ( is_numeric( $svg_height_bottom ) ) {
-					$td_css_compiler->load_setting_raw( 'svg_height_bottom', $svg_height_bottom . 'px' );
-				}
-			}
-			$svg_width_bottom = $this->atts['svg_width_bottom'];
-			if ( $svg_width_bottom != "" ) {
-				if ( is_numeric( $svg_width_bottom ) ) {
-					$td_css_compiler->load_setting_raw( 'svg_width_bottom', $svg_width_bottom . 'px' );
-				}
-			}
-		}
-
-		$gap = $this->atts['gap'];
-		$content_align_vertical = $this->atts['content_align_vertical'];
-
-		if ( is_numeric( $gap ) ) {
-			$gap .= 'px';
-		}
-
-		//$td_css_compiler->load_setting_raw( 'general_css', 1 ); // general css
-		$td_css_compiler->load_setting_raw( 'gap', $gap );
-		$td_css_compiler->load_setting_raw( 'row_full_height', $this->atts['row_full_height'] );
-		$td_css_compiler->load_setting_raw( 'row_fixed', $this->atts['row_fixed'] );
-
-		if ( !empty($this->atts['content_align_vertical']) && 'content-vert-top' !== $this->atts['content_align_vertical'] ) {
-			$td_css_compiler->load_setting_raw('content_align_vertical', $content_align_vertical);
-		}
-
-		$compiled_css = $td_css_compiler->compile_css();
-
-		return $compiled_css;
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
 	}
+
+    static function cssMedia( $res_ctx ) {
+
+        // gap
+        $gap = $res_ctx->get_shortcode_att('gap');
+        $res_ctx->load_settings_raw( 'gap', $gap );
+        if( $gap != '' && is_numeric( $gap ) ) {
+            $res_ctx->load_settings_raw( 'gap', $gap . 'px' );
+        }
+
+        // content align vertical
+        $content_align_vertical = $res_ctx->get_shortcode_att('content_align_vertical');
+        if ( !empty($content_align_vertical) && 'content-vert-top' !== $res_ctx->get_shortcode_att('content_align_vertical') ) {
+            $res_ctx->load_settings_raw('content_align_vertical', $content_align_vertical);
+        }
+
+        // full height
+        $full_height = $res_ctx->get_shortcode_att('row_full_height');
+        if( $full_height != '' ) {
+            $res_ctx->load_settings_raw( 'row_full_height', 1 );
+        } else {
+            $res_ctx->load_settings_raw( 'row_auto_height', 1 );
+        }
+
+        // fixed background image
+        $res_ctx->load_settings_raw( 'row_fixed', $res_ctx->get_shortcode_att('row_fixed') );
+
+	    // z-index
+	    $res_ctx->load_settings_raw( 'svg_z_index', $res_ctx->get_shortcode_att('svg_z_index') );
+
+
+        /*-- TOP DIVIDER -- */
+        $row_divider_top = $res_ctx->get_shortcode_att( 'row_divider_top' );
+        if ( !empty( $row_divider_top ) ) {
+            $res_ctx->load_settings_raw( 'row_divider_top', $res_ctx->get_shortcode_att('row_divider_top') );
+
+            // divider width
+            $svg_width_top = $res_ctx->get_shortcode_att( 'svg_width_top' );
+            $res_ctx->load_settings_raw( 'svg_width_top', $svg_width_top );
+            if( $svg_width_top != '' && is_numeric( $svg_width_top ) ) {
+                $res_ctx->load_settings_raw( 'svg_width_top', $svg_width_top . 'px' );
+            }
+
+            // divider height
+            $svg_height_top = $res_ctx->get_shortcode_att( 'svg_height_top' );
+            $res_ctx->load_settings_raw( 'svg_height_top', $svg_height_top );
+            if( $svg_height_top != '' && is_numeric( $svg_height_top ) ) {
+                $res_ctx->load_settings_raw( 'svg_height_top', $svg_height_top . 'px' );
+            }
+
+            // divider flip
+            $res_ctx->load_settings_raw( 'svg_flip_top', $res_ctx->get_shortcode_att('svg_flip_top') );
+
+            // divider space top
+            $svg_space_top = $res_ctx->get_shortcode_att( 'space_top' );
+            $res_ctx->load_settings_raw( 'space_top', $svg_space_top . 'px' );
+
+            // divider background color
+            $res_ctx->load_settings_raw( 'svg_background_color_top', $res_ctx->get_shortcode_att('svg_background_color_top') );
+
+            // shadow
+            $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.1)', 'shadow_top' );
+        }
+
+
+
+        /*-- BOTTOM DIVIDER -- */
+        $row_divider_bottom = $res_ctx->get_shortcode_att( 'row_divider_bottom' );
+        if ( !empty( $row_divider_bottom ) ) {
+            $res_ctx->load_settings_raw( 'row_divider_bottom', $res_ctx->get_shortcode_att('row_divider_bottom') );
+
+            // divider width
+            $svg_width_bottom = $res_ctx->get_shortcode_att( 'svg_width_bottom' );
+            $res_ctx->load_settings_raw( 'svg_width_bottom', $svg_width_bottom );
+            if( $svg_width_bottom != '' && is_numeric( $svg_width_bottom ) ) {
+                $res_ctx->load_settings_raw( 'svg_width_bottom', $svg_width_bottom . 'px' );
+            }
+
+            // divider height
+            $svg_height_bottom = $res_ctx->get_shortcode_att( 'svg_height_bottom' );
+            $res_ctx->load_settings_raw( 'svg_height_bottom', $svg_height_bottom );
+            if( $svg_height_bottom != '' && is_numeric( $svg_height_bottom ) ) {
+                $res_ctx->load_settings_raw( 'svg_height_bottom', $svg_height_bottom . 'px' );
+            }
+
+            // divider flip
+            $res_ctx->load_settings_raw( 'svg_flip_bottom', $res_ctx->get_shortcode_att('svg_flip_bottom') );
+
+            // divider space bottom
+            $svg_space_top = $res_ctx->get_shortcode_att( 'space_bottom' );
+            $res_ctx->load_settings_raw( 'space_bottom', $svg_space_top . 'px' );
+
+            // divider background color
+            $res_ctx->load_settings_raw( 'svg_background_color_bottom', $res_ctx->get_shortcode_att('svg_background_color_bottom') );
+
+            // shadow
+            $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.1)', 'shadow_bot' );
+        }
+
+    }
 
 
 	function render($atts, $content = null) {
@@ -301,21 +295,22 @@ class vc_row extends tdc_composer_block {
 			'svg_width_bottom' => '',
 			'svg_flip_bottom' => '',
 			'svg_background_color_bottom' => '',
-			'shadow_size_bottom' => '',
-			'shadow_color_bottom' => '',
-			'shadow_offset_horizontal_bottom' => '',
-			'shadow_offset_vertical_bottom' => '',
+            'shadow_bot_shadow_size' => '',
+            'shadow_bot_shadow_color' => '',
+            'shadow_bot_shadow_offset_horizontal' => '0',
+            'shadow_bot_shadow_offset_vertical' => '2',
 			'row_divider_top' => '',
 			'svg_height_top' => '',
 			'svg_width_top' => '',
 			'svg_flip_top' => '',
 			'svg_background_color_top' => '',
-			'shadow_size_top' => '',
-			'shadow_color_top' => '',
-			'shadow_offset_horizontal_top' => '',
-			'shadow_offset_vertical_top' => '',
+			'shadow_top_shadow_size' => '',
+			'shadow_top_shadow_color' => '',
+			'shadow_top_shadow_offset_horizontal' => '0',
+			'shadow_top_shadow_offset_vertical' => '2',
 			'space_top' => '',
 			'space_bottom' => '',
+			'svg_z_index' => '',
 
 		), $atts);
 
@@ -804,14 +799,13 @@ class vc_row extends tdc_composer_block {
 	 */
 	protected function get_custom_att($att_name) {
 		if ( !isset( $this->atts ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, get_class($this) . '->get_att(' . $att_name . ') TD Composer Internal error: The atts are not set yet(AKA: the LOCAL render method was not called yet and the system tried to read an att)');
+		    echo 'TD Composer Internal error: The atts are not set yet(AKA: the LOCAL render method was not called yet and the system tried to read an att)';
 			die;
 		}
 
 		if ( !isset( $this->atts[$att_name] ) ) {
 			var_dump($this->atts);
-			tdc_util::error(__FILE__, __FUNCTION__, 'TD Composer Internal error: The system tried to use an LOCAL att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" The list with available atts is in vc_row::render');
-
+			echo 'TD Composer Internal error: The system tried to use an LOCAL att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" The list with available atts is in vc_row::render';
 			die;
 		}
 		return $this->atts[$att_name];

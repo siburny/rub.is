@@ -22,7 +22,7 @@ class td_block_trending_now extends td_block {
 				}
                 /* @header_text_color */
 				.$unique_block_class .td-trending-now-title {
-					background-color: @header_text_color;
+					color: @header_text_color;
 				}
                 /* @articles_color */
 				.$unique_block_class .entry-title a {

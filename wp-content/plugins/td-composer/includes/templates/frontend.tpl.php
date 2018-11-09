@@ -17,7 +17,7 @@ $post = tdc_state::get_post();
 
 // check if we have a post set in the state.
 if (empty($post)) {
-	tdc_util::error(__FILE__, __FUNCTION__, 'Invalid post ID, or permission denied');
+    echo "Invalid post ID, or permission denied";
 	die;
 }
 
@@ -28,7 +28,8 @@ wp_enqueue_media( array( 'post' => $post->ID ) );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
-$postContent = str_replace( '\'', '\\\'', $post->post_content );
+//$postContent = str_replace( '\'', '\\\'', $post->post_content );
+$postContent = $post->post_content;
 
 /*
  * Important!
@@ -37,21 +38,37 @@ $postContent = str_replace( '\'', '\\\'', $post->post_content );
  * changing these characters to paragraphs.
  */
 function td_replace_vc_column_text($matches) {
-	return '[vc_column_text' . $matches[1] . ']' . wpautop( htmlentities( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n", ENT_QUOTES, "UTF-8" ) ) . '[/vc_column_text]';
+    return '[vc_column_text' . $matches[1] . ']' . base64_encode( apply_filters( 'the_content', $matches[2] ) ) . '[/vc_column_text]';
+    //return '[vc_column_text' . $matches[1] . ']' . base64_encode( wpautop( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) ) ) . '[/vc_column_text]';
+    //return '[vc_column_text' . $matches[1] . ']' . wpautop( htmlentities( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n", ENT_QUOTES, "UTF-8" ) ) . '[/vc_column_text]';
 	//return '[vc_column_text' . $matches[1] . ']' . wpautop( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n" ) . '[/vc_column_text]';
 }
 
 if ( shortcode_exists( 'vc_column_text' ) && has_shortcode( $postContent, 'vc_column_text' ) ) {
-	$postContent = preg_replace_callback("/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", 'td_replace_vc_column_text', $postContent);
+
+    // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+    // This first regex check is to allow second regex replacement to apply only when 'vc_column_text' has content
+    preg_match("/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", $postContent, $matches);
+    if ( is_array( $matches ) && count( $matches ) ) {
+	    $postContent = preg_replace_callback( "/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", 'td_replace_vc_column_text', $postContent );
+    }
 }
 
 function td_replace_td_block_text_with_title($matches) {
-	return '[td_block_text_with_title' . $matches[1] . ']' . wpautop( htmlentities( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n", ENT_QUOTES, "UTF-8" ) ) . '[/td_block_text_with_title]';
+    return '[td_block_text_with_title' . $matches[1] . ']' . base64_encode( apply_filters( 'the_content', $matches[2] ) ) . '[/td_block_text_with_title]';
+    //return '[td_block_text_with_title' . $matches[1] . ']' . base64_encode(wpautop( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) ) ) . '[/td_block_text_with_title]';
+    //return '[td_block_text_with_title' . $matches[1] . ']' . wpautop( htmlentities( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n", ENT_QUOTES, "UTF-8" ) ) . '[/td_block_text_with_title]';
 	//return '[td_block_text_with_title' . $matches[1] . ']' . wpautop( preg_replace( '/<\/?p\>/', "\n", $matches[2] ) . "\n" ) . '[/td_block_text_with_title]';
 }
 
 if ( shortcode_exists( 'td_block_text_with_title' ) && has_shortcode( $postContent, 'td_block_text_with_title' ) ) {
-	$postContent = preg_replace_callback("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", 'td_replace_td_block_text_with_title', $postContent);
+
+    // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+    // This first regex check is to allow second regex replacement to apply only when 'td_block_text_with_title' has content
+    preg_match("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", $postContent, $matches);
+    if ( is_array( $matches ) && count( $matches ) ) {
+        $postContent = preg_replace_callback("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", 'td_replace_td_block_text_with_title', $postContent);
+    }
 }
 
 
@@ -121,19 +138,17 @@ function get_post_url( $post_id ) {
 		window.tdcPostSettings = {
 			postId: '<?php echo $post->ID; ?>',
 			postUrl: '<?php echo get_post_url($post->ID); ?>',
-			postContent: '<?php echo $postContent; ?>',
+            postContent: '<?php echo base64_encode( $postContent ) ?>',
 			postMetaDirtyContent: '<?php echo get_post_meta( $post->ID, 'tdc_dirty_content', true ) ?>',
 			postMetaVcJsStatus: '<?php echo get_post_meta( $post->ID, '_wpb_vc_js_status', true ) ?>',
 			shortcodes: <?php echo json_encode( $shortcodes ) ?>,
+
             tdbLoadDataFromId: <?php echo json_encode(tdc_util::get_get_val('tdbLoadDataFromId')) ?>,
-            tdbTemplateType: <?php echo json_encode(tdc_util::get_get_val('tdbTemplateType')) ?>
+            tdbTemplateType: <?php echo json_encode(tdc_util::get_get_val('tdbTemplateType')) ?>,
        };
 
 		// Set the local storage to show inline the iframe wrapper and the sidebar
 		window.localStorage.setItem( 'tdc_live_iframe_wrapper_inline', 1 );
-
-
-
 
 	</script>
 
@@ -156,16 +171,49 @@ function get_post_url( $post_id ) {
 			<?php
             // load the preview for the current content if we're editing a template with content
             $tdbLoadDataFromId = tdc_util::get_get_val('tdbLoadDataFromId');
-            if ($tdbLoadDataFromId !== false) {
-                $preview_url = get_permalink($tdbLoadDataFromId);
+            $tdbTemplateType = tdc_util::get_get_val('tdbTemplateType');
+
+            $preview_url = '';
+
+            if ( $tdbLoadDataFromId !== false ) {
+                switch ( $tdbTemplateType ) {
+                    case 'single':
+                        $preview_url = get_permalink( $tdbLoadDataFromId );
+                        break;
+
+                    case 'category':
+                        $preview_url = get_category_link( $tdbLoadDataFromId );
+                        break;
+
+                    case 'author':
+                        $preview_url = get_author_posts_url( $tdbLoadDataFromId );
+                        break;
+
+                    case 'search':
+                        $preview_url = get_search_link( $tdbLoadDataFromId );
+                        break;
+
+                    case 'date':
+                        $preview_url = get_year_link( $tdbLoadDataFromId );
+                        break;
+
+                    case 'tag':
+                        $preview_url = get_tag_link( $tdbLoadDataFromId );
+                        break;
+
+                    case 'attachment':
+                        $preview_url = get_attachment_link( $tdbLoadDataFromId );
+                        break;
+                }
+
             } else {
                 $preview_url = get_permalink($post->ID);
             }
             ?>
-			<a class="tdc-view-page" href="<?php echo $preview_url ?>" target="_blank" title="View the page. Save the content before it">
+            <a class="tdc-view-page" href="<?php echo $preview_url ?>" target="_blank" title="View the page. Save the content before it">
 				<span class="tdc-icon-view"></span>
 			</a>
-			<a class="tdc-save-page" href="#" title="Save the page content">
+			<a class="tdc-save-page" href="#" title="Save the page content CTRL + S">
 				<span class="tdc-icon-save"></span>
 				</a>
 			<a class="tdc-close-page" href="#" title="Close the composer and switch to backend">
@@ -173,13 +221,67 @@ function get_post_url( $post_id ) {
 			</a>
 		</div>
 
-		<div class="tdc-empty-sidebar" style="text-align: left">
+        <div class="tdc-empty-sidebar" style="text-align: left">
 			<div class="tdc-start-tips">
-				<img src="<?php echo TDC_URL ?>/assets/images/sidebar/tagdiv-composer.png">
+                <img src="<?php echo TDC_URL ?>/assets/images/sidebar/tagdiv-composer.png">
 				<span>Welcome to <br>tagDiv Composer!</span>
 				<p>Get started by adding elements, go to <span>Add Element</span> and begin dragging your items. You can edit by clicking on any element in the preview area.</p>
 			</div>
-			<div class="tdc-add-element" title="Add new element in the viewport">Add element</div>
+			<div class="tdc-sidebar-w-button tdc-add-element" title="Add new element in the viewport">Add element</div>
+
+            <style>
+                .tdb-template-meta {
+                    position: absolute;
+                    top: -3px;
+                    box-sizing: border-box;
+                    margin-left: 12px;
+                    color: #fff;
+                    font-size: 12px;
+                }
+                .tdb-template-meta span {
+                    opacity: 0.7;
+                }
+                .tdb-template-meta-arrow {
+                    margin: 0 2px 0 -3px;
+                }
+            </style>
+
+            <?php
+
+                // Temporarily remove Page Settings for not 'page' templates.
+                // This option will be changed to work for templates, or rewritten.
+                if ( 'page' !== $tdbTemplateType ) {
+                    ?>
+
+                    <style>
+                        .tdc-main-menu {
+                            display: none;
+                        }
+                    </style>
+
+                    <?php
+                }
+
+                $current_post_type = get_post_type( $post );
+                if ( false !== $tdbTemplateType ) {
+                    $current_post_type = $tdbTemplateType;
+                }
+
+                $post_title = get_the_title( $post );
+                if ( empty( $post_title ) ) {
+                    $post_title = '"Empty title"';
+                }
+            ?>
+
+            <div class="tdb-template-meta">
+                <span class="tdb-template-meta-cat"><?php echo $current_post_type ?></span>
+                <span class="tdb-template-meta-arrow tdc-breadcrumb-arrow"></span>
+                <span id="tdb-template-name"><?php echo $post_title; ?></span>
+                <a href="#" title="Edit page/template name" id="tdb-template-name-edit">Edit</a>
+            </div>
+
+            <?php do_action('tdc_welcome_panel_text')?>
+
 		</div>
 
 
@@ -189,19 +291,19 @@ function get_post_url( $post_id ) {
 				<!-- breadcrumbs browser -->
 				<div class="tdc-breadcrumbs">
 					<div id="tdc-breadcrumb-row">
-						<a href="#" title="The parent row.">row</a>
+						<a class="tdc-breadcrumb-item" href="#" title="The parent row.">row</a>
 					</div>
 					<div id="tdc-breadcrumb-column">
 						<span class="tdc-breadcrumb-arrow"></span>
-						<a href="#" title="The parent column.">column</a>
+						<a class="tdc-breadcrumb-item" href="#" title="The parent column.">column</a>
 					</div>
 					<div id="tdc-breadcrumb-inner-row">
 						<span class="tdc-breadcrumb-arrow"></span>
-						<a href="#" title="The parent inner row.">inner-row</a>
+						<a class="tdc-breadcrumb-item" href="#" title="The parent inner row.">inner-row</a>
 					</div>
 					<div id="tdc-breadcrumb-inner-column">
 						<span class="tdc-breadcrumb-arrow"></span>
-						<a href="#" title="The parent inner column.">inner-column</a>
+						<a class="tdc-breadcrumb-item" href="#" title="The parent inner column.">inner-column</a>
 					</div>
 				</div>
 				<div class="tdc-current-element-head" title="This is the type (shortcode) of the current selected element.">
@@ -224,15 +326,23 @@ function get_post_url( $post_id ) {
 			<div class="tdc-sidebar-info"></div>
 			<div class="tdc-extends">
 
+                <div class="tdc-sidebar-bottom-button tdc-restore-undo" title="Restore content">
+                    <span class="tdc-icon-restore-undo" title="Undo CTRL + Z"></span>
+                </div>
+                <div class="tdc-sidebar-bottom-button tdc-restore-redo" title="Restore content">
+                    <span class="tdc-icon-restore-redo" title="Redo CTRL + SHIFT + Z"></span>
+                </div>
 				<?php
 					// Extensions add button in sidebar (to open content)
 					do_action( 'tdc_extension_sidebar_bottom' );
 				?>
 
 			</div>
+            <?php if (current_user_can("switch_themes")) { ?>
 			<div class="tdc-sidebar-bottom-button tdc-main-menu" title="Show site wide settings">
 				<span class="tdc-icon-view"></span>
 			</div>
+            <?php } ?>
 		</div>
 
 		<div id="tdc-restore">
@@ -260,6 +370,14 @@ function get_post_url( $post_id ) {
 					$extended_mapped_shortcodes = array();
 					$external_mapped_shortcodes = array();
 					$multipurpose_mapped_shortcodes = array();
+					$single_post_mapped_shortcodes = array();
+                    $category_page_mapped_shortcodes = array();
+                    $tag_page_mapped_shortcodes = array();
+                    $author_page_mapped_shortcodes = array();
+                    $archive_page_mapped_shortcodes = array();
+                    $search_page_mapped_shortcodes = array();
+                    $attachment_page_mapped_shortcodes = array();
+                    $common_page_el_mapped_shortcodes = array();
 					$template_shortcodes = array(
 //						'template_1' => array(
 //							'name' => 'Template 1',
@@ -298,6 +416,27 @@ function get_post_url( $post_id ) {
 								case 'Extended':
 									$extended_mapped_shortcodes[] = $mapped_shortcode;
 									break;
+								case 'Single post':
+									$single_post_mapped_shortcodes[] = $mapped_shortcode;
+									break;
+                                case 'Category page':
+                                    $category_page_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
+                                case 'Tag page':
+                                    $tag_page_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
+                                case 'Author page':
+                                    $author_page_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
+                                case 'Search page':
+                                    $search_page_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
+                                case 'Attachment page':
+                                    $attachment_page_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
+                                case 'Common page elements':
+                                    $common_page_el_mapped_shortcodes[] = $mapped_shortcode;
+                                    break;
 								case 'Multipurpose':
 									$multipurpose_mapped_shortcodes[] = $mapped_shortcode;
 									break;
@@ -373,11 +512,10 @@ function get_post_url( $post_id ) {
 						}
 					}
 
-
 					if ( ! empty( $big_grids_mapped_shortcodes ) ) {
 
 						// Separator
-						echo '<div class="tdc-sidebar-separator">Big Grid Shortcodes</div>';
+						echo '<div class="tdc-sidebar-separator">Big Grid shortcodes</div>';
 
 						foreach ( $big_grids_mapped_shortcodes as $mapped_shortcode ) {
 							if ( isset( $mapped_shortcode['map_in_td_composer'] ) && true === $mapped_shortcode['map_in_td_composer'] ) {
@@ -405,6 +543,226 @@ function get_post_url( $post_id ) {
 							}
 						}
 					}
+
+					if ( ! empty( $single_post_mapped_shortcodes ) && 'single' === $tdbTemplateType ) {
+
+						// Separator
+						echo '<div class="tdc-sidebar-separator">Single Post shortcodes</div>';
+
+						// Here will be displayed the extended shortcodes
+						foreach ( $single_post_mapped_shortcodes as $mapped_shortcode ) {
+
+							$data_row_start_values = '';
+
+							if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+								$tdc_class = 'tdc-element-with-row tdc-row-temp';
+								if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+									$data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+								}
+							} else {
+								$tdc_class = 'tdc-element';
+							}
+
+							$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+							$buffer =
+								'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+								'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+								'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+								'</div>';
+
+							echo $buffer;
+						}
+					}
+
+                    if ( ! empty( $category_page_mapped_shortcodes ) && 'category' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Category Page shortcodes</div>';
+
+                        // Here will be displayed the extended shortcodes
+                        foreach ( $category_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $tag_page_mapped_shortcodes ) && 'tag' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Tag Page shortcodes</div>';
+
+                        // Here will be displayed the extended shortcodes
+                        foreach ( $tag_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $author_page_mapped_shortcodes ) && 'author' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Author Page shortcodes</div>';
+
+                        // Here will be displayed the author page shortcodes
+                        foreach ( $author_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $search_page_mapped_shortcodes ) && 'search' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Search Page shortcodes</div>';
+
+                        // Here will be displayed the search page shortcodes
+                        foreach ( $search_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $attachment_page_mapped_shortcodes ) && 'attachment' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Attachment Page shortcodes</div>';
+
+                        // Here will be displayed the search page shortcodes
+                        foreach ( $attachment_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $common_page_el_mapped_shortcodes ) && ! empty( $tdbTemplateType ) && 'page' !== $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Common Page Elements shortcodes</div>';
+
+                        // Here will be displayed the common page shortcodes
+                        foreach ( $common_page_el_mapped_shortcodes as $mapped_shortcode ) {
+
+                            if ( 'single' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
+                                continue;
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
 
 
 					if ( ! empty( $extended_mapped_shortcodes ) ) {
@@ -443,6 +801,14 @@ function get_post_url( $post_id ) {
 
 						// Separator
 						echo '<div class="tdc-sidebar-separator">External shortcodes</div>';
+
+						if ( 'page' === $tdbTemplateType ) {
+                            foreach ( $common_page_el_mapped_shortcodes as $common_page_el_mapped_shortcode ) {
+                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' ) {
+                                    $external_mapped_shortcodes[] = $common_page_el_mapped_shortcode;
+                                }
+                            }
+                        }
 
 						// Here will be displayed the external shortcodes
 						foreach ( $external_mapped_shortcodes as $mapped_shortcode ) {
@@ -541,6 +907,9 @@ function get_post_url( $post_id ) {
 
 					<?php
 					foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
+						if ( 'Newspaper' !== TD_THEME_NAME && 'font_newspaper' == $font_id ) {
+							continue;
+						}
 						echo '<option value="' . $font_id . '">' . $font_settings['name'] . '</option>';
 					}
 					?>
@@ -557,6 +926,9 @@ function get_post_url( $post_id ) {
 					$buffer = '';
 
 					foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
+						if ( 'Newspaper' !== TD_THEME_NAME && 'font_newspaper' == $font_id ) {
+							continue;
+						}
 						$buffer .= '<div class="tdc-font-separator" data-font_id="' . $font_id . '">' . $font_settings['name'] . '</div>';
 
 						ob_start();
@@ -579,6 +951,9 @@ function get_post_url( $post_id ) {
 			<input type="text" val="" id="tdc-gradient-color-picker"/>
 		</div>
 
+		<div id="tdc-font-list">
+		</div>
+
 		<?php
 
 		// Extensions add content
@@ -586,6 +961,23 @@ function get_post_url( $post_id ) {
 
 		?>
 
+	</div>
+
+	<div id="tdc-context-menu">
+		<ul>
+			<li class="tdc-current-type separator"></li>
+            <li class="tdc-cut-shortcode">Cut<span>CTRL + X</span></li>
+			<li class="tdc-copy-shortcode">Copy<span>CTRL + C</span></li>
+			<li class="tdc-paste-shortcode-before">Paste Before<span>CTRL + SHIFT + V</span></li>
+			<li class="tdc-paste-shortcode-after separator space">Paste After<span>CTRL + C</span></li>
+			<li class="tdc-copy-style active">Copy Style</li>
+			<li class="tdc-paste-style separator space">Paste Style</li>
+			<li class="tdc-reset-style separator space">Reset Style</li>
+			<li class="tdc-save-shortcode">Save as Element<span>SHIFT + S</span></li>
+			<li class="tdc-delete-shortcode">Delete<span>DEL</span></li>
+			<li class="tdc-clone-shortcode">Duplicate<span>CTRL + D</span></li>
+			<li class="tdc-clear-shortcode">Clear</li>
+		</ul>
 	</div>
 
 

@@ -15,7 +15,10 @@ function td_css_demo_gen() {
 		.td-blog-fitness .td-header-style-10 .sf-menu > .sfHover > a,
 		.td-blog-fitness .td-header-style-10 .sf-menu > .current-menu-item > a,
 		.td-blog-fitness .td-header-style-10 .sf-menu > .current-menu-ancestor > a,
-		.td-blog-fitness .td-header-style-10 .sf-menu > .current-category-ancestor > a {
+		.td-blog-fitness .td-header-style-10 .sf-menu > .current-category-ancestor > a,
+		.td-blog-fitness .td_block_big_grid_fl_4.td-grid-style-4 .td_module_wrap:hover .td-module-title a,
+		.td-blog-fitness .td_block_big_grid_fl_3.td-grid-style-4 .td_module_wrap:hover .td-module-title a,
+		.td-blog-fitness .td_module_wrap:hover .td-module-title a {
 			color: @theme_color;
 		}
 

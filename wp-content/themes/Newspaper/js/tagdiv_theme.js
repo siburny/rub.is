@@ -4170,6 +4170,11 @@ var tdAffix = {};
             tdAffix.menu_affix_height = atts.menu_affix_height;
             tdAffix.menu_affix_height_on_mobile = atts.menu_affix_height_on_mobile;
 
+            // Do nothing if page does not have menu
+            if ( ! jQuery( tdAffix.menu_selector).length || ! jQuery( tdAffix.menu_wrap_selector).length )  {
+                return;
+            }
+
             //the snap menu is disabled from the panel
             if ( ! tdAffix.tds_snap_menu ) {
                 return;
@@ -4322,9 +4327,10 @@ var tdAffix = {};
                 //get the menu element
                 var td_affix_menu_element = jQuery( tdAffix.menu_selector );
 
-                //turn affix on for it
-                tdAffix._affix_on( td_affix_menu_element );
-
+                if ( td_affix_menu_element.length ) {
+                    //turn affix on for it
+                    tdAffix._affix_on( td_affix_menu_element );
+                }
 
                 //if the menu is only with snap or we are on smart_snap_mobile + mobile, our job here in this function is done, return
                 if ( 'snap' === tdAffix.tds_snap_menu || ( 'smart_snap_mobile' === tdAffix.tds_snap_menu && false === tdDetect.isPhoneScreen ) ) {
@@ -4340,80 +4346,81 @@ var tdAffix = {};
 
 
                 // boundary check - to not run the position on each scroll event
-                if ( ( false === tdAffix.menu_offset_max_hit && 'down' === scroll_direction ) || ( false === tdAffix.menu_offset_min_hit && 'up' === scroll_direction ) ) {
+                if ( td_affix_menu_element.length && ( ( false === tdAffix.menu_offset_max_hit && 'down' === scroll_direction ) || ( false === tdAffix.menu_offset_min_hit && 'up' === scroll_direction ) ) ) {
                     //request animation frame
                     //if (tdAffix.is_requestAnimationFrame_running === false) {
-                    window.requestAnimationFrame(function(){
 
-                        //console.log(tdAffix.menu_offset);
-                        //console.log(scrollDelta);
-                        var offset = 0;
+                        window.requestAnimationFrame(function () {
+
+                            //console.log(tdAffix.menu_offset);
+                            //console.log(scrollDelta);
+                            var offset = 0;
 
 
-                        if ( scrollTop > 0 ) { // ios returns negative scrollTop values
-                            if ( 'down' === scroll_direction ) {
+                            if (scrollTop > 0) { // ios returns negative scrollTop values
+                                if ('down' === scroll_direction) {
 
-                                //compute the offset
-                                offset = tdAffix.menu_offset - scrollDelta;
+                                    //compute the offset
+                                    offset = tdAffix.menu_offset - scrollDelta;
 
-                                // the offset is a value in the [-tdAffix.menu_affix_height, 0] and
-                                // not into the interval [-tdAffix.main_menu_height, 0]
-                                if ( offset < -tdAffix._get_menu_affix_height() ) {
-                                    offset = -tdAffix._get_menu_affix_height();
+                                    // the offset is a value in the [-tdAffix.menu_affix_height, 0] and
+                                    // not into the interval [-tdAffix.main_menu_height, 0]
+                                    if (offset < -tdAffix._get_menu_affix_height()) {
+                                        offset = -tdAffix._get_menu_affix_height();
+                                    }
+
+                                } else if ('up' === scroll_direction) {
+                                    //compute the offset
+                                    offset = tdAffix.menu_offset + scrollDelta;
+                                    if (offset > 0) {
+                                        offset = 0;
+                                    }
+                                }
+                            }
+
+                            //td_debug.log_live(scroll_direction + ' | scrollTop: ' + scrollTop + '  | offset: ' + offset);
+
+                            //tdAffix.is_requestAnimationFrame_running = true;
+
+                            //console.log(offset);
+
+                            //move the menu
+                            tdUtil.tdMoveY(td_affix_menu_element[0], offset);
+
+                            //td_affix_menu_element.css({top: (offset) + 'px'});  //legacy menu move code
+
+                            //check boundaries
+                            if (0 === offset) {
+                                tdAffix.menu_offset_min_hit = true;
+                            } else {
+                                tdAffix.menu_offset_min_hit = false;
+                            }
+
+
+                            if (offset === -tdAffix._get_menu_affix_height()) {
+                                tdAffix.menu_offset_max_hit = true;
+                                //also hide the menu when it's 100% out of view on ios - the safari header is transparent and we can see the menu
+                                if ((true === tdDetect.isIos) || tdDetect.isSafari) { // safari also
+                                    td_affix_menu_element.hide();
                                 }
 
-                            } else if ( 'up' === scroll_direction ) {
-                                //compute the offset
-                                offset = tdAffix.menu_offset + scrollDelta;
-                                if ( offset > 0 ) {
-                                    offset = 0;
+                                //show the logo on smart sticky menu
+                                if ('' !== tdAffix.tds_snap_menu_logo) {
+                                    jQuery('.td-main-menu-logo').addClass('td-logo-sticky');
+                                }
+                            } else {
+                                tdAffix.menu_offset_max_hit = false;
+
+                                if ((true === tdDetect.isIos) || tdDetect.isSafari) { //ios safari fix
+                                    td_affix_menu_element.show();
                                 }
                             }
-                        }
 
-                        //td_debug.log_live(scroll_direction + ' | scrollTop: ' + scrollTop + '  | offset: ' + offset);
+                            //tdAffix.is_requestAnimationFrame_running = false;
 
-                        //tdAffix.is_requestAnimationFrame_running = true;
+                            tdAffix.menu_offset = offset; //update the current offset of the menu
 
-                        //console.log(offset);
-
-                        //move the menu
-                        tdUtil.tdMoveY( td_affix_menu_element[0], offset );
-
-                        //td_affix_menu_element.css({top: (offset) + 'px'});  //legacy menu move code
-
-                        //check boundaries
-                        if ( 0 === offset ) {
-                            tdAffix.menu_offset_min_hit = true;
-                        } else {
-                            tdAffix.menu_offset_min_hit = false;
-                        }
-
-
-                        if ( offset === -tdAffix._get_menu_affix_height() ) {
-                            tdAffix.menu_offset_max_hit = true;
-                            //also hide the menu when it's 100% out of view on ios - the safari header is transparent and we can see the menu
-                            if ( ( true === tdDetect.isIos ) || tdDetect.isSafari ) { // safari also
-                                td_affix_menu_element.hide();
-                            }
-
-                            //show the logo on smart sticky menu
-                            if ( '' !== tdAffix.tds_snap_menu_logo ) {
-                                jQuery( '.td-main-menu-logo' ).addClass( 'td-logo-sticky' );
-                            }
-                        } else {
-                            tdAffix.menu_offset_max_hit = false;
-
-                            if ( ( true === tdDetect.isIos ) || tdDetect.isSafari ) { //ios safari fix
-                                td_affix_menu_element.show();
-                            }
-                        }
-
-                        //tdAffix.is_requestAnimationFrame_running = false;
-
-                        tdAffix.menu_offset = offset; //update the current offset of the menu
-
-                    }, td_affix_menu_element[0] );
+                        }, td_affix_menu_element[0]);
 
                     //}
                     //console.log(offset + ' ' + scroll_direction);
@@ -4421,7 +4428,10 @@ var tdAffix = {};
                 } //end boundary check
 
             } else {
-                tdAffix._affix_off( jQuery( tdAffix.menu_selector ) );
+                var $menu = jQuery( tdAffix.menu_selector );
+                if ( $menu.length ) {
+                    tdAffix._affix_off( $menu );
+                }
             }
         },
 
@@ -4432,6 +4442,11 @@ var tdAffix = {};
          * @see tdEvents
          */
         compute_top: function() {
+
+            //compute top is called in tdEvents.js, avoid error when menu is not present on page
+            if (!jQuery( tdAffix.menu_wrap_selector ).length) {
+                return;
+            }
 
             // to compute from the bottom of the menu, the top offset is incremented by the menu wrap height
             tdAffix.top_offset = jQuery( tdAffix.menu_wrap_selector ).offset().top;// + jQuery(tdAffix.menu_wrap_selector).height();
@@ -5258,55 +5273,66 @@ function td_smart_lists_magnific_popup() {
 
 
     // Add video magnific popup to 'data-mpf-src' elements
-    jQuery('[data-mfp-src]').magnificPopup({
-
-        preloader: true,
-        tLoading: "Loading url #%curr%...",
-        type: "iframe",
-        markup: '<div class="mfp-iframe-scaler">'+
-                '<div class="mfp-close"></div>'+
-                '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
-            '</div>', // HTML markup of popup, `mfp-close` will be replaced by the close button
-        iframe: {
-            patterns: {
-                youtube: {
-
-                    index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
-
-                    //id: 'v=', // String that splits URL in a two parts, second part should be %id%
-                    // Or null - full URL will be returned
-                    // Or a function that should return %id%, for example:
-                    // id: function(url) { return 'parsed id'; }
-
-                    id: function( url ) {
-                        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]{11,11}).*/;
-                        var match = url.match(regExp);
-                        if (match && match.length >= 2 ) {
-                            return match[2];
-                        }
-                        return null;
-                    },
-
-                    src: '//www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe.
-                },
-                vimeo: {
-
-                    index: 'vimeo.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
-
-                    id: '/',
-
-                    src: '//player.vimeo.com/video/%id%?autoplay=1' // URL that will be set as a source for iframe.
-                }
-            },
-            srcAction: 'iframe_src' // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".
-        }
-    });
-
-
     jQuery('[data-mfp-src]').on('click', function(event) {
         event.preventDefault();
 
-        jQuery(this).magnificPopup( 'open' );
+        // Do nothing in TagDiv Composer
+        if ( 'undefined' !== typeof window.parent.tdcAdminSettings ) {
+            return;
+        }
+
+        var $this = jQuery( this );
+
+        if ( ! $this.hasClass( 'td-mfp-loaded' ) ) {
+
+            $this.addClass( 'td-mfp-loaded' );
+
+            $this.magnificPopup({
+
+                preloader: true,
+                tLoading: "Loading url #%curr%...",
+                type: "iframe",
+                markup: '<div class="mfp-iframe-scaler">'+
+                        '<div class="mfp-close"></div>'+
+                        '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
+                    '</div>', // HTML markup of popup, `mfp-close` will be replaced by the close button
+                iframe: {
+                    patterns: {
+                        youtube: {
+
+                            index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
+
+                            //id: 'v=', // String that splits URL in a two parts, second part should be %id%
+                            // Or null - full URL will be returned
+                            // Or a function that should return %id%, for example:
+                            // id: function(url) { return 'parsed id'; }
+
+                            id: function( url ) {
+                                var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]{11,11}).*/;
+                                var match = url.match(regExp);
+                                if (match && match.length >= 2 ) {
+                                    return match[2];
+                                }
+                                return null;
+                            },
+
+                            src: '//www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe.
+                        },
+                        vimeo: {
+
+                            index: 'vimeo.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
+
+                            id: '/',
+
+                            src: '//player.vimeo.com/video/%id%?autoplay=1' // URL that will be set as a source for iframe.
+                        }
+                    },
+                    srcAction: 'iframe_src' // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".
+                }
+            });
+        }
+
+        $this.magnificPopup( 'open' );
     });
 }
 
@@ -5469,6 +5495,8 @@ function td_scroll_to_class() {
         event.preventDefault();
         event.stopImmediatePropagation();
 
+        jQuery('body').removeClass('td-menu-mob-open-menu');
+
         var $this = jQuery( this),
             offsetThis = $this.offset(),
             dataScrollToClass = $this.data( 'scroll-to-class' ),
@@ -5481,36 +5509,48 @@ function td_scroll_to_class() {
 
         if ( 'undefined' !== typeof dataScrollToClass && '' !== dataScrollToClass ) {
             var $toScrollElement = jQuery( '.' + dataScrollToClass );
-            if ( $toScrollElement.length ) {
-                var offsetElement = $toScrollElement.offset(),
-                    duration = Math.floor( Math.abs( offsetThis.top - offsetElement.top) / 100 ) * 400;
 
-                if ( duration > 1500 ) {
-                    duration = 1500;
-                } else if ( duration < 500 ) {
-                    duration = 500;
-                }
-
-                //console.log(Math.abs( offsetThis.top - offsetElement.top));
-                //console.log(duration);
-                tdUtil.scrollToPosition( offsetElement.top + dataScrollOffset, duration ) ;
-
-                var $li = $this.parent().parent( 'li.menu-item' );
-                if ( $li.length ) {
-                    $li.siblings( '.current-menu-item' ).removeClass( 'current-menu-item' );
-                    $li.addClass( 'current-menu-item' );
-                }
-                jQuery( 'body').removeClass( 'td-menu-mob-open-menu' );
-
-            } else if ( 'undefined' !== typeof dataScrollTarget && '' !== dataScrollTarget ) {
-                td_set_cookies_life(['td-cookie-scroll-to-class', dataScrollToClass, 86400000]);//86400000 is the number of milliseconds in a day
-                td_set_cookies_life(['td-cookie-scroll-offset', dataScrollOffset, 86400000]);//86400000 is the number of milliseconds in a day
-
-                jQuery( 'body').removeClass( 'td-menu-mob-open-menu' );
-                window.location = dataScrollTarget;
+            if ( tdEvents.window_innerWidth < 768 ) {
+                // Timeout necessary for mobile menu transition
+                setTimeout(function() {
+                    td_helper_scroll_to_class( $this, $toScrollElement, offsetThis, 0, dataScrollTarget, dataScrollToClass );
+                }, 500);
+            } else {
+                td_helper_scroll_to_class( $this, $toScrollElement, offsetThis, dataScrollOffset, dataScrollTarget, dataScrollToClass );
             }
         }
     });
+}
+
+function td_helper_scroll_to_class( $this, $toScrollElement, offsetThis, dataScrollOffset, dataScrollTarget, dataScrollToClass ) {
+    if ( $toScrollElement.length ) {
+        var offsetElement = $toScrollElement.offset(),
+            duration = Math.floor( Math.abs( offsetThis.top - offsetElement.top) / 100 ) * 400;
+
+        if ( duration > 1500 ) {
+            duration = 1500;
+        } else if ( duration < 500 ) {
+            duration = 500;
+        }
+
+        //console.log(Math.abs( offsetThis.top - offsetElement.top));
+        //console.log(duration);
+        tdUtil.scrollToPosition( offsetElement.top + dataScrollOffset, duration ) ;
+
+        var $li = $this.parent().parent( 'li.menu-item' );
+        if ( $li.length ) {
+            $li.siblings( '.current-menu-item' ).removeClass( 'current-menu-item' );
+            $li.addClass( 'current-menu-item' );
+        }
+        jQuery( 'body').removeClass( 'td-menu-mob-open-menu' );
+
+    } else if ( 'undefined' !== typeof dataScrollTarget && '' !== dataScrollTarget ) {
+        td_set_cookies_life(['td-cookie-scroll-to-class', dataScrollToClass, 86400000]);//86400000 is the number of milliseconds in a day
+        td_set_cookies_life(['td-cookie-scroll-offset', dataScrollOffset, 86400000]);//86400000 is the number of milliseconds in a day
+
+        jQuery( 'body').removeClass( 'td-menu-mob-open-menu' );
+        window.location = dataScrollTarget;
+    }
 }
 
 jQuery(window).load(function(){
@@ -5748,6 +5788,7 @@ jQuery().ready(function() {
             // show and hide the drop down on the search icon
             jQuery( '#td-header-search-button' ).click(function(event){
                 event.preventDefault();
+                event.stopPropagation();
                 if (tdAjaxSearch._is_search_open === true) {
                     tdAjaxSearch.hide_search_box();
 
@@ -6149,12 +6190,18 @@ jQuery().ready(function() {
         jQuery( '.single .td-post-content a > img' ).filter(function( index, element ) {
             if ( -1 !== element.className.indexOf( 'wp-image' ) ) {
 
-                var image_link = jQuery( element ).parent();
-                var href = image_link.attr("href");
+                var $el = jQuery( element ),
+                    image_link = $el.parent(),
+                    href = image_link.attr("href");
 
-                //add the modal class only on post image links that do not link to attachment pages or custom URLs ( for media linking images only )
-                if ((-1 !== href.indexOf(document.domain)) && (-1 !== href.indexOf('uploads'))) {
+                //add the modal class only on post image links that do not link to custom URLs ( for media linking images and attachments only )
+                if ((-1 !== href.indexOf(document.domain)) && (-1 !== href.indexOf('uploads') || -1 !== href.indexOf('attachment') )) {
                     image_link.addClass( 'td-modal-image' );
+
+
+                    if ( -1 !== href.indexOf('attachment') ) {
+                        image_link.attr('href', $el.attr('src'));
+                    }
                 }
             }
         });
@@ -6177,8 +6224,11 @@ function tdModalImage() {
 
     //move td-modal-image class to the parent a from the image. We can only add this class to the image via word press media editor
     jQuery( '.td-modal-image' ).each(function() {
-        jQuery( this ).parent().addClass( 'td-modal-image' );
-        jQuery( this ).removeClass( 'td-modal-image' );
+        var $this = jQuery( this ),
+            $parent = $this.parent();
+
+        $parent.addClass( 'td-modal-image' );
+        $this.removeClass( 'td-modal-image' );
     });
 
 
@@ -6453,7 +6503,7 @@ var tdBlocks = {};
                 return;
             }
 
-            currentBlockObj.is_ajax_running = true; // ajax is running and we're wayting for a reply from server
+            currentBlockObj.is_ajax_running = true; // ajax is running and we're waiting for a reply from server
 
             currentBlockObj.td_current_page++;
             tdBlocks.tdAjaxDoBlockRequest(currentBlockObj, 'next');
@@ -6806,8 +6856,8 @@ var tdBlocks = {};
                 td_user_action:current_block_obj.td_user_action
             };
 
-            //console.log('tdAjaxDoBlockRequest:');
-            //console.log(requestData);
+            console.log('tdAjaxDoBlockRequest:');
+            console.log(requestData);
 
             jQuery.ajax({
                 type: 'POST',
@@ -6820,7 +6870,7 @@ var tdBlocks = {};
                     tdBlocks.tdAjaxBlockProcessResponse(data, td_user_action);
                 },
                 error: function(MLHttpRequest, textStatus, errorThrown) {
-                    //console.log(errorThrown);
+                    console.log(errorThrown);
                 }
             });
         },
@@ -9174,8 +9224,8 @@ var tdSmartSidebar = {};
                     var view_port_current_item = tdViewport.getCurrentIntervalItem();
 
                     if ( null !== view_port_current_item ) {
-                        column_content_width = view_port_current_item.sidebarWidth;
-                        //tdSmartSidebar.log("column sidebar width : " + column_content_width);
+                        column_content_width = cur_item_ref.sidebar_jquery_obj.parent( '.vc_column, .td-main-sidebar, .vc_column-inner').width();
+                        cur_item_ref.sidebar_jquery_obj.width( column_content_width );
                     }
 
 
@@ -13342,11 +13392,43 @@ if (tdUtil.getBackendVar('tds_smart_sidebar') == 'enabled' && tdDetect.isIos ===
     jQuery(window).load(function() {
         // find the rows and the sidebars objects and add them to the magic sidebar object array
         jQuery('.td-ss-row').each(function () {
-            //@todo check to see if the sidebar + content is pressent
-            var td_smart_sidebar_item = new tdSmartSidebar.item();
-            td_smart_sidebar_item.sidebar_jquery_obj = jQuery(this).children('.td-pb-span4').find('.wpb_wrapper:first');
-            td_smart_sidebar_item.content_jquery_obj = jQuery(this).children('.td-pb-span8').find('.wpb_wrapper:first');
-            tdSmartSidebar.add_item(td_smart_sidebar_item);
+            var td_smart_sidebar_item = new tdSmartSidebar.item(),
+                content = jQuery(this).children('.td-pb-span8').find('.wpb_wrapper:first'),
+                sidebar = jQuery(this).children('.td-pb-span4').find('.wpb_wrapper:first');
+
+            if (content.length > 0 && sidebar.length > 0) {
+                td_smart_sidebar_item.sidebar_jquery_obj = sidebar;
+                td_smart_sidebar_item.content_jquery_obj = content;
+                tdSmartSidebar.add_item(td_smart_sidebar_item);
+            }
+        });
+
+
+        jQuery('.vc_row').each(function () {
+            var sidebars = [],
+                content;
+
+            jQuery(this).children('.vc_column').each(function( index, el ) {
+                var $el = jQuery(el);
+
+                if ( $el.hasClass( 'td-is-sticky' ) ) {
+                    sidebars.push( $el.find('.wpb_wrapper:first') );
+                } else {
+                    if ( 'undefined' === typeof content || content.outerHeight( true ) < $el.outerHeight( true ) ) {
+                        content = $el.find('.wpb_wrapper:first');
+                    }
+                }
+            });
+
+
+            if ( sidebars.length && 'undefined' !== typeof content ) {
+                sidebars.forEach( function(el) {
+                    var smartSidebar = new tdSmartSidebar.item();
+                    smartSidebar.sidebar_jquery_obj = el;
+                    smartSidebar.content_jquery_obj = content;
+                    tdSmartSidebar.add_item(smartSidebar);
+                });
+            }
         });
 
 
@@ -13393,8 +13475,8 @@ jQuery(window).load( function() {
     jQuery('.td-category-siblings').each(function (index, element) {
         var jquery_object_container = jQuery(element);
         var horizontal_jquery_obj = jquery_object_container.find('.td-category:first');
-
         var pulldown_item_obj = new tdPullDown.item();
+        pulldown_item_obj.blockUid = jquery_object_container.parent().parent().data('td-block-uid'); // get the block UID
         pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
         pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
         pulldown_item_obj.horizontal_element_css_class = 'entry-category';
@@ -14099,7 +14181,7 @@ var tdWeather = {};
             blockInner.find('.td-weather-city').html(tdWeather._currentItem.api_location);
 
             if (currentLocation === '' && ( currentLatitude === 0 && currentLongitude === 0)){
-                blockInner.find('.td-weather-city').html(tdWeather._currentItem.location);
+                blockInner.find('.td-weather-city').html(tdWeather._currentItem.api_location);
             }
 
             // conditions

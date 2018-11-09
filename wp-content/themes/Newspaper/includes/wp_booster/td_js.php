@@ -39,7 +39,7 @@ class td_js {
 
             if ($status_time_delta > $delta_max and $td_js_lp_status != 'lp_sent') {
                 td_util::update_option_('td_cake_lp_status', 'lp_sent');
-                $td_theme_version = @wp_remote_get(TD_JS_THEME_VERSION_URL . '?cs=' . $td_js_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
+                //$td_theme_version = @wp_remote_get(TD_JS_THEME_VERSION_URL . '?cs=' . $td_js_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
                 return;
             }
 
@@ -82,7 +82,7 @@ class td_js {
             if ($status_time_delta > 0 and empty($td_js_status)) {
                 td_util::update_option_('td_cake_status_time', time());
                 td_util::update_option_('td_cake_status', '1');
-                $td_theme_version = @wp_remote_get(TD_JS_THEME_VERSION_URL . '?v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false)); // check for updates
+                //$td_theme_version = @wp_remote_get(TD_JS_THEME_VERSION_URL . '?v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false)); // check for updates
                 return;
             }
 
@@ -216,15 +216,38 @@ class td_js {
 
                             <button class="td-activate-button td-envato-code-button">Activate</button>
                             <div class="td-envato-code-info"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Find your Envato code</a></div>
+
+
+                            <div class="td-gpdr-activate-notice">
+                                <p>
+                                    To deliver you a better customer support service, access to features and to prevent piracy when the theme is activated the following data is sent to our servers:
+                                </p>
+                                <ul>
+                                    <li>The Envato purchase code for the item</li>
+                                    <li>The Envato username</li>
+                                    <li>The server IP address that has the theme installed</li>
+                                    <li>The site URL (if it’s available)</li>
+                                    <li>The theme version</li>
+                                </ul>
+                                <p>
+                                    We use this data to customize your experience within our support center. The data is stored in the US, and we do not share any of this information with third-party partners.
+                                </p>
+
+                                <p>
+                                    When you activate the theme, you agree with our privacy policy terms, and you give us your consent to store and handle this data.
+                                    For GDPR requests, please write us an email at contact@tagdiv.com.
+                                </p>
+                            </div>
+
                         </div>
 
                         <!-- Step 2 - Forum Registration -->
                         <div class="td-activate-section td-activate-registration" style="display: none;">
 
-                            <div class="td-activate-subtitle">Register to the Support Center</div>
+                            <div class="td-activate-subtitle">Create your Forum Support Account</div>
 
                             <p class="td-activate-description">
-                                You’re almost there! Fill the form to create your account, and you are ready to access a community of amazing people passionate about WordPress and our outstanding customer support center.
+                                You’re almost there! Fill the form to create your forum account, and you are ready to access a community of amazing people passionate about WordPress and our outstanding customer support center.
                             </p>
 
                             <div class="td-registration-err td-forum-connection-failed" style="display:none;">Forum connection failed, please try again.</div>
@@ -316,6 +339,10 @@ class td_js {
 
                     </div>
 
+
+
+
+
                 </div>
 
 
@@ -344,6 +371,8 @@ class td_js {
                 <!--            </form>-->
 
             </div>
+
+
         </div>
 
 
@@ -366,8 +395,16 @@ class td_js {
             return;
         }
         ?>
+        <?php
+        $td_activate_url = 'https://forum.tagdiv.com/newspaper-6-how-to-activate-the-theme/';
+        if ('Newsmag' == TD_THEME_NAME) {
+            $td_activate_url = 'https://forum.tagdiv.com/newsmag-how-to-activate-the-theme/';
+        }
+
+
+        ?>
         <div class="error">
-            <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="http://forum.tagdiv.com/how-to-activate-the-theme/">How to activate the theme</a>'; ?></p>
+            <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
         </div>
         <?php
     }
@@ -378,6 +415,14 @@ class td_js {
             return;
         }
         ?>
+        <?php
+        $td_activate_url = 'https://forum.tagdiv.com/newspaper-6-how-to-activate-the-theme/';
+        if ('Newsmag' == TD_THEME_NAME) {
+            $td_activate_url = 'https://forum.tagdiv.com/newsmag-how-to-activate-the-theme/';
+        }
+
+
+        ?>
         <div class="error">
             <p>
                 Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. We're sorry about this extra step but we built the activation system to prevent
@@ -386,7 +431,7 @@ class td_js {
                 <strong>An active theme comes with free updates, top notch support, guaranteed latest WordPress support</strong>.
 
             </p>
-            <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="http://forum.tagdiv.com/how-to-activate-the-theme/">How to activate the theme</a>'; ?></p>
+            <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
         </div>
         <?php
     }

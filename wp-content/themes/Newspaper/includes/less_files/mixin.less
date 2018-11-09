@@ -90,6 +90,11 @@
   -moz-box-shadow: @shadow;
   box-shadow: @shadow;
 }
+.box-shadow(@shadow1, @shadow2) {
+  -webkit-box-shadow: @shadow1, @shadow2;
+  -moz-box-shadow: @shadow1, @shadow2;
+  box-shadow: @shadow1, @shadow2;
+}
 
 // Box sizing
 .box-sizing(@boxmodel) {

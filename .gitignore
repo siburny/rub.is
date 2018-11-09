@@ -1,5 +1,6 @@
 wp-config.php
 wp-content/uploads/
+wp-content/themes/Newspaper-orig/
 git/
 backup/
 *.wpress

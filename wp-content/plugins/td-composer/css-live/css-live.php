@@ -390,8 +390,9 @@ if ( ! function_exists( 'load_css_live' ) ) {
 									languageTools.addCompleter(tdcCompleter);
 
 									window.editor = ace.edit("<?php echo $new_editor_uid ?>");
+                                    window.editor.$blockScrolling = Infinity;
 
-									// 'change' handler is written as function because it's called by tdc_on_add_css_live_components (of wp_footer hook)
+                                    // 'change' handler is written as function because it's called by tdc_on_add_css_live_components (of wp_footer hook)
 									// We did it to reattach the existing compiled css to the new content received from server.
 									window.editorChangeHandler = function () {
 										//tdwState.lessWasEdited = true;
@@ -424,6 +425,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 									editor.setTheme("ace/theme/textmate");
 									editor.setShowPrintMargin(false);
 									editor.getSession().setMode("ace/mode/less");
+                                    editor.getSession().setUseWrapMode(true);
 									editor.setOptions({
 										enableBasicAutocompletion: true,
 										enableSnippets: true,
@@ -494,7 +496,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 
 
 
-		if ( ! $load_in_composer_iframe && is_user_logged_in() && current_user_can('switch_themes') ) {
+		if ( ! $load_in_composer_iframe && is_user_logged_in() && current_user_can('publish_pages') ) {
 			add_action( 'wp_enqueue_scripts', 'td_live_css_load_plugin_css' );
 			add_action( 'wp_enqueue_scripts', 'td_live_css_load_plugin_js' );
 		}
@@ -510,21 +512,22 @@ if ( ! function_exists( 'load_css_live' ) ) {
 
 		function td_live_css_load_plugin_css() {
 		    if ( defined('TDC_USE_LESS') && TDC_USE_LESS === true ) { // we use defined because this can run without that constant when td-composer is inactive
-                wp_enqueue_style( 'td_live_css_frontend', TDC_URL . '/td_less_style.css.php?part=td_live_css_frontend', false, false );
+                wp_enqueue_style( 'td_live_css_frontend', TDC_URL . '/td_less_style.css.php?part=td_live_css_frontend', false, TD_COMPOSER );
             } else {
-                wp_enqueue_style( 'td_live_css_frontend', TDC_URL . '/css-live/assets/css/td_live_css_frontend.css', false, false );
+                wp_enqueue_style( 'td_live_css_frontend', TDC_URL . '/css-live/assets/css/td_live_css_frontend.css', false, TD_COMPOSER );
             }
 		}
 
 		function td_live_css_load_plugin_js() {
 
-			wp_enqueue_script('js_files_for_ace', TDC_URL . '/css-live/assets/external/ace/ace.js', array('jquery', 'underscore'), TDC_VERSION, true);
-	        wp_enqueue_script('js_files_for_ace_ext_language_tools', TDC_URL . '/css-live/assets/external/ace/ext-language_tools.js', array( 'js_files_for_ace' ), TDC_VERSION, true);
+			wp_enqueue_script('js_files_for_ace', TDC_URL . '/css-live/assets/external/ace/ace.js', array('jquery', 'underscore'), TD_COMPOSER, true);
+	        wp_enqueue_script('js_files_for_ace_ext_language_tools', TDC_URL . '/css-live/assets/external/ace/ext-language_tools.js', array( 'js_files_for_ace' ), TD_COMPOSER, true);
+            wp_enqueue_script('js_files_for_ace_ext_searchbox', TDC_URL . '/css-live/assets/external/ace/ext-searchbox.js', array( 'js_files_for_ace' ), TD_COMPOSER, true);
 
-			// load the js
+            // load the js
 		    if ( defined( 'TDC_DEPLOY_MODE' ) && TDC_DEPLOY_MODE == 'deploy' ) {
-			    wp_enqueue_script('js_files_for_live_css', TDC_URL . '/assets/js/js_files_for_live_css.min.js', array( 'js_files_for_ace_ext_language_tools' ), TDC_VERSION, true);
-		        wp_enqueue_script('js_files_for_plugin_live_css', TDC_URL . '/assets/js/js_files_for_plugin_live_css.min.js', array( 'js_files_for_live_css' ), TDC_VERSION, true);
+			    wp_enqueue_script('js_files_for_live_css', TDC_URL . '/assets/js/js_files_for_live_css.min.js', array( 'js_files_for_ace_ext_language_tools' ), TD_COMPOSER, true);
+		        wp_enqueue_script('js_files_for_plugin_live_css', TDC_URL . '/assets/js/js_files_for_plugin_live_css.min.js', array( 'js_files_for_live_css' ), TD_COMPOSER, true);
 		    } else {
 			    tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_live_css, array( 'js_files_for_ace_ext_language_tools' ) );
 			    tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_plugin_live_css );
@@ -534,21 +537,22 @@ if ( ! function_exists( 'load_css_live' ) ) {
 		function td_live_css_load_admin_css() {
 
             if ( defined('TDC_USE_LESS') && TDC_USE_LESS === true ) { // we use defined because this can run without that constant when td-composer is inactive
-                wp_enqueue_style( 'td_live_css_composer', TDC_URL . '/td_less_style.css.php?part=td_live_css_composer', false, false );
+                wp_enqueue_style( 'td_live_css_composer', TDC_URL . '/td_less_style.css.php?part=td_live_css_composer', false, TD_COMPOSER );
             } else {
-                wp_enqueue_style( 'td_live_css_composer', TDC_URL . '/css-live/assets/css/td_live_css_composer.css', false, false );
+                wp_enqueue_style( 'td_live_css_composer', TDC_URL . '/css-live/assets/css/td_live_css_composer.css', false, TD_COMPOSER );
             }
 		}
 
 		function td_live_css_load_admin_js() {
 
-			wp_enqueue_script('js_files_for_ace', TDC_URL . '/css-live/assets/external/ace/ace.js', array('jquery', 'underscore'), TDC_VERSION, true);
-	        wp_enqueue_script('js_files_for_ace_ext_language_tools', TDC_URL . '/css-live/assets/external/ace/ext-language_tools.js', array( 'js_files_for_ace' ), TDC_VERSION, true);
+			wp_enqueue_script('js_files_for_ace', TDC_URL . '/css-live/assets/external/ace/ace.js', array('jquery', 'underscore'), TD_COMPOSER, true);
+	        wp_enqueue_script('js_files_for_ace_ext_language_tools', TDC_URL . '/css-live/assets/external/ace/ext-language_tools.js', array( 'js_files_for_ace' ), TD_COMPOSER, true);
+	        wp_enqueue_script('js_files_for_ace_ext_searchbox', TDC_URL . '/css-live/assets/external/ace/ext-searchbox.js', array( 'js_files_for_ace' ), TD_COMPOSER, true);
 
 			// load the js
 		    if ( defined( 'TDC_DEPLOY_MODE' ) && TDC_DEPLOY_MODE == 'deploy' ) {
-			    wp_enqueue_script('js_files_for_live_css', TDC_URL . '/assets/js/js_files_for_live_css.min.js', array( 'js_files_for_ace_ext_language_tools' ), TDC_VERSION, true);
-		        wp_enqueue_script('js_files_for_extension_live_css', TDC_URL . '/assets/js/js_files_for_extension_live_css.min.js', array( 'js_files_for_live_css' ), TDC_VERSION, true);
+			    wp_enqueue_script('js_files_for_live_css', TDC_URL . '/assets/js/js_files_for_live_css.min.js', array( 'js_files_for_ace_ext_language_tools' ), TD_COMPOSER, true);
+		        wp_enqueue_script('js_files_for_extension_live_css', TDC_URL . '/assets/js/js_files_for_extension_live_css.min.js', array( 'js_files_for_live_css' ), TD_COMPOSER, true);
 		    } else {
 			    tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_live_css, array( 'js_files_for_ace_ext_language_tools' ) );
 			    tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_extension_live_css );

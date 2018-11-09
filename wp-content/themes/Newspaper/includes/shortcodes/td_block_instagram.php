@@ -29,9 +29,14 @@ class td_block_instagram extends td_block {
 				.$unique_block_class .td-instagram-button {
 					border-color: @btn_border_color;
 				}
-				
 
 
+
+				/* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_handle */
 				.$unique_block_class .td-instagram-user a {
 					@f_handle
@@ -75,6 +80,7 @@ class td_block_instagram extends td_block {
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_handle' );
         $res_ctx->load_font_settings( 'f_followers' );
         $res_ctx->load_font_settings( 'f_btn_text' );

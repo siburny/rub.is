@@ -208,14 +208,13 @@ class tdc_composer_block extends td_block {
 	 */
 	protected function get_att($att_name) {
 		if ( !isset( $this->atts ) ) {
-			tdc_util::error(__FILE__, __FUNCTION__, get_class($this) . '->get_att(' . $att_name . ') TD Composer Internal error: The atts are not set yet(AKA: the render method was not called yet and the system tried to read an att)');
+		    echo 'tdc_composer_block - get_att() ' . $att_name . ' TD Composer Internal error: The atts are not set yet(AKA: the render method was not called yet and the system tried to read an att)';
 			die;
 		}
 
 		if ( !isset( $this->atts[$att_name] ) ) {
 			var_dump($this->atts);
-			tdc_util::error(__FILE__, __FUNCTION__, 'TD Composer Internal error: The system tried to use an att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" The list with available atts is in tdc_composer_block::render');
-
+            echo('TD Composer Internal error: The system tried to use an att that does not exists! class_name: tdc_composer_block  Att name: "' . $att_name . '" The list with available atts is in tdc_composer_block::render');
 			die;
 		}
 		return $this->atts[$att_name];

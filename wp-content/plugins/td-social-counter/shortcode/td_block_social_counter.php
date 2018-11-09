@@ -9,6 +9,39 @@
 
 class td_block_social_counter extends td_block {
 
+    static function cssMedia( $res_ctx ) {
+
+        // fonts
+        $res_ctx->load_font_settings( 'f_header' );
+
+    }
+
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = $this->block_uid . '_rand';
+
+        $compiled_css = '';
+
+        $raw_css =
+            "<style>
+
+				/* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
+				
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+
+        return $compiled_css;
+    }
+
 	function __construct() {
 		// disable_loop_block_features  @added on 26/4/2016 by ra. We use method_exists to be backwards compatible with older theme versions
 		if (method_exists($this, 'disable_loop_block_features')) {
@@ -28,15 +61,18 @@ class td_block_social_counter extends td_block {
                 'icon_size' => '32', //not yet used
                 'custom_title' => '',
                 'header_color' => '',
-                'open_in_new_window' => ''
+                'open_in_new_window' => '',
+                'social_rel' => ''
             ), $atts));
 
         $td_target = '';
         if (!empty($open_in_new_window)) {
             $td_target = ' target="_blank"';
         }
-
-
+        $td_social_rel = '';
+        if (!empty($atts['social_rel'])) {
+            $td_social_rel = 'rel="' . $atts['social_rel'] . '"';
+        }
 	    // styles type / additional classes
 	    $additional_classes = array();
 	    if(!empty($atts['style'])) {
@@ -63,12 +99,16 @@ class td_block_social_counter extends td_block {
                 }
                 $social_network_meta = $this->get_social_network_meta($td_social_id, $atts[$td_social_id], $td_social_api, $access_token);
 
+                if ($td_social_id === 'rss' && !empty($atts['rss_url'])) {
+                    $social_network_meta['url'] = $atts['rss_url'];
+                }
+
                 $socialBuffy .= '<div class="td_social_type td-pb-margin-side td_social_' . $td_social_id . '">';
                 $socialBuffy .= '<div class="td-social-box">';
                     $socialBuffy .= '<div class="td-sp td-sp-' . $td_social_id . '"></div>';
                     $socialBuffy .= '<span class="td_social_info">' . number_format($social_network_meta['api']) . '</span>';
                     $socialBuffy .= '<span class="td_social_info td_social_info_name">' . $social_network_meta['text'] . '</span>';
-                    $socialBuffy .= '<span class="td_social_button"><a href="' . $social_network_meta['url'] . '" ' . $td_target . ' >' .
+                    $socialBuffy .= '<span class="td_social_button"><a href="' . $social_network_meta['url'] . '" ' . $td_target . $td_social_rel. ' >' .
                         $social_network_meta['button'] . '</a></span>';
                     $socialBuffy .= '</div>';
                 $socialBuffy .= '</div>';
@@ -155,7 +195,16 @@ class td_block_social_counter extends td_block {
             case 'instagram':
                 return array(
                     'button' => __td('Follow'),
-                    'url' => "http://instagram.com/$user_id#",
+                    'url' => "https://instagram.com/$user_id#",
+                    'text' => __td('Followers'),
+                    'api' => $td_social_api->get_social_counter($service_id, $user_id, $access_token),
+                );
+                break;
+
+            case 'pinterest':
+                return array(
+                    'button' => __td('Follow'),
+                    'url' => "https://pinterest.com/$user_id",
                     'text' => __td('Followers'),
                     'api' => $td_social_api->get_social_counter($service_id, $user_id, $access_token),
                 );

@@ -19,7 +19,7 @@
 
                 <div class="td-pb-span td-sub-footer-copy">
                     <?php
-                    $tds_footer_copyright = stripslashes(td_util::get_option('tds_footer_copyright'));
+                    $tds_footer_copyright = stripslashes(td_util::parse_footer_texts(td_util::get_option('tds_footer_copyright')));
                     $tds_footer_copy_symbol = td_util::get_option('tds_footer_copy_symbol');
 
                     //show copyright symbol

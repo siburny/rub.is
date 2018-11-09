@@ -39,6 +39,52 @@
 }
 
 // -----------------
+// absolute inner - add padding on content
+// -----------------
+.vc_inner.absolute_inner {
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_l_tablet_min) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+// -----------------
+// full content - inner row only
+// -----------------
+.vc_inner.absolute_inner_full {
+  width: 100% !important;
+}
+
+// -----------------
+// 1068px content - inner row only
+// -----------------
+.vc_inner.absolute_inner_1068 {
+  width: 100% !important;
+  max-width: 1156px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+
+  /* responsive landscape tablet */
+  @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
+    max-width: 1020px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    max-width: 768px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// -----------------
 // 1200px content
 // -----------------
 .tdc-row.stretch_row_1200 {
@@ -58,6 +104,13 @@
     padding-left: 20px;
     padding-right: 20px;
   }
+}
+.vc_inner.absolute_inner_1200 {
+  width: 100% !important;
+  max-width: 1288px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 
 // -----------------
@@ -81,6 +134,14 @@
     padding-right: 20px;
   }
 }
+.vc_inner.absolute_inner_1400 {
+  width: 100% !important;
+  max-width: 1488px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
 
 // -----------------
 // 1600px content
@@ -102,6 +163,13 @@
     padding-left: 20px;
     padding-right: 20px;
   }
+}
+.vc_inner.absolute_inner_1600 {
+  width: 100% !important;
+  max-width: 1688px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 
 // -----------------
@@ -125,6 +193,13 @@
     padding-right: 20px;
   }
 }
+.vc_inner.absolute_inner_1800 {
+  width: 100% !important;
+  max-width: 1888px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
 
 // -----------------
 // Stretch row and content
@@ -144,7 +219,6 @@
     margin-right: 0;
   }
 }
-
 
 // row on stretch content 20px margin on mobile
 .tdc-row.td-stretch-content {

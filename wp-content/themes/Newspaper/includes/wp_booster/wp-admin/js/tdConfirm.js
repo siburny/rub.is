@@ -73,6 +73,10 @@ var tdConfirm;
                 tdConfirm._$confirmYes.html( args.textYes );
             }
 
+            if ( 'undefined' !== typeof args.switchButtons && true === args.switchButtons ) {
+                tdConfirm._$confirmNo.insertBefore( tdConfirm._$confirmYes );
+            }
+
             tdConfirm._$infoContent.html( args.htmlInfoContent );
 
             // Remove confirm No
@@ -82,6 +86,9 @@ var tdConfirm;
                 tdConfirm._$confirmNo.show();
                 tdConfirm._$confirmNo.unbind();
                 tdConfirm._$confirmNo.click( function() {
+                    if ( 'undefined' !== typeof args.callbackNo) {
+                        args.callbackNo.apply(args.objectContext, args.argsNo);
+                    }
                     tb_remove();
                     return false;
                 });

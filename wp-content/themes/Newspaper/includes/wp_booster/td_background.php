@@ -106,7 +106,11 @@ class td_background {
             }
 
 
-            if(!empty($td_site_post_template)) { // we have a single_template set on a per post basis or on the global setting in the pane > post settings -> default post template (site wide)
+            /**
+             * apply custom bg params on single if we have a template set
+             * @updated 28.2.2018 - do nothing on tdb templates
+             */
+            if(!empty($td_site_post_template) && !td_global::is_tdb_template($td_site_post_template)) {
 
                 // overwrite the theme_bg_image with the featured image if needed
                 if (td_api_single_template::get_key($td_site_post_template, 'bg_use_featured_image_as_background') === true) {
@@ -161,17 +165,60 @@ class td_background {
         if (!empty($category_id)) {
             //get the category bg image
             $tdc_image = td_util::get_category_option($category_id, 'tdc_image');
-            if (!empty($tdc_image)) {
-                $background_params['theme_bg_image'] = $tdc_image;
-                $background_params['is_boxed_layout'] = true;
+
+            if ( ! empty( $tdc_image ) ) {
+
+            	if ( td_global::is_tdb_registered() ) {
+
+		            $tdb_category_template_global = td_options::get( 'tdb_category_template' );
+		            $tdb_category_template = td_util::get_category_option( $category_id, 'tdb_category_template' );
+		            $tdb_show_background = td_util::get_category_option( $category_id, 'tdb_show_background' );
+
+		            if ( empty( $tdb_category_template ) ) {
+			            $tdb_category_template = $tdb_category_template_global;
+		            }
+
+		            if ( empty( $tdb_show_background )
+		                 || ( empty( $tdb_category_template ) || ! td_global::is_tdb_template( $tdb_category_template, true ) ) ) {
+			            $background_params['theme_bg_image'] = $tdc_image;
+			            $background_params['is_boxed_layout'] = true;
+		            }
+
+            	} else {
+            		$background_params['theme_bg_image'] = $tdc_image;
+		            $background_params['is_boxed_layout'] = true;
+	            }
             }
 
-            //get the category bg color
+
+             //get the category bg color
             $tdc_bg_color = td_util::get_category_option($category_id, 'tdc_bg_color');
-            if (!empty($tdc_bg_color)) {
-                $background_params['theme_bg_color'] = $tdc_bg_color;
-                $background_params['is_boxed_layout'] = true;
+            if ( !empty( $tdc_bg_color ) ) {
+
+            	if ( td_global::is_tdb_registered() ) {
+
+		            $tdb_category_template_global = td_options::get( 'tdb_category_template' );
+		            $tdb_category_template = td_util::get_category_option( $category_id, 'tdb_category_template' );
+		            $tdb_show_background = td_util::get_category_option( $category_id, 'tdb_show_background' );
+
+		            if ( empty( $tdb_category_template ) ) {
+			            $tdb_category_template = $tdb_category_template_global;
+		            }
+
+		            if ( empty( $tdb_show_background )
+		                 || ( empty( $tdb_category_template ) || ! td_global::is_tdb_template( $tdb_category_template, true ) ) ) {
+			            $background_params['theme_bg_color'] = $tdc_bg_color;
+                        $background_params['is_boxed_layout'] = true;
+		            }
+
+            	} else {
+            		$background_params['theme_bg_color'] = $tdc_bg_color;
+                    $background_params['is_boxed_layout'] = true;
+	            }
             }
+
+
+
 
             //get the bg style - from category specific
             $tdc_bg_repeat = td_util::get_category_option($category_id, 'tdc_bg_repeat');

@@ -1,3 +1,5 @@
+/* global jQuery */
+
 //init the variable if it's undefined, sometimes wordpress will not run the wp_footer hooks in wp-admin (in modals for example)
 if (typeof td_get_template_directory_uri === 'undefined') {
     td_get_template_directory_uri = '';
@@ -70,7 +72,120 @@ jQuery().ready(function() {
 
     //footer page selection
     tdFooterPageSelection();
+
+    /**
+     * cloud category template type panel selection
+     * this function is defined in the td cloud library plugin
+     * @see ..\td-cloud-library\assets\js\tdbWpAdminMain.js
+     */
+    if ( typeof tdbCategoryTemplateSelect === "function" ) {
+        tdbCategoryTemplateSelect();
+    }
+
+    // make sure this runs just on theme's panel page
+    if ( jQuery('#td_panel_big_form').length ) {
+        panel_navigation_hash();
+        panel_navigation_hashchange_event();
+    }
 });
+
+// this will store the scroll position
+var keepScroll = false;
+
+// this will store the scroll position
+var firstLoad = true;
+
+/**
+ * this function binds the hashchange and popstate events
+ * we need this to prevent default behavior when setting window.location.hash
+ */
+function panel_navigation_hashchange_event() {
+
+    var popY, popX;
+
+    // when location.hash is changed, popstate is the first event to fire, we use this event to record current state
+    //window.addEventListener('popstate', popstateHandler);
+    function popstateHandler() {
+        // popY = window.scrollY;
+        // popX = window.scrollX;
+
+        popY = window.pageYOffset || document.body.scrollTop;
+        //popX = window.pageXOffset || document.body.scrollLeft;
+
+        console.log(popY);
+        //console.log(popX);
+    }
+
+    // reset scroll position with recorded values when hashchange fires
+    window.addEventListener('hashchange', hashchangeHandler);
+    function hashchangeHandler() {
+        //console.log('hashchange');
+        //window.scrollTo(popX, popY);
+
+        //if 'keepScroll' has been set
+        if ( keepScroll !== false ) {
+            // move scroll position to stored position
+            window.scrollTop = keepScroll;
+            keepScroll = false;
+        }
+    }
+}
+
+/**
+ * this function resolves the hash links when the panel loads
+ */
+function panel_navigation_hash() {
+
+    /**
+     * we operate on this type of url hash
+     * ?page=td_theme_panel#td-panel-post-settings/box=default_post_template_site_wide
+     */
+
+    // before we go forward we need to make sure we have a url hash
+    if ( window.location.hash !== '' ) {
+
+        var hash = window.location.hash;
+        var dataPanelId = '';
+
+        // check the hash for box parameters and extract the data panel id
+        if( hash.indexOf('/') !== -1 ){
+            dataPanelId = hash.substring(
+                hash.lastIndexOf("#") + 1,
+                hash.lastIndexOf("/")
+            );
+        } else {
+            dataPanelId = hash.replace( /^#/, '' );
+        }
+
+        if( jQuery( '#' + dataPanelId ).length === 0 ) {
+            //it doesn't exist
+            return;
+        }
+
+        var dataPanelIdSelector = "[data-panel='" + dataPanelId + "']";
+        var currentPanel = jQuery('.td-panel-menu').find(dataPanelIdSelector);
+
+        if ( currentPanel.length ) {
+            currentPanel.trigger('click');
+        }
+
+        // check hash for box parameters
+        var hashVariables = hash.split('/');
+        for ( var i = 0; i < hashVariables.length; i++ ) {
+            var hashVariableName = hashVariables[i].split('=');
+            if ( hashVariableName[0] === 'box' ) {
+                var box = hashVariableName[1];
+            }
+        }
+
+        // if we have box parameters show the box content panel
+        if ( typeof box !== 'undefined' ) {
+            var panelBox = jQuery('#' + jQuery('.td_panel_box_' + box ).prop( 'id' ));
+            show_content_panel( panelBox, true );
+        }
+    }
+}
+
 
 //function to add click events on all checkboxes
 function td_panel_checkboxes() {
@@ -95,7 +210,6 @@ function td_panel_checkboxes() {
         }
     });
 }
-
 
 
 //function to add click events on all visual selects (orizontaly and verticaly)
@@ -144,24 +258,32 @@ function td_panel_visual_select_premium_features() {
 
 
 function panel_navigation() {
+
     jQuery('.td-panel-menu a').click(function(event){
 
-        //if we don't have a data panel defined, do nothing (it is used on the back links)
-        if (typeof jQuery(this).data('panel') == "undefined") {
+        // panel data id
+        var td_data_panel = jQuery(this).data('panel');
+
+        // if we don't have a data panel defined, do nothing (it is used on the back links)
+        if ( typeof td_data_panel === "undefined" ) {
             return;
+        }
+
+        // if the click event was not triggered programmatically set the panel nav hash
+        if ( event.originalEvent !== undefined ) {
+            change_hash(jQuery(this), 'panel_menu_link');
         }
 
         event.preventDefault();
 
-        //change the menu focus
+        // change the menu focus
         jQuery('.td-panel-menu-active').removeClass('td-panel-menu-active');
         jQuery(this).addClass('td-panel-menu-active');
 
 
-        //change the panel
+        // change the panel
         jQuery('.td-panel-active').removeClass('td-panel-active');
-        jQuery('#' + jQuery(this).data('panel')).addClass('td-panel-active');
-
+        jQuery('#' + td_data_panel).addClass('td-panel-active');
 
 
         jQuery(this).delay(500).queue(function(){
@@ -443,10 +565,6 @@ function replace_all(find, replace, str) {
 }
 
 
-
-
-
-
 //upload image
 function td_upload_image_font(id_upload_field) {
     var button = '#' + id_upload_field + '_button';
@@ -620,7 +738,7 @@ function td_panel_box() {
     jQuery('.td-box-header-js-inline').click(function (event) {
 
         //on categories (they have links in the title of the box), do not open/close the box instead go to that category
-        if (jQuery(event.target).data('is-category-link') == 'yes') {
+        if (jQuery(event.target).data('is-category-link') === 'yes') {
             return;
         }
 
@@ -651,7 +769,98 @@ function td_panel_box() {
 }
 
 
+/**
+ * scroll panel box into view
+ * @param jquery_panel_box_obj - the panel box element object
+ */
+function scroll_to_view(jquery_panel_box_obj) {
 
+    // get the header of the panel
+    var td_panel_box_header = jquery_panel_box_obj.children('.td-box-header').eq(0);
+
+    // if the panel doesn't have a header return
+    if ( !td_panel_box_header.length ) {
+        return;
+    }
+
+    // get the panel box id
+    var td_panel_box_id = td_panel_box_header.data('box-id');
+    var scrollTop = jQuery('#' + td_panel_box_id).first().offset().top - 57; // minus 57px - 32px to scroll under the admin bar and another 25 for the td-box margin
+
+    jQuery( 'html, body' ).animate({
+        scrollTop: ( scrollTop )
+    },500);
+}
+
+/**
+ * changes (adds/removes) the hash for a panel box
+ * @param jquery_panel_obj - the panel box element object
+ * @param type - panel box open/close or panel menu link
+ */
+function change_hash(jquery_panel_obj, type) {
+
+    var hash = window.location.hash;
+
+    // if it's a box hash change
+    if( type.indexOf( 'box_' ) !== -1 ) {
+
+        // get the panel box classes
+        var td_block_classes = jquery_panel_obj.prop('className').split(' ');
+
+        // the panel box type
+        var td_box_type = '';
+
+        td_block_classes.forEach( function ( item ) {
+            if( item.indexOf( 'td_panel_box_' ) !== -1 ){
+                // set the panel box type
+                td_box_type = item.replace( 'td_panel_box_', '' );
+            }
+        });
+
+        // on box open add box id to hash
+        if ( type === 'box_open' ) {
+            if ( hash.indexOf( '/box=' ) !== -1 ) {
+                var x = hash.split('/box=');
+                hash = hash.replace( '/box=' + x[1], '/box=' + td_box_type );
+            } else {
+                hash += '/box=' + td_box_type;
+            }
+        }
+
+        // on box close remove box id
+        if ( type === 'box_close' ) {
+            if ( hash.indexOf( '/box=' ) !== -1 ) {
+                hash = hash.replace( '/box=' + td_box_type, '' );
+            }
+        }
+    }
+
+    // if it's a panel menu link
+    if( type === 'panel_menu_link' ) {
+
+        // panel data id
+        var td_data_panel = jquery_panel_obj.data('panel');
+
+        // set hash as the panel data id
+        hash = td_data_panel;
+
+        // scroll to the first open box
+        jQuery( '#' + td_data_panel + ' .td-box' ).each(function(index ){
+
+            if ( !jQuery(this).hasClass('td-box-close') && index === 0 ) {
+
+                var jquery_panel_box_obj = jQuery(this);
+                setTimeout(function(){
+                    scroll_to_view(jquery_panel_box_obj);
+                }, 50);
+
+                return false;
+            }
+        });
+    }
+
+    window.location.hash = hash;
+}
 
 /**
  * This function is called to load a content panel and show it.
@@ -663,6 +872,7 @@ function td_panel_box() {
  * @param callback - [*] The callback function that will execute if it exists.
  */
 function show_content_panel(jquery_panel_obj, keep_position, callback) {
+
     // get the header of the panel
     var jquery_panel_header = jquery_panel_obj.children('.td-box-header').eq(0);
 
@@ -671,22 +881,39 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
         return;
     }
 
-    //get the box_id
+    // get the box_id
     var td_box_id = jquery_panel_header.data('box-id');
+    var td_box = jQuery('#' + td_box_id);
+    var td_box_content = jQuery('#' + td_box_id + ' .td-box-content');
+    var td_box_content_wrap = td_box.find('.td-box-content-wrap');
 
-    //check for the panel to be empty to do the ajax call
-    if(!jQuery('#' + td_box_id + ' .td-box-content').html()) {
+    // set scroll to view if the box is opening
+    if ( td_box.hasClass('td-box-close')) {
+
+        // change hash
+        change_hash(jquery_panel_obj, 'box_open');
+
+        // on an ajax boxes we're doing the scrolling on the ajax call > success
+        if( td_box_content.html() ) {
+            setTimeout(function(){
+                scroll_to_view(jquery_panel_obj);
+            }, 500);
+        }
+
+    } else {
+        //change_hash(jquery_panel_obj, 'box_close');
+    }
+
+    // check for the panel to be empty to do the ajax call
+    if( !td_box_content.html() ) {
 
         // loading gif
-        jQuery('#' + td_box_id).addClass('td-box-loading');
+        td_box.addClass('td-box-loading');
 
         var td_panel_ajax_param = jquery_panel_header.data('panel-ajax-params');
         td_panel_ajax_param.td_magic_token = tdWpAdminPanelBoxNonce;
 
-
-
-
-        if(td_panel_ajax_param != '') {
+        if( td_panel_ajax_param !== '' ) {
             jQuery.ajax({
                 type: "POST",
                 url: td_ajax_url,
@@ -694,92 +921,157 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
                 success: function( response ) {
                     //console.log( response );
 
+                    setTimeout(function(){
+                        scroll_to_view(jquery_panel_obj);
+                    }, 50);
+
                     var td_box_content_el = jQuery('#' + td_box_id + ' .td-box-content');
-                    if(response != '') {
+                    if( response !== '' ) {
+
+                        // add the ajax response html to the box content element
                         td_box_content_el.html(jQuery.parseJSON(response));
 
                         // the callback function is called
-                        if (callback != undefined) {
+                        if ( callback !== undefined ) {
                             callback.apply();
                         }
                     }
 
-                    // open the box - animation
                     var td_box = jQuery('#' + td_box_id);
                     td_box.removeClass('td-box-loading');      // removing the gif after done the loading
-                    td_box.removeClass('td-box-close');
+
+                    // open the box
+                    setTimeout(function(){
+                        td_box.removeClass('td-box-close');
+                    }, 10);
+
                     var td_box_content_wrap = td_box.find('.td-box-content-wrap');
+
                     td_box_content_wrap.css('height', 0);
                     td_box_content_wrap.css('overflow', 'hidden');
 
                     setTimeout(function(){
-                        td_box_content_wrap.css('height', td_box_content_el.height() + 18);
+                        td_box_content_wrap.animate({
+                            height: td_box_content_el.height() + 18,
+                            overflow: 'hidden'
+                        },{
+                            duration: 400,
+                            easing: 'linear'
+                        });
+
                         setTimeout(function(){
                             td_box_content_wrap.css('height', 'auto');
                             td_box_content_wrap.css('overflow', 'visible');
-
-                        }, 200);
+                        }, 410);
                     }, 50);
 
                     setTimeout(function(){
                         td_ap_admin_done_resizing(); //recalculate the page size - used by the save button
                     }, 400);
+
+                    /**
+                     * tdb category template selection
+                     * this function is used in theme's categories panel to 'instantly' show or hide the theme default global/individual category settings based on tdb's category template live settings
+                     * this function is defined in the tdb plugin @see ..\td-template-builder\assets\js\tdbWpAdminMain.js
+                     */
+                    if ( typeof tdbCategoryTemplateSelect === "function" ) {
+                        tdbCategoryTemplateSelect();
+                    }
                 }
             });
         }
     } else {
         // the callback function is called
-        if (callback != undefined) {
+        if ( callback !== undefined ) {
             callback.apply();
         }
     }
 
-    //do the open/close
-    var td_box = jQuery('#' + td_box_id);
-    if (td_box.hasClass('td-box-close')) {
-        // open the box
-        td_box.removeClass('td-box-close');
+    // do the open/close
+    if ( td_box.hasClass('td-box-close') ) {
 
-        var td_box_content_wrap = td_box.find('.td-box-content-wrap');
-        var original_height = td_box_content_wrap.height();
-        td_box_content_wrap.css('height', 0);
-        td_box_content_wrap.css('overflow', 'hidden');
+        // add exception for the boxes that are waiting for ajax
+        if ( td_box.hasClass('td-wait-for-ajax') && firstLoad === true ) {
 
-        setTimeout(function(){
-            td_box_content_wrap.css('height', original_height);
+            // we need to delay the box open when to allow ajax request to finish
+            setTimeout( function () {
+
+                // open the box
+                setTimeout( function(){
+                    td_box.removeClass('td-box-close');
+                }, 10);
+
+                var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+
+                td_box_content_wrap.css('height', 0);
+                td_box_content_wrap.css('overflow', 'hidden');
+
+                td_box_content_wrap.animate({
+                    height: original_height,
+                    overflow: 'hidden'
+                },{
+                    duration: 400,
+                    easing: 'linear'
+                });
+
+                setTimeout( function(){
+                    td_box_content_wrap.css('height', 'auto');
+                    td_box_content_wrap.css('overflow', 'visible');
+                }, 400);
+
+                firstLoad = false;
+
+            }, 500);
+
+        } else {
+            // open the box
+            td_box.removeClass('td-box-close');
+
+            var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+
+            td_box_content_wrap.css('height', 0);
+            td_box_content_wrap.css('overflow', 'hidden');
+
+            td_box_content_wrap.animate({
+                height: original_height,
+                overflow: 'hidden'
+            },{
+                duration: 400,
+                easing: 'linear'
+            });
 
             setTimeout(function(){
                 td_box_content_wrap.css('height', 'auto');
                 td_box_content_wrap.css('overflow', 'visible');
-            }, 200);
-        }, 20);
+            }, 400);
+        }
 
     } else {
 
-        if (keep_position != undefined && keep_position === true) {
+        if ( keep_position !== undefined && keep_position === true ) {
             return;
         }
 
         //close and hide the box
-        var td_box_content_wrap = td_box.find('.td-box-content-wrap');
-        td_box_content_wrap.css('height', td_box_content_wrap.height());
+        td_box_content_wrap.css('overflow', 'hidden');
+
+        td_box_content_wrap.animate({
+                height: 0,
+                overflow: 'hidden'
+            },{
+                duration: 500,
+                easing: 'linear'
+        });
 
         setTimeout(function(){
-            td_box_content_wrap.css('height', 0);
-            td_box_content_wrap.css('overflow', 'hidden');
+            td_box.addClass('td-box-close');
+        }, 510);
 
-            setTimeout(function(){
-                td_box.addClass('td-box-close');
-                td_box_content_wrap.css('height', 'auto');
-                td_box_content_wrap.css('overflow', 'visible');
-            }, 200);
-
-        }, 20);
     }
 
     setTimeout(function(){
         td_ap_admin_done_resizing(); //recalculate the page size - used by the save button
-    }, 400);
+    }, 500);
 }
 
 
@@ -792,6 +1084,8 @@ function updateCustomFonts() {
             file_1: jQuery('[name="td_fonts_user_insert[font_family_1]"]').val(),
             file_2: jQuery('[name="td_fonts_user_insert[font_family_2]"]').val(),
             file_3: jQuery('[name="td_fonts_user_insert[font_family_3]"]').val(),
+            file_4: jQuery('[name="td_fonts_user_insert[font_family_4]"]').val(),
+            file_5: jQuery('[name="td_fonts_user_insert[font_family_5]"]').val(),
             //typekit fonts
             tk_1: jQuery('[name="td_fonts_user_insert[type_kit_font_family_1]"]').val(),
             tk_2: jQuery('[name="td_fonts_user_insert[type_kit_font_family_2]"]').val(),
@@ -860,11 +1154,30 @@ function td_ajax_form_submit() {
         jQuery('.td_wrapper_saving_gifs').css('display', 'block');
         jQuery('.td_displaying_saving_gif').css('display', 'block');
 
+        let postData = form.serialize();
+
+        //read Vue components data
+        if (typeof tdbPanelVueComponents !== 'undefined') {
+            for (let componentName in tdbPanelVueComponents) {
+                if (Object.hasOwnProperty.call(tdbPanelVueComponents, componentName)) {
+                    let componentData = tdbPanelVueComponents[componentName].getData();
+
+                    //add & separator
+                    if (postData !== '' && componentData !== '') {
+                        postData += '&';
+                    }
+
+                    //add component data to postData
+                    postData += componentData;
+                }
+            }
+        }
+
 
         jQuery.ajax({
             type: "POST",
             url: td_ajax_url,
-            data: form.serialize(),
+            data: postData,
             success: function( response ) {
                 //console.log( response );
                 //alert('SAVED');

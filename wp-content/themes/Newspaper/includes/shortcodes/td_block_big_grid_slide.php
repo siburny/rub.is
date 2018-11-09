@@ -104,6 +104,11 @@ class td_block_big_grid_slide extends td_block {
 
 					$buffy .= $this->internal_block_instance->render( $atts );
 				}
+			} else {
+				// Show an info placeholder
+				if (td_util::tdc_is_live_editor_iframe() or td_util::tdc_is_live_editor_ajax()) {
+					$buffy .= '<div class="td_block_wrap tdc-no-posts"><div class="td_block_inner"></div></div>';
+				}
 			}
 
 		} else {

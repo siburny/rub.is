@@ -564,6 +564,11 @@ class td_module_single_base extends td_module {
         // determine publisher logo
         $td_publisher_logo = td_util::get_option('tds_logo_upload');
 
+        //added for text logo
+        if($td_publisher_logo == '') {
+            $td_publisher_logo = get_permalink($this->post->ID);
+        }
+
         $buffy = ''; //the vampire slayer
 
         // author
@@ -849,17 +854,17 @@ class td_module_single_base extends td_module {
             $author_id = $this->post->post_author;
         }
 
+
+        $buffy = '';
+
         // add the author as hidden for google and return if the author box is set to disabled
         if (td_util::get_option('tds_show_author_box') == 'hide') {
+            //Webmaster tool triggers missing author error if this code is removed
             $buffy = '<div class="td-author-name vcard author" style="display: none"><span class="fn">';
             $buffy .= '<a href="' . get_author_posts_url($author_id) . '">' . get_the_author_meta('display_name', $author_id) . '</a>' ;
             $buffy .= '</span></div>';
             return $buffy;
         }
-
-
-
-        $buffy = '';
 
         $hideAuthor = td_util::get_option('hide_author');
 

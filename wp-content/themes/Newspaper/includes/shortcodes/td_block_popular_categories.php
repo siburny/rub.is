@@ -19,9 +19,21 @@ class td_block_popular_categories extends td_block {
 				.$unique_block_class .td-cat-no {
 					color: @category_posts_color;
 				}
+				/* @category_color_h */
+				.$unique_block_class li:hover .td-cat-name {
+					color: @category_color_h;
+				}
+				/* @category_posts_color_h */
+				.$unique_block_class li:hover .td-cat-no {
+					color: @category_posts_color_h;
+				}
 				
 
-
+                /* @f_header */
+				.$unique_block_class .td-block-title a,
+				.$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_cat */
 				.$unique_block_class .td-cat-name {
 					@f_cat
@@ -49,9 +61,16 @@ class td_block_popular_categories extends td_block {
         // category posts count color
         $res_ctx->load_settings_raw( 'category_posts_color', $res_ctx->get_shortcode_att('category_posts_color') );
 
+        // category name hover color
+        $res_ctx->load_settings_raw( 'category_color_h', $res_ctx->get_shortcode_att('category_color_h') );
+
+        // category posts count hover color
+        $res_ctx->load_settings_raw( 'category_posts_color_h', $res_ctx->get_shortcode_att('category_posts_color_h') );
+
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_cat' );
         $res_ctx->load_font_settings( 'f_posts' );
 

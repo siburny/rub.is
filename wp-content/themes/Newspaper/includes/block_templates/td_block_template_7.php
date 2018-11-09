@@ -72,11 +72,7 @@ class td_block_template_7 extends td_block_template {
         $td_css_compiler = new td_css_compiler($raw_css);
         $td_css_compiler->load_setting_raw('header_color', $this->get_att('header_color'));
 
-        $header_text_color = $this->get_att('header_text_color');
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
-        if ($header_text_color == '') {
-            $td_css_compiler->load_setting_raw('header_text_color', '#ffffff');
-        }
 
         $td_css_compiler->load_setting_raw('accent_text_color', $this->get_att('accent_text_color'));
         $td_css_compiler->load_setting_raw('header_image', wp_get_attachment_url($this->get_att('header_image'))); // @TODO tre citit dupa ID
@@ -96,9 +92,15 @@ class td_block_template_7 extends td_block_template {
 
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
+        $title_tag = 'h4';
+
+        // title_tag used only on Title shortcode
+        $block_title_tag = $this->get_att('title_tag');
+        if(!empty($block_title_tag)) {
+            $title_tag = $block_title_tag ;
+        }
 
         //extract($this->template_data_array['atts']);
-
 
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
@@ -113,13 +115,13 @@ class td_block_template_7 extends td_block_template {
 
         // there is a custom title
         $buffy = '';
-        $buffy .= '<h4 class="td-block-title">';
+        $buffy .= '<' . $title_tag . ' class="td-block-title">';
         if (!empty($custom_url)) {
             $buffy .= '<a href="' . esc_url($custom_url) . '" class="td-pulldown-size">' . esc_html($custom_title) . '</a>';
         } else {
             $buffy .= '<span class="td-pulldown-size">' . esc_html($custom_title) . '</span>';
         }
-        $buffy .= '</h4>';
+        $buffy .= '</' . $title_tag . '>';
         return $buffy;
     }
 

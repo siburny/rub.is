@@ -82,6 +82,7 @@ $td_translation_map = array(
     'Logged in as'                        => __('Logged in as', TD_THEME_NAME),
     'Log out?'                            => __('Log out?', TD_THEME_NAME),
     'Logged in as %s. Edit your profile.' => __('Logged in as %s. Edit your profile.', TD_THEME_NAME),
+	'Edit' => __('Edit', TD_THEME_NAME),
 
 
     //review
@@ -159,7 +160,7 @@ $td_translation_map = array(
     'Email or username incorrect!'  => __('Email or username incorrect!', TD_THEME_NAME),
     'Email incorrect!'  => __('Email incorrect!', TD_THEME_NAME),
     'User or email already exists!'  => __('User or email already exists!', TD_THEME_NAME),
-    'Please check your email (index or spam folder), the password was sent there.'  => __('Please check your email (index or spam folder), the password was sent there.', TD_THEME_NAME),
+    'Please check your email (inbox or spam folder), the password was sent there.'  => __('Please check your email (inbox or spam folder), the password was sent there.', TD_THEME_NAME),
     'Email address not found!'  => __('Email address not found!', TD_THEME_NAME),
     'Your password is reset, check your email.'  => __('Your password is reset, check your email.', TD_THEME_NAME),
     'Welcome! Log into your account' => __('Welcome! Log into your account', TD_THEME_NAME),
@@ -258,6 +259,9 @@ $td_translation_map = array(
     'United States Dollar' => __('United States Dollar', TD_THEME_NAME),
     'South African Rand' => __('South African Rand', TD_THEME_NAME),
 
+
+    'Save my name, email, and website in this browser for the next time I comment.' => __('Save my name, email, and website in this browser for the next time I comment.', TD_THEME_NAME),
+    'Privacy Policy' => 'Privacy Policy',
 );
 
 
@@ -311,3 +315,17 @@ function _etd($td_string, $td_domain = '') {
     echo __td($td_string, $td_domain);
 }
 
+
+
+/**
+ * the Privacy Policy text is hardcoded in the new wp method
+ * ONLY hook up if the user dosn't have another translation in po mo
+ * @see get_the_privacy_policy_link
+ */
+add_filter('gettext', 'td_translate_privacy_policy', 10, 3);
+function td_translate_privacy_policy($translation, $text, $domain) {
+    if ($text == 'Privacy Policy' && $domain == 'default' && $translation == $text) {
+        return __td('Privacy Policy');
+    }
+    return $translation;
+}

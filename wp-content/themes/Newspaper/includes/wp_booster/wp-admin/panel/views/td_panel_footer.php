@@ -51,6 +51,7 @@
 
 
 <!-- PAGE FOOTER -->
+<?php if ('Newspaper' == TD_THEME_NAME ) { ?>
 <div class="td-box-row">
     <div class="td-box-description">
         <span class="td-box-title">Footer page</span>
@@ -98,7 +99,7 @@
         ?>
     </div>
 </div>
-
+<?php } ?>
 
 <?php echo td_panel_generator::box_end();?>
 
@@ -324,7 +325,21 @@
     <div class="td-box-row td-custom-css">
         <div class="td-box-description">
             <span class="td-box-title">FOOTER TEXT</span>
-            <p>Write here your footer text</p>
+            <p>
+                Write here your footer text
+                <?php td_util::tooltip_html('
+                        <h3>Set footer copyright text:</h3>
+                        <p>You can use one of the following shortcuts in this text:</p>
+                        <ul>
+                            <li>##copy## - &copy;</li>
+                            <li>##privacy_policy## - ' . get_the_privacy_policy_link() . '</li>
+                            <li>##year## - '  . date('Y') . '</li>
+                            <li>##sitename## - ' . get_bloginfo('name') . '</li>
+                            <li>##siteurl## - ' . get_home_url() . '</li>
+                            <li>##sitelink## - ' . '<a href="' . get_home_url() . '">' . get_bloginfo('name') . '</a>' . '</li>
+                        </ul>
+                ', 'right')?>
+            </p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -530,7 +545,21 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">FOOTER COPYRIGHT TEXT</span>
-            <p>Set footer copyright text</p>
+            <p>
+                Set footer copyright text
+                <?php td_util::tooltip_html('
+                        <h3>Set footer copyright text:</h3>
+                        <p>You can use one of the following shortcuts in this text:</p>
+                        <ul>
+                            <li>##copy## - &copy;</li>
+                            <li>##privacy_policy## - ' . get_the_privacy_policy_link() . '</li>
+                            <li>##year## - '  . date('Y') . '</li>
+                            <li>##sitename## - ' . get_bloginfo('name') . '</li>
+                            <li>##siteurl## - ' . get_home_url() . '</li>
+                            <li>##sitelink## - ' . '<a href="' . get_home_url() . '">' . get_bloginfo('name') . '</a>' . '</li>
+                        </ul>
+                ', 'right')?>
+            </p>
         </div>
         <div class="td-box-control-full">
             <?php

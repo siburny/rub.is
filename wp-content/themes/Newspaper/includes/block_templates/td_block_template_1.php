@@ -22,56 +22,78 @@ class td_block_template_1 extends td_block_template {
         <style>
 
             /* @header_color */
-            body .$unique_block_class .td_module_wrap:hover .entry-title a,
-            body .$unique_block_class .td-pulldown-filter-link:hover,
-            body .$unique_block_class .td-subcat-item a:hover,
-            body .$unique_block_class .td-subcat-item .td-cur-simple-item,
-            body .$unique_block_class .td_quote_on_blocks,
-            body .$unique_block_class .td-opacity-cat .td-post-category:hover,
-            body .$unique_block_class .td-opacity-read .td-read-more a:hover,
-            body .$unique_block_class .td-opacity-author .td-post-author-name a:hover,
-            body .$unique_block_class .td-instagram-user a {
+            .td-theme-wrap .$unique_block_class .td-pulldown-filter-link:hover,
+            .td-theme-wrap .$unique_block_class .td-subcat-item a:hover,
+            .td-theme-wrap .$unique_block_class .td-subcat-item .td-cur-simple-item {
                 color: @header_color;
             }
 
-            body .$unique_block_class .td-next-prev-wrap a:hover,
-            body .$unique_block_class .td-load-more-wrap a:hover {
-                background-color: @header_color;
-                border-color: @header_color;
-            }
-
-            body .$unique_block_class .block-title > *,
-            body .$unique_block_class .td-read-more a,
-            body .$unique_block_class .td-weather-information:before,
-            body .$unique_block_class .td-weather-week:before,
-            body .$unique_block_class .td-subcat-dropdown:hover .td-subcat-more,
-            body .$unique_block_class .td-exchange-header:before,
-            body .td-footer-wrapper .$unique_block_class .td-post-category,
-            body .$unique_block_class .td-post-category:hover {
+            .td-theme-wrap .$unique_block_class .block-title > *,
+            .td-theme-wrap .$unique_block_class .td-subcat-dropdown:hover .td-subcat-more {
                 background-color: @header_color;
             }
-            body .td-footer-wrapper .$unique_block_class .block-title > * {
+            .td-theme-wrap .td-footer-wrapper .$unique_block_class .block-title > * {
                 padding: 6px 7px 5px;
                 line-height: 1;
             }
 
-            body .$unique_block_class .block-title {
+            .td-theme-wrap .$unique_block_class .block-title {
                 border-color: @header_color;
             }
 
             /* @header_text_color */
-            body .$unique_block_class .block-title > * {
+            .td-theme-wrap .$unique_block_class .block-title > * {
                 color: @header_text_color;
             }
+            
+            
+            /* @accent_text_color */
+            .td-theme-wrap .$unique_block_class .td_module_wrap:hover .entry-title a,
+            .td-theme-wrap .$unique_block_class .td_quote_on_blocks,
+            .td-theme-wrap .$unique_block_class .td-opacity-cat .td-post-category:hover,
+            .td-theme-wrap .$unique_block_class .td-opacity-read .td-read-more a:hover,
+            .td-theme-wrap .$unique_block_class .td-opacity-author .td-post-author-name a:hover,
+            .td-theme-wrap .$unique_block_class .td-instagram-user a {
+                color: @accent_text_color;
+            }
+
+            .td-theme-wrap .$unique_block_class .td-next-prev-wrap a:hover,
+            .td-theme-wrap .$unique_block_class .td-load-more-wrap a:hover {
+                background-color: @accent_text_color;
+                border-color: @accent_text_color;
+            }
+
+            .td-theme-wrap .$unique_block_class .td-read-more a,
+            .td-theme-wrap .$unique_block_class .td-weather-information:before,
+            .td-theme-wrap .$unique_block_class .td-weather-week:before,
+            .td-theme-wrap .$unique_block_class .td-exchange-header:before,
+            .td-theme-wrap .td-footer-wrapper .$unique_block_class .td-post-category,
+            .td-theme-wrap .$unique_block_class .td-post-category:hover {
+                background-color: @accent_text_color;
+            }
+            
         </style>
     ";
 
         $td_css_compiler = new td_css_compiler($raw_css);
-        $td_css_compiler->load_setting_raw('header_color', $this->get_att('header_color'));
+
+        $header_color = $this->get_att('header_color');
+        $td_css_compiler->load_setting_raw('header_color', $header_color);
+
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
 
-        $compiled_style = $td_css_compiler->compile_css();
+        // accent color
+        $accent_color = $this->get_att('accent_text_color');
+        if ($header_color != '') {
+	        $td_css_compiler->load_setting_raw( 'accent_text_color', $header_color ); }
+        if ($accent_color != '') {
+	        $td_css_compiler->load_setting_raw('accent_text_color', $accent_color);
+	        if ($header_color == '') {
+		        $td_css_compiler->load_setting_raw('header_color', $accent_color);
+	        }
+        }
 
+        $compiled_style = $td_css_compiler->compile_css();
 
         return $compiled_style;
     }
@@ -85,9 +107,14 @@ class td_block_template_1 extends td_block_template {
 
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
-
-
-
+        $title_tag = 'h4';
+        
+        // title_tag used only on Title shortcode
+        $block_title_tag = $this->get_att('title_tag');
+        if(!empty($block_title_tag)) {
+            $title_tag = $block_title_tag ;
+        }
+        
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {
@@ -98,16 +125,15 @@ class td_block_template_1 extends td_block_template {
             $custom_title = 'Block title';
         }
 
-
         // there is a custom title
         $buffy = '';
-        $buffy .= '<h4 class="block-title td-block-title">';
+        $buffy .= '<' . $title_tag . ' class="block-title td-block-title">';
         if (!empty($custom_url)) {
             $buffy .= '<a href="' . esc_url($custom_url) . '" class="td-pulldown-size">' . esc_html($custom_title) . '</a>';
         } else {
             $buffy .= '<span class="td-pulldown-size">' . esc_html($custom_title) . '</span>';
         }
-        $buffy .= '</h4>';
+        $buffy .= '</' . $title_tag . '>';
         return $buffy;
     }
 

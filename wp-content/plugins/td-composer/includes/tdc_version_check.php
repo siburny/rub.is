@@ -7,11 +7,19 @@
  */
 
 
+
+/**
+ * Latest plugins crash when used with older theme versions
+ * Check for theme version and disable plugin functionality on old themes
+ * Display an admin notice and inform the user to update the plugin
+ * Introduced in Newspaper 8.7.5 and Newsmag 4.4
+ */
 class tdc_version_check {
 
 
     static $theme_versions = array (
-        'Newspaper' => '8.7'
+        'Newspaper' => '8.7.5',
+        'Newsmag' => '4.4'
     );
 
 
@@ -33,7 +41,7 @@ class tdc_version_check {
 
     static function on_admin_notice_theme_version() {
         ?>
-        <div class="notice notice-error">
+        <div class="notice notice-error td-plugins-deactivated-notice">
             <p><strong>TD Composer</strong> - This plugin requires <strong><?php echo TD_THEME_NAME?> v<?php echo self::$theme_versions[TD_THEME_NAME] ?></strong> but the current installed version is <strong><?php echo TD_THEME_NAME?> v<?php echo TD_THEME_VERSION?></strong>. </p>
 
             <p>To fix this:</p>

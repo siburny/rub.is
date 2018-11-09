@@ -102,7 +102,7 @@ $current_tag_name = single_tag_title( '', false );
                             <div class="td-page-header">
                                 <h1 class="entry-title td-page-title">
                                     <?php /*<a itemprop="url" href="<?php echo get_tag_link(get_query_var('tag_id'));?>" rel="bookmark" title="<?php echo __td('Posts in ') . $current_tag_name?>"><?php echo $current_tag_name ?></a>*/?>
-                                    <span><?php echo $current_tag_name ?></span>
+                                    <span><?php echo __td('Tag', TD_THEME_NAME);?>: <?php echo $current_tag_name ?></span>
                                 </h1>
                             </div>
                             <?php

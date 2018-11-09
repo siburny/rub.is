@@ -1,9 +1,13 @@
 <?php
 
+$td_plugins_deactivated = array();
+
+
 function td_first_install_setup() {
     $td_isFirstInstall = td_util::get_option('firstInstall');
     if (empty($td_isFirstInstall)) {
     	td_options::update('firstInstall', 'themeInstalled');
+        td_options::update('td_log_status', 'off');
         //td_util::update_option('firstInstall', 'themeInstalled');
 
         wp_insert_term('Featured', 'category', array(
@@ -36,6 +40,40 @@ function td_after_theme_is_activated() {
 td_after_theme_is_activated();
 
 
+
+
+function td_deactivate_old_plugins() {
+	if (TD_DEPLOY_MODE === 'dev' || TD_DEPLOY_MODE === 'demo') {
+		return;
+	}
+
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+	global $td_plugins_deactivated;
+	$plugins_to_deactivate = array();
+
+	foreach (td_global::get_td_plugins() as $constant => $version) {
+		$plugin_slug = strtolower(str_replace('_', '-', $constant));
+		$plugin = $plugin_slug . '/' . $plugin_slug . '.php';
+
+		if (is_plugin_active($plugin)) {
+			$plugin_version = null;
+			if (defined($constant)) {
+				$plugin_version = constant($constant);
+			}
+
+			if ($plugin_version === null || $plugin_version !== $version) {
+				$plugins_to_deactivate[] = $plugin;
+				$td_plugins_deactivated[$plugin_slug] = $plugin;
+			}
+		}
+	}
+
+	if (!empty($plugins_to_deactivate)) {
+		deactivate_plugins($plugins_to_deactivate);
+	}
+}
+td_deactivate_old_plugins();
 
 
 
@@ -88,7 +126,6 @@ function td_check_install_plugins() {
 
 			$timestamp = $settings[0];
 
-
 			if ( time() < intval( $timestamp ) + 3 * MINUTE_IN_SECONDS ) {
 				// 180 seconds not elapsed
 				return;
@@ -96,7 +133,6 @@ function td_check_install_plugins() {
 
 			if ( $install_attempt > 3 ) {
 				// at least 3 attempts have been done
-
 				td_util::update_option( 'td_timestamp_install_plugins', 'installed' );
 
 				return;
@@ -124,6 +160,7 @@ function td_auto_install_plugins() {
 	}
 
 	global $wp_filesystem;
+	global $td_plugins_deactivated;
 
 	require_once(ABSPATH . 'wp-admin/includes/file.php');
 	require_once(ABSPATH . 'wp-admin/includes/plugin-install.php');
@@ -145,38 +182,70 @@ function td_auto_install_plugins() {
 //      die;
 
 
+	if (get_filesystem_method() !== 'direct' && !defined('FS_METHOD')) {
+		//try direct method
+		define('FS_METHOD', 'direct');
+	}
 
 	WP_Filesystem();
-
 	$skin = new Automatic_Upgrader_Skin();
 	$upgrader = new WP_Upgrader($skin);
 
+	$skip_plugin_activation = array();
+	$wp_plugin_list = get_plugins();
+
 	foreach ($instance->plugins as $plugin) {
 
-		if ( ( isset($plugin['td_install']) && $plugin['td_install'] ) || ( isset($plugin['td_install_if_exists']) && $plugin['td_install_if_exists'] ) ) {
+		if ( ( isset($plugin['td_install']) && $plugin['td_install'] ) || (isset($plugin['td_update']) && $plugin['td_update']) || ( isset($plugin['td_install_if_exists']) && $plugin['td_install_if_exists'] ) ) {
 
+			$plugin_main = $plugin['slug'] . '/' . $plugin['slug'] . '.php';
+
+			if (is_plugin_active($plugin_main)) {
+				// plugin is active
+				// all incompatible plugins should be inactive by now
+				td_log::log(__FILE__, __FUNCTION__, 'Active: skipped update for plugin ' . $plugin['slug']);
+				$skip_plugin_activation[] = $plugin['slug'];
+				continue;
+
+			} else if (isset($wp_plugin_list[$plugin_main])) {
+				//plugin is not active
+				//check if plugin was disabled by us
+				if (!isset($td_plugins_deactivated[$plugin['slug']])) {
+					//plugin disabled by the user - update but don't activate it
+					$skip_plugin_activation[] = $plugin['slug'];
+				}
+			} else {
+				//plugin is not present
+				if (isset($plugin['td_update']) && $plugin['td_update']) {
+					//don't install the plugin, only update it if it's already installed
+					$skip_plugin_activation[] = $plugin['slug'];
+					continue;
+				}
+			}
 
 			// Delete existing plugin
-
 			$existing_plugin_dir_path = $wp_filesystem->find_folder( WP_PLUGIN_DIR . '/' . $plugin['slug'] );
 
 			if ( isset( $plugin['td_install_if_exists'] ) && $plugin['td_install_if_exists'] && ! $wp_filesystem->exists( $existing_plugin_dir_path ) ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Plugin path doesn\'t exist', $existing_plugin_dir_path);
 				continue;
 			}
 
 			$removed = $upgrader->clear_destination( $existing_plugin_dir_path );
 
 			if ( is_wp_error( $removed ) ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Failed to remove existing plugin', $removed->get_error_message());
 				// $removed->get_error_message();
 				// error message must be registered somewhere
 				continue;
 			}
 
 
-			// Install plugin
+			// Download plugin
 
 			$download = $upgrader->download_package( $plugin['source'] );
 			if ( is_wp_error( $download ) ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Failed to download the plugin', $download->get_error_message());
 				// error message must be registered somewhere
 				continue;
 			}
@@ -187,6 +256,7 @@ function td_auto_install_plugins() {
 			$working_dir = $upgrader->unpack_package( $download, $delete_package );
 
 			if ( is_wp_error( $working_dir ) ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Failed to unpack the plugin', $working_dir->get_error_message());
 				// $working_dir->get_error_message();
 				// error message must be registered somewhere
 				continue;
@@ -205,6 +275,7 @@ function td_auto_install_plugins() {
 			) );
 
 			if ( is_wp_error( $install_result ) ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Failed to install the plugin', $install_result->get_error_message());
 				// $install_result->get_error_message();
 				// error message must be registered somewhere
 				continue;
@@ -215,13 +286,12 @@ function td_auto_install_plugins() {
 	// Force refresh of plugin update information
 	wp_clean_plugins_cache();
 
-	//var_dump(get_plugins());
-
 	foreach ($instance->plugins as $plugin) {
 
 		// Activate plugin
-
-		if (isset($plugin['td_activate']) && $plugin['td_activate']) {
+		// activate plugins that have td_install, if they were active before the update
+		if ((isset($plugin['td_activate']) && $plugin['td_activate'] && !in_array($plugin['slug'], $skip_plugin_activation)) ||
+		    (isset($plugin['td_update']) && $plugin['td_update'] && !in_array($plugin['slug'], $skip_plugin_activation))) {
 
 			// Important! For the new installed plugins the 'file_path' is just the plugin name, but for the already existing plugins the 'file_path' is something like "PLUGIN NAME / PLUGIN NAME . PHP"
 			$plugin_file_path = $plugin['file_path'];
@@ -236,6 +306,11 @@ function td_auto_install_plugins() {
 				// error message must be registered somewhere
 				continue;
 			}
+
+
+			if (isset($td_plugins_deactivated[$plugin['slug']])) {
+				unset($td_plugins_deactivated[$plugin['slug']]);
+			}
 		}
 	}
 
@@ -245,6 +320,30 @@ function td_auto_install_plugins() {
     //      3. 'install': td_auto_install_plugins will do nothing next time
 	td_util::update_option('td_timestamp_install_plugins', 'installed');
 }
+
+
+add_action( 'tgmpa_register', 'td_deactivate_message', 12 );
+function td_deactivate_message() {
+	global $td_plugins_deactivated;
+
+	if (!empty($td_plugins_deactivated)) {
+		$message = '<p style="font-size: 16px; font-weight: 600; color: red; text-transform: uppercase; margin-bottom: 5px;">Plugins disabled automatically</p><p>The following plugins were disabled because they are incompatible with this version of ' . TD_THEME_NAME . ':</p>';
+
+		foreach ($td_plugins_deactivated as $plugin_slug => $plugin) {
+			$plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $plugin);
+			$message .= '<li>' . $plugin_data['Name'] . '</li>';
+		}
+
+		$update_guide_url = 'http://forum.tagdiv.com/newspaper-how-to-update-a-plugin';
+		if (TD_THEME_NAME === 'Newsmag') {
+			$update_guide_url = 'http://forum.tagdiv.com/newsmag-how-to-update-a-plugin';
+		}
+
+		$message .= '<p>For update please check our <a target="_blank" class="button button-primary" href="' . $update_guide_url . '">Plugins update guide</a></p>';
+		new td_admin_notices($message, array('notice-error', 'is-dismissible', 'td-plugins-deactivated-notice'));
+	}
+}
+
 
 
 function td_theme_migration() {

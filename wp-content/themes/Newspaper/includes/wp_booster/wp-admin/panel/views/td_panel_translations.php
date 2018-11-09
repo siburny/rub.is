@@ -278,7 +278,6 @@
 echo td_panel_generator::ajax_box('Translations', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_translations',
-    ),
-    'panel_translation_custom_id'
+    ), 'panel_translation_custom_id', 'td_panel_box_translations'
 );
 ?>

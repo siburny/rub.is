@@ -27,6 +27,7 @@ if ($users_can_register == 1) {
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user-mob" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="register_button" id="register_button-mob" class="td-login-button" value="' . __td('REGISTER', TD_THEME_NAME) . '">
 	                <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
+	                ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                 </div>
             </div>';
 }
@@ -48,12 +49,19 @@ echo '
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="login_email" id="login_email-mob" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <div class="td-login-inputs"><input class="td-login-input" type="password" name="login_pass" id="login_pass-mob" value="" required><label>' . __td('your password', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="login_button" id="login_button-mob" class="td-login-button" value="' . __td('LOG IN', TD_THEME_NAME) . '">
-	                <div class="td-login-info-text"><a href="#" id="forgot-pass-link-mob">' . __td('Forgot your password?', TD_THEME_NAME) . '</a></div>
+	                <div class="td-login-info-text">
+	                <a href="#" id="forgot-pass-link-mob">' . __td('Forgot your password?', TD_THEME_NAME) . '</a>
+	                </div>
+	                
+	                ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
+	                
                 </div>
             </div>
 
+            
+            
             ' . $users_can_register_form . '
-
+            
             <div id="td-forgot-pass-mob" class="td-login-animation td-login-hide-mob">
                 <!-- close button -->
 	            <div class="td-forgot-pass-close">

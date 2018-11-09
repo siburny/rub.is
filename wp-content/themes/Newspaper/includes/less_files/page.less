@@ -439,8 +439,8 @@ body .td-page-title {
     Row divider svg
 */
 .tdm-svg {
-  fill: #fff;
-  transform-origin: 50% 50% 0px;
+  fill: #000;
+  transform-origin: 50% 50% 0;
   width: 100%;
   min-width: 1000px;
   left: 50%;
@@ -515,4 +515,9 @@ body .td-page-title {
       .transform(translateX(-50%));
     }
   }
+}
+
+// this prevent horizontal scroll on elements hover
+.tdc-theme-Newspaper {
+  overflow-x: hidden;
 }

@@ -217,6 +217,9 @@
 .td_social_instagram .td-social-box {
   background-color: #417096;
 }
+.td_social_pinterest .td-social-box {
+  background-color: #ca212a;
+}
 
 /*
 
@@ -326,6 +329,9 @@
   .td_social_instagram .td-sp {
     background-color: #417096;
   }
+  .td_social_pinterest .td-sp {
+    background-color: #ca212a;
+  }
 }
 
 /*
@@ -382,6 +388,10 @@
     content: '\e81d';
     color: #417096;
   }
+  .td_social_pinterest .td-sp:before {
+    content: '\e825';
+    color: #ca212a;
+  }
 }
 
 
@@ -414,6 +424,9 @@
   }
   .td_social_instagram:hover .td-social-box {
     background-color: #417096 !important;
+  }
+  .td_social_pinterest:hover .td-social-box {
+    background-color: #ca212a !important;
   }
 }
 
@@ -526,6 +539,9 @@
   .td_social_instagram .td-sp {
     background-position: -16px -224px;
   }
+  .td_social_pinterest .td-sp {
+    background-position: -16px -69px;
+  }
 }
 
 // Style 4
@@ -599,6 +615,9 @@
   }
   .td_social_instagram .td-sp {
     background-position: -16px -224px;
+  }
+  .td_social_pinterest .td-sp {
+    background-position: -16px -69px;
   }
 }
 
@@ -688,6 +707,9 @@
     background-color: #eb4026 !important;
   }
   .td_social_instagram:hover .td-social-box {
+    background-color: #417096 !important;
+  }
+  .td_social_pinterest:hover .td-social-box {
     background-color: #417096 !important;
   }
 }
@@ -898,6 +920,13 @@
       background-position: -12px -220px;
     }
   }
+  .td_social_pinterest .td-sp {
+    background-position: -5px -56px;
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      background-position: -13px -65px;
+    }
+  }
 }
 
 // Style 10
@@ -1027,6 +1056,13 @@
     /* responsive portrait tablet */
     @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
       background-position: -12px -220px;
+    }
+  }
+  .td_social_pinterest .td-sp {
+    background-position: -5px -56px;
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      background-position: -13px -65px;
     }
   }
 }

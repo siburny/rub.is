@@ -70,8 +70,11 @@ usage:
     top: auto;
     bottom: 27px;
   }
+  .td-church .td-header-style-7 .header-search-wrap {
+    bottom: 36px;
+  }
   .td-church .td-header-style-7 .header-search-wrap .td-drop-down-search {
-    top: 76px;
+    top: 50px;
   }
   .td-church .td-header-style-7 .td-affix .sf-menu {
     margin: 0;

@@ -6,6 +6,8 @@
 do_action('td_wp_booster_before');  //@todo is probably not used by anyone
 
 
+// admin notices
+require_once('td_admin_notices.php');
 
 // theme utility files
 require_once('td_global.php');
@@ -31,6 +33,9 @@ if (td_util::is_amp_plugin_installed()) {
 // Was moved before 'td_global_after' hook, to allow api to get fonts
 require_once("td_fonts.php");           // no autoload - fonts support
 
+require_once('td_first_install.php');   // no autoload - the code that runs on the first install of the theme
+
+
 // hook here to use the theme api
 do_action('td_global_after');
 
@@ -49,7 +54,6 @@ require_once('td_unique_posts.php');    // no autoload - unique posts (uses hook
 require_once('td_module.php');          // module builder
 require_once('td_block.php');           // block builder
 require_once('td_cake.php');
-require_once('td_first_install.php');   // no autoload - the code that runs on the first install of the theme
 require_once('td_js_generator.php');    // no autoload - the theme always outputs JS
 require_once('td_block_widget.php');    // no autoload - used to make widgets from our blocks
 require_once('td_background.php');      // background support - is not autoloaded due to issues
@@ -187,6 +191,8 @@ add_action('wp_ajax_td_ajax_manual_activation', array('td_ajax', 'on_ajax_manual
 //ajax: db check
 add_action('wp_ajax_td_ajax_db_check', array('td_ajax', 'on_ajax_db_check'));
 
+//ajax: system status - TD Log - toggle status ( on/off )
+add_action('wp_ajax_td_ajax_system_status_toggle_td_log', array('td_ajax', 'on_ajax_system_status_toggle_td_log'));
 
 
 //// @todo MUST
@@ -328,43 +334,48 @@ function td_load_css_fonts() {
 
 	//filter the google fonts used by user
 	if (!empty($cur_td_fonts)) {
-		foreach ($cur_td_fonts as $section_font_settings) {
-			if (isset($section_font_settings['font_family'])) {
-				$explode_font_family = explode('_', $section_font_settings['font_family']);
-				if ($explode_font_family[0] == 'g') {
+
+		foreach ( $cur_td_fonts as $section_font_settings ) {
+			if ( isset( $section_font_settings['font_family'] ) ) {
+				$explode_font_family = explode( '_', $section_font_settings['font_family'] );
+				if ( $explode_font_family[0] == 'g' ) {
 					$unique_google_fonts_ids[] = $explode_font_family[1];
 				}
 			}
 		}
+	}
 
-		$extra_google_fonts_ids = array();
+	$extra_google_fonts_ids = array();
 
-		$tds_footer_page = td_util::get_option('tds_footer_page');
-		if ( intval($tds_footer_page) !== get_the_ID()) {
-			$footer_page = get_post( $tds_footer_page );
-			if ( $footer_page instanceof WP_Post ) {
-				$footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
-				if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
-					foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
-						$extra_google_fonts_ids[] = $footer_google_fonts_id;
-					}
+	// Filter used to modify the post checked for icon fonts
+	$post_id = apply_filters( 'td_filter_google_fonts_post_id', get_the_ID() );
+
+	$tds_footer_page = td_util::get_option('tds_footer_page');
+	if ( intval($tds_footer_page) !== $post_id ) {
+		$footer_page = get_post( $tds_footer_page );
+		if ( $footer_page instanceof WP_Post ) {
+			$footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
+			if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
+				foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
+					$extra_google_fonts_ids[] = $footer_google_fonts_id;
 				}
 			}
 		}
-
-		// 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
-		$extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
-
-		$post_google_fonts_ids = get_post_meta(get_the_ID(), 'tdc_google_fonts', true);
-		if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
-			foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
-				$extra_google_fonts_ids[] = $post_google_fonts_id;
-			}
-		}
-
-		// remove duplicated font ids
-		$unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
 	}
+
+	// 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
+	$extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
+
+	$post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts', true);
+	if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
+		foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
+			$extra_google_fonts_ids[] = $post_google_fonts_id;
+		}
+	}
+
+	// remove duplicated font ids
+	$unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
+
 
 	//used to pull fonts from google
 	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query();
@@ -374,7 +385,7 @@ function td_load_css_fonts() {
 	 * td_fonts_css_files: holds the link to fonts.googleapis.com built above
 	 * this section will appear in the header of the source of the page
 	 */
-	if(!empty($td_fonts_css_files)) {
+	if(!empty($td_fonts_css_files) && td_options::get('g_use_google_fonts') !== 'disabled') {
 		wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
 	}
 }
@@ -430,8 +441,10 @@ function load_wp_admin_css() {
 	wp_enqueue_style('google-font-ubuntu', $td_protocol . '://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic&amp;subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic'); //used on content
 	if (TD_DEPLOY_MODE == 'dev') {
 		wp_enqueue_style('td-wp-admin-td-panel-2', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=wp-admin.css', false, TD_THEME_VERSION, 'all' );
+		wp_enqueue_style('font-newspaper', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=font-newspaper', TD_THEME_VERSION, 'all');
 	} else {
 		wp_enqueue_style('td-wp-admin-td-panel-2', td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/css/wp-admin.css', false, TD_THEME_VERSION, 'all' );
+		wp_enqueue_style('font-newspaper', td_global::$get_template_directory_uri . '/font-newspaper.css', false, TD_THEME_VERSION, 'all' );
 	}
 
 
@@ -494,6 +507,7 @@ function load_wp_admin_js() {
             }
             $last_js_file_id = $js_file_id;
         }
+
     }
 
 
@@ -1089,7 +1103,7 @@ function td_bottom_code() {
 
 
 /*  ----------------------------------------------------------------------------
-    google analytics
+    google analytics and footer custom JS
  */
 add_action('wp_head', 'td_header_analytics_code', 40);
 function td_header_analytics_code() {
@@ -1098,6 +1112,11 @@ function td_header_analytics_code() {
 
 }
 
+add_action('wp_footer', 'td_footer_script_code', 40);
+function td_footer_script_code() {
+	$td_footer_code = td_util::get_option('td_footer_code');
+	echo stripslashes($td_footer_code);
+}
 
 
 
@@ -1275,7 +1294,7 @@ function td_my_custom_class_names_on_body($classes) {
 add_action('wp_head', 'add_ie_html5_shim');
 function add_ie_html5_shim () {
 	echo '<!--[if lt IE 9]>';
-	echo '<script src="' . td_global::$http_or_https . '://html5shim.googlecode.com/svn/trunk/html5.js"></script>';
+	echo '<script src="' . td_global::$http_or_https . '://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>';
 	echo '<![endif]-->
     ';
 }
@@ -1502,20 +1521,24 @@ function td_change_backbone_js_hook() {
 			var td_template_content = jQuery('#tmpl-image-details').text();
 
 			var td_our_content = '' +
-				'<div class="setting">' +
-				'<span>Modal image</span>' +
-				'<div class="button-large button-group" >' +
-				'<button class="button active td-modal-image-off" value="left">Off</button>' +
-				'<button class="button td-modal-image-on" value="left">On</button>' +
-				'</div><!-- /setting -->' +
-				'<div class="setting">' +
-				'<span>tagDiv image style</span>' +
-				'<select class="size td-wp-image-style">' +
-				'<option value="">Default</option>' +
-				<?php echo $image_styles_buffer_for_select ?>
-				'</select>' +
-				'</div>' +
-				'</div>';
+
+                // modal image settings
+                '<div class="setting">' +
+                '<span>Modal image</span>' +
+                '<div class="button-large button-group" >' +
+                '<button class="button active td-modal-image-off" value="left">Off</button>' +
+                '<button class="button td-modal-image-on" value="left">On</button>' +
+                '</div><!-- /setting -->' +
+
+                // image style settings
+                '<div class="setting">' +
+                '<span>tagDiv image style</span>' +
+                '<select class="size td-wp-image-style">' +
+                '<option value="">Default</option>' +
+                <?php echo $image_styles_buffer_for_select ?>
+                '</select>' +
+                '</div>' +
+                '</div>';
 
 			//inject our settings in the template - before <div class="setting align">
 			td_template_content = td_template_content.replace('<div class="setting align">', td_our_content + '<div class="setting align">');
@@ -1650,7 +1673,7 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
 	//check for gallery  = slide
 	if(!empty($atts) and !empty($atts['td_select_gallery_slide']) and $atts['td_select_gallery_slide'] == 'slide') {
 
-		$td_double_slider2_no_js_limit = 7;
+		$td_double_slider2_no_js_limit = 1;
 		$td_nr_columns_slide = 'td-slide-on-2-columns';
 		$nr_title_chars = 95;
 
@@ -1658,11 +1681,13 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
 		//if(td_global::$cur_single_template_sidebar_pos == 'no_sidebar') {
 
 
-		if ($loop_sidebar_position == 'no_sidebar' || $page_template_slug === 'page-pagebuilder-latest.php') {
-			$td_double_slider2_no_js_limit = 11;
-			$td_nr_columns_slide = 'td-slide-on-3-columns';
-			$nr_title_chars = 170;
-		}
+        if ( is_single() ) {
+	        if ( $loop_sidebar_position == 'no_sidebar' || $page_template_slug === 'page-pagebuilder-latest.php' ) {
+		        $td_double_slider2_no_js_limit = 11;
+		        $td_nr_columns_slide           = 'td-slide-on-3-columns';
+		        $nr_title_chars                = 170;
+	        }
+        }
 
 		$title_slide = '';
 		//check for the title
@@ -1844,6 +1869,7 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
                 ';
 
 			$slide_javascript = '
+			<script>
                     //total number of slides
                     var ' . $gallery_slider_unique_id . '_nr_of_slides = ' . $nr_of_slides . ';
 
@@ -1907,18 +1933,40 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
                                 jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-1").iosSlider("goToSlide", i+1);
                             });
                         });
-
-                        //check the number of slides
-                        if(' . $gallery_slider_unique_id . '_nr_of_slides > ' . $td_double_slider2_no_js_limit . ') {
-                            jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-2").iosSlider({
-                                desktopClickDrag: true,
-                                snapToChildren: true,
-                                snapSlideCenter: true,
-                                infiniteSlider: true
+                        
+                        
+                        
+                        
+                        // Create slider_2 only when the content elements are wider than the wrapper
+                        var $gallery_slider_unique_id = jQuery("#' .  $gallery_slider_unique_id . '");
+                        
+                        if ( $gallery_slider_unique_id.length ) {
+                        
+                            var sliderWidth = $gallery_slider_unique_id.width(),
+                                elementsWidth = 0;
+                        
+                            $gallery_slider_unique_id.find( ".td-button").each(function(index, el) {
+                                elementsWidth += jQuery(el).outerWidth( true );
                             });
-                        } else {
-                            jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-2").addClass("td_center_slide2");
-                        }
+                            
+                            //check the number of slides
+                            //if( parseInt(' . $gallery_slider_unique_id . '_nr_of_slides) > $td_double_slider2_no_js_limit) {
+                            if( elementsWidth > sliderWidth ) {
+                                jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-2").iosSlider({
+                                    desktopClickDrag: true,
+                                    snapToChildren: true,
+                                    snapSlideCenter: true,
+                                    infiniteSlider: true
+                                });
+                            } else {
+                                jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-2").addClass("td_center_slide2");
+                            }
+                        } 
+                        
+                        
+                        
+
+                        
 
                         function doubleSlider2Load_' . $gallery_slider_unique_id . '(args) {
                             //var currentSlide = args.currentSlideNumber;
@@ -1953,9 +2001,12 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
                                 }, 1500);
                             }
                         }
-                    });';
+                    });
+                    </script>
+                    ';
 
-			td_js_buffer::add_to_footer($slide_javascript);
+            $slide_javascript = td_util::remove_script_tag( $slide_javascript );
+			td_js_buffer::add_to_footer( $slide_javascript);
 		}//end check if we have html code for the slider
 	}//end if slide
 
@@ -2051,7 +2102,12 @@ function td_add_single_template_class($classes) {
 
 		// add the class if we have a post template
 		if (!empty($active_single_template)) {
-			td_global::$cur_single_template = $active_single_template;
+
+		    if ( td_global::is_tdb_template( $active_single_template ) ) {
+                td_global::$cur_single_template = 'single_template';
+            } else {
+		        td_global::$cur_single_template = $active_single_template;
+            }
 			$classes []= sanitize_html_class($active_single_template);
 		}
 
@@ -2078,6 +2134,23 @@ function td_add_single_template_class($classes) {
 add_filter('body_class', 'td_add_category_template_class');
 function td_add_category_template_class($classes) {
 	if(!is_admin() and is_category()) {
+
+        if ( td_global::is_tdb_registered() ) {
+
+            $current_category = get_queried_object();
+
+            $tdb_category_template_global = td_options::get( 'tdb_category_template' );
+            $tdb_category_template = td_util::get_category_option( $current_category->cat_ID, 'tdb_category_template');
+
+            if ( empty( $tdb_category_template ) ) {
+                $tdb_category_template = $tdb_category_template_global;
+            }
+
+            if ( ! empty( $tdb_category_template ) && ( 'theme_templates' !== $tdb_category_template ) && td_global::is_tdb_template( $tdb_category_template, true ) ) {
+                return $classes;
+		    }
+        }
+
 		$classes [] = sanitize_html_class(td_api_category_template::_helper_get_active_id());
 		$classes [] = sanitize_html_class(td_api_category_top_posts_style::_helper_get_active_id());
 	}
@@ -2093,10 +2166,8 @@ function td_add_category_template_class($classes) {
 add_action('pre_get_posts', 'td_modify_main_query_for_category_page');
 function td_modify_main_query_for_category_page($query) {
 
-
 	//checking for category page and main query
 	if(!is_admin() and is_category() and $query->is_main_query()) {
-
 		// get the category object - with or without permalinks
 		if (empty($query->query_vars['cat'])) {
 			td_global::$current_category_obj = get_category_by_path(get_query_var('category_name'), false);  // when we have permalinks, we have to get the category object like this.
@@ -2110,6 +2181,13 @@ function td_modify_main_query_for_category_page($query) {
 			return;
 		}
 
+        // run our filter and check it's returned value. If tdb plugin did it's query modifications this will return 'true' and we do nothing here.
+        $tdb_template_overwrite = apply_filters( 'tdb_category_template_query_overwrite', false );
+
+		// if the was overwritten return here
+        if ( $tdb_template_overwrite === true ) {
+            return;
+        }
 
 		//get the number of page where on
 		$paged = get_query_var('paged');
@@ -2419,8 +2497,9 @@ if (is_admin()) {
 		$config = array(
 			'domain' => TD_THEME_NAME,            // Text domain - likely want to be the same as your theme.
 			'default_path' => '',                            // Default absolute path to pre-packaged plugins
-			'parent_menu_slug' => 'themes.php',                // Default parent menu slug
-			'parent_url_slug' => 'themes.php',                // Default parent URL slug
+			//'parent_menu_slug' => 'themes.php',                // DEPRECATED from v2.4.0 - Default parent menu slug
+			//'parent_url_slug' => 'themes.php',                // DEPRECATED from v2.4.0 - Default parent URL slug
+			'parent_slug'  => 'themes.php',
 			'menu' => 'td_plugins',    // Menu slug
 			'has_notices' => false,                        // Show admin notices or not
 			'is_automatic' => true,                        // Automatically activate plugins after installation or not
@@ -2453,7 +2532,8 @@ if (is_admin()) {
 
 	// Important! For the shortcode widgets that have 'block_template_id' param, the new instance (the modified instance) is returned.
 	// This BECAUSE the new instance have the all modifications (including new params)
-	add_filter('widget_update_callback', 'td_widget_update', 10, 2);
+	// Changed from 10 to 1 for WPML support
+	add_filter('widget_update_callback', 'td_widget_update', 1, 2);
 	function td_widget_update($instance, $new_instance) {
 		if (array_key_exists('block_template_id', $new_instance)) {
 			return $new_instance;
@@ -2464,59 +2544,86 @@ if (is_admin()) {
 
 
 /**
- * - wordpress filter hook used to switch single theme post types and custom post types, and also woocommerce single products
- * - we need to use 'template_include' and not 'single_template' (which runs just for single and before 'template_include'),
- * because of not using more than one hook for this split operation and because the $template_path is the path already
- * established by wordpress and woocommerce plugin
+ * - intercept the single template
+ * - @since 26.2.2018 - this method of verifying the template is very odd. There is no reason why it's done this way instead of is_singular('post')
+ * - RUNS AFTER the hook from the template builder
+ * - we do nothing here where a template builder id is detected
  */
 add_filter( 'template_include', 'td_template_include_filter');
 function td_template_include_filter( $wordpress_template_path ) {
 
-	// intercept the WordPress requested template, and if it's single we put our own.
-	if (is_single() and
-	    (($wordpress_template_path == TEMPLATEPATH . '/single.php') or ($wordpress_template_path == STYLESHEETPATH . '/single.php'))) {
-
+	if ( is_single() and ( ( $wordpress_template_path == TEMPLATEPATH . '/single.php' ) or ( $wordpress_template_path == STYLESHEETPATH . '/single.php' ) ) ) {
 		global $post;
 
 		// if we are on a custom post type, leave the defaul loaded wordpress template
-		if ($post->post_type != 'post') {
+		if ( $post->post_type != 'post' ) {
 			return $wordpress_template_path;
 		}
 
+        // check if we have a specific template set on the current post
+        $td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+
+        if ( !empty( $td_post_theme_settings['td_post_template'] ) ) {
+            $single_template_id = $td_post_theme_settings['td_post_template'];
+
+            if ( td_global::is_tdb_template($single_template_id)) {
+
+                // make sure the template exists, maybe it was deleted or something
+                if ( td_global::is_tdb_template( $single_template_id, true ) ) {
+
+                    $tdb_template_id = td_global::tdb_get_template_id($single_template_id);
+
+                    // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                    $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                    if ( $td_single_override != $tdb_template_id ) {
+                        return $td_single_override;
+                    }
+
+                } else {
+                    // just reset the post template here, the panel default post template will kick in and load, if available
+                    $td_post_theme_settings['td_post_template'] = '';
+                    update_post_meta( $post->ID, 'td_post_theme_settings', $td_post_theme_settings );
+                }
+
+            } else {
+                // it's a theme template, load that one
+                return td_api_single_template::_get_theme_template( $single_template_id, $wordpress_template_path );
+            }
+        }
+
 		// read the global setting
-		$single_template_id = td_util::get_option('td_default_site_post_template');
+		$default_template_id = td_util::get_option('td_default_site_post_template');
 
-		// check if we have a specific template
-		$td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
-		if (!empty($td_post_theme_settings['td_post_template'])) {
-			$single_template_id = $td_post_theme_settings['td_post_template'];
-		}
+		// STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
+		if ( td_global::is_tdb_template( $default_template_id ) ) {
 
-		if (!empty($single_template_id)) {
-			// try to find the template in the API
-			$single_template_path = '';
-			try {
-				$single_template_path = td_api_single_template::get_key($single_template_id, 'file');
-			} catch (ErrorException $ex) {
-				td_util::error( __FILE__, "The template $single_template_id isn't set. Did you disable a tagDiv plugin?" ); // this does not stop execution
-				td_util::set_check_installed_plugins();
-			}
+            // make sure the template exists, maybe it was deleted or something
+            if ( td_global::is_tdb_template( $default_template_id, true ) ) {
 
-			// we have the file in the API, now we make sure that the file exists on disk
-			if (!empty($single_template_path) and file_exists($single_template_path)) {
-				$wordpress_template_path = $single_template_path;
-			} else {
-				td_util::error( __FILE__, "The path $single_template_path of the $single_template_id template not found. Did you disable a tagDiv plugin?" );  // this does not stop execution
-				td_util::set_check_installed_plugins();
-			}
-		}
+                // load the default tdb template
+                $tdb_template_id = td_global::tdb_get_template_id($default_template_id);
 
-	} else if (td_global::$is_woocommerce_installed
-	           and is_single()
-	               and (($wordpress_template_path == TEMPLATEPATH . '/woocommerce/single-product.php')
-	                    or ($wordpress_template_path == STYLESHEETPATH . '/woocommerce/single-product.php'))) {
-		// @todo - this section is not used. Here we can load single product templates on WooCommerce
-		// echo 'SINGLE PRODUCT detected<br>';
+                // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                if ( $td_single_override != $tdb_template_id ) {
+                    return $td_single_override;
+                }
+
+            } else {
+
+                // if we have an non-existent cloud template update the default site wide post template
+                td_util::update_option('td_default_site_post_template', '' );
+
+                // and load the default theme template
+                return $wordpress_template_path;
+            }
+
+        } else {
+		    // load the default theme template
+            return td_api_single_template::_get_theme_template( $default_template_id, $wordpress_template_path );
+        }
 	}
 
 	return $wordpress_template_path;

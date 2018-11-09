@@ -115,10 +115,44 @@ class td_ajax {
         // set the atts for this block. We get the atts via ajax
         $block_instance->set_all_atts($ajax_parameters['td_atts']);
 
-		$buffy = $block_instance->inner($td_query->posts, $ajax_parameters['td_column_number'], '', true);
+        // these blocks work with the data type of array
+        $block_array_data_type = array('tdb_loop', 'tdb_loop_2');
 
+        if ( in_array( $ajax_parameters['block_type'], $block_array_data_type ) ) {
+            $data_array = array();
 
-		//pagination
+            foreach ( $td_query->posts as $post ) {
+
+                $data_array['loop_posts'][$post->ID] = array(
+                    'post_id'               => $post->ID,
+                    'post_type'             => get_post_type( $post->ID ),
+                    'has_post_thumbnail'    => has_post_thumbnail( $post->ID ),
+                    'post_thumbnail_id'     => get_post_thumbnail_id( $post->ID ),
+                    'post_link'             => esc_url( get_permalink( $post->ID ) ),
+                    'post_title'            => get_the_title( $post->ID ),
+                    'post_title_attribute'  => esc_attr( strip_tags( get_the_title( $post->ID ) ) ),
+                    'post_excerpt'          => $post->post_excerpt,
+                    'post_content'          => $post->post_content,
+                    'post_date_unix'        => get_the_time( 'U', $post->ID ),
+                    'post_date'             => get_the_time( get_option( 'date_format' ), $post->ID ),
+                    'post_author_url'       => get_author_posts_url( $post->post_author ),
+                    'post_author_name'      => get_the_author_meta( 'display_name', $post->post_author ),
+                    'post_author_email'     => get_the_author_meta( 'email', $post->post_author ),
+                    'post_comments_no'      => get_comments_number( $post->ID ),
+                    'post_comments_link'    => get_comments_link( $post->ID ),
+                    'post_theme_settings'   => td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' ),
+                );
+
+            }
+
+            $buffy = $block_instance->inner($data_array['loop_posts'], $ajax_parameters['td_column_number'], '', true);
+        } elseif ( $ajax_parameters['block_type'] === 'tdb_single_related' ) {
+            $buffy = $block_instance->inner($td_query->posts, $ajax_parameters['sample_posts_data'], '', true);
+        } else {
+            $buffy = $block_instance->inner($td_query->posts, $ajax_parameters['td_column_number'], '', true);
+        }
+
+        //pagination
 		$td_hide_prev = false;
 		$td_hide_next = false;
 		if ($ajax_parameters['td_current_page'] == 1) {
@@ -145,7 +179,6 @@ class td_ajax {
 		);
 
 		if ( true === $isAjaxCall ) {
-
 			die(json_encode($buffyArray));
 		} else {
 			return json_encode($buffyArray);
@@ -350,7 +383,7 @@ class td_ajax {
 					if (intval($user_id) > 0) {
 						//send email to $register_email
 						wp_new_user_notification($user_id, null, 'both');
-						die(json_encode(array('register', 1,__td('Please check your email (index or spam folder), the password was sent there.', TD_THEME_NAME))));
+						die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder), the password was sent there.', TD_THEME_NAME))));
 					} else {
 						die($json_user_pass_exists);
 					}
@@ -977,6 +1010,39 @@ class td_ajax {
         }
 
         die(json_encode($buffy));
+    }
+
+
+    /**
+     * AJAX call
+     * switch td logging on/off ( the log is turned off by default )
+     * @return json encoded array
+     */
+    static function on_ajax_system_status_toggle_td_log() {
+
+        $reply = array();
+
+        // die if request is fake
+        check_ajax_referer('td-log-switch', 'td_magic_token');
+
+        // die if user doesn't have permission
+        if (!current_user_can('edit_theme_options')) {
+            $reply['permission'] = 'user dose not have permission to modify this option';
+            die(json_encode($reply));
+        }
+
+        $td_log_status = $_POST['td_log_status'];
+
+        if ( ! in_array( $td_log_status, array( 'on', 'off' ) ) ) {
+            $reply['post_data'] = 'invalid post data, post data value: ' . $td_log_status;
+            die(json_encode($reply));
+        }
+
+        $reply[] = 'td log turned ' . $td_log_status;
+
+        td_util::update_option('td_log_status', $td_log_status );
+
+        die(json_encode($reply));
     }
 
 }

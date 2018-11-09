@@ -9,7 +9,10 @@
 require_once('tdc_util.php');
 require_once('tdc_state.php');
 require_once('tdc_ajax.php');
+require_once('tdc_guttenberg.php');
 
+if ( tdc_guttenberg::is_gutenberg() )
+    new tdc_guttenberg();
 
 // shortcodes
 require_once('tdc_composer_block.php' );
@@ -40,15 +43,15 @@ add_action('admin_bar_menu', 'tdc_on_admin_bar_menu', 100);
 function tdc_on_admin_bar_menu() {
 	global $wp_admin_bar, $post;
 
-	if (is_user_logged_in() && current_user_can('switch_themes') && is_admin_bar_showing() && is_page()) {
-		$wp_admin_bar->add_menu( array(
-			'id'    => 'tdc_edit',
-			'meta'  => array(
-				'title' => 'Edit with TD Composer'
-			),
-			'title' => 'Edit with TD Composer',
-			'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&prev_url='  . rawurlencode(tdc_util::get_current_url()))
-		) );
+	if ( is_user_logged_in() && current_user_can('publish_pages') && is_admin_bar_showing() && is_page() ) {
+	    $wp_admin_bar->add_menu( array(
+            'id'    => 'tdc_edit',
+            'meta'  => array(
+                'title' => 'Edit with TD Composer'
+            ),
+            'title' => 'Edit with TD Composer',
+            'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
+        ) );
 	}
 }
 
@@ -211,10 +214,14 @@ if ( 'nav-menus' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== 
 /**
  * edit with td composer
  */
-if ( is_user_logged_in() && current_user_can('switch_themes')) {
+if ( is_user_logged_in() && current_user_can('publish_pages') && 'page' === tdc_util::get_get_val('post_type') ) {
 	add_filter( 'page_row_actions', 'tdc_on_page_row_actions', 10, 2 );
 	function tdc_on_page_row_actions( $actions, $post ) {
-		$actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&prev_url='  . rawurlencode(tdc_util::get_current_url()) ) . '">Edit with TD Composer</a>';
+	    if ( $post->ID === (int) get_option( 'page_for_posts' ) ) {
+	        $actions['edit_tdc_composer'] = '<a href="#">TD Composer is disabled on Posts Page</a>';
+	    } else {
+	        $actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url='  . rawurlencode(tdc_util::get_current_url()) ) . '">Edit with TD Composer</a>';
+        }
 		return $actions;
 	}
 }
@@ -239,14 +246,17 @@ function tdc_disable_notification() {
 
 
 // Remove the auto added paragraphs - as VC does
+// Important! Remove from 'page' and from 'tdb_templates' (custom post type used by template builder)
 add_filter( 'the_content', 'tdc_on_remove_wpautop', 9 );
 function tdc_on_remove_wpautop($content) {
 	global $post;
-	if ( 'page' === get_post_type() && td_util::is_pagebuilder_content( $post ) ) {
+	if ( ( 'page' === get_post_type() || 'tdb_templates' === get_post_type() ) && td_util::is_pagebuilder_content( $post ) ) {
 		remove_filter( 'the_content', 'wpautop' );
 	}
 	return $content;
 }
+
+
 
 
 
@@ -259,7 +269,10 @@ function tdc_on_load_font_icon() {
 
 	$icon_fonts = array();
 
-	$post_icon_fonts = get_post_meta( get_the_ID(), 'tdc_icon_fonts', true );
+	// Filter used to modify the post checked for icon fonts
+	$post_id = apply_filters( 'tdc_filter_icon_fonts_post_id', get_the_ID() );
+
+	$post_icon_fonts = get_post_meta( $post_id, 'tdc_icon_fonts', true );
 
 //	echo '<pre>';
 //	var_dump($tdc_icon_fonts);
@@ -274,7 +287,7 @@ function tdc_on_load_font_icon() {
 	// Get font icons for footer
 
 	$tds_footer_page = td_util::get_option('tds_footer_page');
-	if ( intval($tds_footer_page) !== get_the_ID()) {
+	if ( intval($tds_footer_page) !== $post_id ) {
 		$footer_icon_fonts = get_post_meta( $tds_footer_page, 'tdc_icon_fonts', true );
 
 		if ( ! empty( $footer_icon_fonts ) && is_array( $footer_icon_fonts ) ) {
@@ -287,7 +300,10 @@ function tdc_on_load_font_icon() {
 	}
 
 	foreach ( $icon_fonts as $font_id => $font_settings ) {
-		wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, false );
+		if ( isset( $font_settings['theme_font'] ) ) {
+			continue;
+		}
+		wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
 	}
 }
 
@@ -318,8 +334,17 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 	add_action( 'admin_head', 'tdc_on_admin_head_for_tbm' );
 	function tdc_on_admin_head_for_tbm() {
 
+	    $is_page_for_posts = false;
+
+	    global $post;
+	    if ( ! is_null( $post )) {
+	        $is_page_for_posts = $post->ID == get_option( 'page_for_posts' );
+        }
+
 		$tdc_admin_settings = array(
-			'adminUrl' => admin_url()
+			'adminUrl' => admin_url(),
+			'hasUserRights' => is_user_logged_in() && current_user_can('publish_pages'),
+            'isPageForPosts' => $is_page_for_posts,
 		);
 
 		ob_start();
@@ -339,14 +364,14 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 
 		// load the css
 		if ( true === TDC_USE_LESS ) {
-			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/td_less_style.css.php?part=tdc_wp_admin_main', false, false );
+			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/td_less_style.css.php?part=tdc_wp_admin_main', false, TD_COMPOSER );
 		} else {
-			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, false);
+			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, TD_COMPOSER);
 		}
 
 		// load the js
 	    if (TDC_DEPLOY_MODE == 'deploy') {
-	        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TDC_VERSION, true);
+	        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true);
 	    } else {
 	        tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wp_admin, array('jquery', 'underscore'));
 	    }
@@ -436,7 +461,7 @@ function tdc_on_admin_head() {
 
     // save the previous url - used when the X in composer is pressed to close it down.
     if (tdc_util::get_get_val('prev_url') != '') {
-        $previous_url = tdc_util::get_get_val('prev_url');
+        $previous_url = htmlspecialchars_decode ( tdc_util::get_get_val('prev_url') );
     } else {
         $previous_url = get_edit_post_link(get_the_ID(), '');
     }
@@ -512,12 +537,14 @@ function tdc_on_admin_head() {
 
 	$tdc_admin_settings = array(
 		'adminUrl' => admin_url(),
+        'ABSPATH' => ABSPATH,
 		'editPostUrl' => get_edit_post_link( get_the_ID(), '' ),
 		'previousUrl' => $previous_url, //this is uesd to redirect to the previous url when the composer is closed
 		'wpRestNonce' => wp_create_nonce('wp_rest'),
 		'wpRestUrl' => rest_url(),
 		'permalinkStructure' => get_option('permalink_structure'),
 		'pluginUrl' => TDC_URL,
+		'themeName' => TD_THEME_NAME,
 
 		'mappedShortcodes' => $mappedShortcodes, // get ALL the mapped shortcodes / we should turn off pretty print
 
@@ -534,15 +561,16 @@ function tdc_on_admin_head() {
 		'globalStyle' => $globalStyle,
 		'settingsStyle' => $settingsStyle,
 		'registeredSidebars' => $GLOBALS['wp_registered_sidebars'],
-		'hasUserRights' => is_user_logged_in() && current_user_can('switch_themes'),
+		'hasUserRights' => is_user_logged_in() && current_user_can('publish_pages'),
 		'tdcSavings' => td_util::get_option( 'tdc_savings' ),
 		'deployMode' => TDC_DEPLOY_MODE,
 	);
 
+	echo '<script>window.tdcAdminSettings = ' . json_encode( $tdc_admin_settings ) . '</script>';
+
 	ob_start();
 	?>
 	<script>
-		window.tdcAdminSettings = <?php echo json_encode( $tdc_admin_settings );?>;
 
 		for ( var shortcode in window.tdcAdminSettings.mappedShortcodes ) {
 			var params = window.tdcAdminSettings.mappedShortcodes[shortcode].params;
@@ -578,11 +606,52 @@ function tdc_on_admin_head() {
 			}
 		}
 
+
+		// Code necessary to supply some vc functionality that VC does not register when tagDiv composer runs as frontend editor
+		window.vc_user_access = function() {
+		    return {
+				editor: function ( editor ) {
+					return false;
+				},
+				partAccess: function ( editor ) {
+					return false;
+				},
+				check: function ( part, rule, custom, not_check_state ) {
+					return false;
+				},
+				getState: function ( part ) {
+					return false;
+				},
+				shortcodeAll: function ( shortcode ) {
+					return false;
+				},
+				shortcodeEdit: function ( shortcode ) {
+					return false;
+				},
+				shortcodeValidateOldMethod: function ( shortcode ) {
+					return false;
+				},
+				updateMergedCaps: function ( rule ) {
+					return false;
+				}
+			};
+        };
 		//console.log(window.tdcAdminSettings);
 	</script>
 	<?php
 	$buffer = ob_get_clean();
 	echo $buffer;
+}
+
+
+// Code necessary to remove some vc functionality that interfere with tagDiv composer
+if ( class_exists( 'Vc_Manager' ) && method_exists( 'Vc_Manager', 'getInstance' ) ) {
+    $vc_instance = Vc_Manager::getInstance();
+
+    remove_action( 'init', array(
+        $vc_instance,
+        'init',
+    ), 9 );
 }
 
 
@@ -599,9 +668,6 @@ function tdc_on_register_external_shortcodes() {
 
 
 
-
-
-
 /**
  * Registers the js script:
  */
@@ -610,16 +676,16 @@ function tdc_on_admin_enqueue_scripts() {
 
 	// load the css
 	if ( true === TDC_USE_LESS ) {
-		wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/td_less_style.css.php?part=tdc_wp_admin_main', false, false );
+		wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/td_less_style.css.php?part=tdc_wp_admin_main', false, TD_COMPOSER );
 	} else {
-		wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, false);
+		wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, TD_COMPOSER);
 	}
 
 
 
 	// load the js
     if (TDC_DEPLOY_MODE == 'deploy') {
-        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TDC_VERSION, true);
+        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true);
     } else {
         tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wp_admin, array('jquery', 'underscore'));
     }
@@ -627,11 +693,14 @@ function tdc_on_admin_enqueue_scripts() {
 	// Disable the confirmation messages at leaving pages
 	if ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) {
 		wp_dequeue_script( 'autosave' );
+		wp_deregister_script( 'ace-editor' );
 	}
+
+
+
+//remove_action( 'vc-settings-render-tab-vc-custom_css', 'vc_page_settings_custom_css_load' );
+
 }
-
-
-
 
 
 if (!empty($td_action)) {
@@ -639,7 +708,7 @@ if (!empty($td_action)) {
 	// $_GET['post_id'] is requiered from now on
 	$post_id = tdc_util::get_get_val( 'post_id' );
 	if (empty($post_id)) {
-		tdc_util::error(__FILE__, __FUNCTION__, 'No post_id received via GET');
+	    echo 'No post_id received via GET';
 		die;
 	}
 
@@ -659,8 +728,20 @@ if (!empty($td_action)) {
 			 *  on wrap body class
 			 */
 			add_filter( 'admin_body_class', 'on_admin_body_class_wrap');
-			function on_admin_body_class_wrap() {
-				return 'tdc';
+			function on_admin_body_class_wrap( $classes ) {
+			    $classes .= ' tdc';
+
+			    global $post;
+			    $current_post_type = get_post_type( $post );
+			    $tdbTemplateType = tdc_util::get_get_val('tdbTemplateType');
+
+			    if ( false !== $tdbTemplateType ) {
+                    $current_post_type = $tdbTemplateType;
+                }
+
+                $classes .= ' tdb-template-type-' . $current_post_type;
+
+				return $classes;
 			}
 
 
@@ -682,7 +763,7 @@ if (!empty($td_action)) {
                         'backbone',
                         'underscore',
 	                    'shortcode' // the parser depends of wp.shortcode (shortcode.js wp file)
-                    ), TDC_VERSION, true);
+                    ), TD_COMPOSER, true);
                 } else {
                     tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wrapper, array(
                         'jquery',
@@ -693,9 +774,9 @@ if (!empty($td_action)) {
                 }
 
 				if ( true === TDC_USE_LESS ) {
-					wp_enqueue_style('td_composer_edit', TDC_URL . '/td_less_style.css.php?part=wrap_main', false, false);
+					wp_enqueue_style('td_composer_edit', TDC_URL . '/td_less_style.css.php?part=wrap_main', false, TD_COMPOSER);
 				} else {
-					wp_enqueue_style('td_composer_edit', TDC_URL . '/assets/css/wrap_main.css', false, false);
+					wp_enqueue_style('td_composer_edit', TDC_URL . '/assets/css/wrap_main.css', false, TD_COMPOSER);
 				}
 
 
@@ -715,7 +796,13 @@ if (!empty($td_action)) {
 			add_action( 'admin_enqueue_scripts', 'on_admin_enqueue_scripts'); // load them last
 			function on_admin_enqueue_scripts() {
 				foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
-					wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, false);
+
+					if ( isset( $font_settings['theme_font'] ) ) {
+						wp_enqueue_style( $font_id, get_stylesheet_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );
+						continue;
+					}
+
+					wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
 
 					$file_path = plugin_dir_path( __FILE__ ) . 'templates/' . $font_settings['template_file'];
 					$handle_file = fopen( $file_path, 'w+');
@@ -977,7 +1064,7 @@ if (!empty($td_action)) {
                     wp_enqueue_script('js_files_for_iframe', TDC_URL . '/assets/js/js_files_for_iframe.min.js', array(
                         'jquery',
                         'underscore'
-                    ), TDC_VERSION, true);
+                    ), TD_COMPOSER, true);
                 } else {
                     tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_iframe, array(
                         'jquery',
@@ -989,9 +1076,9 @@ if (!empty($td_action)) {
 
 
 				if ( true === TDC_USE_LESS ) {
-					wp_enqueue_style('td_composer_iframe_main', TDC_URL . '/td_less_style.css.php?part=iframe_main', false, false);
+					wp_enqueue_style('td_composer_iframe_main', TDC_URL . '/td_less_style.css.php?part=iframe_main', false, TD_COMPOSER);
 				} else {
-					wp_enqueue_style('td_composer_iframe_main', TDC_URL . '/assets/css/iframe_main.css', false, false);
+					wp_enqueue_style('td_composer_iframe_main', TDC_URL . '/assets/css/iframe_main.css', false, TD_COMPOSER);
 				}
 			}
 
@@ -1003,7 +1090,10 @@ if (!empty($td_action)) {
 			function on_get_footer_load_all_fonts() {
 
 				foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
-					wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, false );
+					if ( isset( $font_settings['theme_font'] ) ) {
+						continue;
+					}
+					wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
 				}
 
 				if ( td_util::get_check_installed_plugins() ) {
@@ -1046,7 +1136,7 @@ if (!empty($td_action)) {
 
 		default:
 			// Unknown td_action - kill execution
-			tdc_util::error(__FILE__, __FUNCTION__, 'Unknown td_action received: ' . $td_action);
+            echo 'Unknown td_action received: ' . $td_action;
 			die;
 	}
 }
@@ -1089,7 +1179,7 @@ function tdc_load_widget() {
                 'jquery',
                 'underscore',
                 'backbone'
-            ), TDC_VERSION, true);
+            ), TD_COMPOSER, true);
         } else {
             // Load tdc js scripts needed for the css tab in the widget panel of the theme
             tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_widget, array('jquery', 'underscore', 'backbone'));

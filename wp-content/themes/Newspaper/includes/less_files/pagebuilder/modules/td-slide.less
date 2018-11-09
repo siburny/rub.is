@@ -4,6 +4,11 @@
 .td_block_slide {
   position: relative;
   overflow: hidden;
+  .clearfix();
+
+  .td_block_inner {
+    position: relative;
+  }
 
   .td-module-thumb,
   .td-video-play-ico,
@@ -45,11 +50,16 @@
   }
 
   .td-image-gradient:before {
-    height: 50%;
+    height: 100%;
+  }
 
-    @media (max-width: @responsive_p_tablet_max) {
-      height: 100%;
-    }
+  .td-module-thumb,
+  .entry-thumb {
+    height: 100%;
+  }
+
+  .entry-thumb {
+    background-size: cover;
   }
 
   .td-slide-meta {
@@ -59,6 +69,9 @@
     width: 100%;
     padding: 0 22px;
     color: #fff;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
 
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
@@ -118,8 +131,7 @@
   }
 
 
-  .td-icon-left,
-  .td-icon-right {
+  .td-slide-nav {
     padding: 20px;
     position: absolute;
     display: block;
@@ -132,11 +144,11 @@
     .transition(opacity 0.4s);
   }
 
-  .td-icon-left {
+  .prevButton {
     left: 0;
   }
 
-  .td-icon-right {
+  .nextButton {
     right: 0;
   }
 
@@ -179,8 +191,7 @@
   }
 
   &:hover {
-    .td-icon-left,
-    .td-icon-right {
+    .td-slide-nav {
       opacity: 1;
       z-index: 1;
     }
@@ -206,28 +217,7 @@
 
 /* 3 column */
 .iosSlider-col-3 {
-  height: 580px;
-
-  /* responsive landscape tablet */
-  @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-    height: 532px;
-  }
-
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    height: 402px;
-  }
-
-  /* responsive portrait phone */
-  @media (max-width: @responsive_p_phone_max) {
-    height: 298px;
-  }
-
-  /* responsive small portrait phone */
-  @media (max-width: 500px) {
-    height: 163px;
-  }
-
+  &,
   .td_module_slide {
     height: 580px;
 
@@ -249,30 +239,6 @@
     /* responsive small portrait phone */
     @media (max-width: 500px) {
       height: 163px;
-
-      .td-module-thumb,
-      .entry-thumb {
-        height: 100%;
-      }
-    }
-  }
-
-  .td-module-meta-info {
-    padding-bottom: 12px;
-
-    /* responsive portrait tablet */
-    @media (max-width: @responsive_p_tablet_max) {
-      padding-bottom: 0;
-    }
-  }
-
-  .td-icon-left,
-  .td-icon-right {
-    font-size: 55px;
-
-    /* responsive portrait tablet */
-    @media (max-width: @responsive_p_tablet_max) {
-      font-size: 38px
     }
   }
 
@@ -298,44 +264,18 @@
       line-height: 32px;
     }
 
-
     /* responsive small portrait phone */
     @media (max-width: 500px) {
       font-size: 18px;
       line-height: 24px;
     }
   }
-
-  .entry-thumb {
-    width: 1068px;
-  }
 }
 
 
 /* 2 columns */
 .iosSlider-col-2 {
-  height: 385px;
-
-  /* responsive landscape tablet */
-  @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-    height: 354px;
-  }
-
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    height: 268px;
-  }
-
-  /* responsive portrait phone */
-  @media (max-width: @responsive_p_phone_max) {
-    height: 303px;
-  }
-
-  /* responsive small portrait phone */
-  @media (max-width: 500px) {
-    height: 166px;
-  }
-
+  &,
   .td_module_slide {
     height: 385px;
 
@@ -376,37 +316,11 @@
       line-height: 24px;
     }
   }
-
-  .entry-thumb {
-    width: 696px;
-  }
 }
 
-
 /* 1 column */
-.iosSlider-col-1 {
-  height: 385px;
-
-  /* responsive landscape tablet */
-  @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-    height: 354px;
-  }
-
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    height: 268px;
-  }
-
-  /* responsive portrait phone */
-  @media (max-width: @responsive_p_phone_max) {
-    height: 303px;
-  }
-
-  /* responsive small portrait phone */
-  @media (max-width: 500px) {
-    height: 200px;
-  }
-
+.td_block_slide .iosSlider-col-1 {
+  &,
   .td_module_slide {
     height: 385px;
 
@@ -447,39 +361,17 @@
       line-height: 24px;
     }
   }
-
-  .entry-thumb {
-    width: 324px;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      width: 767px;
-    }
-
-    /* responsive small portrait phone */
-    @media (max-width: 500px) {
-      width: 500px;
-    }
-  }
-
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    .td-post-views,
-    .td-post-comments {
-      display: none;
-    }
-  }
 }
 
-//slider fix for this sizes if it's applying for any device
-@media (min-width: 500px) and (max-width: 584px) {
-  .iosSlider-col-2,
-  .iosSlider-col-3 {
-    img {
-      min-height: 303px;
-    }
-  }
-}
+////slider fix for this sizes if it's applying for any device
+//@media (min-width: 500px) and (max-width: 584px) {
+//  .iosSlider-col-2,
+//  .iosSlider-col-3 {
+//    img {
+//      min-height: 303px;
+//    }
+//  }
+//}
 
 
 // fix slider will appear only when js is loaded

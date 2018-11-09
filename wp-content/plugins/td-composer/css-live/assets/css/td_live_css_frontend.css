@@ -62,6 +62,26 @@
   margin-right: 14px;
   border: 1px solid #e6e6e6;
 }
+.td-code-editor .ace_searchbtn_close {
+  top: auto;
+  bottom: 5px;
+}
+.td-code-editor .ace_search_form,
+.td-code-editor .ace_replace_form {
+  margin-right: 0;
+  font-size: 11px;
+}
+.td-code-editor .ace_search_form .ace_search_field {
+  width: 230px;
+}
+.td-code-editor .ace_replace_form .ace_search_field {
+  width: 222px;
+}
+.td-code-editor .ace_search_options {
+  margin-top: 8px;
+  margin-bottom: 6px;
+  padding-right: 23px;
+}
 .tdw-css-writer-editor {
   display: none;
 }

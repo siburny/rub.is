@@ -217,6 +217,8 @@ class td_block {
 	 * @since 30 may 2016 - before it was echoed on render - no bueno
 	 */
 	protected function get_block_css() {
+	    $buffy_style = '';
+
 		$buffy = $this->block_template()->get_css();
 
 		$css = $this->get_att('css');
@@ -228,7 +230,7 @@ class td_block {
 
 		$custom_css = $this->get_custom_css();
 		if (!empty($custom_css)) {
-			$buffy .= PHP_EOL . '/* custom css */' . PHP_EOL . $custom_css;
+			$buffy_style .= PHP_EOL . '<style>' . PHP_EOL . '/* custom css */' . PHP_EOL . $custom_css . PHP_EOL . '</style>';
 		}
 
 
@@ -245,6 +247,7 @@ class td_block {
 
 		if (!empty($buffy)) {
 			$buffy = PHP_EOL . '<style>' . PHP_EOL . $buffy . PHP_EOL . '</style>';
+			$buffy_style = $buffy . $buffy_style;
 		}
 
 		$tdcElementStyleCss = '';
@@ -255,12 +258,12 @@ class td_block {
 			$tdcElementStyleCss = PHP_EOL . '<div class="' . $this->get_att( 'tdc_css_class_style' ) . ' td-element-style">' . $beforeCssOutput . '<style>' . $cssOutput . ' ' . $afterCssOutput . '</style></div>';
 		}
 
-		if (!empty($buffy)) {
+		if (!empty($buffy_style)) {
 
 			if (!empty($tdcElementStyleCss)) {
-				return $buffy . $tdcElementStyleCss;
+				return $buffy_style . $tdcElementStyleCss;
 			}
-			return $buffy;
+			return $buffy_style;
 		} else if (!empty($tdcElementStyleCss)) {
 			return $tdcElementStyleCss;
 		}
@@ -1528,12 +1531,13 @@ class td_block {
 
 		// If this is not a loop block or if we don't have pull down ajax filters, do not run. This is just to fix the pulldown items on
 		// content blocks
-		if ($this->is_loop_block() === true && !empty($this->td_block_template_data['td_pull_down_items'])) {
+
+		if (($this->is_loop_block() === true && !empty($this->td_block_template_data['td_pull_down_items'])) ) {
 			ob_start();
 			?>
 			<script>
 
-				// block subcategory ajax filters!
+                // block subcategory ajax filters!
 				var jquery_object_container = jQuery('.<?php echo $this->block_uid ?>_rand');
 				if ( jquery_object_container.length) {
 					var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
@@ -1548,7 +1552,68 @@ class td_block {
 						pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.closest('.td-block-title-wrap');
 						pulldown_item_obj.excluded_jquery_elements = [pulldown_item_obj.container_jquery_obj.find('.td-pulldown-size')];
 						tdPullDown.add_item(pulldown_item_obj); // add the item
+
 					}
+				}
+
+			</script>
+			<?php
+			$buffy .= td_util::remove_script_tag(ob_get_clean());
+		}
+
+
+
+		if ( 'tdb_single_post_share' === get_class($this) ) {
+			ob_start();
+			?>
+			<script>
+
+                // block subcategory ajax filters!
+				var jquery_object_container = jQuery('.<?php echo $this->block_uid ?>_rand');
+				if ( jquery_object_container.length) {
+
+                    var horizontal_jquery_obj = jquery_object_container.find( '.td-post-sharing-visible:first' );
+
+                    if ( horizontal_jquery_obj.length ) {
+
+                        var pulldown_item_obj = new tdPullDown.item();
+                        pulldown_item_obj.blockUid = jquery_object_container.data('td-block-uid'); // get the block UID
+                        pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
+                        pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-social-sharing-hidden:first');
+                        pulldown_item_obj.horizontal_element_css_class = 'td-social-sharing-button-js';
+                        pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.parents('.td-post-sharing:first');
+                        tdPullDown.add_item(pulldown_item_obj);
+
+                    }
+				}
+
+			</script>
+			<?php
+			$buffy .= td_util::remove_script_tag(ob_get_clean());
+		}
+
+
+
+		if ( 'tdb_category_sibling_categories' === get_class($this) ) {
+			ob_start();
+			?>
+			<script>
+
+                // block subcategory ajax filters!
+				var jquery_object_container = jQuery('.<?php echo $this->block_uid ?>_rand');
+				if ( jquery_object_container.length) {
+
+					var horizontal_jquery_obj = jquery_object_container.find('.td-category:first');
+
+                    if ( horizontal_jquery_obj.length ) {
+                        var pulldown_item_obj = new tdPullDown.item();
+                        pulldown_item_obj.blockUid = jquery_object_container.data('td-block-uid'); // get the block UID
+                        pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
+                        pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
+                        pulldown_item_obj.horizontal_element_css_class = 'entry-category';
+                        pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.parents('.td-category-siblings:first');
+                        tdPullDown.add_item(pulldown_item_obj);
+                    }
 				}
 
 			</script>
@@ -1578,6 +1643,8 @@ class td_block {
 		<script>
 			(function () {
 				// js_tdc_get_composer_block code for "<?php echo get_class($this) ?>"
+
+                //alert('<?php echo $this->block_uid ?>');
 
 				var tdComposerBlockItem = new tdcComposerBlocksApi.item();
 				tdComposerBlockItem.blockUid = '<?php echo $this->block_uid ?>';

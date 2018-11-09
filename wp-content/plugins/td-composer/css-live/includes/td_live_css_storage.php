@@ -72,7 +72,7 @@ class td_live_css_css_storage {
 
 	private static function read_local_storage() {
 		if (self::$is_local_storage_read === false) {
-			self::$local_storage = get_option('td_live_css_local_storage');
+			self::$local_storage = (array)get_option('td_live_css_local_storage');
 			self::$is_local_storage_read = true;
 		}
 	}

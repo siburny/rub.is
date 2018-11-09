@@ -14,8 +14,8 @@ class td_config_helper {
 		$params = td_fonts::get_block_font_params();
 
 		array_unshift( $params, array(
-				"param_name" => "font_reset",
-				"type" => "font_reset",
+				"param_name" => "font_settings",
+				"type" => "font_settings",
 				"value" => '',
 				"class" => '',
 			)
@@ -54,6 +54,80 @@ class td_config_helper {
 		}
 		return $params;
 	}
+
+
+	static function get_map_block_shadow_array( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '' ) {
+		$params = array(
+		    array(
+                "param_name" => "shadow_size",
+                "type" => "textfield-responsive",
+                "value" => '',
+                "heading" => 'Size',
+                'class' => 'tdc-textfield-small',
+                'description' => 'Change shadow size',
+                'placeholder' => '',
+            ),
+            array(
+                "param_name" => "shadow_color",
+                "type" => "colorpicker",
+                "holder" => "div",
+                "class" => "",
+                "heading" => 'Color',
+                "value" => '',
+                "description" => 'Change shadow color',
+            ),
+            array(
+                'param_name' => 'shadow_offset_horizontal',
+                'type' => 'range-responsive',
+                'value' => '0',
+                'heading' => 'Offset H',
+                'description' => 'Change shadow horizontal offset',
+                'class' => 'tdc-textfield-small',
+                'range_min' => '-40',
+                'range_max' => '40',
+                'range_step' => '1',
+            ),
+            array(
+                'param_name' => 'shadow_offset_vertical',
+                'type' => 'range-responsive',
+                'value' => '0',
+                'heading' => 'Offset V',
+                'description' => 'Change shadow vertical offset',
+                'class' => 'tdc-textfield-small',
+                'range_min' => '-40',
+                'range_max' => '40',
+                'range_step' => '1',
+            )
+        );
+
+		foreach ( $params as &$param ) {
+
+            if( $param['param_name'] == 'shadow_size' || $param['param_name'] == 'shadow_color' ) {
+                $param['heading'] = $shadow_title . ' ' . $param['heading'];
+            }
+
+	        if( $param['param_name'] == 'shadow_size' ) {
+                $param['placeholder'] = $shadow_size;
+            } else if( $param['param_name'] == 'shadow_offset_horizontal' ) {
+                $param['value'] = $shadow_offset_h;
+
+            } else if( $param['param_name'] == 'shadow_offset_vertical' ) {
+                $param['value'] = $shadow_offset_v;
+            }
+            if ( ! empty( $group ) ) {
+                $param['group'] = $group;
+            }
+
+	        $param['param_name'] = $param_name . '_' . $param['param_name'];
+
+	        if ( ! empty( $index_style ) ) {
+		        $param['param_name'] .= '-' . $index_style;
+	        }
+
+        }
+        return $params;
+	}
+
 
 	// block general fonts
 	static function block_font() {

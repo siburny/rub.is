@@ -127,7 +127,6 @@
 
 
   .td-slide-galery-figure {
-    width: 1068px;
     height: 580px;
     text-align: center;
     position: relative;
@@ -162,7 +161,6 @@
   }
 
   .td-slide-item {
-
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
       width: 100%;
@@ -170,13 +168,11 @@
 
 
     .td-slide-galery-figure img {
-      margin: auto;
-      overflow: auto;
       position: absolute;
-      left: -50%;
-      right: -50%;
-      top: -50%;
-      bottom: -50%;
+      top: 50%;
+      left: 50%;
+      .transform(translate(-50%, -50%));
+      overflow: auto;
     }
 
     .td-slide-caption {
@@ -230,7 +226,6 @@
     }
 
     .td-slide-galery-figure {
-      width: 696px;
       height: 420px;
 
       /* responsive portrait tablet */
@@ -255,7 +250,81 @@
   .td-button {
     margin: 0 5px;
   }
+
 }
+
+.td-pb-span3 .td-slide-on-2-columns {
+  .td-doubleSlider-1,
+  .td-slide-galery-figure {
+    height: 200px;
+
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      height: 140px;
+    }
+  }
+}
+.td-pb-span4,
+.td-pb-span5 {
+  .td-slide-on-2-columns {
+    .td-doubleSlider-1,
+    .td-slide-galery-figure {
+      height: 300px;
+
+      /* responsive portrait tablet */
+      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+        height: 200px;
+      }
+    }
+  }
+}
+.td-pb-span6 {
+  .td-slide-on-2-columns {
+    .td-doubleSlider-1,
+    .td-slide-galery-figure {
+      height: 360px;
+
+      /* responsive portrait tablet */
+      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+        height: 260px;
+      }
+    }
+  }
+}
+.td-pb-span7,
+.td-pb-span8,
+.td-pb-span9 {
+  .td-slide-on-2-columns {
+    .td-doubleSlider-1,
+    .td-slide-galery-figure {
+      height: 420px;
+
+      /* responsive portrait tablet */
+      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+        height: 320px;
+      }
+    }
+  }
+}
+.td-pb-span3,
+.td-pb-span4,
+.td-pb-span5,
+.td-pb-span6,
+.td-pb-span7,
+.td-pb-span8,
+.td-pb-span9 {
+  .td-slide-on-2-columns {
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      .td-doubleSlider-1,
+      .td-slide-galery-figure {
+        height: 260px;
+      }
+    }
+  }
+}
+
 
 
 //end td-doubleSlider-1
@@ -331,19 +400,6 @@
 }
 
 
-/*  ----------------------------------------------------------------------------
-    Fix gallery on td_module_15 in homepage loop - on 3 columns
-*/
-
-.td-pb-span12 .td-slide-on-2-columns {
-  .td-slide-galery-figure {
-    width: 1068px;
-  }
-}
-
-/*  ----------------------------------------------------------------------------
-    Fix gallery on post with VC in text widget
-*/
-.single .td-pb-span12 .wpb_text_column .td-slide-on-2-columns .td-slide-galery-figure {
-  width: 100%;
+.td-slide-galery-figure {
+  width: 100% !important;
 }

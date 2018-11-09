@@ -34,6 +34,12 @@ class td_social_sharing {
 
         }
 
+        $post_id = null;
+
+        if (isset($atts['post_id'])) {
+        	$post_id = $atts['post_id'];
+        }
+
 
         //print_r($services);
 
@@ -51,9 +57,8 @@ class td_social_sharing {
 
 
         if (!empty($services)) {
-            $block_uid = td_global::td_generate_unique_id();
 
-            $buffy .= '<div id="' . $block_uid . '" class="td-post-sharing ' . $config_classes . ' td-post-sharing-' . $atts['style'] . $atts['el_class'] . ' ">';
+        	$buffy .= '<div id="' . $block_uid . '" class="td-post-sharing ' . $config_classes . ' td-post-sharing-' . $atts['style'] . $atts['el_class'] . ' ">';
 
                 $buffy .= '<div class="td-post-sharing-visible">';
                     if ( $atts['share_text_show'] ) {
@@ -64,7 +69,7 @@ class td_social_sharing {
                     }
 
                     foreach ($services as $service_id) {
-                        $service_info = self::get_service_share_info($service_id);
+                        $service_info = self::get_service_share_info($service_id, $post_id );
                         $buffy .= '<a class="td-social-sharing-button td-social-sharing-button-js td-social-network td-social-' . $service_id . '" href="' . $service_info['url'] . '">
                                         <div class="td-social-but-icon"><i class="td-icon-' . $service_id . '"></i></div>
                                         <div class="td-social-but-text">' . $service_info['title'] . '</div>
@@ -91,8 +96,12 @@ class td_social_sharing {
 
 
 
-    private static function get_service_share_info($service_id) {
-        $page_permalink = esc_url(get_permalink());
+    private static function get_service_share_info($service_id, $post_id = null ) {
+    	if ( ! empty( $post_id ) ) {
+    		global $post;
+    		$post = get_post( $post_id );
+	    }
+    	$page_permalink = esc_url(get_permalink());
         $page_id = get_the_ID();
         $page_title = get_the_title();
 

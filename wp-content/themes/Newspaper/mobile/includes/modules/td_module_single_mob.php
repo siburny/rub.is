@@ -96,7 +96,7 @@ class td_module_single_mob extends td_module_single_base {
         $image = wp_get_attachment_image_src( get_post_thumbnail_id( $this->post->ID ), 'single-post-thumbnail' );
 
         $buffy .= '<div class="td-post-sharing-bottom">';
-            if( td_util::get_option('tds_bottom_like_show') == 'show' && td_util::is_amp() === false ) {
+            if( td_util::get_option('tds_bottom_like_show') != 'hide' && td_util::is_amp() === false ) {
                 $buffy .= '<div class="td-post-sharing-classic">';
                     $buffy .= '<iframe frameBorder="0" src="' . td_global::$http_or_https . '://www.facebook.com/plugins/like.php?href=' . $this->href . '&amp;layout=button_count&amp;show_faces=false&amp;width=105&amp;action=like&amp;colorscheme=light&amp;height=21" style="border:none; overflow:hidden; width:105px; height:21px; background-color:transparent;"></iframe>';
                 $buffy .= '</div>';

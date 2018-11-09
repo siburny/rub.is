@@ -19,6 +19,10 @@
 .woocommerce .page-title {
   display: none;
 }
+.woocommerce.tax-product_cat .page-title {
+  display: block;
+  margin-top: 0;
+}
 .woocommerce .td-container .page-title {
   /* responsive portrait tablet */
   /* responsive portrait phone */

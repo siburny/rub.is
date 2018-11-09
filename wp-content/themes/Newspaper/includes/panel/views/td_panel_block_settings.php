@@ -1,7 +1,6 @@
 <!-- Global block template -->
 <?php echo td_panel_generator::box_start('Global Block Header Template', true); ?>
 
-
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">

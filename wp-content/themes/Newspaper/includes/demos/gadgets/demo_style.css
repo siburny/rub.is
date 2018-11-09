@@ -35,8 +35,9 @@ Gadgets demo
 .td-gadgets .td-header-style-5 .sf-menu > li > a:after {
   background-color: transparent;
 }
-.td-gadgets .td-header-style-5 .td-banner-wrap-full {
-  display: none;
+.td-gadgets .td-header-style-5 .td-a-rec-id-header div,
+.td-gadgets .td-header-style-5 .td-g-rec-id-header .adsbygoogle {
+  margin-bottom: 24px;
 }
 .td-gadgets .td-header-style-5 .td-main-menu-logo img {
   padding: 0;

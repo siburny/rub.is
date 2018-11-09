@@ -53,14 +53,6 @@
   display: block;
 }
 
-.td-box-content-wrap {
-  .transition(height 0.2s);
-  -webkit-transition-timing-function: ease-in-out;
-  transition-timing-function: ease-in-out;
-  -moz-transition-timing-function: ease-in-out;
-  //overflow: hidden;
-}
-
 /* toggle icon */
 
 .td-box-toggle {
@@ -82,6 +74,10 @@
     background-position: 0px -38px;
   }
   .td-box-content-wrap {
+    //.transition(height 0.4s);
+    //-webkit-transition-timing-function: ease-in-out;
+    //transition-timing-function: ease-in-out;
+    //-moz-transition-timing-function: ease-in-out;
     display: none;
   }
 }
@@ -561,6 +557,18 @@
       padding-left: 80px;
     }
   }
+
+  .tdb-show {
+    display: none;
+  }
+  .hide-settings {
+    .tdb-hide {
+      display: none;
+    }
+    .tdb-show {
+      display: block;
+    }
+  }
 }
 
 
@@ -815,4 +823,67 @@
     }
   }
 
+}
+
+// templates settings
+#td-panel-template-settings {
+
+  //tdb author template settings
+  .td_panel_box_author_template {
+    .td-box-content {
+      .td-box-row {
+        &.tdb-individual {
+          height: auto !important;
+
+          .td-box-control-full {
+            .td-user-wrap {
+              margin: 0 19px 14px 0;
+              padding-bottom: 12px;
+              border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+
+              &:last-child {
+                margin-bottom: 32px;
+                padding-bottom: 0;
+                border-bottom: 0;
+              }
+            }
+
+            .td-user-name {
+              display: inline-block;
+              vertical-align: middle;
+              padding: 5px 0;
+              width: 240px;
+              min-height: 20px;
+              line-height: 18px;
+            }
+          }
+
+          .td-select-style-overwrite {
+            display: inline-block;
+            margin: 0;
+            float: right;
+            margin-top: -2px;
+            width: 293px;
+            background-position-x: right;
+
+            select {
+              max-width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .tdb-show {
+    display: none;
+  }
+  .hide-settings {
+    .tdb-hide {
+      display: none;
+    }
+    .tdb-show {
+      display: block;
+    }
+  }
 }

@@ -21,11 +21,6 @@ class td_block_template_13 extends td_block_template {
         $raw_css = "
         <style>
 
-            /* @button_color */
-            .$unique_block_class .td-pulldown-category {
-                color: @button_color !important;
-            }
-
             /* @header_text_color */
             .$unique_block_class .td-block-title > a,
             .$unique_block_class .td-block-title > span {
@@ -43,7 +38,8 @@ class td_block_template_13 extends td_block_template {
             .$unique_block_class .td-opacity-cat .td-post-category:hover,
             .$unique_block_class .td-opacity-read .td-read-more a:hover,
             .$unique_block_class .td-opacity-author .td-post-author-name a:hover,
-            .$unique_block_class .td-instagram-user a {
+            .$unique_block_class .td-instagram-user a,
+            .$unique_block_class .td-pulldown-category {
                 color: @accent_text_color !important;
             }
 
@@ -60,6 +56,11 @@ class td_block_template_13 extends td_block_template {
             .td-footer-wrapper .$unique_block_class .td-post-category,
             .$unique_block_class .td-post-category:hover {
                 background-color: @accent_text_color !important;
+            }
+            
+            /* @button_color */
+            .$unique_block_class .td-pulldown-category {
+                color: @button_color !important;
             }
         </style>
     ";
@@ -85,9 +86,14 @@ class td_block_template_13 extends td_block_template {
 
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
+        $title_tag = 'h4';
 
-
-
+        // title_tag used only on Title shortcode
+        $block_title_tag = $this->get_att('title_tag');
+        if(!empty($block_title_tag)) {
+            $title_tag = $block_title_tag ;
+        }
+        
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {
@@ -108,7 +114,7 @@ class td_block_template_13 extends td_block_template {
 
         // there is a custom title
         $buffy = '';
-        $buffy .= '<h4 class="td-block-title' . $title_alignment . '">';
+        $buffy .= '<' . $title_tag . ' class="td-block-title' . $title_alignment . '">';
         if (!empty($custom_url)) {
             $buffy .= '<a href="' . esc_url($custom_url) . '">' . esc_html($custom_title) . '</a>';
         } else {
@@ -117,7 +123,7 @@ class td_block_template_13 extends td_block_template {
 
         $buffy .= '<div class="td-block-subtitle">' . esc_html($description_text) . '</div>';
 
-        $buffy .= '</h4>';
+        $buffy .= '</' . $title_tag . '>';
         return $buffy;
     }
 

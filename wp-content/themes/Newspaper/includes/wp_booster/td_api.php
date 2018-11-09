@@ -390,7 +390,6 @@ class td_api_base {
             td_util::error(__FILE__, "td_api_base::check_used_on_page: You requested a $requested_operation for ID: $id BUT it's already used on page. This usually means that you are using a wrong hook - you are trying to modify the component after it already rendered / was used.", self::$components_list[$id]);
         }
     }
-
 }
 /**
  * Created by ra on 2/13/2015.
@@ -1051,7 +1050,7 @@ class td_api_ad extends td_api_base {
 						$ad_box_params_array['premium'] = $ad_array['premium'];
 					}
 
-					echo td_panel_generator::ajax_box($ad_text, $ad_box_params_array);
+					echo td_panel_generator::ajax_box($ad_text, $ad_box_params_array, '', 'td_panel_box_' . $ad_id);
 
 				break;
 			}
@@ -1356,6 +1355,9 @@ class td_api_single_template extends td_api_base {
         parent::add_component(__CLASS__, $single_template_id, $params_array);
     }
 
+
+
+
 	static function update($single_template_id, $params_array = '') {
 		parent::update_component(__CLASS__, $single_template_id, $params_array);
 	}
@@ -1363,6 +1365,43 @@ class td_api_single_template extends td_api_base {
     static function get_all() {
         return parent::get_all_components_metadata(__CLASS__);
     }
+
+
+
+    /**
+     * locates a theme internal template (does not locate theme builder templates)
+     * @param $single_template_id
+     * @param $wordpress_template_path
+     * @return bool|mixed|string the path of the template OR false on error
+     */
+    static function _get_theme_template($single_template_id, $wordpress_template_path) {
+
+        if (empty($single_template_id)) {
+            return $wordpress_template_path;
+        }
+
+        // try to find the template in the API
+        $single_template_path = '';
+        try {
+            $single_template_path = td_api_single_template::get_key($single_template_id, 'file');
+        } catch (ErrorException $ex) {
+            td_util::error( __FILE__, "The template $single_template_id isn't set. Did you disable a tagDiv plugin?" ); // this does not stop execution
+            td_util::set_check_installed_plugins();
+            return $wordpress_template_path;
+        }
+
+        // we have the file in the API, now we make sure that the file exists on disk
+        if (!empty($single_template_path) and file_exists($single_template_path)) {
+            return $single_template_path;
+        } else {
+            td_util::error( __FILE__, "The path $single_template_path of the $single_template_id template not found. Did you disable a tagDiv plugin?" );  // this does not stop execution
+            td_util::set_check_installed_plugins();
+            return $wordpress_template_path;
+        }
+    }
+
+
+
 
     /**
      * checks the show_featured_image_on_all_pages for a template
@@ -1410,12 +1449,18 @@ class td_api_single_template extends td_api_base {
                 $buffy_array[] = $config_array;
 		        continue;
 	        }
+
             $config_array = array(
                 'text' => '',
                 'title' => $template_config['text'],
                 'val' => $id,
                 'img' => $template_config['img']
             );
+
+            // on tbd templates put the text.
+            if (td_global::is_tdb_template($id)) {
+                $config_array['text'] = $template_config['text'];
+            }
 
             if (isset($template_config['premium'])) {
                 $config_array['premium'] = $template_config['premium'];
@@ -1424,16 +1469,7 @@ class td_api_single_template extends td_api_base {
             $buffy_array[] = $config_array;
         }
 
-//        // add the default template at the beginning
-//        array_unshift (
-//            $buffy_array,
-//            array(
-//                'text' => '',
-//                'title' => '',
-//                'val' => '',
-//                'img' => td_global::$get_template_directory_uri . '/images/panel/single_templates/single_template_default.png'
-//            )
-//        );
+
         return $buffy_array;
     }
 
@@ -1442,12 +1478,18 @@ class td_api_single_template extends td_api_base {
 		$buffy_array = array();
 
 		foreach (self::get_all() as $id => $template_config) {
+
             $config_array = array(
-				'text' => '',
-				'title' => $template_config['text'],
-				'val' => $id,
-				'img' => $template_config['img']
-			);
+                'text' => '',
+                'title' => $template_config['text'],
+                'val' => $id,
+                'img' => $template_config['img']
+            );
+
+            // on tbd templates put the text.
+            if ( td_global::is_tdb_template($id)) {
+                $config_array['text'] = $template_config['text'];
+            }
 
             if (isset($template_config['premium'])) {
                 $config_array['premium'] = $template_config['premium'];
@@ -1566,18 +1608,20 @@ class td_api_smart_list extends td_api_base {
         );
 
         foreach (self::get_all() as $id => $template_config) {
-            $config_array = array(
-                'text' => '',
-                'title' => $template_config['text'],
-                'val' => $id,
-                'img' => $template_config['img']
-            );
+        	if ( false === strpos( $id, 'tdb_' ) ) {
+		        $config_array = array(
+			        'text'  => '',
+			        'title' => $template_config['text'],
+			        'val'   => $id,
+			        'img'   => $template_config['img']
+		        );
 
-            if (isset($template_config['premium'])) {
-                $config_array['premium'] = $template_config['premium'];
-            }
+		        if ( isset( $template_config['premium'] ) ) {
+			        $config_array['premium'] = $template_config['premium'];
+		        }
 
-            $buffy_array[] = $config_array;
+		        $buffy_array[] = $config_array;
+	        }
         }
 
 
@@ -1819,9 +1863,11 @@ class td_api_text {
 				<div class="td-supported-plugin">BuddyPress<span>- social network plugin</span></div>
 				<div class="td-supported-plugin">Font Awesome 4 Menus<span>- icon pack, supported in the theme menus</span></div>
 				<div class="td-supported-plugin">Jetpack  <span>- plugin with lots of features *it may slow down your site</span></div>
+				<div class="td-supported-plugin">Orbit Fox <span> - extend your website features</span></div>
 				<div class="td-supported-plugin">WooCommerce <span>- eCommerce solution</span></div>
 				<div class="td-supported-plugin">WordPress (Yoast) SEO <span> - SEO plugin</span></div>
-				<div class="td-supported-plugin">Wp User Avatar <span> - Change users avatars</span></div>',
+				<div class="td-supported-plugin">Wp User Avatar <span> - Change users avatars</span></div>
+				<div class="td-supported-plugin">WP GDPR Compliance <span> - GDPR compliance plugin</span></div>',
 
 		// existing content documentation url
 		// *overwritten in 012

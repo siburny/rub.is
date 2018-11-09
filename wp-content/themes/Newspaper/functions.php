@@ -142,7 +142,7 @@ if (TD_DEBUG_LIVE_THEME_STYLE) {
 									    <div class="td-set-theme-style"><a href="<?php echo td_global::$demo_list[$demo_id]['demo_url'] ?>" class="td-set-theme-style-link td-popup td-popup-<?php echo $td_demo_names[$stack_params['text']] ?>" data-img-url="<?php echo td_global::$get_template_directory_uri ?>/demos_popup/large/<?php echo $demo_id; ?>.jpg"><span></span></a></div>
 								    <?php } ?>
 									<div class="td-set-theme-style-empty"><a href="#" class="td-popup td-popup-empty1"></a></div>
-									<div class="td-set-theme-style-empty"><a href="#" class="td-popup td-popup-empty2"></a></div>
+<!--									<div class="td-set-theme-style-empty"><a href="#" class="td-popup td-popup-empty2"></a></div>-->
 								    <div class="clearfix"></div>
 							    </div>
 						    </div>
@@ -158,7 +158,7 @@ if (TD_DEBUG_LIVE_THEME_STYLE) {
 
 }
 
-//td_demo_state::update_state("entertainment", 'full');
+//td_demo_state::update_state("nomad", 'full');
 
 //print_r(td_global::$all_theme_panels_list);
 

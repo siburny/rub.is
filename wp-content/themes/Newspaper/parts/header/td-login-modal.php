@@ -22,6 +22,7 @@ if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
                     <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
                     <input type="button" name="register_button" id="register_button" class="wpb_button btn td-login-button" value="' . __td('Register', TD_THEME_NAME) . '">
                     <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
+                    ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                 </div>';
     }
 
@@ -40,7 +41,10 @@ if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
 	                        <div class="td-login-inputs"><input class="td-login-input" type="password" name="login_pass" id="login_pass" value="" required><label>' . __td('your password', TD_THEME_NAME) . '</label></div>
                             <input type="button" name="login_button" id="login_button" class="wpb_button btn td-login-button" value="' . __td('Login', TD_THEME_NAME) . '">
                             <div class="td-login-info-text"><a href="#" id="forgot-pass-link">' . __td('Forgot your password? Get help', TD_THEME_NAME) . '</a></div>
+                            
+                            
                             ' . $users_can_register_link . '
+                            ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                         </div>
 
                         ' . $users_can_register_form . '
@@ -53,6 +57,8 @@ if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
                             <input type="button" name="forgot_button" id="forgot_button" class="wpb_button btn td-login-button" value="' . __td('Send My Password', TD_THEME_NAME) . '">
                             <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
                         </div>
+                        
+                        
                     </div>
                 </div>
                 ';
