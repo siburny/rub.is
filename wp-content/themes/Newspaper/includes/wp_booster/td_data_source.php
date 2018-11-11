@@ -18,6 +18,7 @@ class td_data_source {
                     'post_custom_field_name' => '',
                     'post_custom_field_value' => '',
                     'post_ids' => '',
+                    'post_slug' => '',
                     'category_ids' => '',
                     'category_id' => '',
                     'tag_slug' => '',
@@ -313,6 +314,27 @@ class td_data_source {
             }
         }
 
+        // post slugs
+        if (!empty($post_slug)) {
+
+            //split posts id string
+            $post_slug_array = explode (',', $post_slug);
+
+            $post_in = array();
+            //$post_not_in = array();
+
+            // split ids into post_in and post_not_in
+            foreach ($post_slug_array as $post_slug) {
+                $post_slug = trim($post_slug);
+                $post_in [] = $post_slug;
+            }
+
+            // don't pass an empty post__in because it will return had_posts()
+            if (!empty($post_in)) {
+                $wp_query_args['post_name__in'] = $post_in;
+                $wp_query_args['orderby'] = 'post_name__in';
+            }
+        }
 
         //custom pagination limit
         if (empty($limit)) {

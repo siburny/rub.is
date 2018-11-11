@@ -8333,7 +8333,7 @@ blockquote.pull-right:after {
 /*  ----------------------------------------------------------------------------
     excerpt
 */
-.td-excerpt {
+.td-excerpt,.td-custom-field {
   font-size: 13px;
   color: #777;
   font-family: 'Open Sans', arial, sans-serif;

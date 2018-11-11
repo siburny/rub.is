@@ -21384,6 +21384,17 @@ class td_config {
                             "group"       => "Layout",
                         ),
                         array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
+                            "group"       => "Layout",
+                        ),
+                        array(
                             "param_name"  => "excerpt_middle",
                             "type"        => "checkbox",
                             "value"       => '',
@@ -31775,6 +31786,16 @@ class td_config {
                 "value" => '',
                 "heading" => 'Post ID filter:',
                 "description" => "Filter multiple posts by ID. Enter here the post IDs separated by commas (ex: 10,27,233). To exclude posts from this block add them with '-' (ex: -7, -16)",
+                "holder" => "div",
+                "class" => "tdc-textfield-big",
+                'group' => $group
+            ),
+            array(
+                "param_name" => "post_slug",
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'Filter by post slug:',
+                "description" => "To filter multiple post slugs, enter here the post slugs separated by commas (ex: post1,post1,post1)",
                 "holder" => "div",
                 "class" => "tdc-textfield-big",
                 'group' => $group

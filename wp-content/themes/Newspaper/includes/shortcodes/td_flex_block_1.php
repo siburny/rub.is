@@ -280,6 +280,7 @@ class td_flex_block_1 extends td_block {
 	    // show meta info details
 	    $res_ctx->load_settings_raw( 'show_cat', $res_ctx->get_shortcode_att('show_cat') );
 	    $res_ctx->load_settings_raw( 'show_excerpt', $res_ctx->get_shortcode_att('show_excerpt') );
+	    $res_ctx->load_settings_raw( 'show_custom_field', !empty($res_ctx->get_shortcode_att('show_custom_field')) ? 'inline-block' : 'none' );
 	    $res_ctx->load_settings_raw( 'show_btn', $res_ctx->get_shortcode_att('show_btn') );
         // button space
         $btn_margin = $res_ctx->get_shortcode_att('btn_margin');
@@ -558,6 +559,10 @@ class td_flex_block_1 extends td_block {
 				/* @show_excerpt */
 				.$unique_block_class .td-excerpt {
 					display: @show_excerpt;
+				}
+				/* @show_custom_field */
+				.$unique_block_class .td-custom-field {
+					display: @show_custom_field;
 				}
 				/* @show_btn */
 				.$unique_block_class .td-read-more {

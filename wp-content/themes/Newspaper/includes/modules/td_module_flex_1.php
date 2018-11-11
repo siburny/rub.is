@@ -18,6 +18,7 @@ class td_module_flex_1 extends td_module {
         $author_photo = $this->get_shortcode_att('author_photo');
         $excerpt_length = $this->get_shortcode_att('mc1_el');
         $excerpt_position = $this->get_shortcode_att('excerpt_middle');
+        $custom_field = $this->get_shortcode_att('show_custom_field');
 
         if (empty($image_size)) {
             $image_size = 'td_696x0';
@@ -28,6 +29,10 @@ class td_module_flex_1 extends td_module {
 
         $excerpt = '<div class="td-excerpt">';
             $excerpt .= $this->get_excerpt($excerpt_length);
+        $excerpt .= '</div>';
+
+        $excerpt .= '<div class="td-custom-field">';
+            $excerpt .= get_post_meta( $this->post->ID, $custom_field, true );
         $excerpt .= '</div>';
 
         ?>
