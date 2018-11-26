@@ -21371,6 +21371,17 @@ class td_config {
                             "group"       => "Layout",
                         ),
                         array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
+                            "group"       => "Layout",
+                        ),
+                        array(
                             "param_name"  => "show_excerpt",
                             "type"        => "dropdown-responsive",
                             "value"       => array(
@@ -22723,6 +22734,17 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
                             "group"       => "Layout",
                         ),
                         array(
@@ -24173,6 +24195,17 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
                             "group"       => "Layout",
                         ),
                         array(
@@ -26067,6 +26100,17 @@ class td_config {
                             "group"       => "Layout",
                         ),
                         array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
+                            "group"       => "Layout",
+                        ),
+                        array(
                             "param_name"  => "show_excerpt1",
                             "type"        => "dropdown-responsive",
                             "value"       => array(
@@ -26466,6 +26510,17 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
                             "group"       => "Layout",
                         ),
                         array(
@@ -27982,6 +28037,17 @@ class td_config {
                             "value"      => "",
                             "class"      => "tdc-separator-small",
                             "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name"  => "show_custom_field",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Show custom field',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "",
+                            "group"       => "Layout",
                         ),
                         array(
                             "param_name"  => "show_excerpt",
