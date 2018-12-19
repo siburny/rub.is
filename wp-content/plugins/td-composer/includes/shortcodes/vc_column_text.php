@@ -159,11 +159,15 @@ class vc_column_text extends td_block {
 		// As vc does
 		$content = wpautop( preg_replace( '/<\/?p\>/', "\n", $content ) . "\n" );
 
-		if ( ! ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
-			$content = do_shortcode( shortcode_unautop( $content ) );
-		}
+//		if ( ! ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
+//			$content = do_shortcode( shortcode_unautop( $content ) );
+//		}
 
-		$buffy = '<div class="wpb_wrapper wpb_text_column td_block_wrap ' . $this->get_block_classes( array( $atts['el_class'] ) ) . '" ' . $this->get_block_html_atts() . '">';
+        //fix render shortcode
+        $content = do_shortcode( shortcode_unautop( $content ) );
+
+
+        $buffy = '<div class="wpb_wrapper wpb_text_column td_block_wrap ' . $this->get_block_classes( array( $atts['el_class'] ) ) . '" ' . $this->get_block_html_atts() . '">';
 
 			//get the block css
 		    $buffy .= $this->get_block_css();

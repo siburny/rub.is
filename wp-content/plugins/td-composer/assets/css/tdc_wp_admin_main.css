@@ -96,16 +96,6 @@ textarea {
   position: relative;
   padding: 14px;
 }
-.tdc-tab-responsive:before {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  height: 20px;
-  background-color: #fff;
-}
 .tdc-responsive-buttons {
   width: 270px;
   height: 28px;
@@ -448,7 +438,7 @@ textarea {
   padding: 4px 8px;
 }
 .tdc-inspector .tdc-tab-content-wrap {
-  padding: 0 13px 15px 14px;
+  padding: 11px 13px 15px 14px;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
@@ -2211,6 +2201,124 @@ textarea {
 }
 .tdc-sidebar-font-load:hover:before {
   background-position: -267px -137px;
+}
+.tdc-sidebar-shadow-header {
+  padding: 6px 0 2px 118px;
+}
+.tdc-sidebar-shadow-header span {
+  background: url('../images/sidebar/spritesheet.png') no-repeat;
+  display: inline-block;
+  width: 31px;
+  height: 20px;
+}
+.tdc-sidebar-shadow-header .tdc-shadow-ico1 {
+  background-position: -135px -331px;
+}
+.tdc-sidebar-shadow-header .tdc-shadow-ico2 {
+  background-position: -197px -331px;
+}
+.tdc-sidebar-shadow-header .tdc-shadow-ico3 {
+  background-position: -166px -331px;
+}
+.tdc-sidebar-shadow-header .tdc-shadow-ico4 {
+  background-position: -228px -331px;
+}
+.tdc-sidebar-shadow-header .tdc-shadow-ico5 {
+  background-position: -259px -331px;
+  width: 26px;
+  margin-left: 5px;
+}
+.tdc-sidebar-shadow-title,
+.tdc-shadow-contr-textfield,
+.tdc-shadow-contr-color {
+  display: inline-block;
+  vertical-align: middle;
+}
+.tdc-sidebar-shadow-title {
+  position: relative;
+  width: 114px;
+  margin-right: 4px;
+  padding: 4px 4px 4px 0;
+  font-size: 10px;
+  line-height: 11px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+.tdc-sidebar-shadow-title:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -14px;
+  width: calc(114%);
+  height: 100%;
+  background-color: #f9f9f9;
+  z-index: -1;
+}
+.tdc-shadow-contr-textfield {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.tdc-shadow-contr-textfield .tdc-property-title {
+  margin-bottom: 0;
+}
+.tdc-shadow-contr-textfield input {
+  font-size: 10px;
+  width: 31px;
+  padding: 0 2px;
+  line-height: 24px;
+  border: none;
+  text-align: center;
+}
+.tdc-shadow-contr-textfield:after {
+  display: none;
+}
+.tdc-shadow-contr-textfield:before {
+  opacity: 0.1;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  left: 2px;
+  top: 2px;
+  pointer-events: none;
+}
+.tdc-shadow-contr-color {
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+.tdc-shadow-contr-color .tdc-property {
+  position: relative;
+}
+.tdc-shadow-contr-color .tdc-colorpicker-wrap {
+  width: 24px;
+  height: 24px;
+}
+[class$="-double-a"] {
+  display: inline-block;
+  width: calc(100% - 34px);
+  vertical-align: middle;
+}
+[class$="-double-b"] {
+  display: inline-block;
+  margin-bottom: 9px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+[class$="-double-b"] .tdc-property-title {
+  display: none;
+}
+[class$="-double-b"] .tdc-property {
+  position: relative;
+}
+.td-attach-img-double-a .tdc-image-remove,
+.td-attach-img-double-b .tdc-image-remove {
+  line-height: 1;
+  font-size: 11px;
+}
+.td-attach-img-double-b {
+  margin-bottom: 10px;
+}
+.td-attach-img-double-b .tdc-image-remove {
+  top: 13px;
+  right: 60px;
 }
 #tdc-palette {
   position: absolute;

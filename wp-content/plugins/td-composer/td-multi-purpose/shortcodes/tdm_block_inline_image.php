@@ -97,7 +97,7 @@ class tdm_block_inline_image extends td_block {
         }
 
         // shadow
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
 
 
 

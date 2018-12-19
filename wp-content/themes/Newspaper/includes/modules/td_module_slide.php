@@ -47,11 +47,9 @@ class td_module_slide extends td_module {
             }
 
             $buffy .= '<div class="td-slide-meta">';
-                if (td_util::get_option('tds_category_module_slide') == 'yes') {
-                    $buffy .= '<span class="slide-meta-cat">';
-                        $buffy .= $this->get_category();
-                    $buffy .= '</span>';
-                }
+                $buffy .= '<span class="slide-meta-cat">';
+                    $buffy .= $this->get_category();
+                $buffy .= '</span>';
                 $buffy .=  $this->get_title();//$this->get_title_main();
                 $buffy .= '<div class="td-module-meta-info">';
                     $buffy .= $this->get_author();

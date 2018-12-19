@@ -1670,6 +1670,14 @@ class td_block {
 						tdHomepageFull.deleteItem( blockUid );
 					}
 
+                    if ( 'undefined' !== typeof window.tdbMenu ) {
+                        tdbMenu.deleteItem( blockUid );
+                    }
+
+                    if ( 'undefined' !== typeof window.tdbSearch ) {
+                        tdbSearch.deleteItem( blockUid );
+                    }
+
 					// delete the weather item if available NOTE USED YET
 					//tdWeather.deleteItem(blockUid);
 
@@ -1708,10 +1716,7 @@ class td_block {
 	    $css = $this->get_att('css');
 	    $tdc_css = $this->get_att('tdc_css');
 	    $block_template_id = $this->get_att('block_template_id');
-
-
-
-
+	    $td_ajax_preloading = $this->get_att('td_ajax_preloading');
 
 
         //add the block wrap and block id class
@@ -1781,7 +1786,7 @@ class td_block {
          * add the border top class - this one comes from the atts
          */
         if (empty($border_top)) {
-            $block_classes[]= 'td-pb-border-top';
+            $block_classes[] = 'td-pb-border-top';
         }
 
 	    // this is the field that all the shortcodes have (or at least should have)
@@ -1809,6 +1814,14 @@ class td_block {
 	    if ( $this->is_loop_block() && empty( $this->td_query->posts ) ) {
 		    $block_classes[] = 'tdc-no-posts';
 	    }
+
+        /**
+         * - used to add td_block_loading css class on the blocks having pagination
+         * - the class has a force css transform for lazy devices
+         */
+        if ( !empty( $td_ajax_preloading ) ) {
+            $block_classes[]= 'td_ajax_preloading_' . $td_ajax_preloading;
+        }
 
 
         //remove duplicates

@@ -187,8 +187,8 @@ class tds_icon1 extends td_style {
 
 
         /*-- SHADOW -- */
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.15)', 'shadow', __CLASS__ );
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.15)', 'shadow_hover', __CLASS__ );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.15)', 'shadow', __CLASS__ );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.15)', 'shadow_hover', __CLASS__ );
 
 
 

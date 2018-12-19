@@ -94,10 +94,7 @@ class td_flex_block_5 extends td_block {
 
         /*-- ARTICLE IMAGE-- */
         //image alignment
-        $image_alignment = $res_ctx->get_shortcode_att('image_alignment');
-        if ( $image_alignment != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment', $image_alignment . '%' );
-        }
+        $res_ctx->load_settings_raw( 'image_alignment', $res_ctx->get_shortcode_att('image_alignment') . '%' );
 
 	    // image_height
 	    $image_height = $res_ctx->get_shortcode_att('image_height');
@@ -288,7 +285,7 @@ class td_flex_block_5 extends td_block {
 
         /*-- COLORS -- */
 	    $res_ctx->load_settings_raw( 'm_bg', $res_ctx->get_shortcode_att('m_bg') );
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
 	    $res_ctx->load_settings_raw( 'meta_bg', $res_ctx->get_shortcode_att('meta_bg') );
         $res_ctx->load_settings_raw( 'meta_bg2', $res_ctx->get_shortcode_att('meta_bg2') );
 
@@ -326,7 +323,7 @@ class td_flex_block_5 extends td_block {
         $res_ctx->load_settings_raw( 'pag_h_bg', $res_ctx->get_shortcode_att('pag_h_bg') );
         $res_ctx->load_settings_raw( 'pag_h_border', $res_ctx->get_shortcode_att('pag_h_border') );
 
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow_m' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow_m' );
 
 
 
@@ -456,13 +453,17 @@ class td_flex_block_5 extends td_block {
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
+				.$unique_block_class.td-h-effect-up-shadow .td_module_wrap:hover .td-category-pos-image .td-post-category {
+				    transform: translate(-50%, -2px);
+					-webkit-transform: translate(-50%, -2px);
+				}
 				/* @meta_horiz_align_right */
 				.$unique_block_class .td-module-meta-info {
 					text-align: right;
 				}
 				/* @meta_width */
 				.$unique_block_class .td-module-meta-info {
-					width: @meta_width;
+					max-width: @meta_width;
 				}
 				/* @meta_padding */
 				.$unique_block_class .td-module-meta-info-top {
@@ -801,7 +802,7 @@ class td_flex_block_5 extends td_block {
 
         $buffy = ''; //output buffer
 
-        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
+        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . ' td_flex_block" ' . $this->get_block_html_atts() . '>';
 
 		    //get the block js
 		    $buffy .= $this->get_block_css();

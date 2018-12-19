@@ -283,9 +283,55 @@ class tds_button1 extends td_style {
             $buffy_icon .= '<i class="' . $icon . '"></i>';
         }
 
-		$buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        /**
+         * Google Analytics tracking settings
+         */
+        $data_ga_event_cat = '';
+        $data_ga_event_action = '';
+        $data_ga_event_label = '';
+
+        // don't add tracking options in td composer
+        if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+            $ga_event_category = $this->get_shortcode_att('ga_event_category');
+            if ( ! empty( $ga_event_category ) ) {
+                $data_ga_event_cat = ' data-ga-event-cat="' . $ga_event_category . '" ';
+            }
+
+            $ga_event_action = $this->get_shortcode_att('ga_event_action');
+            if ( ! empty( $ga_event_action ) ) {
+                $data_ga_event_action = ' data-ga-event-action="' . $ga_event_action . '" ';
+            }
+
+            $ga_event_label = $this->get_shortcode_att('ga_event_label');
+            if ( ! empty( $ga_event_label ) ) {
+                $data_ga_event_label = ' data-ga-event-label="' . $ga_event_label . '" ';
+            }
+        }
+
+        /**
+         * FB Pixel tracking settings
+         */
+        $data_fb_event_name = '';
+        $data_fb_event_cotent_name = '';
+
+        // don't add tracking options in td composer
+        if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+            $fb_event_name = $this->get_shortcode_att('fb_pixel_event_name');
+            if ( ! empty( $fb_event_name ) ) {
+                $data_fb_event_name = ' data-fb-event-name="' . $fb_event_name . '" ';
+            }
+            $fb_event_content_name = $this->get_shortcode_att('fb_pixel_event_content_name');
+            if ( ! empty( $fb_event_content_name ) ) {
+                $data_fb_event_cotent_name = ' data-fb-event-content-name="' . $fb_event_content_name . '" ';
+            }
+        }
+
+        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
 		$buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' td-fix-index">';
-		    $buffy .= '<a href="' . $button_url . '" class="' . self::get_class_style(__CLASS__) . ' tdm-btn ' . $this->get_shortcode_att('button_size', $this->index_style) . ' ' . $this->unique_style_class . '" ' . $target . '>';
+		    $buffy .= '<a 
+                href="' . $button_url . '" 
+                class="' . self::get_class_style(__CLASS__) . ' tdm-btn ' . $this->get_shortcode_att('button_size', $this->index_style) . ' ' . $this->unique_style_class . '" ' .
+                $target . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '>';
                 if ( $icon_position == 'icon-before' ) {
                     $buffy .= $buffy_icon;
                 }

@@ -22,10 +22,7 @@ class td_flex_block_1 extends td_block {
 
 
 	    //image alignment
-	    $image_alignment = $res_ctx->get_shortcode_att('image_alignment');
-	    if ( $image_alignment != 50 ) {
-		    $res_ctx->load_settings_raw( 'image_alignment', $image_alignment . '%' );
-	    }
+        $res_ctx->load_settings_raw( 'image_alignment', $res_ctx->get_shortcode_att('image_alignment') . '%' );
 
 		// image_width
 	    $image_width = $res_ctx->get_shortcode_att('image_width');
@@ -351,8 +348,8 @@ class td_flex_block_1 extends td_block {
         $res_ctx->load_settings_raw( 'pag_h_border', $res_ctx->get_shortcode_att('pag_h_border') );
 
         // shadow
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow_m' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow_m' );
 
 
 	    // fonts
@@ -451,7 +448,7 @@ class td_flex_block_1 extends td_block {
 				}
 				/* @meta_width */
 				.$unique_block_class .td-module-meta-info {
-					width: @meta_width;
+					max-width: @meta_width;
 				}
 				/* @meta_margin */
 				.$unique_block_class .td-module-meta-info {
@@ -462,8 +459,13 @@ class td_flex_block_1 extends td_block {
 					padding: @meta_padding;
 				}
 				/* @meta_info_align */
-				.$unique_block_class .td-module-container {
-					align-items: @meta_info_align;
+				.$unique_block_class .td-module-meta-info {
+				    display: flex;
+				    flex-direction: column;
+					justify-content: @meta_info_align;
+				}
+				.$unique_block_class .td-category-pos-above .td-post-category {
+				    align-self: flex-start;
 				}
 				/* @align_category_top */
 				.$unique_block_class .td-category-pos-image .td-post-category {
@@ -781,15 +783,32 @@ class td_flex_block_1 extends td_block {
 					margin-left: auto;
                     margin-right: auto;
 				}
+				.$unique_block_class .td-category-pos-above .td-post-category {
+				    align-self: center;
+				}
 				.$unique_block_class .td-category-pos-image .td-post-category {
 					left: 50%;
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
+				.$unique_block_class.td-h-effect-up-shadow .td_module_wrap:hover .td-category-pos-image .td-post-category {
+				    transform: translate(-50%, -2px);
+					-webkit-transform: translate(-50%, -2px);
+				}
 				/* @meta_horiz_align_right */
 				.$unique_block_class .td-module-meta-info,
 				.$unique_block_class .td-next-prev-wrap {
 					text-align: right;
+				}
+				.$unique_block_class .td-category-pos-above .td-post-category {
+				    align-self: flex-end;
+				}
+				.$unique_block_class .td-category-pos-image .td-post-category {
+					left: auto;
+					right: 0;
+				}
+				.$unique_block_class .td-image-container {
+					margin-left: auto;
 				}
 				.$unique_block_class .td-ajax-next-page {
                     margin-right: 0;
@@ -897,7 +916,7 @@ class td_flex_block_1 extends td_block {
 
         $buffy = ''; //output buffer
 
-        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
+        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . ' td_flex_block" ' . $this->get_block_html_atts() . '>';
 
 		    //get the block js
 		    $buffy .= $this->get_block_css();

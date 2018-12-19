@@ -1530,6 +1530,74 @@ class td_api_multi_purpose {
                             ),
                         ),
                         $align_params,
+                        array(
+                            array(
+                                "param_name" => "separator",
+                                "type" => "text_separator",
+                                "heading" => 'Google analytics',
+                                "value" => "",
+                                "class" => "",
+                                "group" => 'Tracking'
+                            ),
+                            array(
+                                'param_name' => 'ga_event_action',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Action',
+                                "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'ga_event_category',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Category',
+                                "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'ga_event_label',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Label',
+                                "description" => "The Google Analytics Event Label. This setting is optional.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                "param_name" => "separator",
+                                "type" => "text_separator",
+                                "heading" => 'Facebook pixel',
+                                "value" => "",
+                                "class" => "",
+                                "group" => 'Tracking'
+                            ),
+                            array(
+                                'param_name' => 'fb_pixel_event_name',
+                                "type" => "dropdown",
+                                "value" => array(
+                                    'Select Event' => '',
+                                    'Lead' => 'Lead',
+                                    'View Content' => 'ViewContent',
+                                ),
+                                "heading" => 'Events',
+                                "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                                "holder" => "div",
+                                'class' => 'tdc-dropdown-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'fb_pixel_event_content_name',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'Content Name',
+                                "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                        ),
                         $css_tabs_params
 	                ),
             )
@@ -1731,6 +1799,74 @@ class td_api_multi_purpose {
                         ),
                     ),
                     $align_params,
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                    ),
                     $css_tabs_params
                 )
             )
@@ -1921,6 +2057,74 @@ class td_api_multi_purpose {
                             ),
                         ),
                         $align_params,
+                        array(
+                            array(
+                                "param_name" => "separator",
+                                "type" => "text_separator",
+                                "heading" => 'Google analytics',
+                                "value" => "",
+                                "class" => "",
+                                "group" => 'Tracking'
+                            ),
+                            array(
+                                'param_name' => 'ga_event_action',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Action',
+                                "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'ga_event_category',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Category',
+                                "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'ga_event_label',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'GA Event Label',
+                                "description" => "The Google Analytics Event Label. This setting is optional.",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                "param_name" => "separator",
+                                "type" => "text_separator",
+                                "heading" => 'Facebook pixel',
+                                "value" => "",
+                                "class" => "",
+                                "group" => 'Tracking'
+                            ),
+                            array(
+                                'param_name' => 'fb_pixel_event_name',
+                                "type" => "dropdown",
+                                "value" => array(
+                                    'Select Event' => '',
+                                    'Lead' => 'Lead',
+                                    'View Content' => 'ViewContent',
+                                ),
+                                "heading" => 'Events',
+                                "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                                "holder" => "div",
+                                'class' => 'tdc-dropdown-big',
+                                'group' => 'Tracking',
+                            ),
+                            array(
+                                'param_name' => 'fb_pixel_event_content_name',
+                                "type" => "textfield",
+                                "value" => '',
+                                "heading" => 'Content Name',
+                                "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                                'class' => 'tdc-textfield-big',
+                                'group' => 'Tracking',
+                            ),
+                        ),
                         $css_tabs_params
                     ),
             )
@@ -2163,6 +2367,74 @@ class td_api_multi_purpose {
                             "holder" => "div",
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+                    ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
                         ),
                     ),
                     $css_tabs_params
@@ -2755,6 +3027,74 @@ class td_api_multi_purpose {
                             "class" => "tdc-visual-selector tdc-add-class",
                         ),
                     ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                    ),
                     $css_tabs_params
                 )
             )
@@ -3033,11 +3373,78 @@ class td_api_multi_purpose {
                             "class" => "tdc-visual-selector tdc-add-class"
                         ),
                     ),
-                    $css_tabs_params
+                    $css_tabs_params,
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                    )
                 )
             )
         );
-
 
 	    td_api_block::add('tdm_block_column_title',
             array(
@@ -3863,16 +4270,16 @@ class td_api_multi_purpose {
                 'tdc_category' => 'Multipurpose',
                 'icon' => 'icon-pagebuilder-title',
                 'file' => $this->plugin_path . '/shortcodes/tdm_block_call_to_action.php',
-//                'tdc_in_row' => true,
-//                'tdc_row_start_values' => base64_encode(
-//                    json_encode(
-//                        array(
-//                            array(
-//                                'full_width'  => 'stretch_row_1400 td-stretch-content',
-//                            )
-//                        )
-//                    )
-//                ),
+                //'tdc_in_row' => true,
+                //'tdc_row_start_values' => base64_encode(
+                //json_encode(
+                //  array(
+                //      array(
+                //          'full_width'  => 'stretch_row_1400 td-stretch-content',
+                //          )
+                //      )
+                //  )
+                //),
                 'tdc_style_params' => array(
                     'title_text',
                     'description',
@@ -3965,8 +4372,6 @@ class td_api_multi_purpose {
                         )
                     )
                 ),
-
-
                 "params" => array_merge(
                     $this->get_group_params('title'),
                     array(
@@ -4048,6 +4453,74 @@ class td_api_multi_purpose {
                             "type" => "horizontal_separator",
                             "value" => "",
                             "class" => ""
+                        ),
+                    ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
                         ),
                     ),
                     $css_tabs_params
@@ -4431,6 +4904,74 @@ class td_api_multi_purpose {
                             "holder" => "div",
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+                    ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
                         ),
                     ),
                     $css_tabs_params
@@ -5185,7 +5726,75 @@ class td_api_multi_purpose {
                             "class" => "tdc-visual-selector tdc-add-class",
                         ),
                     ),
-                    $css_tabs_params
+                    $css_tabs_params,
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Google analytics',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'ga_event_action',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Action',
+                            "description" => "The Google Analytics Event Action. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_category',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Category',
+                            "description" => "The Google Analytics Event Category. This setting is required in order to send tracking data to Google Analytics.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'ga_event_label',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'GA Event Label',
+                            "description" => "The Google Analytics Event Label. This setting is optional.",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            "heading" => 'Facebook pixel',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Tracking'
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_name',
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Select Event' => '',
+                                'Lead' => 'Lead',
+                                'View Content' => 'ViewContent',
+                            ),
+                            "heading" => 'Events',
+                            "description" => "The Facebook Pixel Event Name. This setting is required in order to send tracking data to Facebook Pixel.",
+                            "holder" => "div",
+                            'class' => 'tdc-dropdown-big',
+                            'group' => 'Tracking',
+                        ),
+                        array(
+                            'param_name' => 'fb_pixel_event_content_name',
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Content Name',
+                            "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting ).",
+                            'class' => 'tdc-textfield-big',
+                            'group' => 'Tracking',
+                        ),
+                    )
                 )
             )
         );
@@ -6695,24 +7304,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
-                            "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
-                        ),
-                    ),
-                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 10, 0, 2, 'Style'),
-                    array(
-                        array(
-                            "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
+                            "class" => "tdc-separator",
                             "group" => "Style",
                         ),
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 16, 0, 2, 'Style'),
+                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 10, 0, 2, 'Style'),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 16, 0, 2, 'Style', 0, false),
                     array(
                         array(
                             "param_name" => "separator",
@@ -7366,11 +7965,10 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
+                            "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
+                            "class" => "tdc-separator",
+                            "group" => "Style",
                         ),
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 8, 'Style'),
@@ -7508,11 +8106,10 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
+                            "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
+                            "class" => "tdc-separator",
+                            "group" => "Style",
                         ),
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 8, 'Style'),
@@ -7660,11 +8257,10 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
+                            "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
+                            "class" => "tdc-separator",
+                            "group" => "Style",
                         ),
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 25, 0, 8, 'Style'),
@@ -7759,6 +8355,15 @@ class td_api_multi_purpose {
                         ),
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 8),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator",
+                            "group" => "Style",
+                        ),
+                    ),
                     td_config_helper::get_map_block_font_array( 'f_descr', true, 'Description text', 'Style' )
                 ),
             )
@@ -8397,24 +9002,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
-                            "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
-                        ),
-                    ),
-                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 16, 0, 2),
-                    array(
-                        array(
-                            "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
                             "class" => "tdc-separator-small",
                             "group" => "Style",
                         ),
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 26, 0, 2),
+                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 16, 0, 2),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 26, 0, 2, '', '', 0, false),
                     array(
                         array(
                             "param_name" => "separator",
@@ -8530,24 +9125,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
-                            "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => 'Style',
-                        ),
-                    ),
-                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 2),
-                    array(
-                        array(
-                            "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
                             "class" => "tdc-separator-small",
                             "group" => "Style",
                         ),
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 0, 0, 2),
+                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 2),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 0, 0, 2, '', '', 0, false),
                     array(
                         array(
                             "param_name" => "separator",
@@ -8846,24 +9431,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
-                            "value" => "",
-                            "class" => "tdc-separator-small",
-                            "group" => "Style",
-                        ),
-                    ),
-                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0, 'Style' ),
-                    array(
-                        array(
-                            "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
                             "class" => "tdc-separator-small",
                             "group" => "Style",
                         ),
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 0, 0, 0, 'Style' ),
+                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0, 'Style' ),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Hover shadow', 0, 0, 0, 'Style', '', 0, false ),
                     array(
                         array(
                             "param_name" => "separator",
@@ -9412,14 +9987,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
+                            "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
+                            "class" => "",
                             "group" => "Style",
-                        ),
+                        )
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0, 'Style'),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 0, 0, 0, 'Style', '', 0, false),
                     array(
                         array(
                             "param_name" => "separator",
@@ -9429,7 +10004,6 @@ class td_api_multi_purpose {
                             "group" => "Style",
                         )
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 0, 0, 0, 'Style'),
                     td_config_helper::get_map_block_font_array( 'f_descr', true, 'Descrption text', 'Style' )
                 ),
             )
@@ -9550,14 +10124,14 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "separator",
-                            "type" => "text_separator",
-                            'heading' => 'Shadow settings',
+                            "type" => "horizontal_separator",
                             "value" => "",
-                            "class" => "tdc-separator-small",
+                            "class" => "",
                             "group" => "Style",
-                        ),
+                        )
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0, 'Style'),
+                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 0, 0, 0, 'Style', '', 0, false),
                     array(
                         array(
                             "param_name" => "separator",
@@ -9567,7 +10141,6 @@ class td_api_multi_purpose {
                             "group" => "Style",
                         )
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow_hover', 'Shadow hover', 0, 0, 0, 'Style'),
                     td_config_helper::get_map_block_font_array( 'f_descr', true, 'Descrption text', 'Style' )
                 ),
             )

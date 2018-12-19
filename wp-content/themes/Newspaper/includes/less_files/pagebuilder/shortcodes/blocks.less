@@ -2335,6 +2335,52 @@
   padding-bottom: 0;
 }
 
+/*  ----------------------------------------------------------------------------
+    Categories list
+*/
+.td_block_categories_tags {
+  .td-ct-item {
+    display: block;
+    position: relative;
+    padding: 0 10px 0 12px;
+    line-height: 30px;
+    color: #111;
+    .transform(translateZ(0));
+
+    &:hover {
+      color: @td_theme_color;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    &:last-of-type {
+      .td-ct-text-sep {
+        display: none;
+      }
+    }
+  }
+
+  .td-ct-item-no {
+    float: right;
+  }
+
+  .td-ct-item-sep {
+    position: relative;
+  }
+  .td-ct-item-sep:last-child {
+      display: none;
+  }
+}
+
 
 /*  ----------------------------------------------------------------------------
     Homepage post
@@ -3454,6 +3500,7 @@
 // hover effects
 .td-h-effect-up-shadow {
   .entry-thumb,
+  .td-module-thumb a:after,
   .td-category-pos-image .td-post-category,
   .td-admin-edit {
     .transition(box-shadow .3s ease, transform .3s ease);
@@ -3465,6 +3512,7 @@
 
   .td_module_wrap:hover {
     .entry-thumb,
+    .td-module-thumb a:after,
     .td-category-pos-image .td-post-category,
     .td-admin-edit {
       .transform(translate(0, -2px));
@@ -3622,10 +3670,14 @@
     }
   }
 }
-.td_flex_block_1.td_with_ajax_pagination {
+.td_flex_block.td_with_ajax_pagination {
   &,
   .td_block_inner {
-    overflow: initial !important;
+    overflow: initial;
+  }
+
+  .td_block_inner {
+    height: auto !important;
   }
 }
 
@@ -3633,15 +3685,6 @@
     Flex Block 2
 */
 .td_flex_block_2.td_with_ajax_pagination {
-  &,
-  .td_block_inner {
-    overflow: initial !important;
-  }
-
-  .td_block_inner {
-    height: auto !important;
-  }
-
   .td-block-inner-pagination {
     position: relative;
   }

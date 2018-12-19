@@ -187,11 +187,14 @@ class td_block_text_with_title extends td_block {
 	    // As vc does
 		$content = wpautop( preg_replace( '/<\/?p\>/', "\n", $content ) . "\n" );
 
-		if ( ! ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
-			$content = do_shortcode( shortcode_unautop( $content ) );
-		}
+//		if ( ! ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
+//			$content = do_shortcode( shortcode_unautop( $content ) );
+//		}
 
-	    $buffy .= $content;
+        //fix render shortcode
+        $content = do_shortcode( shortcode_unautop( $content ) );
+
+        $buffy .= $content;
 
 
 	    $buffy .= '</div>';

@@ -508,6 +508,7 @@
 }
 .tdc-breadcrumbs a:hover {
   opacity: 1;
+  color: #fff;
 }
 .tdc-breadcrumb-arrow {
   display: inline-block;
@@ -648,6 +649,30 @@
 .tdc-inspector::-webkit-scrollbar {
   width: 17px;
 }
+.tdc-sidebar-header {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+.tdc-sidebar-sticky-a {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 58px;
+  margin-top: -58px;
+  background-color: #000;
+  z-index: 98;
+}
+.tdc-sidebar-sticky-b {
+  position: sticky;
+  top: 46px;
+  width: 100%;
+  height: 47px;
+  margin-top: -58px;
+  background-color: #fff;
+  box-shadow: 0 0 10px #0003;
+  z-index: 97;
+}
 .tdc-tabs {
   padding: 0 12px;
 }
@@ -725,17 +750,16 @@ placeholder when sidebar is empty
   overflow-y: scroll;
 }
 .tdc-empty-sidebar .tdc-start-tips {
-  padding: 36px 26px 2px;
-  line-height: 22px;
+  padding: 0 26px;
+  line-height: 1;
   font-size: 13px;
-  margin-bottom: 7px;
   text-align: center;
   color: #fff;
 }
 .tdc-empty-sidebar .tdc-start-tips img {
   display: table;
   width: 80px;
-  margin: 0 auto 20px;
+  margin: 40px auto 20px;
   opacity: 0.96;
 }
 .tdc-empty-sidebar .tdc-start-tips span {
@@ -748,23 +772,26 @@ placeholder when sidebar is empty
   font-size: 13px;
   line-height: 20px;
   color: #fff;
+  margin: 18px 0;
 }
 .tdc-empty-sidebar .tdc-start-tips p span {
   font-size: 13px;
   line-height: 20px;
   color: #9edfff;
 }
+.tdc-empty-sidebar .tdc-intro {
+  margin-bottom: 24px;
+}
 .tdc-empty-sidebar .tdc-sidebar-w-button {
-  font-size: 12px;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
   color: #fff;
-  padding: 16px 30px 15px;
+  padding: 16px 20px;
   line-height: 1;
   background-color: #4db2ec;
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
+  display: inline-block;
+  margin: 0 2px;
   position: relative;
   cursor: pointer;
   -webkit-user-select: none;

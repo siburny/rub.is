@@ -44,15 +44,9 @@ class td_block_big_grid_flex_4 extends td_block {
         }
 
         // image alignment 1
-        $image_alignment1 = $res_ctx->get_shortcode_att('image_alignment1');
-        if ( $image_alignment1 != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment1', $image_alignment1 . '%' );
-        }
+        $res_ctx->load_settings_raw( 'image_alignment1', $res_ctx->get_shortcode_att('image_alignment1') . '%' );
         // image alignment 2
-        $image_alignment2 = $res_ctx->get_shortcode_att('image_alignment2');
-        if ( $image_alignment2 != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment2', $image_alignment2 . '%' );
-        }
+        $res_ctx->load_settings_raw( 'image_alignment2', $res_ctx->get_shortcode_att('image_alignment2') . '%' );
 
         // image height 1
         $image_height1 = $res_ctx->get_shortcode_att('image_height1');
@@ -547,7 +541,7 @@ class td_block_big_grid_flex_4 extends td_block {
 					color: @cat_txt;
 				}
 				/* @cat_txt_hover */
-				.$unique_block_class .td-post-category:hover {
+				.$unique_block_class .td-module-container:hover .td-post-category {
 					color: @cat_txt_hover;
 				}
 				/* @title_txt */

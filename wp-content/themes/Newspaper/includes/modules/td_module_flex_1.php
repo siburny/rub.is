@@ -31,9 +31,11 @@ class td_module_flex_1 extends td_module {
             $excerpt .= $this->get_excerpt($excerpt_length);
         $excerpt .= '</div>';
 
+        if($custom_field) {
         $excerpt .= '<div class="td-custom-field">';
             $excerpt .= get_post_meta( $this->post->ID, $custom_field, true );
         $excerpt .= '</div>';
+        }
 
         ?>
 

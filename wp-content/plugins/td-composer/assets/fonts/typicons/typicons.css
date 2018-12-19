@@ -18,11 +18,11 @@
   font-style: normal;
   font-weight: normal;
   speak: none;
-  display: inline-block;
   text-decoration: inherit;
   width: 1em;
   height: 1em;
   font-size: 1em;
+  line-height: 1;
   text-align: center;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;

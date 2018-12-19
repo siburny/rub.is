@@ -39,7 +39,18 @@ usage:
   /* responsive landscape tablet */
 }
 @media (min-width: 767px) {
-  .td-nomad.page-template-page-pagebuilder-overlay .tdm-header-style-1 .td-header-main-menu {
+  .td-nomad .tdm-header-style-1 {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+  .td-nomad .tdm-header-style-1 .td-container-wrap {
+    background-color: transparent;
+  }
+  .td-nomad .tdm-header-style-1 .td-header-gradient:before {
+    display: none;
+  }
+  .td-nomad .tdm-header-style-1 .td-header-main-menu {
     background-color: #fff;
     margin-top: 38px;
     padding-left: 24px;
@@ -50,12 +61,12 @@ usage:
   }
 }
 @media (min-width: 768px) and (max-width: 1018px) {
-  .td-nomad.page-template-page-pagebuilder-overlay .tdm-header-style-1 .td-header-main-menu {
+  .td-nomad .tdm-header-style-1 .td-header-main-menu {
     margin-top: 28px;
   }
 }
 @media (min-width: 1019px) and (max-width: 1140px) {
-  .td-nomad.page-template-page-pagebuilder-overlay .tdm-header-style-1 .td-header-main-menu {
+  .td-nomad .tdm-header-style-1 .td-header-main-menu {
     margin-top: 32px;
   }
 }

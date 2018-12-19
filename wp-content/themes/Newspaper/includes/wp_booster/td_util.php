@@ -1158,7 +1158,7 @@ class td_util {
                     $return_buffer .= ' srcset="' . esc_url( $thumb_url ) . $thumb_w . ', ' . esc_url( $retina_url[0] ) . $retina_thumb_w . '" sizes="(-webkit-min-device-pixel-ratio: 2) ' . $retina_thumb_width . 'px, (min-resolution: 192dpi) ' . $retina_thumb_width . 'px, ' . $thumb_width . 'px"';
                 }
 
-                //responsive srcset and sizes
+            //responsive srcset and sizes
             } else {
                 $thumb_srcset = wp_get_attachment_image_srcset($thumb_id, $thumb_type);
                 $thumb_sizes = wp_get_attachment_image_sizes($thumb_id, $thumb_type);

@@ -216,7 +216,8 @@ function td_css_generator() {
     .td-theme-wrap .sf-menu ul .current-menu-ancestor > a,
     .td-theme-wrap .sf-menu ul .current-category-ancestor > a,
     .td-theme-wrap .sf-menu ul .current-menu-item > a,
-    .td_outlined_btn {
+    .td_outlined_btn,
+     .td_block_categories_tags .td-ct-item:hover {
         color: @theme_color;
     }
 

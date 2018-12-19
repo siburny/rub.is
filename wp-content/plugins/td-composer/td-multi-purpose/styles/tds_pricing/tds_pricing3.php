@@ -229,7 +229,7 @@ class tds_pricing3 extends td_style {
 
 
         /*-- SHADOW -- */
-        $res_ctx->load_shadow_settings( 25, 'rgba(0, 0, 0, 0.08)', 'shadow', __CLASS__ );
+        $res_ctx->load_shadow_settings( 25, 0, 8, 0, 'rgba(0, 0, 0, 0.08)', 'shadow', __CLASS__ );
 
 
 

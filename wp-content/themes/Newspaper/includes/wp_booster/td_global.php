@@ -42,12 +42,12 @@ class td_global {
 
 	//theme plugins 'PLUGIN_CONSTANT' => 'hash'
 	private static $td_plugins = array(
-		'TD_COMPOSER' => '9e241c87ee8782e8f19bb886a935e653',
-		'TD_CLOUD_LIBRARY' => '4dea8d5b26348370b86f315beb853d86',
-		'TD_SOCIAL_COUNTER' => 'd608b7ce86371b999748dbc94bcf2599',
-		'TD_NEWSLETTER' => 'f1b9ea261e2c20cdbc7921f99056a1ba',
-		'TD_AMP' => '8265497c99ed22d437e120d4c6e1687a',
-		'TD_MOBILE_PLUGIN' => '6744d78cb08fb46c9ae845e7a8cb6dc8'
+		'TD_COMPOSER' => '9b761fb88cde3d1bd90677504fc739fc',
+		'TD_CLOUD_LIBRARY' => 'de57cf6ff5b3d9be0b6e25d187d8bc1a',
+		'TD_SOCIAL_COUNTER' => 'f8ec95a11eea0df473c70c4c60491a5b',
+		'TD_NEWSLETTER' => '232348d3a0f9212d8b06f8dfe5eb7ae4',
+		'TD_AMP' => '6de043d9616e6bbcdec60bb323147830',
+		'TD_MOBILE_PLUGIN' => '3cd3ee6c6716dddec704114714e5fafa'
 	);
 
 

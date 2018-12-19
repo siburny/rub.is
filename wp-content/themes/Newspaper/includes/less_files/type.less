@@ -712,7 +712,8 @@ figure.aligncenter {
     position: relative;
     border-left: none;
     margin: 40px 5% 38px 5%;
-
+    font-style: italic;
+    text-align: center;
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
       margin: 20px 3% 18px 3%;
@@ -723,8 +724,6 @@ figure.aligncenter {
       font-size: 32px;
       line-height: 40px;
       font-weight: 400;
-      font-style: italic;
-      text-align: center;
       text-transform: uppercase;
       color: @td_theme_color;
       word-wrap: break-word;
@@ -858,6 +857,7 @@ figure.aligncenter {
   }
 
   // pull quote
+  .wp-block-pullquote blockquote,
   .td_pull_quote {
     padding: 18px 25px;
     margin: 0;
@@ -900,9 +900,29 @@ figure.aligncenter {
     }
   }
 
+  .wp-block-pullquote blockquote,
+  .td_pull_center {
+    margin: 17px 0;
+    padding: 15px 50px;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      padding: 15px 20px;
+    }
+  }
+
+  .wp-block-pullquote {
+    padding: 0;
+    color: @td_theme_color;
+
+    p {
+      color: inherit;
+    }
+  }
+
+  .wp-block-pullquote.alignleft,
   .td_pull_left {
     width: 40%;
-    float: left;
     margin-right: 34px;
 
     /* responsive portrait phone */
@@ -912,10 +932,13 @@ figure.aligncenter {
       width: auto;
     }
   }
+  .td_pull_left {
+    float: left;
+  }
 
+  .wp-block-pullquote.alignright,
   .td_pull_right {
     width: 30%;
-    float: right;
     margin-left: 34px;
 
     /* responsive portrait phone */
@@ -925,15 +948,29 @@ figure.aligncenter {
       width: auto;
     }
   }
+  .td_pull_right {
+    float: right;
+  }
 
-  .td_pull_center {
-    margin: 17px 0;
-    padding: 15px 50px;
+  .wp-block-pullquote.alignleft,
+  .wp-block-pullquote.alignright {
+    margin-top: 0;
+    margin-bottom: 0 !important;
+
+    blockquote {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding: 0;
+    }
 
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
-      padding: 15px 20px;
+      max-width: 100%;
     }
+  }
+
+  .wp-block-pullquote.is-style-solid-color blockquote {
+    max-width: 100%;
   }
 }
 

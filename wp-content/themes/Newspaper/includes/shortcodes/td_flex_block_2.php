@@ -80,10 +80,7 @@ class td_flex_block_2 extends td_block {
 
         /*-- IMAGE-- */
         //image alignment
-        $image_alignment = $res_ctx->get_shortcode_att('image_alignment');
-        if ( $image_alignment != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment', $image_alignment . '%' );
-        }
+        $res_ctx->load_settings_raw( 'image_alignment', $res_ctx->get_shortcode_att('image_alignment') . '%' );
 
         // image radius
         $image_radius = $res_ctx->get_shortcode_att('image_radius');
@@ -314,7 +311,7 @@ class td_flex_block_2 extends td_block {
                 }   
                 /* @meta_width */
 				.$unique_block_class .td-module-meta-info {
-					width: @meta_width;
+					max-width: @meta_width;
 				}
 				/* @meta_margin */
 				.$unique_block_class .td-module-meta-info {
@@ -524,22 +521,10 @@ class td_flex_block_2 extends td_block {
             $additional_classes[] = 'td-flb-margin-left';
         }
 
-        // forced image
-        $image_margin_forced = '';
-//        if( $this->get_att( 'image_margin_forced' ) != '' ) {
-//            $image_margin_forced = 'td-flb-margin-forced';
-//        }
-
-//        // meta info position
-//        $meta_info_align = $this->get_att( 'meta_info_align' );
-//        if( $meta_info_align != '' ) {
-//            $additional_classes[] = 'td-flb-meta-' . $meta_info_align;
-//        }
-
 
         $buffy = ''; //output buffer
 
-        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
+        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . ' td_flex_block" ' . $this->get_block_html_atts() . '>';
 
 		    //get the block js
 		    $buffy .= $this->get_block_css();
@@ -556,7 +541,7 @@ class td_flex_block_2 extends td_block {
             $buffy .= '</div>';
 
             $buffy .= '<div class="td-block-inner-pagination">';
-                $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-mc2-wrap ' . $image_margin_forced . '">';
+                $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-mc2-wrap">';
                     $buffy .= $this->inner($this->td_query->posts);//inner content of the block
                 $buffy .= '</div>';
 

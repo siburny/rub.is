@@ -64,6 +64,18 @@ class td_menu {
      */
     function hook_wp_nav_menu_objects($items, $args = '') {
 
+        /**
+         * detect menus added by the cloud library menu shortcode and do nothing
+         * we use a diffrent walker for those menus
+         **/
+        $exclude_block_ids = array('tdb-block-menu', 'tdb-horiz-menu');
+
+        if ( !empty($args->menu_id) && in_array( $args->menu_id, $exclude_block_ids ) )
+            return $items;
+
+
+        //echo PHP_EOL .'<pre> the THEME menu hook runs </pre>';
+
 	    // Internal array to keep the references of the items (ID item is the key -> item itself)
 	    // This helps to not look for an item into the $items list
 	    $_items_ref = array();

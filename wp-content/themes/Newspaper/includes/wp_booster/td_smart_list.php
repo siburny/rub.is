@@ -533,7 +533,7 @@ class td_tokenizer {
         preg_match('/<' . $this->token_title_start . '.*?>/', $token, $matches); //match <h3 class="with_optional_class">
 
 
-        if (!empty($matches)) {
+        if (!empty($matches) && $this->token_td_smart_list_end === false) {
             $this->token_title_is_open = true;
             return true;
         } else {

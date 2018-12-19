@@ -56,8 +56,8 @@ class td_flex_block_3 extends td_block {
         $res_ctx->load_settings_raw( 'modules_space2', $modules_space2 );
         if ( $modules_space2 == '' ) {
             $res_ctx->load_settings_raw( 'modules_space2', '13px');
-        } else if ( is_numeric( $modules_space1 ) ) {
-            $res_ctx->load_settings_raw( 'modules_space2', $modules_space2 / 2 .'px' );
+        } else if ( is_numeric( $modules_space2 ) ) {
+            $res_ctx->load_settings_raw( 'modules_space2', $modules_space2 / 2 . 'px' );
         }
 
         // modules divider
@@ -79,15 +79,8 @@ class td_flex_block_3 extends td_block {
 
         /*-- ARTICLE IMAGE-- */
         //image alignment
-        $image_alignment1 = $res_ctx->get_shortcode_att('image_alignment1');
-        if ( $image_alignment1 != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment1', $image_alignment1 . '%' );
-        }
-        $image_alignment2 = $res_ctx->get_shortcode_att('image_alignment2');
-        if ( $image_alignment2 != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment2', $image_alignment2 . '%' );
-        }
-
+        $res_ctx->load_settings_raw( 'image_alignment1', $res_ctx->get_shortcode_att('image_alignment1') . '%' );
+        $res_ctx->load_settings_raw( 'image_alignment2', $res_ctx->get_shortcode_att('image_alignment2') . '%' );
         // image_width
         $image_width2 = $res_ctx->get_shortcode_att('image_width2');
         $res_ctx->load_settings_raw( 'image_width2', '30%' );
@@ -340,7 +333,7 @@ class td_flex_block_3 extends td_block {
         $res_ctx->load_settings_raw( 'pag_h_border', $res_ctx->get_shortcode_att('pag_h_border') );
 
         // shadow
-        $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
+        $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
 
 
 	    // fonts
@@ -413,7 +406,7 @@ class td_flex_block_3 extends td_block {
 				.$unique_block_class .td_module_flex_3 .td-module-container:before {
 					bottom: -@modules_space2;
 				}
-				.$unique_block_class .td_module_flex_3:last-child {
+				.$unique_block_class .td_module_column:last-child .td_module_flex_3:last-child {
 				    margin-bottom: 0 !important;
 					padding-bottom: 0 !important;
 				}
@@ -516,6 +509,10 @@ class td_flex_block_3 extends td_block {
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
+				.$unique_block_class.td-h-effect-up-shadow .td_module_flex_1:hover .td-category-pos-image .td-post-category {
+				    transform: translate(-50%, -2px);
+					-webkit-transform: translate(-50%, -2px);
+				}
 				/* @meta_horiz_align_right1 */
 				.$unique_block_class .td_module_flex_1 .td-module-meta-info {
 					text-align: right;
@@ -529,6 +526,10 @@ class td_flex_block_3 extends td_block {
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
+				.$unique_block_class.td-h-effect-up-shadow .td_module_flex_3:hover .td-category-pos-image .td-post-category {
+				    transform: translate(-50%, -2px);
+					-webkit-transform: translate(-50%, -2px);
+				}
 				/* @meta_horiz_align_right2 */
 				.$unique_block_class .td_module_flex_3 .td-module-meta-info {
 					text-align: right;
@@ -536,11 +537,11 @@ class td_flex_block_3 extends td_block {
 				
 				/* @meta_width1 */
 				.$unique_block_class .td_module_flex_1 .td-module-meta-info {
-					width: @meta_width1;
+					max-width: @meta_width1;
 				}
 				/* @meta_width2 */
 				.$unique_block_class .td_module_flex_3 .td-module-meta-info {
-					width: @meta_width2;
+					max-width: @meta_width2;
 				}
 				
 				/* @meta_margin1 */
@@ -942,7 +943,7 @@ class td_flex_block_3 extends td_block {
 
         $buffy = ''; //output buffer
 
-        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
+        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . ' td_flex_block" ' . $this->get_block_html_atts() . '>';
 
 		    //get the block js
 		    $buffy .= $this->get_block_css();

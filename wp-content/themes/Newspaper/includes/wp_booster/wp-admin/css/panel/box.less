@@ -53,6 +53,14 @@
   display: block;
 }
 
+.td-box-content-wrap {
+  .transition(height 0.2s);
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+  -moz-transition-timing-function: ease-in-out;
+  //overflow: hidden;
+}
+
 /* toggle icon */
 
 .td-box-toggle {
@@ -74,10 +82,6 @@
     background-position: 0px -38px;
   }
   .td-box-content-wrap {
-    //.transition(height 0.4s);
-    //-webkit-transition-timing-function: ease-in-out;
-    //transition-timing-function: ease-in-out;
-    //-moz-transition-timing-function: ease-in-out;
     display: none;
   }
 }

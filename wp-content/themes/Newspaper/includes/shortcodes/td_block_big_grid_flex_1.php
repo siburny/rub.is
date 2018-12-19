@@ -17,10 +17,7 @@ class td_block_big_grid_flex_1 extends td_block {
         }
 
         //image alignment
-        $image_alignment = $res_ctx->get_shortcode_att('image_alignment');
-        if ( $image_alignment != 50 ) {
-            $res_ctx->load_settings_raw( 'image_alignment', $image_alignment . '%' );
-        }
+        $res_ctx->load_settings_raw( 'image_alignment', $res_ctx->get_shortcode_att('image_alignment') . '%' );
 
         // image_height
         $image_height = $res_ctx->get_shortcode_att('image_height');
@@ -549,7 +546,7 @@ class td_block_big_grid_flex_1 extends td_block {
 					color: @cat_txt;
 				}
 				/* @cat_txt_hover */
-				.$unique_block_class .td-post-category:hover {
+				.$unique_block_class .td-module-container:hover .td-post-category {
 					color: @cat_txt_hover;
 				}
 				/* @title_txt */

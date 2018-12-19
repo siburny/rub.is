@@ -13,6 +13,7 @@ class vc_row_inner extends tdc_composer_block {
 	public function get_custom_css() {
 		// $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
 		$unique_block_class = $this->get_att('tdc_css_class');
+        $unique_block_id = $this->block_uid;
 
         $compiled_css = '';
 
@@ -35,13 +36,13 @@ class vc_row_inner extends tdc_composer_block {
                 .$unique_block_class.tdc-row-content-vert-center .tdc-inner-columns {
                     display: flex;
                     align-items: center;
-                    min-width: 100%;
+                    flex: 1;
                 }
                 .$unique_block_class.tdc-row-content-vert-bottom,
                 .$unique_block_class.tdc-row-content-vert-bottom .tdc-inner-columns {
                     display: flex;
                     align-items: flex-end;
-                    min-width: 100%;
+                    flex: 1;
                 }
                 @media (max-width: 767px) {
 	                .$unique_block_class,
@@ -55,6 +56,23 @@ class vc_row_inner extends tdc_composer_block {
 
                 .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
                 	vertical-align: bottom;
+                }
+                
+                /* @row_shadow */
+                .$unique_block_class {
+                    position: relative;
+                }
+                .$unique_block_class:before {
+                    display: block;
+                    width: 100vw;
+                    height: 100%;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    box-shadow: @row_shadow;
+                    z-index: 20;
+                    pointer-events: none;
+                 
                 }
                 
                 /* @absolute_position */
@@ -106,6 +124,9 @@ class vc_row_inner extends tdc_composer_block {
             $res_ctx->load_settings_raw('content_align_vertical', $content_align_vertical);
 		}
 
+        // shadow
+        $res_ctx->load_shadow_settings( 0, 6, 8, 0, 'rgba(0, 0, 0, 0.08)', 'row_shadow' );
+
         // absolute positioning
         $absolute_position = $res_ctx->get_shortcode_att('absolute_position');
 		if( $absolute_position != '' ) {
@@ -132,6 +153,11 @@ class vc_row_inner extends tdc_composer_block {
 
 			'gap' => '',
 			'content_align_vertical' => '',
+            'row_shadow_shadow_size' => '',
+            'row_shadow_shadow_offset_horizontal' => '',
+            'row_shadow_shadow_offset_vertical' => '',
+            'row_shadow_shadow_spread' => '',
+            'row_shadow_shadow_color' => '',
             'absolute_position' => '',
             'absolute_align' => '',
             'absolute_width' => ''

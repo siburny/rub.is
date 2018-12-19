@@ -85,7 +85,7 @@ jQuery().ready(function() {
     // make sure this runs just on theme's panel page
     if ( jQuery('#td_panel_big_form').length ) {
         panel_navigation_hash();
-        panel_navigation_hashchange_event();
+        //panel_navigation_hashchange_event();
     }
 });
 
@@ -181,7 +181,7 @@ function panel_navigation_hash() {
         // if we have box parameters show the box content panel
         if ( typeof box !== 'undefined' ) {
             var panelBox = jQuery('#' + jQuery('.td_panel_box_' + box ).prop( 'id' ));
-            show_content_panel( panelBox, true );
+            show_content_panel( panelBox, true, undefined, true );
         }
     }
 }
@@ -270,16 +270,15 @@ function panel_navigation() {
         }
 
         // if the click event was not triggered programmatically set the panel nav hash
-        if ( event.originalEvent !== undefined ) {
-            change_hash(jQuery(this), 'panel_menu_link');
-        }
+        // if ( event.originalEvent !== undefined ) {
+        //     change_hash(jQuery(this), 'panel_menu_link');
+        // }
 
         event.preventDefault();
 
         // change the menu focus
         jQuery('.td-panel-menu-active').removeClass('td-panel-menu-active');
         jQuery(this).addClass('td-panel-menu-active');
-
 
         // change the panel
         jQuery('.td-panel-active').removeClass('td-panel-active');
@@ -293,7 +292,6 @@ function panel_navigation() {
 
     });
 }
-
 
 
 // jQuery easing used for sidebar pulldown
@@ -465,7 +463,6 @@ function td_add_events_to_delete_option_sidebar_pulldown() {
 }
 
 
-
 //hide all pulldown sidebar options lists
 function td_hide_pulldown_sidebar_options() {
     jQuery(".td-pulldown-sidebars-list").each(function(event){
@@ -549,7 +546,6 @@ function td_ajax_panel_sidebar_pulldown(action, item, id_controller) {
         }
     });
 }
-
 
 
 /**
@@ -728,7 +724,6 @@ function td_panel_radio_control() {
 }
 
 
-
 //the panel box script (close show panel)
 function td_panel_box() {
 
@@ -757,6 +752,7 @@ function td_panel_box() {
         if (jQuery(event.target).data('is-category-link') == 'yes') {
             return;
         }
+
         event.preventDefault();
 
         //update custom fonts only when a font panel is opened - for the other panels don't call the updateCustomFont function
@@ -870,8 +866,9 @@ function change_hash(jquery_panel_obj, type) {
  * @param jquery_panel_obj - The jQuery object that represents the panel
  * @param keep_position - [*] A flag used to keep the panel opened. If it missed the content toggles.
  * @param callback - [*] The callback function that will execute if it exists.
+ * @param trigger - [*] The click type, we use click `trigger` when navigation using hash.
  */
-function show_content_panel(jquery_panel_obj, keep_position, callback) {
+function show_content_panel(jquery_panel_obj, keep_position, callback, trigger) {
 
     // get the header of the panel
     var jquery_panel_header = jquery_panel_obj.children('.td-box-header').eq(0);
@@ -888,21 +885,21 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
     var td_box_content_wrap = td_box.find('.td-box-content-wrap');
 
     // set scroll to view if the box is opening
-    if ( td_box.hasClass('td-box-close')) {
-
-        // change hash
-        change_hash(jquery_panel_obj, 'box_open');
-
-        // on an ajax boxes we're doing the scrolling on the ajax call > success
-        if( td_box_content.html() ) {
-            setTimeout(function(){
-                scroll_to_view(jquery_panel_obj);
-            }, 500);
-        }
-
-    } else {
+    // if ( td_box.hasClass('td-box-close')) {
+    //
+    //     // change hash
+    //     change_hash(jquery_panel_obj, 'box_open');
+    //
+    //     // on an ajax boxes we're doing the scrolling on the ajax call > success
+    //     if( td_box_content.html() ) {
+    //         setTimeout(function(){
+    //             scroll_to_view(jquery_panel_obj);
+    //         }, 500);
+    //     }
+    //
+    // } else {
         //change_hash(jquery_panel_obj, 'box_close');
-    }
+    // }
 
     // check for the panel to be empty to do the ajax call
     if( !td_box_content.html() ) {
@@ -921,9 +918,11 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
                 success: function( response ) {
                     //console.log( response );
 
-                    setTimeout(function(){
-                        scroll_to_view(jquery_panel_obj);
-                    }, 50);
+                    if ( trigger !== undefined && trigger === true ) {
+                        setTimeout(function(){
+                            scroll_to_view(jquery_panel_obj);
+                        }, 100);
+                    }
 
                     var td_box_content_el = jQuery('#' + td_box_id + ' .td-box-content');
                     if( response !== '' ) {
@@ -939,30 +938,38 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
 
                     var td_box = jQuery('#' + td_box_id);
                     td_box.removeClass('td-box-loading');      // removing the gif after done the loading
+                    td_box.removeClass('td-box-close');
 
                     // open the box
-                    setTimeout(function(){
-                        td_box.removeClass('td-box-close');
-                    }, 10);
+                    // setTimeout(function(){
+                    //     td_box.removeClass('td-box-close');
+                    // }, 10);
 
-                    var td_box_content_wrap = td_box.find('.td-box-content-wrap');
+                    //var td_box_content_wrap = td_box.find('.td-box-content-wrap');
 
                     td_box_content_wrap.css('height', 0);
                     td_box_content_wrap.css('overflow', 'hidden');
 
                     setTimeout(function(){
-                        td_box_content_wrap.animate({
-                            height: td_box_content_el.height() + 18,
-                            overflow: 'hidden'
-                        },{
-                            duration: 400,
-                            easing: 'linear'
-                        });
+                        // td_box_content_wrap.animate({
+                        //     height: td_box_content_el.height() + 18,
+                        //     overflow: 'hidden'
+                        // },{
+                        //     duration: 400,
+                        //     easing: 'linear'
+                        // });
+                        //
+                        // setTimeout(function(){
+                        //     td_box_content_wrap.css('height', 'auto');
+                        //     td_box_content_wrap.css('overflow', 'visible');
+                        // }, 410);
 
+                        td_box_content_wrap.css('height', td_box_content_el.height() + 18);
                         setTimeout(function(){
                             td_box_content_wrap.css('height', 'auto');
                             td_box_content_wrap.css('overflow', 'visible');
-                        }, 410);
+
+                        }, 200);
                     }, 50);
 
                     setTimeout(function(){
@@ -990,82 +997,120 @@ function show_content_panel(jquery_panel_obj, keep_position, callback) {
     // do the open/close
     if ( td_box.hasClass('td-box-close') ) {
 
-        // add exception for the boxes that are waiting for ajax
-        if ( td_box.hasClass('td-wait-for-ajax') && firstLoad === true ) {
+    // add exception for the boxes that are waiting for ajax
+    // if ( td_box.hasClass('td-wait-for-ajax') && firstLoad === true ) {
+    //
+    //     // we need to delay the box open when to allow ajax request to finish
+    //     setTimeout( function () {
+    //
+    //         // open the box
+    //         setTimeout( function(){
+    //             td_box.removeClass('td-box-close');
+    //         }, 10);
+    //
+    //         var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+    //
+    //         td_box_content_wrap.css('height', 0);
+    //         td_box_content_wrap.css('overflow', 'hidden');
+    //
+    //         td_box_content_wrap.animate({
+    //             height: original_height,
+    //             overflow: 'hidden'
+    //         },{
+    //             duration: 400,
+    //             easing: 'linear'
+    //         });
+    //
+    //         setTimeout( function(){
+    //             td_box_content_wrap.css('height', 'auto');
+    //             td_box_content_wrap.css('overflow', 'visible');
+    //         }, 400);
+    //
+    //         firstLoad = false;
+    //
+    //     }, 500);
+    //
+    // } else {
 
-            // we need to delay the box open when to allow ajax request to finish
-            setTimeout( function () {
+    // open the box
+    if ( trigger !== undefined && trigger === true ) {
+        setTimeout(function(){
+            scroll_to_view(jquery_panel_obj);
+        }, 100);
+    }
 
-                // open the box
-                setTimeout( function(){
-                    td_box.removeClass('td-box-close');
-                }, 10);
+    td_box.removeClass('td-box-close');
 
-                var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+    //var td_box_content_wrap = td_box.find('.td-box-content-wrap');
+    var original_height = td_box_content_wrap.height();
+    td_box_content_wrap.css('height', 0);
+    td_box_content_wrap.css('overflow', 'hidden');
 
-                td_box_content_wrap.css('height', 0);
-                td_box_content_wrap.css('overflow', 'hidden');
+    setTimeout(function(){
+        td_box_content_wrap.css('height', original_height);
 
-                td_box_content_wrap.animate({
-                    height: original_height,
-                    overflow: 'hidden'
-                },{
-                    duration: 400,
-                    easing: 'linear'
-                });
+        setTimeout(function(){
+            td_box_content_wrap.css('height', 'auto');
+            td_box_content_wrap.css('overflow', 'visible');
+        }, 200);
+    }, 20);
 
-                setTimeout( function(){
-                    td_box_content_wrap.css('height', 'auto');
-                    td_box_content_wrap.css('overflow', 'visible');
-                }, 400);
+        // var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+        //
+        // td_box_content_wrap.css('height', 0);
+        // td_box_content_wrap.css('overflow', 'hidden');
+        //
+        // td_box_content_wrap.animate({
+        //     height: original_height,
+        //     overflow: 'hidden'
+        // },{
+        //     duration: 400,
+        //     easing: 'linear'
+        // });
+        //
+        // setTimeout(function(){
+        //     td_box_content_wrap.css('height', 'auto');
+        //     td_box_content_wrap.css('overflow', 'visible');
+        // }, 410);
 
-                firstLoad = false;
+    //}
 
-            }, 500);
+} else {
 
-        } else {
-            // open the box
-            td_box.removeClass('td-box-close');
+    if ( keep_position !== undefined && keep_position === true ) {
+        return;
+    }
 
-            var original_height = jQuery('#' + td_box_id + ' .td-box-content').height() + 18;
+    //close and hide the box
+    // td_box_content_wrap.css('overflow', 'hidden');
+    //
+    // td_box_content_wrap.animate({
+    //         height: 0,
+    //         overflow: 'hidden'
+    //     },{
+    //         duration: 500,
+    //         easing: 'linear'
+    // });
+    //
+    // setTimeout(function(){
+    //     td_box.addClass('td-box-close');
+    // }, 510);
 
-            td_box_content_wrap.css('height', 0);
-            td_box_content_wrap.css('overflow', 'hidden');
+    //close and hide the box
+    //var td_box_content_wrap = td_box.find('.td-box-content-wrap');
+    td_box_content_wrap.css('height', td_box_content_wrap.height());
 
-            td_box_content_wrap.animate({
-                height: original_height,
-                overflow: 'hidden'
-            },{
-                duration: 400,
-                easing: 'linear'
-            });
-
-            setTimeout(function(){
-                td_box_content_wrap.css('height', 'auto');
-                td_box_content_wrap.css('overflow', 'visible');
-            }, 400);
-        }
-
-    } else {
-
-        if ( keep_position !== undefined && keep_position === true ) {
-            return;
-        }
-
-        //close and hide the box
+    setTimeout(function(){
+        td_box_content_wrap.css('height', 0);
         td_box_content_wrap.css('overflow', 'hidden');
-
-        td_box_content_wrap.animate({
-                height: 0,
-                overflow: 'hidden'
-            },{
-                duration: 500,
-                easing: 'linear'
-        });
 
         setTimeout(function(){
             td_box.addClass('td-box-close');
-        }, 510);
+            td_box_content_wrap.css('height', 'auto');
+            td_box_content_wrap.css('overflow', 'visible');
+        }, 200);
+
+    }, 20);
 
     }
 
@@ -1141,7 +1186,6 @@ function updateCustomFontsOnFocusout(){
 }
 
 
-
 //code for submiting the form with ajax
 function td_ajax_form_submit() {
 
@@ -1198,14 +1242,9 @@ function td_ajax_form_submit() {
 }
 
 
-
-
 // floating button
-
 var td_wp_admin_resize_timer_id;
-
 var td_wp_admin_distance_to_bottom = 0;
-
 jQuery(window).resize(function() {
     clearTimeout(td_wp_admin_resize_timer_id);
     td_wp_admin_resize_timer_id = setTimeout(td_ap_admin_done_resizing, 500);

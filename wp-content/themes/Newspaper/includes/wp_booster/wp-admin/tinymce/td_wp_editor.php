@@ -88,9 +88,48 @@ class td_wp_editor {
 		// The nonce action of an instance is composed from td_wp_editor::$nonce_action . td_wp_editor::$counter_editor . '-' . $post->ID. So it's unique.
 		td_wp_editor::$counter_editor++;
 
-		add_action( 'edit_page_form', array( $this, 'on_edit_form_after_editor' ) );
+        /* Define the custom box */
+        add_action( 'add_meta_boxes',
+
+            /* Adds the mobile theme  box to the main column on the Post and Page edit screens */
+            function () {
+                add_meta_box(
+                    'td_mobile_wp_editor_content_meta_box',
+                    $this->editor_title,
+                    array( $this, 'td_mobile_wp_editor' ),
+                    'page'
+                );
+            }
+        );
+
 		add_action( 'save_post', array( $this, 'on_save_post' ) );
 	}
+
+	function td_mobile_wp_editor( $post ) {
+
+        if ( ! in_array( $post->post_type, $this->post_types ) ) {
+            return;
+        }
+
+        // nonce field
+        $nonce_field_name = self::get_nonce_field( $post->ID );
+
+        // nonce value
+        //$nonce = wp_create_nonce( $nonce_field_name );
+
+        // The action of the created nonce will be 'post.php' (used at editing post types)
+        wp_nonce_field( 'post.php', $nonce_field_name );
+
+        // the content of the tinymce editor will be the meta value
+        $meta_value = get_post_meta( $post->ID, $this->meta_key, true );
+        $content = $meta_value;
+
+        if ( empty( $meta_value ) ) {
+            $content = $this->content;
+        }
+
+        wp_editor( $content, $this->editor_id, $this->settings );
+    }
 
 	/**
 	 * Helper function gets the nonce field name, which must be unique for each instance.
@@ -103,50 +142,58 @@ class td_wp_editor {
 		return $nonce_field_name = self::$nonce_action . td_wp_editor::$counter_editor . '-' . $post_id;
 	}
 
-	/**
-	 * Function hook used for 'edit_form_after_editor' wp hook
-	 */
-	function on_edit_form_after_editor( $post ) {
-
-		if ( ! in_array( $post->post_type, $this->post_types ) ) {
-			return;
-		}
-
-		// editor title
-		echo '<h2>' . esc_attr( $this->editor_title ) . '</h2>';
-
-		// nonce field
-		$nonce_field_name = self::get_nonce_field( $post->ID );
-		// nonce value
-		$nonce = wp_create_nonce( $nonce_field_name );
-
-		// The action of the created nonce will be 'post.php' (used at editing post types)
-		wp_nonce_field( 'post.php', $nonce_field_name );
-
-		// the content of the tinymce editor will be the meta value
-		$meta_value = get_post_meta( $post->ID, $this->meta_key, true );
-		$content = $meta_value;
-
-		if ( empty( $meta_value ) ) {
-			$content = $this->content;
-		}
-
-		wp_editor( $content, $this->editor_id );
-	}
-
-	/**
-	 * Function hook used for 'save_post' wp hook
-	 */
+    /**
+     * Function hook used for 'save_post' wp hook
+     * @param $post_id
+     */
 	function on_save_post( $post_id ) {
+
+        // verify if this is an auto save routine.
+        // If it is our form has not been submitted, so we don't want to do anything
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return;
+        }
+
+        // verify this came from the our screen and with proper authorization,
+        // because save_post can be triggered at other times
+        if ( ( isset ( $_POST[self::get_nonce_field( $post_id )] ) ) && ( ! wp_verify_nonce( $_POST[self::get_nonce_field( $post_id )], 'post.php' ) ) ) {
+            return;
+        }
+
 		$post_type = get_post_type( $post_id );
 		if ( ! in_array( $post_type, $this->post_types ) ) {
 			return;
 		}
 
+        if ( ! current_user_can( 'edit_page', $post_id ) ) {
+            return;
+        }
+
 		$td_demo_action = td_util::get_http_post_val('td_demo_action');
 
-		if ( empty( $td_demo_action ) and ! empty ( $_POST ) and check_admin_referer( 'post.php', self::get_nonce_field( $post_id ) ) and isset( $_POST[$this->editor_id] ) ) {
+		if (
+		    empty( $td_demo_action ) and
+            ! empty ( $_POST ) and
+            check_admin_referer( 'post.php', self::get_nonce_field( $post_id ) ) and
+            isset( $_POST[$this->editor_id] )
+        ) {
 			update_post_meta( $post_id, $this->meta_key, $_POST[$this->editor_id] );
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

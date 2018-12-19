@@ -31,8 +31,12 @@ class td_block_image_box extends td_block {
 				
 				
 				/* @custom_titles_color */
-				.$unique_block_class .entry-title a {
+				.$unique_block_class .td-custom-title .entry-title a {
 					color: @custom_titles_color;
+				}
+				/* @custom_titles_bg */
+				.$unique_block_class.td-image-box-style-2 .td-custom-title .entry-title a {
+					background-color: @custom_titles_bg;
 				}
 		
 		
@@ -76,6 +80,8 @@ class td_block_image_box extends td_block {
         /*-- CUSTOM TITLES -- */
         // custom titles color
         $res_ctx->load_settings_raw( 'custom_titles_color', $res_ctx->get_shortcode_att('custom_titles_color') );
+        // custom titles background color
+        $res_ctx->load_settings_raw( 'custom_titles_bg', $res_ctx->get_shortcode_att('custom_titles_bg') );
 
 
 

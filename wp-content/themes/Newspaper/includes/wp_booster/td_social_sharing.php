@@ -51,16 +51,14 @@ class td_social_sharing {
             $atts['el_class'] = '';
         }
 
-
         $config_classes = td_api_social_sharing_styles::get_key($atts['style'], 'wrap_classes');
-
-
 
         if (!empty($services)) {
 
         	$buffy .= '<div id="' . $block_uid . '" class="td-post-sharing ' . $config_classes . ' td-post-sharing-' . $atts['style'] . $atts['el_class'] . ' ">';
 
                 $buffy .= '<div class="td-post-sharing-visible">';
+
                     if ( $atts['share_text_show'] ) {
                         $buffy .= '<div class="td-social-sharing-button td-social-sharing-button-js td-social-handler td-social-share-text">
                                         <div class="td-social-but-icon"><i class="td-icon-share"></i></div>
@@ -75,8 +73,8 @@ class td_social_sharing {
                                         <div class="td-social-but-text">' . $service_info['title'] . '</div>
                                     </a>';
                     }
-                $buffy .= '</div>'; // ./td-post-sharing-visible
 
+                $buffy .= '</div>'; // ./td-post-sharing-visible
 
                 $buffy .= '<div class="td-social-sharing-hidden">';
                     // the dropdown list

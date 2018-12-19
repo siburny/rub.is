@@ -42,8 +42,7 @@ class tdm_block_icon_box extends td_block {
     /**
      * Callback pe media
      *
-     * @param $responsive_context td_res_context
-     * @param $atts
+     * @param $res_ctx td_res_context
      */
     static function cssMedia( $res_ctx ) {
 

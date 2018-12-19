@@ -1,3 +1,228 @@
+/* analytics */
+
+/* global jQuery:{} */
+
+var tdAnalytics = {};
+
+(function () {
+    "use strict";
+
+    tdAnalytics = {
+
+        _fbPixelId: '',
+        _gaTrackingId: '',
+        _gaErrors: [],
+        _fbErrors: [],
+
+        init: function() {
+
+            //disabled on tdc iframe
+            if ( tdAnalytics._inIframe() === true ) {
+                return;
+            }
+
+            // check the google analytics tracking id
+            if ( typeof window.dataLayer !== 'undefined' ) {
+                window.dataLayer.forEach( function (element, index, array) {
+                    if( element[0] === 'config' ) {
+                        tdAnalytics._gaTrackingId = element[1];
+                    }
+                });
+            }
+
+            // check the facebook pixel tracking id
+            if ( typeof fbq !== 'undefined' ) {
+                // wait for fb to do its "thing"(to fix fbq.getState is not a function)
+                setTimeout( function () {
+                    // set the tdAnalytics._fbPixelId property
+                    tdAnalytics._fbPixelId = fbq.getState().pixels[0].id;
+                }, 500);
+
+                // setTimeout( function () {
+                //     console.log(tdAnalytics._fbPixelId);
+                // }, 160);
+            }
+
+            // console.log(tdAnalytics._gaTrackingId);
+            // console.log(tdAnalytics._fbPixelId);
+
+            jQuery( 'body' ).on( 'click',
+                '.tdm_block_button .tds-button .tdm-btn, ' +
+                '.tdm_block_icon_box .tds-button .tdm-btn, ' +
+                '.td_block_single_image .td_single_image_bg',
+            function(event) {
+
+                event.preventDefault();
+
+                var $this = jQuery(this),
+                    eventData = {
+                        ga: {},
+                        fb: {},
+                        eventTarget: '',
+                        eventTargetAtt: event.target.getAttribute('target')
+                    };
+
+                if( event.target.classList.contains('tdm-btn-text') ) {
+                    eventData.eventTarget = event.target.parentElement.getAttribute('href');
+                } else {
+                    eventData.eventTarget = event.target.getAttribute('href');
+                }
+
+                if ( $this.data('ga-event-action') !== undefined  ) {
+                    eventData.ga.eventAction = $this.data('ga-event-action');
+                }
+
+                if ( $this.data('ga-event-cat') !== undefined  ) {
+                    eventData.ga.eventCategory = $this.data('ga-event-cat');
+                }
+
+                if ( $this.data('ga-event-label') !== undefined  ) {
+                    eventData.ga.eventLabel = $this.data('ga-event-label');
+                }
+
+                if ( $this.data('fb-event-name') !== undefined  ) {
+                    eventData.fb.eventName = $this.data('fb-event-name');
+                }
+
+                if ( $this.data('fb-event-content-name') !== undefined  ) {
+                    eventData.fb.eventContentName = $this.data('fb-event-content-name');
+                }
+
+                tdAnalytics._trackEvent(eventData);
+
+                tdAnalytics._displayErrors();
+
+            });
+        },
+
+        _trackEvent: function(tdEvent) {
+
+            //console.log(tdEvent);
+
+            // check for google analytics required fields
+            if (typeof tdEvent.ga.eventAction === 'undefined') {
+                tdAnalytics._gaErrors.push({
+                    errorId: 'eventActionError',
+                    errorMessage: 'Google analytics event action is undefined.'
+                });
+            }
+
+            if (typeof tdEvent.ga.eventCategory === 'undefined') {
+                tdAnalytics._gaErrors.push({
+                    errorId: 'eventCategory',
+                    errorMessage: 'Google analytics event category is undefined.'
+                });
+            }
+
+            // check for google analytics
+            if ( ! window[window['GoogleAnalyticsObject'] || 'ga'] ) {
+                tdAnalytics._gaErrors.push({
+                    errorId: 'GoogleAnalyticsPageCode',
+                    errorMessage: 'Google Analytics code is not loaded on the current page.'
+                });
+            }
+
+            // check for google analytics tracking id
+            if ( tdAnalytics._gaTrackingId === '' ) {
+                tdAnalytics._gaErrors.push({
+                    errorId: 'GoogleAnalyticsTrackingId',
+                    errorMessage: 'Google Analytics TrackingId is missing on the current page.'
+                });
+            }
+            
+            // send the ga track event
+            if ( tdAnalytics._gaErrors.length === 0 ) {
+                gtag( 'event', tdEvent.ga.eventAction,
+                    {
+                        'event_category': tdEvent.ga.eventCategory,
+                        'event_label': tdEvent.ga.eventLabel,
+                        'event_callback': function () {
+                            console.log(' %c GA Success','color: green; font-weight: bold;');
+                        }
+                    }
+                );
+            }
+
+            // check for fb pixel events
+            if ( typeof window.fbq === 'undefined' ) {
+                tdAnalytics._fbErrors.push({
+                    errorId: 'FacebookPixelPageCode',
+                    errorMessage: 'Facebook Pixel events code is not loaded on the current page.'
+                });
+            }
+
+            // check for fb pixel analytics tracking id
+            if ( tdAnalytics._fbPixelId === '' ) {
+                tdAnalytics._fbErrors.push({
+                    errorId: 'FacebookPixelTrackingId',
+                    errorMessage: 'Facebook Pixel TrackingId is missing on the current page.'
+                });
+            }
+
+            if (typeof tdEvent.fb.eventName === 'undefined') {
+                tdAnalytics._fbErrors.push({
+                    errorId: 'FacebookPixelEventName',
+                    errorMessage: 'Facebook pixel standard event name is not set ( undefined ).'
+                });
+            }
+
+            // send the fb pixel track event
+            if ( tdAnalytics._fbErrors.length === 0 ) {
+
+                if ( typeof tdEvent.fb.eventContentName !== 'undefined' ){
+                    fbq( 'track', tdEvent.fb.eventName, {content_name: tdEvent.fb.eventContentName} );
+                } else {
+                    fbq( 'track', tdEvent.fb.eventName );
+                }
+
+                console.log(' %c FB track sent','color: green; font-weight: bold;');
+            }
+
+            // set a 150ms timeout to redirect 
+            // - we need this to allow ga/fb track events to be sent before the page navigates to the new url
+            setTimeout( function() {
+                if ( tdEvent.eventTargetAtt === '_blank' ) {
+                    window.open(tdEvent.eventTarget);
+                } else {
+                    window.location = tdEvent.eventTarget;
+                }
+            }, 150);
+
+        },
+
+        _inIframe: function() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+        },
+
+        _displayErrors: function() {
+
+            if ( tdAnalytics._gaErrors.length > 0 ) {
+                while ( tdAnalytics._gaErrors.length > 0 ) {
+                    var ga_item = tdAnalytics._gaErrors.shift();
+                    console.warn( ga_item.errorId + ': ' + ga_item.errorMessage );
+                }
+            }
+
+            if ( tdAnalytics._fbErrors.length > 0 ) {
+                while ( tdAnalytics._fbErrors.length > 0 ) {
+                    var fb_item = tdAnalytics._fbErrors.shift();
+                    console.warn( fb_item.errorId + ': ' + fb_item.errorMessage );
+                }
+            }
+        }
+
+    }
+
+})();
+
+//init analytics
+jQuery(window).ready(function() {
+    tdAnalytics.init();
+});
 
 // jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
 jQuery.easing.jswing=jQuery.easing.swing;
@@ -3640,7 +3865,6 @@ var tdMenu = {};
                     menuLinks.parent().children('ul').hide();
                     //reset last menu
                     lastMenuOpen = {};
-
                 });
 
                 //apply hover only to main menu (top menu uses css)
@@ -3657,7 +3881,7 @@ var tdMenu = {};
                             mouseDirection;
 
                         //menu has submenus
-                        if (currentMenu.hasClass('menu-item-has-children') ||  currentMenu.hasClass('td-mega-menu')) {
+                        if (currentMenu.hasClass('menu-item-has-children') || currentMenu.hasClass('td-mega-menu')) {
 
                             //main menu
                             if (currentMenu.parent().hasClass('sf-menu')) {
@@ -4890,7 +5114,7 @@ function td_mobile_menu_toogle() {
     //
     //});
 
-    jQuery( '#td-top-mobile-toggle a, .td-mobile-close a' ).click(function(){
+    jQuery( '#td-top-mobile-toggle a, .td-mobile-close a, #tdb-mobile-menu-button' ).click(function(){
         if ( jQuery( 'body' ).hasClass( 'td-menu-mob-open-menu' ) ) {
             jQuery( 'body' ).removeClass( 'td-menu-mob-open-menu' );
         } else {
@@ -5799,7 +6023,7 @@ jQuery().ready(function() {
 
 
             // show and hide the drop down on the search icon for mobile
-            jQuery( '#td-header-search-button-mob' ).click(function(event){
+            jQuery( '#td-header-search-button-mob, #tdb-header-search-button-mob' ).click(function(event){
                 jQuery( 'body' ).addClass( 'td-search-opened' );
 
                 var search_input = jQuery('#td-header-search-mob');
@@ -6049,8 +6273,8 @@ jQuery().ready(function() {
 
             // the .entry-thumb are searched for in the #td-aj-search object, sorted and added into the view port array items
             if ( ( 'undefined' !== typeof window.tdAnimationStack )  && ( true === window.tdAnimationStack.activated ) ) {
-                window.tdAnimationStack.check_for_new_items( '#td-aj-search .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true );
-                window.tdAnimationStack.compute_items();
+                window.tdAnimationStack.check_for_new_items( '#td-aj-search .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true, false );
+                window.tdAnimationStack.compute_items(false);
             }
         },
 
@@ -6078,8 +6302,8 @@ jQuery().ready(function() {
 
             // the .entry-thumb are searched for in the #td-aj-search-mob object, sorted and added into the view port array items
             if ( ( 'undefined' !== typeof window.tdAnimationStack )  && ( true === window.tdAnimationStack.activated ) ) {
-                window.tdAnimationStack.check_for_new_items( '#td-aj-search-mob .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true );
-                window.tdAnimationStack.compute_items();
+                window.tdAnimationStack.check_for_new_items( '#td-aj-search-mob .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true, false );
+                window.tdAnimationStack.compute_items(false);
             }
         },
 
@@ -6509,7 +6733,6 @@ var tdBlocks = {};
             tdBlocks.tdAjaxDoBlockRequest(currentBlockObj, 'next');
         });
 
-
         /*  ----------------------------------------------------------------------------
             AJAX pagination prev
          */
@@ -6522,12 +6745,11 @@ var tdBlocks = {};
                 return;
             }
 
-            currentBlockObj.is_ajax_running = true; // ajax is running and we're wayting for a reply from server
+            currentBlockObj.is_ajax_running = true; // ajax is running and we're waiting for a reply from server
 
             currentBlockObj.td_current_page--;
             tdBlocks.tdAjaxDoBlockRequest(currentBlockObj, 'back');
         });
-
 
         /*  ----------------------------------------------------------------------------
             AJAX pagination load more
@@ -6550,8 +6772,6 @@ var tdBlocks = {};
                 jQuery(this).addClass('ajax-page-disabled');
             }
         });
-
-
 
         /*  ----------------------------------------------------------------------------
             pull down open/close //on mobile devices use click event
@@ -6597,8 +6817,6 @@ var tdBlocks = {};
             );
         }
 
-
-
         /*  ----------------------------------------------------------------------------
             click on related posts in single posts
          */
@@ -6622,8 +6840,6 @@ var tdBlocks = {};
             //do request
             tdBlocks.tdAjaxDoBlockRequest(currentBlockObj, 'pull_down');
         });
-
-
 
 
         /*  ----------------------------------------------------------------------------
@@ -6982,8 +7198,7 @@ var tdBlocks = {};
                             .addClass('td-loader-animation-mid');
                     }, 50);
 
-                }
-                else if ('infinite_load' === td_user_action) {
+                } else if ('infinite_load' === td_user_action) {
                     // on infinite load
                     elCurTdBlockInner.parent().append('<div class="td-loader-gif td-loader-infinite td-loader-animation-start"></div>');
                     tdLoadingBox.init(current_block_obj.header_color ? current_block_obj.header_color : tds_theme_color_site_wide);  //init the loading box
@@ -7032,15 +7247,12 @@ var tdBlocks = {};
                 tdLoadingBox.stop();
             },400);
 
-
             //get the current inner
             var elCurTdBlockInner = jQuery('#' + current_block_obj.id);
 
             elCurTdBlockInner.removeClass('td_animated_long td_fadeOut_to_1');
 
-
             // by default, the sort method used to animate the ajax response is left to the right
-
             var tdAnimationStackSortType;
 
             if ( true === tdAnimationStack.activated ) {
@@ -7060,16 +7272,12 @@ var tdBlocks = {};
                 case 'back':
                     elCurTdBlockInner.addClass('td_animated_xlong td_fadeInLeft');
                     break;
-
                 case 'pull_down':
                     elCurTdBlockInner.addClass('td_animated_xlong td_fadeInDown');
                     break;
-
                 case 'mega_menu':
                     elCurTdBlockInner.addClass('td_animated_xlong td_fadeInDown');
                     break;
-
-
                 case 'load_more':
                     //console.log('.' + current_block_obj.id + '_rand .td_ajax_load_more_js');
                     setTimeout ( function() {
@@ -7099,8 +7307,6 @@ var tdBlocks = {};
 
             }
 
-
-
             setTimeout( function() {
                 jQuery('.td_block_inner_overflow').removeClass('td_block_inner_overflow');
                 elCurTdBlockInner.css('height', 'auto');
@@ -7108,19 +7314,19 @@ var tdBlocks = {};
                 tdSmartSidebar.compute();
             },200);
 
-
-
-
             setTimeout( function () {
                 tdSmartSidebar.compute();
             }, 500);
 
-
-
             // the .entry-thumb are searched for in the current block object, sorted and added into the view port array items
             if ( undefined !== tdAnimationStackSortType ) {
                 setTimeout( function () {
-                    tdAnimationStack.check_for_new_items('#' + current_block_obj.id + ' .td-animation-stack', tdAnimationStackSortType, true);
+                    //console.log(current_block_obj);
+                    if ( ( 'mega_menu' === td_user_action || 'back' === td_user_action || 'pull_down' === td_user_action ) && '' !== JSON.parse(tdBlocksArray[0].atts).td_ajax_preloading ){
+                        tdAnimationStack.check_for_new_items('#' + current_block_obj.id + ' .td-animation-stack', tdAnimationStackSortType, true, true);
+                    } else {
+                        tdAnimationStack.check_for_new_items('#' + current_block_obj.id + ' .td-animation-stack', tdAnimationStackSortType, true, false);
+                    }
                 }, 200);
             }
         },
@@ -10856,7 +11062,11 @@ var tdPullDown = {};
             // IT MUST BE SPECIFIED
             this.horizontal_element_css_class = '';
 
+            // OPTIONAL - the css class to be added to the horizontal list when it has no items
+            this.horizontal_no_items_css_class = '';
 
+            // OPTIONAL - maximum width for the horizontal list
+            this.horizontal_max_width = '';
 
             // the minimum no. of elements to be shown by the horizontal list
             // - IT CAN BE SPECIFIED
@@ -11071,7 +11281,6 @@ var tdPullDown = {};
 
 
             // the the extra space occupied by the horizontal jquery object is calculated
-
             var horizontal_jquery_obj_padding_left = item.horizontal_jquery_obj.css( 'padding-left' );
             if ( ( undefined !== horizontal_jquery_obj_padding_left ) && ( '' !== horizontal_jquery_obj_padding_left ) ) {
                 item._horizontal_extra_space += parseInt( horizontal_jquery_obj_padding_left.replace( 'px', '' ) );
@@ -11209,16 +11418,35 @@ var tdPullDown = {};
             var space_for_horizontal_elements = 0;
 
             // the object container width
-            var container_jquery_width = item.container_jquery_obj.css( 'width' );
+            //var container_jquery_width = item.container_jquery_obj.css( 'width' );
+            var container_jquery_width = item.container_jquery_obj.width();
 
             if ( ( undefined !== container_jquery_width ) && ( '' !== container_jquery_width ) ) {
 
-                // the space for new horizontal elements is initialized by the container width
-                space_for_horizontal_elements = container_jquery_width.replace( 'px', '' );
+                // console.log(container_jquery_width);
+                // console.log(item.horizontal_max_width);
+
+                //space_for_horizontal_elements = container_jquery_width.replace( 'px', '' );
+                space_for_horizontal_elements = container_jquery_width;
+
+                if ( item.horizontal_max_width !== '' ) {
+
+                    //var a = parseInt(container_jquery_width.replace( 'px', '' ));
+                    var horizontal_max_width = parseInt(item.horizontal_max_width.replace( 'px', '' ));
+
+                    // if we have a max width and the object container width is bigger than the max width set the space for new horizontal elements by the max width
+                    if ( container_jquery_width > horizontal_max_width ) {
+                        // console.log( 'container_jquery_width: ' + container_jquery_width);
+                        // console.log( 'horizontal_max_width: ' + horizontal_max_width);
+                        // console.log( 'cont width is bigger than max width' );
+                        space_for_horizontal_elements = horizontal_max_width;
+                    }
+                }
 
                 // then this space is reduced by the widths of the excluded elements
                 for ( var i = item.excluded_jquery_elements.length - 1; i >= 0; i-- ) {
                     space_for_horizontal_elements -= item.excluded_jquery_elements[ i ].outerWidth( true );
+                    //console.log(item.excluded_jquery_elements[ i ].outerWidth( true ));
                 }
             }
 
@@ -11248,12 +11476,8 @@ var tdPullDown = {};
                     // all elements are moved to the vertical list
                     tdPullDown._make_all_elements_vertical( item );
 
-
-
                     // the horizontal header margin is set before return
                     tdPullDown._prepare_horizontal_header( item );
-
-
 
                     // the following checks are not more eligible to do
                     return;
@@ -11280,7 +11504,6 @@ var tdPullDown = {};
             //  - if there is no horizontal elements
             //  - if there are vertical elements
             //  - if there's enough horizontal space for the first vertical element
-
             if ( ( 0 !== item.minimum_elements ) &&
                 ( 0 === item._horizontal_elements.length ) &&
                 ( item._vertical_elements.length > 0 ) &&
@@ -11338,14 +11561,14 @@ var tdPullDown = {};
                 }
             }
 
-
-
             // if the vertical list contains just one element, the horizontal space for it must be calculated without considering the vertical top header width (ex.'More')
             if ( ( 1 === item._vertical_elements.length ) &&
                 ( space_for_horizontal_elements + item._vertical_jquery_obj_outer_width >= item._vertical_elements[ 0 ].calculated_width ) ) {
                 tdPullDown._make_element_horizontal( item );
             }
 
+            // add the no items in horizontal list class
+            tdPullDown._add_no_items_class(item);
 
             // the horizontal header margin is set before return
             tdPullDown._prepare_horizontal_header( item );
@@ -11494,10 +11717,30 @@ var tdPullDown = {};
             while ( item._horizontal_elements.length > 0 ) {
                 tdPullDown._make_element_vertical( item );
             }
+
+            tdPullDown._add_no_items_class(item);
         },
 
+        /**
+         * - function used to add the item no items css class if the horizontal list is empty
+         *
+         * @param item
+         * @private
+         */
+        _add_no_items_class: function (item) {
 
+            if ( item.horizontal_no_items_css_class === '' ) {
+                return;
+            }
 
+            if ( item._horizontal_elements.length === 0 ) {
+                item.horizontal_jquery_obj.addClass(item.horizontal_no_items_css_class);
+            } else {
+                if ( item._horizontal_elements.length > 0 ) {
+                    item.horizontal_jquery_obj.removeClass(item.horizontal_no_items_css_class);
+                }
+            }
+        },
 
 
 
@@ -12695,6 +12938,8 @@ var tdAnimationStack = {};
         // the general selectors are used to look for elements over extend areas in DOM
         _general_selectors: '',
 
+        // - tdAnimationStack loads the items just when the animation occurs
+        live_load_items: false,
 
 
 
@@ -12758,6 +13003,8 @@ var tdAnimationStack = {};
                 // - if tdAnimationStack.init comes earlier, it does a clearTimeout call over the tdAnimationStack._ready_init_timeout variable
                 tdAnimationStack._ready_init_timeout = setTimeout( function() {
 
+                    tdAnimationStack.log( '%c _ready_init_timeout run ', 'background: red; color: white;' );
+
                     // if tdAnimationStack is activated, do nothing
                     if ( true === tdAnimationStack.activated ) {
                         return;
@@ -12765,6 +13012,46 @@ var tdAnimationStack = {};
 
                     // lock any further operation using the _ready_for_initialization flag
                     tdAnimationStack._ready_for_initialization = false;
+
+                    jQuery( tdAnimationStack._general_selectors).not( '.' + tdAnimationStack._animation_css_class2 ).removeClass( tdAnimationStack._animation_css_class1 );
+
+                    // for every element found.. set back the img src
+                    var found_elements = jQuery( '.td-animation-stack, .post' ).find( tdAnimationStack._specific_selectors );
+
+                    tdAnimationStack.log( '_ready_init_timeout found elements: ' + found_elements.length );
+
+                    // found elements
+                    found_elements.each( function( index, element ) {
+
+                        var type = jQuery( element ).data('type');
+                        var item = jQuery( element );
+
+                        tdAnimationStack.log( 'type: ' + type );
+                        tdAnimationStack.log( 'src: ' + item.data('img-url') );
+
+                        switch ( type ) {
+
+                            case 'image_tag':
+
+                                if ( item.data( 'img-retina-url' ) !== undefined && tdAnimationStack._isHighDensity() === true ) {
+                                    item.attr( 'src', item.data('img-retina-url') );
+                                } else {
+                                    item.attr( 'src', item.data('img-url') );
+                                }
+
+                                break;
+
+                            case 'css_image':
+
+                                if ( item.data( 'img-retina-url' ) !== undefined && tdAnimationStack._isHighDensity() === true ) {
+                                    item.attr( 'style', 'background-image: url(' + item.data('img-retina-url') + ')' );
+                                } else {
+                                    item.attr( 'style', 'background-image: url(' + item.data('img-url') + ')' );
+                                }
+
+                                break;
+                        }
+                    });
 
                     // remove the loading animation css class effect from the body
                     // this class is applied from the theme settings
@@ -12877,6 +13164,15 @@ var tdAnimationStack = {};
             // the reading order from DOM
             // it's set at the initialization item
             this._order = undefined;
+
+            // the img source
+            this.itemSrc = undefined;
+
+            // the img type
+            this.itemType = undefined;
+
+            // the retina img uuid
+            this.itemImgRetinaSrc = undefined;
         },
 
 
@@ -12921,156 +13217,150 @@ var tdAnimationStack = {};
          * @param selector {string} - jQuery selector
          * @param sort_type {tdAnimationStack.SORTED_METHOD} - a preferred tdAnimationStack.SORTED_METHOD
          * @param in_view_port {boolean} - add an item in the tdAnimationStack._items_in_view_port or in the tdAnimationStack.items
+         * @param live_load_items {boolean} - the items are loaded just when the animation occurs
          */
-        check_for_new_items: function( selector, sort_type, in_view_port ) {
+        check_for_new_items: function( selector, sort_type, in_view_port, live_load_items ) {
 
             // tdAnimationStack must be activated and not stopped for initialization by the ready_init checker
             if ( ( false === tdAnimationStack.activated ) || ( false === tdAnimationStack._ready_for_initialization ) ) {
                 return;
             }
 
-
             if ( undefined === selector ) {
                 selector = '';
             }
 
-
-
             // the local stack of searched items
             var local_stack = [];
 
+            jQuery( tdAnimationStack._general_selectors).not( '.' + tdAnimationStack._animation_css_class2 ).addClass( tdAnimationStack._animation_css_class1 );
 
-
-            //if (window.td_animation_stack_effect === 'type0') {
-            //    // for every founded element there's an instantiated tdAnimationStack.item, then initialized and added to the local stack
-            //    var founded_elements = jQuery(selector + ', .post').find(tdAnimationStack._specific_selectors).filter(function() {
-            //        return jQuery(this).css('opacity') === '0';
-            //    });
-            //
-            //} else {
-                jQuery( tdAnimationStack._general_selectors).not( '.' + tdAnimationStack._animation_css_class2 ).addClass( tdAnimationStack._animation_css_class1 );
-
-                // for every founded element there's an instantiated tdAnimationStack.item, then initialized and added to the local stack
-                var founded_elements = jQuery( selector + ', .post' ).find( tdAnimationStack._specific_selectors ).filter( function() {
+            // for every founded element there's an instantiated tdAnimationStack.item, then initialized and added to the local stack
+            var founded_elements = jQuery( selector + ', .post' ).find( tdAnimationStack._specific_selectors ).filter( function() {
                     return jQuery( this ).hasClass( tdAnimationStack._animation_css_class1 );
                 });
-            //}
 
-
-
+            // found elements
             founded_elements.each( function( index, element ) {
 
                 var item_animation_stack = new tdAnimationStack.item();
 
                 item_animation_stack.jqueryObj = jQuery( element );
+                item_animation_stack.itemSrc = jQuery( element ).data('img-url');
+                item_animation_stack.itemType = jQuery( element ).data('type');
 
-                tdAnimationStack.log( index );
+                if ( jQuery( element ).data('img-retina-url') !== undefined ) {
+                    item_animation_stack.itemImgRetinaSrc = jQuery( element ).data('img-retina-url');
+                }
 
                 tdAnimationStack._initialize_item( item_animation_stack );
 
                 local_stack.push( item_animation_stack );
             });
 
+            if ( true === live_load_items ) {
 
+                tdAnimationStack.log( '%c live load items ', 'background: brown; color: white;' );
 
-            // new scope having its own timer used for checking not yet loaded images
-            ( function(){
+                /**
+                 * the images are loaded just when the animation occurs
+                 */
+                tdAnimationStack._precompute_items( local_stack, sort_type, in_view_port );
+                tdAnimationStack.compute_items(live_load_items);
+            } else {
 
-                var images_loaded = true;
+                tdAnimationStack.log( '%c preload items ', 'background: brown; color: white;' );
 
-                for ( var i = 0; i < local_stack.length; i++ ) {
+                // new scope having its own timer used for checking not yet loaded images
+                ( function(){
 
-                    // for every image element the 'complete' property is checked
-                    // "If the image is finished loading, the complete property returns true"
-                    // when tdAnimationStack.init is called on load, as normally, it calls tdAnimationStack.check_for_new_items and all these element has 'complete' property true
-                    // when tdAnimationStack.check_for_new_items is called by block's ajax response, the next timer is used to wait for all elements being loaded
-                    if ( false === founded_elements[ i ].complete ) {
-                        images_loaded = false;
-                        break;
+                    var images_loaded = true;
+
+                    for ( var i = 0; i < local_stack.length; i++ ) {
+
+                        // for every image element the 'complete' property is checked
+                        // "If the image is finished loading, the complete property returns true"
+                        // when tdAnimationStack.init is called on load, as normally, it calls tdAnimationStack.check_for_new_items and all these element has 'complete' property true
+                        // when tdAnimationStack.check_for_new_items is called by block's ajax response, the next timer is used to wait for all elements being loaded
+                        if ( false === founded_elements[ i ].complete ) {
+                            images_loaded = false;
+                            break;
+                        }
                     }
-                }
 
-                // if there's at least one element not loaded, a timer is started to wait for
-                if ( false === images_loaded ) {
+                    // if there's at least one element not loaded, a timer is started to wait for
+                    if ( false === images_loaded ) {
 
-                    var date = new Date();
-                    var start_time = date.getTime();
-
-
-                    tdAnimationStack.log( 'TIMER - started' );
-
-
-                    // the timer is started
-                    var interval_check_loading_image = setInterval( function() {
-
-                        // if there's too much time waiting for image loading, they are made visible
                         var date = new Date();
+                        var start_time = date.getTime();
 
-                        var i = 0;
 
-                        if ( ( date.getTime() - start_time ) > tdAnimationStack.max_waiting_for_init ) {
+                        tdAnimationStack.log( 'TIMER - started' );
 
-                            clearInterval( interval_check_loading_image );
+
+                        // the timer is started
+                        var interval_check_loading_image = setInterval( function() {
+
+                            // if there's too much time waiting for image loading, they are made visible
+                            var date = new Date();
+
+                            var i = 0;
+
+                            if ( ( date.getTime() - start_time ) > tdAnimationStack.max_waiting_for_init ) {
+
+                                clearInterval( interval_check_loading_image );
+
+                                for ( i = 0; i < local_stack.length; i++ ) {
+
+                                    //if (window.td_animation_stack_effect === 'type0') {
+                                    //    local_stack[i].jqueryObj.css('opacity', 1);
+                                    //} else {
+                                    local_stack[ i ].jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                                    local_stack[ i ].jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+                                    //}
+
+                                }
+                                return;
+                            }
+
+
+                            // at every interval step, the element's 'complete' property is checked again
+                            images_loaded = true;
 
                             for ( i = 0; i < local_stack.length; i++ ) {
 
-
-
-
-                                //if (window.td_animation_stack_effect === 'type0') {
-                                //    local_stack[i].jqueryObj.css('opacity', 1);
-                                //} else {
-                                    local_stack[ i ].jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
-                                    local_stack[ i ].jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
-                                //}
-
-
-
-
-
-
+                                if ( false === founded_elements[ i ].complete ) {
+                                    images_loaded = false;
+                                    break;
+                                }
                             }
-                            return;
-                        }
 
+                            if ( true === images_loaded ) {
 
-                        // at every interval step, the element's 'complete' property is checked again
-                        images_loaded = true;
+                                clearInterval( interval_check_loading_image );
 
-                        for ( i = 0; i < local_stack.length; i++ ) {
+                                tdAnimationStack.log( 'TIMER - stopped' );
 
-                            if ( false === founded_elements[ i ].complete ) {
-                                images_loaded = false;
-                                break;
+                                tdAnimationStack._precompute_items( local_stack, sort_type, in_view_port );
+                                tdAnimationStack.compute_items(false);
                             }
-                        }
 
-                        if ( true === images_loaded ) {
+                        }, 100);
 
-                            clearInterval( interval_check_loading_image );
+                    } else {
+                        tdAnimationStack._precompute_items( local_stack, sort_type, in_view_port );
+                        tdAnimationStack.compute_items(false);
+                    }
 
-                            tdAnimationStack.log( 'TIMER - stopped' );
-
-                            tdAnimationStack._precompute_items( local_stack, sort_type, in_view_port );
-                            tdAnimationStack.compute_items();
-                        }
-
-                    }, 100);
-
-                } else {
-                    tdAnimationStack._precompute_items( local_stack, sort_type, in_view_port );
-                    tdAnimationStack.compute_items();
-                }
-
-            })();
+                })();
+            }
 
             tdAnimationStack.log( 'checked for new items finished' );
         },
 
 
         /**
-         * - _precompute_items sorts and adds items in the tdAnimationStack.items array or even in the
-         * tdAnimationStack._items_in_view_port array
+         * - _precompute_items sorts and adds items in the tdAnimationStack.items array or even in the tdAnimationStack._items_in_view_port array
          * - this function is necessary because at scroll just the tdAnimationStack.compute_items function is called
          *
          * @param stack_items {[]} founded items
@@ -13108,8 +13398,11 @@ var tdAnimationStack = {};
          */
         init: function() {
             if ( undefined === window.tds_animation_stack ) {
+                tdAnimationStack.log( '%c theme lazy loading animation is off! ', 'background: #eb4026;' );
                 return;
             }
+
+            tdAnimationStack.log( '%c theme lazy loading animation is on! ', 'background: #03c04a; color: #fff;' );
 
             // tdAnimationStack must not be already stopped for initialization by a pre_init checker
             if ( false === tdAnimationStack._ready_for_initialization ) {
@@ -13122,7 +13415,7 @@ var tdAnimationStack = {};
             // the tdAnimationStack is activated
             tdAnimationStack.activated = true;
 
-            tdAnimationStack.check_for_new_items( '.td-animation-stack', tdAnimationStack.SORTED_METHOD.sort_left_to_right, false );
+            tdAnimationStack.check_for_new_items( '.td-animation-stack', tdAnimationStack.SORTED_METHOD.sort_left_to_right, false, true );
         },
 
 
@@ -13147,8 +13440,10 @@ var tdAnimationStack = {};
 
         /**
          * - compute all items
+         * - live_load_items - if 'true' the items will also be loaded on show,
+         *                   - if 'false' the items are preloded so they just need to be shown
          */
-        compute_items: function() {
+        compute_items: function(live_load_items) {
 
             // tdAnimationStack must be activated and not stopped for initialization by the ready_init checker
             if ( ( false === tdAnimationStack.activated ) || ( false === tdAnimationStack._ready_for_initialization ) ) {
@@ -13164,17 +13459,15 @@ var tdAnimationStack = {};
 
                 var item_above_view_port = tdAnimationStack._items_above_view_port.shift();
 
+                if ( live_load_items === true ) {
+                    // load current item
+                    tdAnimationStack._load_item(item_above_view_port, false);
+                    tdAnimationStack.log( '%c item above view port - loaded ', 'background: #fef24e; color: #000;' );
 
-
-                //if (window.td_animation_stack_effect === 'type0') {
-                //    item_above_view_port.jqueryObj.css('opacity', 1);
-                //} else {
+                } else {
                     item_above_view_port.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
                     item_above_view_port.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
-                //}
-
-
-
+                }
 
             }
 
@@ -13187,25 +13480,21 @@ var tdAnimationStack = {};
 
                 var current_animation_item = tdAnimationStack._get_item_from_view_port();
 
+                if ( live_load_items === true ) {
+                    // load current item
+                    tdAnimationStack._load_item(current_animation_item, false);
+                    tdAnimationStack.log( '%c item in view port - loaded ', 'background: #fef24e; color: #000;' );
 
-
-
-                //if (window.td_animation_stack_effect === 'type0') {
-                //    current_animation_item.jqueryObj.css('opacity', 1);
-                //} else {
+                } else {
                     current_animation_item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
                     current_animation_item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
-    //            }
-
-
-
-
+                }
 
                 if ( tdAnimationStack._items_in_view_port.length > 0 ) {
 
                     tdAnimationStack.log( 'start animation timer' );
 
-                    tdAnimationStack._to_timer( tdAnimationStack._get_right_interval( tdAnimationStack.interval * ( 1 / tdAnimationStack._items_in_view_port.length ) ) );
+                    tdAnimationStack._to_timer( tdAnimationStack._get_right_interval( tdAnimationStack.interval * ( 1 / tdAnimationStack._items_in_view_port.length ) ), live_load_items );
                 }
             }
         },
@@ -13215,8 +13504,9 @@ var tdAnimationStack = {};
          * - timer function initially called by a tdAnimationStack.compute_items function, and then it's auto called
          * - it calls a setInterval using the interval parameter
          * @param interval {int} - interval ms
+         * @param live_load_items {bool} - whether to also load the img items or just show them
          */
-        _to_timer: function( interval ) {
+        _to_timer: function( interval, live_load_items ) {
 
             tdAnimationStack._current_interval = setInterval( function () {
 
@@ -13226,23 +13516,19 @@ var tdAnimationStack = {};
 
                     tdAnimationStack.log( 'animation at interval: ' + interval );
 
-
-
-
-                    //if (window.td_animation_stack_effect === 'type0') {
-                    //    current_animation_item.jqueryObj.css('opacity', 1);
-                    //} else {
+                    if ( live_load_items === true ) {
+                        // load current item
+                        tdAnimationStack._load_item(current_animation_item, false);
+                        tdAnimationStack.log( '%c item above view port - loaded > _to_timer ', 'background: #3895d3; color: #fff;' );
+                    } else {
                         current_animation_item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
                         current_animation_item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
-                    //}
-
-
-
+                    }
 
                     clearInterval( tdAnimationStack._current_interval );
 
                     if ( tdAnimationStack._items_in_view_port.length > 0 ) {
-                        tdAnimationStack._to_timer( tdAnimationStack._get_right_interval( tdAnimationStack.interval * ( 1 / tdAnimationStack._items_in_view_port.length ) ) );
+                        tdAnimationStack._to_timer( tdAnimationStack._get_right_interval( tdAnimationStack.interval * ( 1 / tdAnimationStack._items_in_view_port.length ) ), live_load_items );
                     }
                 }
             }, interval );
@@ -13287,7 +13573,7 @@ var tdAnimationStack = {};
          */
         _item_to_view_port: function( item ) {
 
-            tdAnimationStack.log( 'position item relative to the view port >> ' + tdEvents.window_pageYOffset + tdEvents.window_innerHeight + ' : ' + item.offset_top );
+            tdAnimationStack.log( 'position item relative to the view port >> yOffset ' + tdEvents.window_pageYOffset + ' | xOffset ' + tdEvents.window_innerHeight + ' : ' + item.offset_top );
 
             if ( tdEvents.window_pageYOffset + tdEvents.window_innerHeight < item.offset_top ) {
                 return tdAnimationStack._ITEM_TO_VIEW_PORT.ITEM_UNDER_VIEW_PORT;
@@ -13310,6 +13596,8 @@ var tdAnimationStack = {};
                 return;
             }
 
+            tdAnimationStack.log( '%c _separate_items - total items: ' + tdAnimationStack.items.length + ' ', 'background: #999da0; color: #fff;' );
+
             while ( tdAnimationStack.items.length > 0 ) {
                 var item_to_view_port = tdAnimationStack._item_to_view_port( tdAnimationStack.items[ 0 ] );
 
@@ -13329,12 +13617,170 @@ var tdAnimationStack = {};
             }
         },
 
+        /**
+         * - loads an item(img)
+         * @param item
+         * @param item_test
+         * @private
+         */
+        _load_item: function( item, item_test ) {
+
+            if ( undefined === item.itemSrc ) {
+                tdAnimationStack.log( '%c item with no data url ', 'background: #fc6600; color: #fff;' );
+
+                // for items for which we have not att data source to load just show the img
+                item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+
+            } else {
+
+                var itemType = item.itemType;
+
+                if ( itemType !== undefined ) {
+
+                    switch ( itemType ) {
+                        case 'image_tag':
+
+                            tdAnimationStack.log( '%c image tag ', 'background: #3ded97; color: #fff;' );
+
+                            //if ( item_test ) {
+                            //  item.itemSrc = item.itemSrc + 'caca';
+                            //}
+
+                            item.jqueryObj.data('complete', false);
+
+                            // first we check if a retina image was delivered and if the device screen supports it
+                            if ( item.itemImgRetinaSrc !== undefined && tdAnimationStack._isHighDensity === true ) {
+                                item.jqueryObj.attr( 'src', item.itemImgRetinaSrc ).load( function(){
+                                    item.jqueryObj.data('complete', true);
+                                });
+                            } else {
+                                item.jqueryObj.attr( 'src', item.itemSrc ).load( function(){
+                                    item.jqueryObj.data('complete', true);
+                                });
+                            }
+
+                            var date = new Date();
+                            var start_time = date.getTime();
+
+                            // the timer is started
+                            var interval_check_loading_image = setInterval( function() {
+
+                                // if there's too much time waiting for image loading, they are made visible
+                                var date = new Date();
+
+                                // at every interval step, the element's 'complete' property is checked again
+                                if ( item.jqueryObj.data('complete') === true ){
+
+                                    // the img item loading is complete, clear the interval
+                                    clearInterval( interval_check_loading_image );
+
+                                    // ..and show the img item
+                                    item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                                    item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+
+                                    return;
+                                }
+
+                                // check if the maximum waiting time has been reached
+                                if ( ( date.getTime() - start_time ) > tdAnimationStack.max_waiting_for_init ) {
+
+                                    // the img item loading maximum waiting time has been reached, clear the interval
+                                    clearInterval( interval_check_loading_image );
+
+                                    // ..and show the img item
+                                    item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                                    item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+                                }
+
+                            }, 100);
+
+                            break;
+
+                        case 'css_image':
+
+                            item.jqueryObj.data('complete', false);
+
+                            tdAnimationStack.log( '%c image tag ', 'background: #3ded97; color: #fff;' );
+
+                            // check for retina support and image delivery and if the device screen supports it then load the retina img
+                            if ( item.itemImgRetinaSrc !== undefined && tdAnimationStack._isHighDensity === true ) {
+
+                                /**
+                                 * to find out when the bg img is loaded, for spans with css image,
+                                 * we create a new img tag and set the src to the css bg img then, after it loads, we set it as bg img for the span
+                                 */
+                                jQuery('<img/>').attr( 'src', item.itemImgRetinaSrc ).load( function() {
+                                    jQuery(this).remove(); //remove the img to prevent memory leaks
+                                    item.jqueryObj.data('complete', true);
+                                });
+                            } else {
+                                jQuery('<img/>').attr( 'src', item.itemSrc ).load( function() {
+                                    jQuery(this).remove(); //remove the img to prevent memory leaks
+                                    item.jqueryObj.data('complete', true);
+                                });
+                            }
+
+                            var date2 = new Date();
+                            var start_time2 = date2.getTime();
+
+                            // the timer is started
+                            var interval_check_loading_css_image = setInterval( function() {
+
+                                // if there's too much time waiting for image loading, they are made visible
+                                var date = new Date();
+
+                                // at every interval step, the element's 'complete' property is checked again
+                                if ( item.jqueryObj.data('complete') === true ){
+
+                                    if ( item.itemImgRetinaSrc !== undefined && tdAnimationStack._isHighDensity() === true ) {
+                                        item.jqueryObj.attr( 'style', 'background-image: url(' + item.itemImgRetinaSrc + ')' );
+                                    } else {
+                                        item.jqueryObj.attr( 'style', 'background-image: url(' + item.itemSrc + ')' );
+                                    }
+
+                                    // the img item loading is complete, clear the interval
+                                    clearInterval( interval_check_loading_css_image );
+
+                                    // ..and show the img item
+                                    item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                                    item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+
+                                    return;
+                                }
+
+                                // check if the maximum waiting time has been reached
+                                if ( ( date.getTime() - start_time2 ) > tdAnimationStack.max_waiting_for_init ) {
+
+                                    // the img item loading maximum waiting time has been reached, clear the interval
+                                    clearInterval( interval_check_loading_css_image );
+
+                                    // set the bg image, if we have retina we set the retina img
+                                    if ( item.itemImgRetinaSrc !== undefined && tdAnimationStack._isHighDensity === true ) {
+                                        item.jqueryObj.attr( 'style', 'background-image: url(' + item.itemImgRetinaSrc + ')' );
+                                    } else {
+                                        item.jqueryObj.attr( 'style', 'background-image: url(' + item.itemSrc + ')' );
+                                    }
+
+                                    // ..and show the img item
+                                    item.jqueryObj.removeClass( tdAnimationStack._animation_css_class1 );
+                                    item.jqueryObj.addClass( tdAnimationStack._animation_css_class2 );
+                                }
+
+                            }, 100);
+
+                            break;
+                    }
+                }
+            }
+        },
+
 
         /**
          * - scroll event usually called by tdCustomEvents
          */
         td_events_scroll: function() {
-            tdAnimationStack.compute_items();
+            tdAnimationStack.compute_items(true);
         },
 
 
@@ -13352,8 +13798,59 @@ var tdAnimationStack = {};
 
 
 
-        log: function( msg ) {
-            //console.log(msg);
+        log: function( msg, style ) {
+
+            if ( style !== undefined ) {
+                //console.log(msg, style);
+            } else {
+                //console.log(msg);
+            }
+
+        },
+
+
+        _isHighDensity: function () {
+            return (
+                (
+                    window.matchMedia && (
+                        window.matchMedia(
+                            'only screen and (min-resolution: 124dpi), ' +
+                            'only screen and (min-resolution: 1.3dppx), ' +
+                            'only screen and (min-resolution: 48.8dpcm)'
+                        ).matches ||
+                        window.matchMedia(
+                            'only screen and (-webkit-min-device-pixel-ratio: 1.3), ' +
+                            'only screen and (-o-min-device-pixel-ratio: 2.6/2), ' +
+                            'only screen and (min--moz-device-pixel-ratio: 1.3), ' +
+                            'only screen and (min-device-pixel-ratio: 1.3)'
+                        ).matches
+                    )
+                ) || (
+                    window.devicePixelRatio && window.devicePixelRatio > 1.3
+                )
+            );
+        },
+
+        _isRetina: function () {
+            return (
+                (
+                    window.matchMedia && (
+                        window.matchMedia(
+                            'only screen and (min-resolution: 192dpi), ' +
+                            'only screen and (min-resolution: 2dppx), ' +
+                            'only screen and (min-resolution: 75.6dpcm)'
+                        ).matches ||
+                        window.matchMedia(
+                            'only screen and (-webkit-min-device-pixel-ratio: 2), ' +
+                            'only screen and (-o-min-device-pixel-ratio: 2/1), ' +
+                            'only screen and (min--moz-device-pixel-ratio: 2), ' +
+                            'only screen and (min-device-pixel-ratio: 2)'
+                        ).matches
+                    )
+                ) || (
+                    window.devicePixelRatio && window.devicePixelRatio >= 2
+                )
+            ) && /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
         }
 
     };
@@ -13858,7 +14355,7 @@ var tdAjaxLoop = {};
             }
 
             setTimeout( function () {
-                tdAnimationStack.check_for_new_items('.td-main-content' + ' .td-animation-stack', tdAnimationStack.SORTED_METHOD.sort_left_to_right, true);
+                tdAnimationStack.check_for_new_items('.td-main-content' + ' .td-animation-stack', tdAnimationStack.SORTED_METHOD.sort_left_to_right, true, false);
                 //tdSmartSidebar.compute();
             }, 200);
 
@@ -15248,17 +15745,10 @@ var tdSocialSharing = {};
 
         init: function() {
 
-
-
-
-
             // hook up the social buttons to the popup window
-
             jQuery('.td-social-sharing-button').click(function(event){
 
-
                 var $theLinkEl = jQuery(this);
-
                 var blockUid = '';
 
                 // for email just open the url like normal
@@ -15266,17 +15756,12 @@ var tdSocialSharing = {};
                     return;
                 }
 
-
                 event.preventDefault();
                 if ($theLinkEl.hasClass('td-social-expand-tabs')) {
 
                     blockUid = $theLinkEl.data('block-uid');
-
                     var $blockWrapEl = jQuery('#' + blockUid);
-
-
                     var $iconEl = $theLinkEl.find('.td-social-expand-tabs-icon');
-
 
                     if ($blockWrapEl.hasClass('td-social-show-all')) { // hide icons
 
@@ -15331,10 +15816,6 @@ var tdSocialSharing = {};
                 window.open($theLinkEl.attr('href'), 'mywin','left=' + left + ',top=' + top + ',width=900,height=600,toolbar=0');
             });
 
-
-
-
-
             // on firefox fix small issue, the icons where all hidden
             setTimeout(function(){
                 // on social images, init a new pull down
@@ -15342,14 +15823,10 @@ var tdSocialSharing = {};
 
                     var jquery_object_container = jQuery(element);
                     var horizontal_jquery_obj = jquery_object_container.find('.td-post-sharing-visible:first');
-
                     var pulldown_item_obj = new tdPullDown.item();
 
                     pulldown_item_obj.blockUid = jquery_object_container.attr('id');
-
-
                     pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
-
                     pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-social-sharing-hidden:first');
                     //console.log(pulldown_item_obj.vertical_jquery_obj);
                     pulldown_item_obj.horizontal_element_css_class = 'td-social-sharing-button-js';
@@ -15361,8 +15838,6 @@ var tdSocialSharing = {};
                     //console.log(pulldown_item_obj);
                 });
             },50);
-
-
 
         }
 

@@ -56,63 +56,85 @@ class td_config_helper {
 	}
 
 
-	static function get_map_block_shadow_array( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '' ) {
+	static function get_map_block_shadow_array( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '', $shadow_spread = 0, $shadow_header = true ) {
 		$params = array(
 		    array(
                 "param_name" => "shadow_size",
                 "type" => "textfield-responsive",
                 "value" => '',
-                "heading" => 'Size',
-                'class' => 'tdc-textfield-small',
+                "heading" => '',
+                'class' => 'tdc-shadow-contr-textfield',
                 'description' => 'Change shadow size',
+                'placeholder' => '',
+            ),
+            array(
+                "param_name" => "shadow_offset_horizontal",
+                "type" => "textfield-responsive",
+                "value" => '',
+                "heading" => '',
+                'class' => 'tdc-shadow-contr-textfield',
+                'description' => 'Change shadow horizontal offset',
+                'placeholder' => '',
+            ),
+            array(
+                "param_name" => "shadow_offset_vertical",
+                "type" => "textfield-responsive",
+                "value" => '',
+                "heading" => '',
+                'class' => 'tdc-shadow-contr-textfield',
+                'description' => 'Change shadow vertical offset',
+                'placeholder' => '',
+            ),
+            array(
+                "param_name" => "shadow_spread",
+                "type" => "textfield-responsive",
+                "value" => '',
+                "heading" => '',
+                'class' => 'tdc-shadow-contr-textfield',
+                'description' => 'Change shadow spread',
                 'placeholder' => '',
             ),
             array(
                 "param_name" => "shadow_color",
                 "type" => "colorpicker",
                 "holder" => "div",
-                "class" => "",
-                "heading" => 'Color',
+                "class" => "tdc-shadow-contr-color",
+                "heading" => '',
                 "value" => '',
                 "description" => 'Change shadow color',
             ),
-            array(
-                'param_name' => 'shadow_offset_horizontal',
-                'type' => 'range-responsive',
-                'value' => '0',
-                'heading' => 'Offset H',
-                'description' => 'Change shadow horizontal offset',
-                'class' => 'tdc-textfield-small',
-                'range_min' => '-40',
-                'range_max' => '40',
-                'range_step' => '1',
-            ),
-            array(
-                'param_name' => 'shadow_offset_vertical',
-                'type' => 'range-responsive',
-                'value' => '0',
-                'heading' => 'Offset V',
-                'description' => 'Change shadow vertical offset',
-                'class' => 'tdc-textfield-small',
-                'range_min' => '-40',
-                'range_max' => '40',
-                'range_step' => '1',
+        );
+
+        array_unshift( $params, array(
+                "param_name" => "shadow_title",
+                "type" => "shadow_title",
+                "value" => $shadow_title,
+                "class" => '',
             )
         );
 
-		foreach ( $params as &$param ) {
+        //echo $param_name . ': ' . $shadow_header . ';';
 
-            if( $param['param_name'] == 'shadow_size' || $param['param_name'] == 'shadow_color' ) {
-                $param['heading'] = $shadow_title . ' ' . $param['heading'];
-            }
+        if ( $shadow_header ) {
+            array_unshift( $params, array(
+                    "param_name" => "shadow_header",
+                    "type" => "shadow_header",
+                    "value" => '',
+                    "class" => '',
+                )
+            );
+        }
+
+		foreach ( $params as &$param ) {
 
 	        if( $param['param_name'] == 'shadow_size' ) {
                 $param['placeholder'] = $shadow_size;
             } else if( $param['param_name'] == 'shadow_offset_horizontal' ) {
-                $param['value'] = $shadow_offset_h;
-
+                $param['placeholder'] = $shadow_offset_h;
             } else if( $param['param_name'] == 'shadow_offset_vertical' ) {
-                $param['value'] = $shadow_offset_v;
+                $param['placeholder'] = $shadow_offset_v;
+            } else if( $param['param_name'] == 'shadow_spread' ) {
+                $param['placeholder'] = $shadow_spread;
             }
             if ( ! empty( $group ) ) {
                 $param['group'] = $group;

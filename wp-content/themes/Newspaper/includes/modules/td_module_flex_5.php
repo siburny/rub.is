@@ -107,47 +107,41 @@ class td_module_flex_5 extends td_module {
                         </div>
                 <?php } ?>
 
-                <div class="td-module-meta-info td-module-meta-info-bottom">
-                    <?php
-                        // category above title & title under image
-                        if ( $category_position == 'above' && $art_title_pos == 'bottom') {
-                            echo $this->get_category();
-                        }
+                <?php if( $art_title_pos == 'bottom' || $info_pos == 'bottom' || ( $category_position == 'above' && $art_title_pos == 'bottom' ) || $art_excerpt_pos == 'bottom' || $btn_pos == 'bottom' ) { ?>
+                    <div class="td-module-meta-info td-module-meta-info-bottom">
+                        <?php
+                            // category above title & title under image
+                            if ( $category_position == 'above' && $art_title_pos == 'bottom') {
+                                echo $this->get_category();
+                            }
 
-                        // info above title & under image & title under image,
-                        if( $info_pos == 'title' && $art_title_pos == 'bottom' ) {
-                            echo $meta_info;
-                        }
+                            // info above title & under image & title under image,
+                            if( $info_pos == 'title' && $art_title_pos == 'bottom' ) {
+                                echo $meta_info;
+                            }
 
-                        // title under image
-                        if( $art_title_pos == 'bottom' ) {
-                            echo $this->get_title($title_length);
-                        }
+                            // title under image
+                            if( $art_title_pos == 'bottom' ) {
+                                echo $this->get_title($title_length);
+                            }
 
-//                        if ($excerpt_position == 'yes') {
-//                            echo $excerpt;
-//                        }
+                            // info under image
+                            if( $info_pos == 'bottom' ) {
+                                echo $meta_info;
+                            }
 
-                        // info under image
-                        if( $info_pos == 'bottom' ) {
-                            echo $meta_info;
-                        }
+                            // excerpt under image
+                            if( $art_excerpt_pos == 'bottom' ) {
+                                echo $excerpt;
+                            }
 
-//                        if ($excerpt_position == '') {
-//                            echo $excerpt;
-//                        }
-
-                        // excerpt under image
-                        if( $art_excerpt_pos == 'bottom' ) {
-                            echo $excerpt;
-                        }
-
-                        // button under image
-                        if( $btn_pos == 'bottom' ) {
-                            echo $button;
-                        }
-                    ?>
-                </div>
+                            // button under image
+                            if( $btn_pos == 'bottom' ) {
+                                echo $button;
+                            }
+                        ?>
+                    </div>
+                <?php } ?>
             </div>
         </div>
 

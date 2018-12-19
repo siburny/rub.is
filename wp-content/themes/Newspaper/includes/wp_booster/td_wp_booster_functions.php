@@ -60,6 +60,7 @@ require_once('td_background.php');      // background support - is not autoloade
 require_once('td_background_render.php');
 require_once('td_style.php');           // - base class for block' styles
 
+require_once('td_guttenberg.php'); // wp 5.0(gutenberg) block editor customizations
 
 require_once('td_autoload_classes.php');  //used to autoload classes [modules, blocks]
 // Every class after this (that has td_ in the name) is auto loaded only when it's required
@@ -444,7 +445,10 @@ function load_wp_admin_css() {
 		wp_enqueue_style('font-newspaper', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=font-newspaper', TD_THEME_VERSION, 'all');
 	} else {
 		wp_enqueue_style('td-wp-admin-td-panel-2', td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/css/wp-admin.css', false, TD_THEME_VERSION, 'all' );
-		wp_enqueue_style('font-newspaper', td_global::$get_template_directory_uri . '/font-newspaper.css', false, TD_THEME_VERSION, 'all' );
+		//until we create composer icons on Newsmag
+		if ('Newspaper' == TD_THEME_NAME) {
+			wp_enqueue_style('font-newspaper', td_global::$get_template_directory_uri . '/font-newspaper.css', false, TD_THEME_VERSION, 'all');
+		}
 	}
 
 
@@ -907,8 +911,9 @@ function theme_get_archives_link ( $link_html ) {
  */
 add_filter('wp_list_categories', 'cat_count_span');
 function cat_count_span($links) {
-	$links = str_replace('</a> (', '<span class="td-widget-no">', $links);
-	$links = str_replace(')', '</span></a>', $links);
+	$pattern = '/<\/a> \(([\d]+)\)/';
+	$links = preg_replace($pattern, '<span class="td-widget-no">$1</span></a>', $links);
+
 	return $links;
 }
 
@@ -983,7 +988,7 @@ function td_bottom_code() {
 
 	// check if we have to show any css
 	if (!empty($td_custom_css) or count($responsive_css_values) > 0) {
-		$css_buffy = PHP_EOL . '<!-- Custom css form theme panel -->';
+		$css_buffy = PHP_EOL . '<!-- Custom css from theme panel -->';
 		$css_buffy .= PHP_EOL . '<style type="text/css" media="screen">';
 
 		//paste custom css
@@ -2814,3 +2819,13 @@ if (TD_DEPLOY_MODE === 'demo') {
     add_filter( 'allow_major_auto_core_updates', '__return_false' );
     add_filter( 'allow_minor_auto_core_updates', '__return_false' );
 }
+
+// remove the "Mobile Theme - Pagebuilder + latest articles + pagination" template from page templates list if the mobile theme plugin is not active
+add_filter( 'theme_page_templates', function ($page_templates){
+
+    if ( ! is_plugin_active( 'td-mobile-plugin/td-mobile-plugin.php' ) ) {
+        unset( $page_templates['mobile/page-pagebuilder-latest.php'] );
+    }
+
+    return $page_templates;
+});

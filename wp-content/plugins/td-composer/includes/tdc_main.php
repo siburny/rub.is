@@ -11,7 +11,7 @@ require_once('tdc_state.php');
 require_once('tdc_ajax.php');
 require_once('tdc_guttenberg.php');
 
-if ( tdc_guttenberg::is_gutenberg() )
+if ( tdc_guttenberg::is_gutenberg() or substr( get_bloginfo('version'), 0, 1) > 4 )
     new tdc_guttenberg();
 
 // shortcodes
@@ -43,7 +43,30 @@ add_action('admin_bar_menu', 'tdc_on_admin_bar_menu', 100);
 function tdc_on_admin_bar_menu() {
 	global $wp_admin_bar, $post;
 
-	if ( is_user_logged_in() && current_user_can('publish_pages') && is_admin_bar_showing() && is_page() ) {
+    $is_bbpress = $is_buddypress = false;
+
+    // bbpress
+    if ( is_plugin_active( 'bbpress/bbpress.php') ) {
+        if ( function_exists( 'is_bbpress' ) && is_bbpress() ) {
+            $is_bbpress = true;
+        }
+    }
+
+    // buddypress
+    if ( is_plugin_active( 'buddypress/bp-loader.php') ) {
+        if ( function_exists( 'is_buddypress' ) && is_buddypress() ) {
+            $is_buddypress = true;
+        }
+    }
+
+	if (
+	        is_user_logged_in() &&
+            current_user_can('publish_pages') &&
+            is_admin_bar_showing() &&
+            is_page() &&
+            ! $is_bbpress &&
+            ! $is_buddypress
+    ) {
 	    $wp_admin_bar->add_menu( array(
             'id'    => 'tdc_edit',
             'meta'  => array(
@@ -91,13 +114,30 @@ if ( 'post' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcP
 			.notice,
 			#submitdiv,
 			#postimagediv,
-			#post-body-content {
+			#post-body-content,
+
+            #td_mobile_wp_editor_content_meta_box,
+
+            .edit-post-visual-editor,
+            .edit-post-header,
+            .edit-post-layout .components-notice-list,
+            .edit-post-layout .components-panel__header,
+            .edit-post-layout .components-panel__body.edit-post-post-status,
+            .edit-post-layout .components-panel__body.edit-post-last-revision__panel {
 				display: none !important;
 			}
 
 			#wpbody-content {
 				padding-bottom: 0;
 			}
+
+            .edit-post-layout {
+                padding-top: 0 !important;
+            }
+
+            .edit-post-sidebar {
+                top: 0;
+            }
 
 
 		</style>
@@ -796,6 +836,10 @@ if (!empty($td_action)) {
 			add_action( 'admin_enqueue_scripts', 'on_admin_enqueue_scripts'); // load them last
 			function on_admin_enqueue_scripts() {
 				foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
+
+					if ( $font_id === 'font_newspaper' && 'Newsmag' === TD_THEME_NAME ) {
+						continue;
+					}
 
 					if ( isset( $font_settings['theme_font'] ) ) {
 						wp_enqueue_style( $font_id, get_stylesheet_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );

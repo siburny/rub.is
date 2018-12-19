@@ -114,6 +114,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "manual_count_facebook",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Facebook fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed likes count for facebook",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
 	            /*array(
 		            "param_name" => "facebook_app_id",
 		            "type" => "textfield",
@@ -150,6 +159,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "manual_count_twitter",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Twitter fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for twitter",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
                 array(
                     "param_name" => "youtube",
                     "type" => "textfield",
@@ -159,6 +177,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "manual_count_youtube",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Youtube fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for youtube",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
 //                array(
 //                    "param_name" => "vimeo",
 //                    "type" => "textfield",
@@ -177,6 +204,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "manual_count_googleplus",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Google+ fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for google plus",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
                 array(
                     "param_name" => "instagram",
                     "type" => "textfield",
@@ -187,11 +223,29 @@ $external_shortcodes = array(
                     "class" => "tdc-textfield-big"
                 ),
 				array(
+					"param_name" => "manual_count_instagram",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Instagram fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for instagram",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
+				array(
 					"param_name" => "pinterest",
 					"type" => "textfield",
 					"value" => "",
 					"heading" => __("Pinterest id", TD_THEME_NAME),
 					"description" => "",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
+				array(
+					"param_name" => "manual_count_pinterest",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Pinterest fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for pinterest",
 					"holder" => "div",
 					"class" => "tdc-textfield-big"
 				),
@@ -204,6 +258,15 @@ $external_shortcodes = array(
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),
+				array(
+					"param_name" => "manual_count_soundcloud",
+					"type" => "textfield",
+					"value" => "",
+					"heading" => __("Soundcloud fixed count", TD_THEME_NAME),
+					"description" => "Add a fixed followers count for soundcloud",
+					"holder" => "div",
+					"class" => "tdc-textfield-big"
+				),
                 array(
                     "param_name" => "rss",
                     "type" => "textfield",
@@ -497,6 +560,16 @@ $rowParams = array_merge(
         ),
 
         array(
+            "param_name" => "row_hide_on_pagination",
+            "type" => "checkbox-responsive",
+            "value" => '',
+            "heading" => "Hide on pagination",
+            "description" => "Hides this row on templates that are using pagination when you navigate to the page 2,3,4..",
+            "holder" => "div",
+            "class" => "",
+        ),
+
+        array(
             "param_name" => "row_parallax",
             "type" => "checkbox",
             "value" => '',
@@ -515,6 +588,10 @@ $rowParams = array_merge(
             "holder" => "div",
             "class" => "",
         ),
+    ),
+    td_config_helper::get_map_block_shadow_array('row_shadow', 'Shadow', 0, 6, 8 ),
+
+    array(
 
         array(
             "param_name" => "separator",
@@ -578,6 +655,16 @@ $rowParams = array_merge(
                 'Stretch row and content (with paddings)' => 'stretch_row_content_no_space td-stretch-content',
             ),
             'class' => 'tdc-row-stretch-dropdown tdc-dropdown-extrabig',
+        ),
+        array(
+            "param_name" => "stretch_off",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Stretch row off",
+            "description" => "",
+            "holder" => "div",
+            "class" => "",
+            'group' => '',
         ),
 
         array(
@@ -1008,6 +1095,10 @@ tdc_mapper::map_shortcode(
                     'tdc_dropdown_images' => true,
                     "class" => "tdc-visual-selector tdc-add-class",
                 ),
+            ),
+            td_config_helper::get_map_block_shadow_array('row_shadow', 'Shadow', 0, 6, 8 ),
+
+            array(
 
                 array(
                     "param_name" => "separator",
@@ -1942,19 +2033,85 @@ $tdc_api_blocks = array(
 				'range_step' => '1',
 				'group' => 'Effects',
 			),
-			array (
+			array(
                 'param_name' => 'css',
                 'value' => '',
                 'type' => 'css_editor',
                 'heading' => 'Css',
                 'group' => 'Design options',
             ),
-            array (
+            array(
                 'param_name' => 'tdc_css',
                 'value' => '',
                 'type' => 'tdc_css_editor',
                 'heading' => '',
                 'group' => 'Design options',
+            ),
+            array(
+                "param_name" => "separator",
+                "type" => "text_separator",
+                "heading" => 'Google analytics',
+                "value" => "",
+                "class" => "",
+                "group" => "Tracking"
+            ),
+            array(
+                'param_name' => 'ga_event_action',
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'GA Event Action',
+                "description" => "The Google Analytics Event Action",
+                'class' => 'tdc-textfield-big',
+                'group' => 'Tracking',
+            ),
+            array(
+                'param_name' => 'ga_event_category',
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'GA Event Category',
+                "description" => "The Google Analytics Event Category",
+                'class' => 'tdc-textfield-big',
+                'group' => 'Tracking',
+            ),
+            array(
+                'param_name' => 'ga_event_label',
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'GA Event Label',
+                "description" => "The Google Analytics Event Label",
+                'class' => 'tdc-textfield-big',
+                'group' => 'Tracking',
+            ),
+            array(
+                "param_name" => "separator",
+                "type" => "text_separator",
+                "heading" => 'Facebook pixel',
+                "value" => "",
+                "class" => "",
+                "group" => "Tracking"
+            ),
+            array(
+                'param_name' => 'fb_pixel_event_name',
+                "type" => "dropdown",
+                "value" => array(
+                    'Select Event' => '',
+                    'Lead' => 'Lead',
+                    'View Content' => 'ViewContent',
+                ),
+                "heading" => 'Events',
+                "description" => "The Facebook Pixel Event Name. Thi setting is required in order to send tracking data to Facebook Pixel.",
+                "holder" => "div",
+                'class' => 'tdc-dropdown-big',
+                'group' => 'Tracking',
+            ),
+            array(
+                'param_name' => 'fb_pixel_event_content_name',
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'Content Name',
+                "description" => "The Facebook Pixel Event Content Name. Using this input you can specify a name for your content when sending the event to Facebook ( this is an optional setting )",
+                'class' => 'tdc-textfield-big',
+                'group' => 'Tracking',
             ),
 		),
 	)

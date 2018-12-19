@@ -424,7 +424,7 @@ class td_res_context {
 	}
 
 
-	function load_shadow_settings( $default_shadow_size, $default_shadow_color, $param_name = '', $style_class = '' ) {
+	function load_shadow_settings( $default_shadow_size, $default_shadow_offset_h, $default_shadow_offset_v, $default_shadow_spread, $default_shadow_color, $param_name = '', $style_class = '' ) {
 
 		$param_value = '';
 
@@ -432,6 +432,7 @@ class td_res_context {
 			'shadow_offset_horizontal',
 			'shadow_offset_vertical',
 			'shadow_size',
+            'shadow_spread',
 			'shadow_color',
 		);
 
@@ -456,17 +457,32 @@ class td_res_context {
 					if ( 0 === $default_shadow_size ) {
 						return;
 					}
+
 					$shadow_setting_value = $default_shadow_size;
 				}
+
+                if( $shadow_setting_value < 0 ) {
+                    $param_value = 'inset' . $param_value;
+                    $shadow_setting_value = abs($shadow_setting_value);
+                }
 			}
 
-			if ( 'shadow_color' === $shadow_param_name ) {
-				if ( '' === $shadow_setting_value ) {
-					$shadow_setting_value = $default_shadow_color;
-				}
-			} else if ( is_numeric( $shadow_setting_value ) ) {
-				$shadow_setting_value .= 'px';
+            if ( 'shadow_offset_horizontal' === $shadow_param_name && '' === $shadow_setting_value) {
+                $shadow_setting_value = $default_shadow_offset_h;
+            }
+            if ( 'shadow_offset_vertical' === $shadow_param_name && '' === $shadow_setting_value ) {
+                $shadow_setting_value = $default_shadow_offset_v;
+            }
+            if ( 'shadow_spread' === $shadow_param_name && '' === $shadow_setting_value ) {
+                $shadow_setting_value = $default_shadow_spread;
+            }
+			if ( 'shadow_color' === $shadow_param_name && '' === $shadow_setting_value ) {
+                $shadow_setting_value = $default_shadow_color;
 			}
+
+            if ( is_numeric( $shadow_setting_value ) ) {
+                $shadow_setting_value .= 'px';
+            }
 
 			$param_value .= ' ' . $shadow_setting_value;
 		}

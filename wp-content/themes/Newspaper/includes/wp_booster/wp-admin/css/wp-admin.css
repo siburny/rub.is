@@ -1791,6 +1791,15 @@ title one row controls
   padding: 18px 0px 0px 15px;
   display: block;
 }
+.td-box-content-wrap {
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  -o-transition: height 0.2s;
+  transition: height 0.2s;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+  -moz-transition-timing-function: ease-in-out;
+}
 /* toggle icon */
 .td-box-close-open-icon {
   width: 38px;
@@ -3571,7 +3580,8 @@ title one row controls
   width: 40px;
   height: 24px;
 }
-.tdc-ico-td_block_popular_categories {
+.tdc-ico-td_block_popular_categories,
+.tdc-ico-td_block_categories_tags {
   background-position: -205px -243px;
   width: 40px;
   height: 24px;

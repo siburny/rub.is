@@ -27,7 +27,9 @@ class tds_title_over_image1 extends td_style {
 
 		$raw_css =
 			"<style>
-
+                .td-md-is-ios .$unique_style_class .tdm-title {
+                     -webkit-text-fill-color: initial;
+                 }
                 /* @title_color_solid */
 				.$unique_style_class .tdm-title {
 					color: @title_color_solid;
@@ -38,9 +40,7 @@ class tds_title_over_image1 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class .tdm-title {
-					-webkit-text-fill-color: initial;
-				}
+				
 				html[class*='ie'] .$unique_style_class .tdm-title,
 				.td-md-is-ios .$unique_style_class .tdm-title {
 				    background: none;
@@ -52,7 +52,7 @@ class tds_title_over_image1 extends td_style {
 				}
 				/* @hover_gradient */
 				body .$unique_style_class:hover .tdm-title {
-					-webkit-text-fill-color: unset;
+					-webkit-text-fill-color: initial;
 					background: transparent;
 					transition: none;
 				}

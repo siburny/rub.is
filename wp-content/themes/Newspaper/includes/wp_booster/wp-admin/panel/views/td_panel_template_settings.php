@@ -356,7 +356,7 @@
 
 
 <hr>
-<div class="td-section-separator">WordPress templates</div>
+<div class="td-section-separator">WordPress Templates</div>
 
 
 
@@ -366,7 +366,7 @@
 <!-- text -->
 <div class="td-box-row">
     <div class="td-box-description td-box-full">
-        <p>In this section you can configure the <a href="http://codex.wordpress.org/Template_Hierarchy" target="_blank">default WordPress templates</a>. Most of the templates support the following configurations:</p>
+        <p>In this section you can configure the <a href="http://codex.wordpress.org/Template_Hierarchy" target="_blank">default WordPress Templates</a>. Most of the templates support the following configurations:</p>
         <ul>
             <li>How to display posts in the default WordPress loops</li>
             <li>Sidebar position</li>

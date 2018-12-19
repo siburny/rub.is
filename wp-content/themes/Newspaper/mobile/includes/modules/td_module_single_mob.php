@@ -31,7 +31,7 @@ class td_module_single_mob extends td_module_single_base {
             return;
         }
 
-        if (td_util::get_option('tds_top_social_show') == 'hide') {
+        if (td_util::get_option('tds_top_social_show') == 'hide' && td_util::get_option('tds_top_like_show') != 'show') {
             return;
         }
 
@@ -87,7 +87,7 @@ class td_module_single_mob extends td_module_single_base {
             return;
         }
 
-        if (td_util::get_option('tds_bottom_social_show') == 'hide') {
+        if (td_util::get_option('tds_bottom_social_show') == 'hide' && td_util::get_option('tds_top_like_show') != 'show') {
             return;
         }
 

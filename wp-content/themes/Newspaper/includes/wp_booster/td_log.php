@@ -32,9 +32,11 @@ class td_log {
 		}
 
 		// limit the log size
-		if (count(self::$log_cache) > 20) {
-			array_shift(self::$log_cache); //remove first element
-		}
+        if ( is_array(self::$log_cache) or is_object(self::$log_cache) ) {
+            if (count(self::$log_cache) > 20) {
+                array_shift(self::$log_cache); //remove first element
+            }
+        }
 
 		self::$log_cache []= array(
 			'file' => $file,

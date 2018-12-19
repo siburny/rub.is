@@ -182,8 +182,8 @@ class tds_social5 extends td_style {
 
 
         /*-- SHADOW -- */
-        $res_ctx->load_shadow_settings( 10, 'rgba(0, 0, 0, 0.08)', 'shadow', __CLASS__ );
-        $res_ctx->load_shadow_settings( 16, 'rgba(0, 0, 0, 0.08)', 'shadow_hover', __CLASS__ );
+        $res_ctx->load_shadow_settings( 10, 0, 2, 0, 'rgba(0, 0, 0, 0.08)', 'shadow', __CLASS__ );
+        $res_ctx->load_shadow_settings( 16, 0, 2, 0, 'rgba(0, 0, 0, 0.08)', 'shadow_hover', __CLASS__ );
 
 
 

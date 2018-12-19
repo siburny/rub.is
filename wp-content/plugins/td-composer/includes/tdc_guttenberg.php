@@ -32,13 +32,17 @@ class tdc_guttenberg {
             $this->show_on_this_post_type = true;
         }
 
-        wp_enqueue_script( 'tdcGutenberg', TDC_URL . '/assets/js/tdcGutenberg.js', [ 'jquery' ], TD_COMPOSER, true );
-
         $tdc_settings = [
             'tdcEditLink' => tdc_util::get_edit_link( $this->post_id ),
         ];
 
-        wp_localize_script( 'tdcGutenberg', 'tdcGutenbergSettings', $tdc_settings );
+        if ( TDC_DEPLOY_MODE == 'deploy' ) {
+            wp_enqueue_script( 'js_files_for_gutenberg_editor', TDC_URL . '/assets/js/js_files_for_gutenberg_editor.min.js', array('jquery'), TD_COMPOSER, true );
+            wp_localize_script( 'js_files_for_gutenberg_editor', 'tdcGutenbergSettings', $tdc_settings );
+        } else {
+            wp_enqueue_script( 'tdcGutenberg', TDC_URL . '/assets/js/tdcGutenberg.js', array('jquery'), TD_COMPOSER, true );
+            wp_localize_script( 'tdcGutenberg', 'tdcGutenbergSettings', $tdc_settings );
+        }
     }
 
     public function tdc_add_admin_switch_button() {

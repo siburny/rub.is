@@ -8,7 +8,8 @@
 
 define('WP_USE_THEMES', false);
 
-require_once( $_GET['wp_path'] . '/wp-load.php' );
+$td_path = realpath($_GET['wp_path']);
+require_once( $td_path . '/wp-load.php' );
 
 if ( ! is_user_logged_in()) {
 	return;

@@ -80,8 +80,7 @@ class tds_icon_box3 extends td_style {
     /**
      * Callback pe media
      *
-     * @param $responsive_context td_res_context
-     * @param $atts
+     * @param $res_ctx td_res_context
      */
     static function cssMedia( $res_ctx ) {
 
@@ -170,11 +169,55 @@ class tds_icon_box3 extends td_style {
         if ( !empty( $icon_box_url ) ) {
             // with link
             $target_blank = '';
-	        $open_in_new_window = $this->get_style_att( 'open_in_new_window' );
+
+            /**
+             * Google Analytics tracking settings
+             */
+            $data_ga_event_cat = '';
+            $data_ga_event_action = '';
+            $data_ga_event_label = '';
+
+            // don't add tracking options in td composer
+            if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+                $ga_event_category = $this->get_shortcode_att('ga_event_category');
+                if ( ! empty( $ga_event_category ) ) {
+                    $data_ga_event_cat = ' data-ga-event-cat="' . $ga_event_category . '" ';
+                }
+
+                $ga_event_action = $this->get_shortcode_att('ga_event_action');
+                if ( ! empty( $ga_event_action ) ) {
+                    $data_ga_event_action = ' data-ga-event-action="' . $ga_event_action . '" ';
+                }
+
+                $ga_event_label = $this->get_shortcode_att('ga_event_label');
+                if ( ! empty( $ga_event_label ) ) {
+                    $data_ga_event_label = ' data-ga-event-label="' . $ga_event_label . '" ';
+                }
+            }
+
+            /**
+             * FB Pixel tracking settings
+             */
+            $data_fb_event_name = '';
+            $data_fb_event_cotent_name = '';
+
+            // don't add tracking options in td composer
+            if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+                $fb_event_name = $this->get_shortcode_att('fb_pixel_event_name');
+                if ( ! empty( $fb_event_name ) ) {
+                    $data_fb_event_name = ' data-fb-event-name="' . $fb_event_name . '" ';
+                }
+                $fb_event_content_name = $this->get_shortcode_att('fb_pixel_event_content_name');
+                if ( ! empty( $fb_event_content_name ) ) {
+                    $data_fb_event_cotent_name = ' data-fb-event-content-name="' . $fb_event_content_name . '" ';
+                }
+            }
+
+            $open_in_new_window = $this->get_style_att( 'open_in_new_window' );
             if  ( !empty( $open_in_new_window ) ) {
                 $target_blank = 'target="_blank"';
             }
-            $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . '> </a>';
+            $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
         }
 
 		return $buffy;

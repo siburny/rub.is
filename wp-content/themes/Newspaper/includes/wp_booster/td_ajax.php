@@ -251,14 +251,53 @@ class td_ajax {
 			$td_string = '';
 		}
 
+		if (!empty($_POST['module'])) {
+		    $td_module = esc_html($_POST['module']);
+		    $td_results_class_prefix = 'tdb';
+        } else {
+            $td_module = 'td_module_mx2';
+            $td_results_class_prefix = 'td';
+        }
+
+        if (!empty($_POST['atts'])) {
+            $block_atts = json_decode(stripslashes($_POST['atts']), true);
+        } else {
+            $block_atts = array();
+        }
+
 		//get the data
 		$td_query = &td_data_source::get_wp_query_search($td_string); //by ref  do the query
 
 		//build the results
 		if (!empty($td_query->posts)) {
 			foreach ($td_query->posts as $post) {
-				$td_module_mx2 = new td_module_mx2($post);
-				$buffy .= $td_module_mx2->render();
+			    if( $td_module == 'td_module_mx2' ) {
+                    $td_module_mx2 = new $td_module($post);
+                    $buffy .= $td_module_mx2->render($post);
+                } else {
+			        $tdb_post = array(
+                        'post_id' => $post->ID,
+                        'post_type' => get_post_type( $post->ID ),
+                        'has_post_thumbnail' => has_post_thumbnail( $post->ID ),
+                        'post_thumbnail_id' => get_post_thumbnail_id( $post->ID ),
+                        'post_link' => esc_url( get_permalink( $post->ID ) ),
+                        'post_title' => get_the_title( $post->ID ),
+                        'post_title_attribute' => esc_attr( strip_tags( get_the_title( $post->ID ) ) ),
+                        'post_excerpt' => $post->post_excerpt,
+                        'post_content' => $post->post_content,
+                        'post_date_unix' =>  get_the_time( 'U', $post->ID ),
+                        'post_date' => get_the_time( get_option( 'date_format' ), $post->ID ),
+                        'post_author_url' => get_author_posts_url( $post->post_author ),
+                        'post_author_name' => get_the_author_meta( 'display_name', $post->post_author ),
+                        'post_author_email' => get_the_author_meta( 'email', $post->post_author ),
+                        'post_comments_no' => get_comments_number( $post->ID ),
+                        'post_comments_link' => get_comments_link( $post->ID ),
+                        'post_theme_settings' => td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' ),
+                    );
+
+                    $td_module_mx2 = new $td_module($tdb_post, $block_atts);
+                    $buffy .= $td_module_mx2->render($tdb_post);
+                }
 			}
 		}
 
@@ -277,7 +316,7 @@ class td_ajax {
 
 			$buffy_msg .= '<div class="result-msg"><a href="' . home_url('/?s=' . urlencode($td_string )) . '">' . __td('View all results', TD_THEME_NAME) . '</a></div>';
 			//add wrap
-			$buffy = '<div class="td-aj-search-results">' . $buffy . '</div>' . $buffy_msg;
+			$buffy = '<div class="'. $td_results_class_prefix . '-aj-search-results">' . $buffy . '</div>' . $buffy_msg;
 		}
 
 		//prepare array for ajax

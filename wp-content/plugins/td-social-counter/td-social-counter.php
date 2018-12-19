@@ -4,12 +4,12 @@
 	Plugin URI: http://tagdiv.com
 	Description: Social counter for WordPress. Widget and visual composer block.
 	Author: tagDiv
-	Version: 4.4 | built on 12.10.2018 9:30
+	Version: 4.5 | built on 12.12.2018 11:28
 	Author URI: http://tagdiv.com
 */
 
 //hash
-define('TD_SOCIAL_COUNTER', 'd608b7ce86371b999748dbc94bcf2599');
+define('TD_SOCIAL_COUNTER', 'f8ec95a11eea0df473c70c4c60491a5b');
 
 
 //version check
@@ -110,6 +110,15 @@ class td_social_counter_plugin {
 	                    "holder" => "div",
 	                    "class" => "tdc-textfield-big"
 	                ),
+					array(
+						"param_name" => "manual_count_facebook",
+						"type" => "textfield",
+						"value" => "",
+						"heading" => __("Facebook fixed count", TD_THEME_NAME)/* . '&nbsp<a href="http://forum.tagdiv.com/tagdiv-social-counter-tutorial/" target="_blank">How to get the App Id and the Security Key</a>'*/,
+						"description" => "Add a fixed likes count for facebook",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
 //		            array(
 //			            "param_name" => "facebook_app_id",
 //			            "type" => "textfield",
@@ -146,6 +155,15 @@ class td_social_counter_plugin {
 	                    "holder" => "div",
 	                    "class" => "tdc-textfield-big"
 	                ),
+					array(
+						"param_name" => "manual_count_twitter",
+						"type" => "textfield",
+						"value" => "",
+						"heading" => __("Twitter fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for twitter",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
 	                array(
 	                    "param_name" => "youtube",
 	                    "type" => "textfield",
@@ -155,6 +173,15 @@ class td_social_counter_plugin {
 	                    "holder" => "div",
 	                    "class" => "tdc-textfield-big"
 	                ),
+					array(
+						"param_name" => "manual_count_youtube",
+						"type" => "textfield",
+						"value" => "",
+						"heading" => __("Youtube fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for youtube",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
 	//                array(
 	//                    "param_name" => "vimeo",
 	//                    "type" => "textfield",
@@ -173,6 +200,15 @@ class td_social_counter_plugin {
 	                    "holder" => "div",
 	                    "class" => "tdc-textfield-big"
 	                ),
+					array(
+						"param_name" => "manual_count_googleplus",
+						"type" => "textfield",
+						"value" => '',
+						"heading" => __("Google+ fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for google plus",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
 	                array(
 	                    "param_name" => "instagram",
 	                    "type" => "textfield",
@@ -183,11 +219,29 @@ class td_social_counter_plugin {
 	                    "class" => "tdc-textfield-big"
 	                ),
 					array(
+						"param_name" => "manual_count_instagram",
+						"type" => "textfield",
+						"value" => '',
+						"heading" => __("Instagram fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for instagram",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
+					array(
 						"param_name" => "pinterest",
 						"type" => "textfield",
 						"value" => "",
 						"heading" => __("Pinterest id", TD_THEME_NAME),
 						"description" => "",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
+					array(
+						"param_name" => "manual_count_pinterest",
+						"type" => "textfield",
+						"value" => "",
+						"heading" => __("Pinterest fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for pinterest",
 						"holder" => "div",
 						"class" => "tdc-textfield-big"
 					),
@@ -200,6 +254,15 @@ class td_social_counter_plugin {
 	                    "holder" => "div",
 	                    "class" => "tdc-textfield-big"
 	                ),
+					array(
+						"param_name" => "manual_count_soundcloud",
+						"type" => "textfield",
+						"value" => '',
+						"heading" => __("Soundcloud fixed count", TD_THEME_NAME),
+						"description" => "Add a fixed followers count for soundcloud",
+						"holder" => "div",
+						"class" => "tdc-textfield-big"
+					),
 	                array(
 	                    "param_name" => "rss",
 	                    "type" => "textfield",

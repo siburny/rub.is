@@ -322,7 +322,7 @@ td_util::update_option( 'tds_footer_page', $td_footerpage_id);
 
 //add the homepage to the menu
 td_demo_menus::add_page(array(
-    'title' => 'Home',
+    'title' => '<i class="tdc-font-fast tdc-font-fast-home""></i>Home',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'page_id' => $td_homepage_id,
     'parent_id' => ''
@@ -331,20 +331,20 @@ td_demo_menus::add_page(array(
 
 // mega menu multiple subcateg
 td_demo_menus::add_mega_menu(array(
-    'title' => 'Strategy',
+    'title' => '<i class="tdc-font-fast tdc-font-fast-lightbulb"></i>Strategy',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_1_id
 ));
 
 td_demo_menus::add_mega_menu(array(
-    'title' => 'Tech',
+    'title' => '<i class="tdc-font-fast tdc-font-fast-sattelite"></i>Tech',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_6_id
 ));
 
 // mega menu one subcateg
 td_demo_menus::add_mega_menu(array(
-    'title' => 'Food',
+    'title' => '<i class="tdc-font-fast tdc-font-fast-apple"></i>Food',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_11_id
 ));
@@ -352,7 +352,7 @@ td_demo_menus::add_mega_menu(array(
 
 // add a subcategory to the sub-menu
 $parent_submenu_id = td_demo_menus::add_link(array(
-    'title' => 'Other',
+    'title' => '<i class="tdc-font-fast tdc-font-fast-arrows-double"></i>Other',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'url' => '#',
     'parent_id' => ''

@@ -1,5 +1,5 @@
 <?php
-/* Template Name: Pagebuilder + latest articles + pagination */
+/* Template Name: Mobile Theme - Pagebuilder + latest articles + pagination */
 
 get_header();
 

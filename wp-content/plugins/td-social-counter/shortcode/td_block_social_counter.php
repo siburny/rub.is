@@ -11,7 +11,6 @@ class td_block_social_counter extends td_block {
 
     static function cssMedia( $res_ctx ) {
 
-        // fonts
         $res_ctx->load_font_settings( 'f_header' );
 
     }
@@ -22,16 +21,29 @@ class td_block_social_counter extends td_block {
 
         $compiled_css = '';
 
-        $raw_css =
-            "<style>
+        if( TD_THEME_NAME == 'Newspaper' ) {
+            $raw_css =
+                "<style>
 
-				/* @f_header */
-				.$unique_block_class .td-block-title a,
-				.$unique_block_class .td-block-title span {
-					@f_header
-				}
-				
-			</style>";
+                    /* @f_header */
+                    .$unique_block_class .td-block-title a,
+                    .$unique_block_class .td-block-title span {
+                        @f_header
+                    }
+                    
+                </style>";
+        } else {
+            $raw_css =
+                "<style>
+
+                    /* @f_header */
+                    .$unique_block_class .block-title a,
+                    .$unique_block_class .block-title span {
+                        @f_header
+                    }
+                    
+                </style>";
+        }
 
 
         $td_css_res_compiler = new td_css_res_compiler( $raw_css );
@@ -98,6 +110,11 @@ class td_block_social_counter extends td_block {
                     $access_token = $atts[$td_social_id . '_access_token'];
                 }
                 $social_network_meta = $this->get_social_network_meta($td_social_id, $atts[$td_social_id], $td_social_api, $access_token);
+
+                //manual likes/followers count
+                if (!empty($atts['manual_count_' . $td_social_id])) {
+                    $social_network_meta['api'] = $atts['manual_count_' . $td_social_id];
+                }
 
                 if ($td_social_id === 'rss' && !empty($atts['rss_url'])) {
                     $social_network_meta['url'] = $atts['rss_url'];

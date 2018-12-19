@@ -188,7 +188,9 @@ abstract class td_module {
 
     /**
      * get image - v 3.0  23 ian 2015
+     *  - v 4.0 - 12 oct 2018 - added support for lazy loading animation images
      * @param $thumbType
+     * @param $css_image
      * @return string
      */
     function get_image($thumbType, $css_image = false) {
@@ -300,30 +302,87 @@ abstract class td_module {
             } //end    if ($this->post_has_thumb) {
 
 
-
             $buffy .= '<div class="td-module-thumb">';
-                if (current_user_can('edit_published_posts')) {
+                if ( current_user_can('edit_published_posts') ) {
                     $buffy .= '<a class="td-admin-edit" href="' . get_edit_post_link($this->post->ID) . '">edit</a>';
                 }
 
-
                 $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap" title="' . $this->title_attribute . '">';
 
-                    // css image
-                    if ($css_image === true) {
-                        // retina image
-                        if (td_util::get_option('tds_thumb_' . $thumbType . '_retina') == 'yes' && !empty($td_temp_image_url[1])) {
-                            $retina_url = wp_get_attachment_image_src($this->post_thumb_id, $thumbType . '_retina');
-                            if (!empty($retina_url[0])) {
-                                $td_temp_image_url[0] = $retina_url[0];
-                            }
+                $tds_animation_stack = td_util::get_option('tds_animation_stack');
+
+                // if we have the lazy loading animation on, we're not on an ajax call or on composer
+                if ( empty( $tds_animation_stack ) && !wp_doing_ajax() && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() ) {
+
+                    // retina image
+                    $retina_image = '';
+
+                    // here we treat the normal img_tag retina ver
+                    if ( td_util::get_option('tds_thumb_' . $thumbType . '_retina') == 'yes' && !empty( $td_temp_image_url[1] ) ) {
+                        $retina_url = wp_get_attachment_image_src( $this->post_thumb_id, $thumbType . '_retina' );
+                        if ( !empty( $retina_url[0] ) ) {
+                            $retina_image = 'data-img-retina-url="' . $retina_url[0] . '"';
                         }
-                        $buffy .= '<span class="entry-thumb td-thumb-css" style="background-image: url(' . $td_temp_image_url[0] . ')"></span>';
+                    }
+
+                    // css image
+                    if ( $css_image === true ) {
+
+                        // the css_image type
+                        $buffy .= '<span class="entry-thumb td-thumb-css" data-type="css_image" data-img-url="' . $td_temp_image_url[0] . '" ' . $retina_image . ' ></span>';
 
                     // normal image
                     } else {
-                        $buffy .= '<img width="' . $td_temp_image_url[1] . '" height="' . $td_temp_image_url[2] . '" class="entry-thumb" src="' . $td_temp_image_url[0] . '"' . $srcset_sizes . ' ' . $attachment_alt . $attachment_title . '/>';
+
+                        $base64 = '';
+                        if ( strpos( $thumbType, 'td_' ) === 0 ) {
+                            $thumbs = td_api_thumb::get_all();
+                            foreach ($thumbs as $thumb_id => $thumb_data ) {
+                                if ( $thumb_id === $thumbType ) {
+                                    if ( isset($thumb_data['b64_encoded'] ) ) {
+                                        $base64 = td_api_thumb::get_key( $thumbType, 'b64_encoded' );
+                                    }
+                                }
+                            }
+                        }
+
+                        $src = 'src="' . $base64 . '"';
+
+                        // the normal image_tag type
+                        $buffy .= '<img class="entry-thumb" ' . $src . $attachment_alt . $attachment_title . ' data-type="image_tag" data-img-url="' . $td_temp_image_url[0] . '" ' . $retina_image . ' width="' . $td_temp_image_url[1] . '" height="' . $td_temp_image_url[2] . '" />';
                     }
+
+                } else {
+
+                    // css image
+                    if ( $css_image === true ) {
+
+                        // retina image
+                        $retina_uuid = '';
+
+                        if ( td_util::get_option('tds_thumb_' . $thumbType . '_retina') == 'yes' && !empty( $td_temp_image_url[1] ) ) {
+                            $retina_uuid = td_global::td_generate_unique_id();
+                            $retina_url = wp_get_attachment_image_src( $this->post_thumb_id, $thumbType . '_retina' );
+                            if ( !empty( $retina_url[0] ) ) {
+                                $buffy .= '
+                                    <style>
+                                          @media ( -webkit-max-device-pixel-ratio: 2 ) {
+                                              .td-thumb-css.' . $retina_uuid . ' {
+                                                  background-image: url(' . $retina_url[0] . ');
+                                              }
+                                          }
+                                    </style>
+                                ';
+                            }
+                        }
+
+                        $buffy .= '<span class="entry-thumb td-thumb-css ' . $retina_uuid . '" style="background-image: url(' . $td_temp_image_url[0] . ')" ></span>';
+
+                    // normal image
+                    } else {
+                        $buffy .= '<img width="' . $td_temp_image_url[1] . '" height="' . $td_temp_image_url[2] . '" class="entry-thumb" src="' . $td_temp_image_url[0] . '" ' . $srcset_sizes . ' ' . $attachment_alt . $attachment_title . ' />';
+                    }
+                }
 
                     // on videos add the play icon
                     if (get_post_format($this->post->ID) == 'video') {
@@ -350,6 +409,8 @@ abstract class td_module {
 
             return $buffy;
         }
+
+        return $buffy;
     }
 
 

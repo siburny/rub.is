@@ -435,13 +435,22 @@ class td_module_single_base extends td_module {
 
                     //skip <blockquote> parts - look for <p> in the other parts
                     if (preg_match('/(<blockquote.*>)/U', $content_part_value) !== 1) {
-                        $section_parts = preg_split('/(<p.*>)/U', $content_part_value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+//                        $section_parts = preg_split('/(<p.*>)/U', $content_part_value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+                        $section_parts = preg_split('/(<p.*\/p>)/Us', $content_part_value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
 
                         foreach ($section_parts as $section_part_index => $section_part_value) {
                             if (!empty($section_part_value)) {
+
+                                //add section to buffer
+                                $content_buffer .= $section_part_value;
+
                                 // Show the ad ONLY IF THE CURRENT PART IS A <p> opening tag and before the <p> -> so we will have <p>content</p>  ~ad~ <p>content</p>
                                 // and prevent cases like <p> ~ad~ content</p>
                                 if (preg_match('/(<p.*>)/U', $section_part_value) === 1) {
+
+                                    $p_open_tag_count ++;
+
                                     if ($tds_inline_ad_paragraph == $p_open_tag_count) {
                                         $show_inline_ad_at_bottom = true;
                                         switch ($tds_inline_ad_align) {
@@ -458,10 +467,7 @@ class td_module_single_base extends td_module {
                                                 break;
                                         }
                                     }
-                                    $p_open_tag_count ++;
                                 }
-                                //add section to buffer
-                                $content_buffer .= $section_part_value;
                             }
                         }
 

@@ -4,7 +4,7 @@
  */
 
 define("TD_THEME_NAME", "Newspaper");
-define("TD_THEME_VERSION", "9.1");
+define("TD_THEME_VERSION", "9.2.1");
 define("TD_THEME_DEMO_URL", "https://demo.tagdiv.com/" . strtolower(TD_THEME_NAME));
 define("TD_THEME_DEMO_DOC_URL", 'http://forum.tagdiv.com/demos_introduction/');  //the url to the demo documentation
 define("TD_PLUGINS_URL", 'https://cloud.tagdiv.com/td_plugins/');  //plugins url
@@ -72,6 +72,7 @@ class td_config {
         td_global::$js_files = array(
 
 
+	        'tdAnalytics' =>             '/includes/wp_booster/js_dev/tdAnalytics.js',
 	        'tdExternal' =>             '/includes/wp_booster/js_dev/tdExternal.js',
             'tdDetect' =>               '/includes/wp_booster/js_dev/tdDetect.js',
 
@@ -1259,7 +1260,7 @@ class td_config {
                 'enabled_on_loops' => false,
                 'uses_columns' => false,                      // if the module uses columns on the page template + loop
                 'category_label' => true,
-                'class' => '',
+                'class' => 'td-animation-stack',
                 'group' => '' // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
             )
         );
@@ -1508,6 +1509,7 @@ class td_config {
 	                'tagDiv Image Gallery thumbs'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8AQMAAADL6a/PAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAA5JREFUKM9jGAWjYJABAAKUAAHoEAeuAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1523,6 +1525,7 @@ class td_config {
 	                'Block 1, 2, 7, 8, 16, 25'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABGAQMAAAAASKMqAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAABBJREFUKM9jGAWjYBQMKwAAA9QAAQWBn6cAAAAASUVORK5CYII=',
             )
         );
 
@@ -1539,6 +1542,7 @@ class td_config {
 	                'Big grid 6'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAACWAQMAAACCSQSPAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAABpJREFUWMPtwQENAAAAwiD7p7bHBwwAAAAg7RD+AAGXD7BoAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1553,6 +1557,7 @@ class td_config {
                     'Big grid 1, 3, 7'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQkAAADGAQMAAAD7b+fyAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAB1JREFUWMPtwQENAAAAwiD7p7bHBwwAAAAAAADSDhsSAAGoWlW2AAAAAElFTkSuQmCC',
             )
         );
 
@@ -1569,6 +1574,7 @@ class td_config {
 	                'Big grid 2'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAACgAQMAAABOhoelAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAB1JREFUWMPtwTEBAAAAwiD7p/ZdCGAAAAAAAAAQBxpAAAH8le3bAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1584,6 +1590,7 @@ class td_config {
 	                'Block 1, 5, 6, 13, 17, 20'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAADrAQMAAAArGX0KAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACBJREFUaN7twTEBAAAAwiD7pzbEXmAAAAAAAAAAAACQHSaOAAGSp1GBAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1599,6 +1606,7 @@ class td_config {
 	                'Flex Block 1'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAGQAQMAAADsi4u8AAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACdJREFUeNrtwYEAAAAAw6D7U99gBNUAAAAAAAAAAAAAAAAAAAAASAdBoAABzZKptAAAAABJRU5ErkJggg==',
             )
         );
 
@@ -1615,6 +1623,7 @@ class td_config {
 	                'Big grid 5, 7, 8'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWQAAADcAQMAAAB9O0nPAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACBJREFUaN7twTEBAAAAwiD7p7bDbmAAAAAAAAAAAABAdieIAAGQh2mWAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1630,6 +1639,7 @@ class td_config {
 	                'Big grid 8, 9, 10'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWQAAAFsAQMAAADBhlEOAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACZJREFUeNrtwQEBAAAAgqD+r26IwAAAAAAAAAAAAAAAAAAAAAAiDkFoAAFfZct7AAAAAElFTkSuQmCC',
             )
         );
 
@@ -1645,6 +1655,7 @@ class td_config {
 	                'Big grid full 7, 8, 9, 10'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeUAAAFoAQMAAABT0HEnAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACxJREFUeNrtwTEBAAAAwiD7p7bGDmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQcFcwAAFIn2pxAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1659,6 +1670,7 @@ class td_config {
                     'Module MX11', 'Big grid 3, 12'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAhUAAAEFAQMAAABuFIc7AAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAACdJREFUeNrtwQENAAAAwiD7p7bHBwwAAAAAAAAAAAAAAAAAAAAAIORFVAABqJvmiQAAAABJRU5ErkJggg==',
             )
         );
 
@@ -1674,6 +1686,7 @@ class td_config {
 	                'Big grid 1, 3, 4, 6, 10, 12, full 4, 5'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAhYAAAHOAQMAAAD+DNJPAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAADVJREFUeNrtwQENAAAAwiD7p7bHBwwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICEA3q4AAGK1CNoAAAAAElFTkSuQmCC',
             )
         );
 
@@ -1693,6 +1706,7 @@ class td_config {
 	                'Flex Block 1'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArgAAAG0AQMAAADjJMaKAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAADxJREFUeNrtwQENAAAAwiD7pzbHN2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQeV4AAB10TPnAAAAABJRU5ErkJggg==',
             )
         );
 
@@ -1709,6 +1723,7 @@ class td_config {
 	                'Slide - 2 columns'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArgAAAGBAQMAAAC3k1CUAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAADdJREFUeNrtwTEBAAAAwiD7p7bETmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEDuhFgAARFpDB8AAAAASUVORK5CYII=',
             )
         );
 
@@ -1724,6 +1739,7 @@ class td_config {
                     'Big grid 2'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAuUAAAHmAQMAAADuiGKOAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAENJREFUeNrtwYEAAAAAw6D7Ux9gCtUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIgDsnQAAavKUH8AAAAASUVORK5CYII=',
             )
         );
 
@@ -1740,6 +1756,7 @@ class td_config {
                     'Slide - 3 column'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABCwAAAJEAQMAAADnqyfeAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAG9JREFUeNrswYEAAAAAgKD9qRepAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg9uCQAAAAAEDQ/9fOsAAAAAAAAAAAAAAAAAAAAAAAsAox6wABwRHV3QAAAABJRU5ErkJggg==',
             )
         );
 
@@ -1758,6 +1775,7 @@ class td_config {
 	                'Flex Block 1'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABCwAAAJEAQMAAADnqyfeAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAG9JREFUeNrswYEAAAAAgKD9qRepAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg9uCQAAAAAEDQ/9fOsAAAAAAAAAAAAAAAAAAAAAAAsAox6wABwRHV3QAAAABJRU5ErkJggg==',
             )
         );
 
@@ -1772,6 +1790,7 @@ class td_config {
                     'tagDiv Image Gallery'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAGkAQMAAAD9lkU+AAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAADFJREFUeNrtwTEBAAAAwiD7pzbDfmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANEBaQAAAZUbkzMAAAAASUVORK5CYII=',
             )
         );
 
@@ -1788,6 +1807,7 @@ class td_config {
 	                'Flex Block 1'
                 ),
                 'no_image_path' => td_global::$get_template_directory_uri,
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAIwAQMAAABdnuRXAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAALJJREFUeNrswYEAAAAAgKD9qRepAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABg9uBAAAAAAADI/7URVFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVWlPTgQAAAAABDkbz3BBhUAAAAAAAAAAAAAAAArD04AAVCiTaUAAAAASUVORK5CYII=',
             )
         );
 
@@ -17895,7 +17915,8 @@ class td_config {
 	                        "heading" => 'Image gap',
 	                        "description" => "The gap between block images",
 	                        "holder" => "div",
-	                        "class" => "tdc-textfield-small"
+	                        "class" => "tdc-textfield-small",
+                            "placeholder" => "40"
 	                    ),
 	                    array(
 	                        "param_name" => "alignment",
@@ -17947,6 +17968,16 @@ class td_config {
                             "class"       => "",
                             "heading"     => 'Custom titles color',
                             "param_name"  => "custom_titles_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Custom titles background color',
+                            "param_name"  => "custom_titles_bg",
                             "value"       => '',
                             "description" => '',
                             "group"       => "",
@@ -18533,6 +18564,383 @@ class td_config {
 			                'group' => 'Design options',
 			            ),
 	                )
+                )
+            )
+        );
+
+        td_api_block::add('td_block_categories_tags',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Categories/tags list',
+                "base" => "td_block_categories_tags",
+                "class" => "td_block_categories_tags",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-categories',
+                'file' => td_global::$get_template_directory . '/includes/shortcodes/td_block_categories_tags.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'cat_id_filter',
+                    'el_class'
+                ),
+                'tdc_start_values'       => base64_encode(
+                    json_encode(
+                        array(
+                            array(
+                                "post_count" => "yes",
+                            )
+                        )
+                    )
+                ),
+                "params" => array_merge(
+                    self::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Layout',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array (
+                            'param_name' => 'type',
+                            'heading' => 'Type',
+                            'type' => 'dropdown',
+                            'value' => array (
+                                'Categories' => '',
+                                'Tags' => 'tags',
+                            ),
+                            'class' => 'tdc-dropdown-big',
+                            'group' => '',
+                        ),
+                        array (
+                            'param_name' => 'order_by',
+                            'heading' => 'Order by',
+                            'type' => 'dropdown',
+                            'value' => array (
+                                'Alphabetically' => '',
+                                'Popularity' => 'count',
+                            ),
+                            'class' => 'tdc-dropdown-big',
+                            'group' => '',
+                        ),
+                        array(
+                            "param_name" => "limit",
+                            "type" => "textfield",
+                            "value" => "6",
+                            "heading" => 'Limit the shown items',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-small",
+                        ),
+                        array(
+                            "param_name" => "id_filter",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => 'ID filter',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name"  => "post_count",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Show post count",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+                        array(
+                            "param_name"  => "inline",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Display list elements inline",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+                        array(
+                            "param_name" => "item_horiz_align",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Left' => 'content-horiz-left',
+                                'Center' => 'content-horiz-center',
+                                'Right' => 'content-horiz-right'
+                            ),
+                            "heading" => 'Menu list horiz align',
+                            "description" => "",
+                            "holder" => "div",
+                            'tdc_dropdown_images' => true,
+                            "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Elements',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "",
+                        ),
+                        array(
+                            "param_name"  => "item_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Wpace',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '0',
+                        ),
+                        array(
+                            "param_name"  => "items_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0 10px 0 12px",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name"  => "items_border",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Border size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '0',
+                        ),
+                        array(
+                            'param_name' => 'items_radius',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Border radius',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '0',
+                            'range_max' => '100',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'items_skew',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Skew',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '-40',
+                            'range_max' => '40',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Separator',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "",
+                        ),
+                        array(
+                            "param_name"  => "sep_text",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Text separator',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '',
+                        ),
+                        array(
+                            'param_name' => 'tdicon',
+                            'type' => 'icon',
+                            'heading' => 'Icon separator',
+                            'class' => 'tdc-textfield-small',
+                            'value' => '',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_size',
+                            'type' => 'range-responsive',
+                            'value' => '14',
+                            'heading' => 'Icon size',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '1',
+                            'range_max' => '30',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_space',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Icon space',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '0',
+                            'range_max' => '30',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_align',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Icon align',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '-10',
+                            'range_max' => '10',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+
+                        array(
+                            "param_name" => "bg_color",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Background color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Name color',
+                            "param_name"  => "color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Posts count color',
+                            "param_name"  => "posts_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "border_color",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "i_color",
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Icon color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "bg_color_h",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Background hover color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Name hover color',
+                            "param_name"  => "color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Posts count hover color',
+                            "param_name"  => "posts_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "border_hover_color",
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border hover color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Style',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_name', false, 'Item name text', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_posts', false, 'Item posts count text', 'Style' ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
                 )
             )
         );
@@ -21555,19 +21963,6 @@ class td_config {
                             "class"      => "",
                             "group"      => "Style",
                         ),
-//                        array(
-//                            "param_name"  => "modules_effects",
-//                            "type"        => "dropdown-responsive",
-//                            "value"       => array(
-//                                'None'  => '',
-//                                'Hover shadow'  => 'h_shadow',
-//                            ),
-//                            "heading"     => 'Modules effects',
-//                            "description" => "",
-//                            "holder"      => "div",
-//                            "class"       => "tdc-dropdown-big",
-//                            "group"       => "Style",
-//                        ),
 	                    array(
 		                    "param_name" => "separator",
 		                    "type"       => "horizontal_separator",
@@ -24153,19 +24548,6 @@ class td_config {
                                 'Hide' => 'none',
                             ),
                             "heading"     => 'Show date',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review1",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
@@ -30808,6 +31190,30 @@ class td_config {
                 'td_css_generator_demo' => true,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true                // load a custom demo_style.less - must also be added to td_less_style.css.php
             ),
+            'blog_food' => array(
+                'text' => 'Food Blog',
+                'folder' => td_global::$get_template_directory . '/includes/demos/blog_food/',
+                'img' => td_global::$get_template_directory_uri . '/includes/demos/blog_food/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_blog_food/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Composer' => 'td-composer/td-composer.php',
+                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
+                ),
+            ),
+//            'racing' => array(
+//                'text' => 'Racing Mag',
+//                'folder' => td_global::$get_template_directory . '/includes/demos/racing/',
+//                'img' => td_global::$get_template_directory_uri . '/includes/demos/racing/screenshot.png',
+//                'demo_url' => 'https://demo.tagdiv.com/newspaper_racing/',
+//                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+//                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+//                'required_plugins' => array(                     // required plugins for the demo to work properly
+//                    'tagDiv Composer' => 'td-composer/td-composer.php',
+//                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
+//                ),
+//            ),
             'blog_lifestyle' => array(
                 'text' => 'Lifestyle Blog',
                 'folder' => td_global::$get_template_directory . '/includes/demos/blog_lifestyle/',
@@ -30817,6 +31223,7 @@ class td_config {
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Composer' => 'td-composer/td-composer.php',
+                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
                 ),
             ),
             'fast' => array(
@@ -30828,6 +31235,7 @@ class td_config {
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Composer' => 'td-composer/td-composer.php',
+                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
                 ),
             ),
             'living_mag' => array(
@@ -30863,6 +31271,7 @@ class td_config {
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Composer' => 'td-composer/td-composer.php',
+                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
                 ),
             ),
             'craft_ideas' => array(
@@ -31379,6 +31788,18 @@ class td_config {
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true                // load a custom demo_style.less - must also be added to td_less_style.css.php
             ),
+//            'decor' => array(
+//                'text' => 'Home Decor',
+//                'folder' => td_global::$get_template_directory . '/includes/demos/decor/',
+//                'img' => td_global::$get_template_directory_uri . '/includes/demos/decor/screenshot.png',
+//                'demo_url' => 'https://demo.tagdiv.com/newspaper_decor/',
+//                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+//                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+//                'required_plugins' => array(                     // required plugins for the demo to work properly
+//                    'tagDiv Composer' => 'td-composer/td-composer.php',
+//                    'tagDiv Cloud Library' => 'td-cloud-library/td-cloud-library.php'
+//                ),
+//            ),
 //            'nomad' => array(
 //                'text' => 'Nomad',
 //                'folder' => td_global::$get_template_directory . '/includes/demos/nomad/',

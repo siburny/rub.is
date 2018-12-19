@@ -100,10 +100,13 @@ class td_weather
 		if ($template == 'block_template') {
 			// renders the block template
 			$buffy .= self::render_block_template($atts, $weather_data, $current_temp_label, $current_speed_label, $block_uid);
+		} else if($template == 'tdb_weather_template') {
+			// render the tdb weather template
+			$buffy .= self::tdb_weather_template($atts, $weather_data, $current_temp_label);
 		} else {
-			// render the top menu template
-			$buffy .= self::render_top_bar_template($atts, $weather_data, $current_temp_label);
-		}
+            // render the top menu template
+            $buffy .= self::render_top_bar_template($atts, $weather_data, $current_temp_label);
+        }
 
 
 		// do not add any items to tdWeather if we're on the front end editor / ajax front end editor
@@ -152,6 +155,30 @@ class td_weather
 		<?php
 		return ob_get_clean();
 	}
+
+
+    /**
+     * renders the template that is used in the top bar of the site
+     * @param $atts - the atts that the block gets
+     * @param $weather_data - the precomputed weather data
+     * @param $current_temp_label - C/F
+     *
+     * @return string - HTML the rendered template
+     */
+    private static function tdb_weather_template($atts, $weather_data, $current_temp_label)
+    {
+        $current_unit = $weather_data['current_unit'];
+        ob_start();
+        ?>
+        <i class="td-icons <?php echo $weather_data['today_icon'] ?>"></i>
+        <div class="tdb-weather-deg-wrap" data-block-uid="<?php echo $weather_data['block_uid'] ?>">
+            <span class="tdb-weather-deg"><?php echo $weather_data['today_temp'][$current_unit] ?></span>
+            <span class="tdb-weather-unit"><?php echo $current_temp_label ?></span>
+        </div>
+        <div class="tdb-weather-city"><?php echo $weather_data['api_location'] ?></div>
+        <?php
+        return ob_get_clean();
+    }
 
 
 	/**

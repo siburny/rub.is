@@ -88,7 +88,11 @@ class tdc_config {
 		'tdcDebug'              => '/assets/js/tdcDebug.js',  //inject tdcDebug in the iframe also
 	);
 
-	static $js_files_for_live_css = array(
+    static $js_files_for_gutenberg_editor = array(
+        'tdcGutenberg' => '/assets/js/tdcGutenberg.js',
+    );
+
+    static $js_files_for_live_css = array(
 		'td_live_css_state'                     => '/css-live/assets/js/tdLiveCssState.js',
 		'td_live_css_inject'                    => '/css-live/assets/js/tdLiveCssInject.js',
 		'td_live_css_less'                      => '/css-live/assets/external/less.min.js',

@@ -14,6 +14,7 @@ class vc_row extends tdc_composer_block {
 	public function get_custom_css() {
 		// $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
 		$unique_block_class = $this->get_att('tdc_css_class');
+		$unique_block_id = $this->block_uid;
 
         $compiled_css = '';
 
@@ -50,19 +51,40 @@ class vc_row extends tdc_composer_block {
 	                    transform: none !important;
 	                }
                 }
+                
+                /* @row_shadow */
+                #$unique_block_id {
+                    position: relative;
+                }
+                #$unique_block_id:before {
+                    display: block;
+                    width: 100vw;
+                    height: 100%;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    box-shadow: @row_shadow;
+                    z-index: 20;
+                    pointer-events: none;
+                }
+                
+                /* @stretch_off */
+                #$unique_block_id.tdc-row[class*='stretch_row'] > .td-pb-row > .td-element-style {
+                    width: 100% !important;
+                }
 
                 /* @content_align_vertical */
                 .$unique_block_class.tdc-row-content-vert-center,
                 .$unique_block_class.tdc-row-content-vert-center .tdc-columns {
                     display: flex;
                     align-items: center;
-                    min-width: 100%;
+                    flex: 1;
                 }
                 .$unique_block_class.tdc-row-content-vert-bottom,
                 .$unique_block_class.tdc-row-content-vert-bottom .tdc-columns {
                     display: flex;
                     align-items: flex-end;
-                    min-width: 100%;
+                    flex: 1;
                 }
                 @media (max-width: 767px) {
 	                .$unique_block_class,
@@ -201,6 +223,12 @@ class vc_row extends tdc_composer_block {
         // fixed background image
         $res_ctx->load_settings_raw( 'row_fixed', $res_ctx->get_shortcode_att('row_fixed') );
 
+        // shadow
+        $res_ctx->load_shadow_settings( 0, 6, 8, 0, 'rgba(0, 0, 0, 0.08)', 'row_shadow' );
+
+        // stretch row off
+        $res_ctx->load_settings_raw( 'stretch_off', $res_ctx->get_shortcode_att('stretch_off') );
+
 	    // z-index
 	    $res_ctx->load_settings_raw( 'svg_z_index', $res_ctx->get_shortcode_att('svg_z_index') );
 
@@ -235,7 +263,7 @@ class vc_row extends tdc_composer_block {
             $res_ctx->load_settings_raw( 'svg_background_color_top', $res_ctx->get_shortcode_att('svg_background_color_top') );
 
             // shadow
-            $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.1)', 'shadow_top' );
+            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_top' );
         }
 
 
@@ -270,7 +298,7 @@ class vc_row extends tdc_composer_block {
             $res_ctx->load_settings_raw( 'svg_background_color_bottom', $res_ctx->get_shortcode_att('svg_background_color_bottom') );
 
             // shadow
-            $res_ctx->load_shadow_settings( 0, 'rgba(0, 0, 0, 0.1)', 'shadow_bot' );
+            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_bot' );
         }
 
     }
@@ -284,12 +312,19 @@ class vc_row extends tdc_composer_block {
 			'full_width' => '',
 			'gap' => '',
 			'row_full_height' => '',
+			'row_hide_on_pagination' => '',
 			'row_parallax' => '',
 			'row_fixed' => '',
+			'row_shadow_shadow_size' => '',
+			'row_shadow_shadow_offset_horizontal' => '',
+			'row_shadow_shadow_offset_vertical' => '',
+			'row_shadow_shadow_spread' => '',
+			'row_shadow_shadow_color' => '',
 			'content_align_vertical' => '',
 			'video_background' => '',
 			'video_scale' => '',
 			'video_opacity' => '',
+			'stretch_off' => '',
 			'row_divider_bottom' => '',
 			'svg_height_bottom' => '',
 			'svg_width_bottom' => '',
@@ -299,6 +334,7 @@ class vc_row extends tdc_composer_block {
             'shadow_bot_shadow_color' => '',
             'shadow_bot_shadow_offset_horizontal' => '0',
             'shadow_bot_shadow_offset_vertical' => '2',
+			'shadow_bot_shadow_spread' => '0',
 			'row_divider_top' => '',
 			'svg_height_top' => '',
 			'svg_width_top' => '',
@@ -308,6 +344,7 @@ class vc_row extends tdc_composer_block {
 			'shadow_top_shadow_color' => '',
 			'shadow_top_shadow_offset_horizontal' => '0',
 			'shadow_top_shadow_offset_vertical' => '2',
+            'shadow_top_shadow_spread' => '0',
 			'space_top' => '',
 			'space_bottom' => '',
 			'svg_z_index' => '',
@@ -319,6 +356,33 @@ class vc_row extends tdc_composer_block {
 		$buffy = '';
 
 		$block_classes = array('wpb_row', 'td-pb-row');
+
+        if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+            $is_paged = false;
+
+            $queried_object = get_queried_object();
+
+            // on page templates
+            if ( $queried_object->post_type === 'page' ) {
+
+                if ( is_paged() ) {
+                    $is_paged = true;
+                }
+
+                // on cloud templates use the tdb_state_content
+            } elseif ( $queried_object->post_type === 'tdb_templates' && class_exists('tdb_state_content') && tdb_state_content::has_wp_query() ) {
+
+                $template_wp_query = tdb_state_content::get_wp_query();
+
+                if ( $template_wp_query->is_paged() ) {
+                    $is_paged = true;
+                }
+            }
+
+            if ( !empty($this->atts['row_hide_on_pagination']) && $is_paged ) {
+                return $buffy;
+            }
+        }
 
 		$addElementStyle = false;
 		$css_elements = $this->get_block_css($clearfixColumns, $addElementStyle);
@@ -797,7 +861,7 @@ class vc_row extends tdc_composer_block {
 	 * @param $att_name
 	 * @return mixed
 	 */
-	protected function get_custom_att($att_name) {
+	public function get_custom_att($att_name) {
 		if ( !isset( $this->atts ) ) {
 		    echo 'TD Composer Internal error: The atts are not set yet(AKA: the LOCAL render method was not called yet and the system tried to read an att)';
 			die;

@@ -4,7 +4,7 @@
 	Plugin URI: http://tagdiv.com
 	Description: tagDiv Composer - Create beautiful pages with this custom frontend drag and drop builder.
 	Author: tagDiv
-	Version: 2.3 | built on 12.10.2018 9:30
+	Version: 2.3 | built on 12.12.2018 11:28
 	Author URI: http://tagdiv.com
 */
 
@@ -16,7 +16,7 @@ if ( is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
 }
 
 //hash
-define('TD_COMPOSER', '9e241c87ee8782e8f19bb886a935e653');
+define('TD_COMPOSER', '9b761fb88cde3d1bd90677504fc739fc');
 
 require_once 'td_deploy_mode.php';
 require_once 'includes/tdc_version_check.php';

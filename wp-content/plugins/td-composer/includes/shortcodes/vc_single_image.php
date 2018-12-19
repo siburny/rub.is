@@ -163,6 +163,10 @@ class vc_single_image extends td_block {
 				'alignment' => '',
 				'style' => '',
 				'el_class' => '',
+				'ga_event_action' => '',
+				'ga_event_category' => '',
+				'ga_event_label' => '',
+				'fb_pixel_event_name' => '',
 			), $atts, 'vc_single_image' );
 
 		//$inline_css = ( (float) $atts['height'] >= 0.0 ) ? ' style="height: ' . esc_attr( $atts['height'] ) . '"' : '';
@@ -193,7 +197,6 @@ class vc_single_image extends td_block {
 			$image_alignment = ' background-position: center ' . $atts['alignment'] . ';';
 		}
 
-
 		$editing_class = '';
 		if (tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax()) {
 			$editing_class = 'tdc-editing-vc_single_image';
@@ -203,12 +206,63 @@ class vc_single_image extends td_block {
 
 			$image_info = tdc_util::get_image($atts);
 
+            /**
+             * Google Analytics tracking settings
+             */
+            $data_ga_event_cat = '';
+            $data_ga_event_action = '';
+            $data_ga_event_label = '';
+
+            /**
+             * FB Pixel tracking settings
+             */
+            $data_fb_event_name = '';
+            $data_fb_event_cotent_name = '';
+
+            if ( empty( $no_custom_url ) ) {
+
+                // don't add tracking options in td composer
+                if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+                    $ga_event_category = $this->get_att('ga_event_category');
+                    if ( ! empty( $ga_event_category ) ) {
+                        $data_ga_event_cat = ' data-ga-event-cat="' . $ga_event_category . '" ';
+                    }
+
+                    $ga_event_action = $this->get_att('ga_event_action');
+                    if ( ! empty( $ga_event_action ) ) {
+                        $data_ga_event_action = ' data-ga-event-action="' . $ga_event_action . '" ';
+                    }
+
+                    $ga_event_label = $this->get_att('ga_event_label');
+                    if ( ! empty( $ga_event_label ) ) {
+                        $data_ga_event_label = ' data-ga-event-label="' . $ga_event_label . '" ';
+                    }
+                }
+
+                // don't add tracking options in td composer
+                if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+                    $fb_event_name = $this->get_att('fb_pixel_event_name');
+                    if ( ! empty( $fb_event_name ) ) {
+                        $data_fb_event_name = ' data-fb-event-name="' . $fb_event_name . '" ';
+                    }
+                    $fb_event_content_name = $this->get_att('fb_pixel_event_content_name');
+                    if ( ! empty( $fb_event_content_name ) ) {
+                        $data_fb_event_cotent_name = ' data-fb-event-content-name="' . $fb_event_content_name . '" ';
+                    }
+                }
+
+            }
+
 			$buffer = '<div class="wpb_wrapper td_block_single_image td_block_wrap ' . $no_custom_url . ' ' . $this->get_block_classes( array(
 					$atts['el_class'],
 					$editing_class,
 					'td-single-image-' . $atts['style']
 				) ) . '">';
-			$buffer .= '<a class="td_single_image_bg" style="background-image: url(\'' . $image_info['url'] . '\');' . $image_size . $image_repeat . $image_alignment . '" href="' . esc_url( $atts['image_url'] ) . '" ' . $target . ' rel="bookmark"></a>';
+			$buffer .= '<a 
+			class="td_single_image_bg" 
+			style="background-image: url(\'' . $image_info['url'] . '\');' . $image_size . $image_repeat . $image_alignment . '" 
+			href="' . esc_url( $atts['image_url'] ) . '" ' . $target . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . ' 
+			rel="bookmark"></a>';
 			$buffer .= $this->get_block_css() . '</div>';
 
 		} else {

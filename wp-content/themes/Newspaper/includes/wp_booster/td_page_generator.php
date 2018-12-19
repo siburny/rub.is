@@ -115,65 +115,69 @@ class td_page_generator {
             $buffy = '';
             $breadcrumbs_count = count($breadcrumbs_array);
 
-            //script start
-            $buffy .= '<script type="application/ld+json">
-                        {
-                            "@context": "http://schema.org",
-                            "@type": "BreadcrumbList",
-                            "itemListElement": [';
+            //script start + item 1 + item 2
+            $buffy .= PHP_EOL . '
+<script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                    "@type": "WebSite",
+                    "@id": "' . esc_url(get_home_url()) . '/",
+                    "name": "' . __td('Home', TD_THEME_NAME) . '"
+                }
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                    "item": {
+                    "@type": "WebPage",
+                    "@id": "' . $breadcrumbs_array[0]['url'] . '",
+                    "name": "' . $breadcrumbs_array[0]['display_name'] . '"
+                }
+            }';
 
-            //item 1
-            $buffy .=  '{
-                            "@type": "ListItem",
-                            "position": 1,
-                                "item": {
-                                "@type": "WebSite",
-                                "@id": "' . esc_url(get_home_url()) . '/",
-                                "name": "' . __td('Home', TD_THEME_NAME) . '"                                               
-                            }
-                        }';
+            if ( isset( $breadcrumbs_array[1]['url'] ) ) {
 
-            //item 2
-            $buffy .=  ',{
-                            "@type": "ListItem",
-                            "position": 2,
-                                "item": {
-                                "@type": "WebPage",
-                                "@id": "' . $breadcrumbs_array[0]['url'] . '",
-                                "name": "' . $breadcrumbs_array[0]['display_name'] . '"
-                            }
-                        }';
+            //item 3
+            $buffy .=  '
+            ,{
+                "@type": "ListItem",
+                "position": 3,
+                    "item": {
+                    "@type": "WebPage",
+                    "@id": "' . $breadcrumbs_array[1]['url'] . '",
+                    "name": "' . $breadcrumbs_array[1]['display_name'] . '"                                
+                }
+            }';
 
-            if (isset($breadcrumbs_array[1]['url'])) {
-                //item 3
-                $buffy .=  ',{
-                            "@type": "ListItem",
-                            "position": 3,
-                                "item": {
-                                "@type": "WebPage",
-                                "@id": "' . $breadcrumbs_array[1]['url'] . '",
-                                "name": "' . $breadcrumbs_array[1]['display_name'] . '"                                
-                            }
-                        }';
             }
 
-            if (isset($breadcrumbs_array[2]['url'])) {
-                //item 4
-                $buffy .=  ',{
-                            "@type": "ListItem",
-                            "position": 4,
-                                "item": {
-                                "@type": "WebPage",
-                                "@id": "' . $breadcrumbs_array[2]['url'] . '",
-                                "name": "' . $breadcrumbs_array[2]['display_name'] . '"                                
-                            }
-                        }';
+            if ( isset( $breadcrumbs_array[2]['url'] ) ) {
+
+            //item 4
+            $buffy .=  '
+            ,{
+                "@type": "ListItem",
+                "position": 4,
+                    "item": {
+                    "@type": "WebPage",
+                    "@id": "' . $breadcrumbs_array[2]['url'] . '",
+                    "name": "' . $breadcrumbs_array[2]['display_name'] . '"                                
+                }
+            }';
+
             }
 
             //close script
-            $buffy .= '    ]
-                        }
-                       </script>';
+            $buffy .= '    
+        ]
+    }
+</script>' . PHP_EOL;
 
             //$buffy = preg_replace('/\s+/', ' ', $buffy);
             echo $buffy;
