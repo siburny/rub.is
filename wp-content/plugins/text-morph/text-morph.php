@@ -28,11 +28,11 @@ function morph_func($atts, $content = '')
         $ret .= $atts['add'];
     }
 
-    if (array_key_exists('option', $atts) && is_numeric($atts['option']) && $atts['option'] >= 1 && $atts['option'] <= 4 && (strtolower($ret) == 'male' || strtolower($ret) == 'female')) {
+    if (array_key_exists('option', $atts) && is_numeric($atts['option']) && $atts['option'] >= 1 && $atts['option'] <= 6 && (strtolower($ret) == 'male' || strtolower($ret) == 'female')) {
         $ret = strtolower($ret);
         $gender_values = array(
-            'male' => array(1 => 'he', 'him', 'his', 'man'),
-            'female' => array(1 => 'she', 'her', 'hers', 'woman'),
+            'male' => array(1 => 'he', 'him', 'his', 'man', 'boyfriend', 'husband'),
+            'female' => array(1 => 'she', 'her', 'hers', 'woman', 'girlfriend', 'wife'),
         );
 
         $ret = $gender_values[$ret][$atts['option']];
