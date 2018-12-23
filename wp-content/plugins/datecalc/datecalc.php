@@ -156,6 +156,50 @@ function datecalc_func($atts)
         }
         $ret = planet($date->format('j'), $date->format('n'));
         return $description ? nl2br(get_option('date-calc-planet-' . strtolower($ret))) : $ret;
+    }if (array_key_exists('difference', $atts)) {
+        $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
+
+        $date_diff = new DateTime($atts['difference'], new DateTimeZone(get_option('timezone_string')));
+        $diff = $date_diff->diff($date);
+
+        if ($display == 'yyyy') {
+            return $diff->format('%y');
+        } else if ($display == 'm') {
+            return $diff->format('%m');
+        } else if ($display == 'd') {
+            return $diff->format('%a');
+        } else if ($display == 'w') {
+            return round($diff->format('%a') / 7);
+        } else if ($display == 'full') {
+
+            if ($interval->y !== 0) {
+                $format[] = "%y " . $doPlural($diff->y, "year");
+            }
+            if ($interval->m !== 0) {
+                $format[] = "%m " . $doPlural($diff->m, "month");
+            }
+            if ($interval->d !== 0) {
+                $format[] = "%d " . $doPlural($diff->d, "day");
+            }
+
+            if (count($format) > 1) {
+                $format = implode(', ', $format);
+            } else {
+                $format = array_pop($format);
+            }
+
+            if (strpos(',') !== false) {
+                $pos = strrpos($format, ',');
+
+                if ($pos !== false) {
+                    $format = substr_replace($format, ', and', $pos, 1);
+                }
+            }
+
+            return $diff->format($format);
+        }
+
+        return '';
     } else {
         $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|w)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
         $replace = array(
