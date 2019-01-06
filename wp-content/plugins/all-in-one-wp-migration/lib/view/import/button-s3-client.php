@@ -22,55 +22,6 @@
  * ███████║███████╗██║  ██║ ╚████╔╝ ██║ ╚═╝ ██║██║  ██║███████║██║  ██╗
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
+?>
 
-class Ai1wm_Export_Download {
-
-	public static function execute( $params ) {
-
-		// Set progress
-		Ai1wm_Status::info( __( 'Renaming exported file...', AI1WM_PLUGIN_NAME ) );
-
-		// Open the archive file for writing
-		$archive = new Ai1wm_Compressor( ai1wm_archive_path( $params ) );
-
-		// Append EOF block
-		$archive->close( true );
-
-		// Rename archive file
-		if ( rename( ai1wm_archive_path( $params ), ai1wm_backup_path( $params ) ) ) {
-
-			$blog_id = null;
-
-			// Get subsite Blog ID
-			if ( isset( $params['options']['sites'] ) && ( $sites = $params['options']['sites'] ) ) {
-				if ( count( $sites ) === 1 ) {
-					$blog_id = array_shift( $sites );
-				}
-			}
-
-			// Set archive details
-			$link = ai1wm_backup_url( $params );
-			$size = ai1wm_backup_size( $params );
-			$name = ai1wm_site_name( $blog_id );
-
-			// Set progress
-			Ai1wm_Status::download(
-				sprintf(
-					__(
-						'<a href="%s" class="ai1wm-button-green ai1wm-emphasize" title="%s">' .
-						'<span>Download %s</span>' .
-						'<em>Size: %s</em>' .
-						'</a>',
-						AI1WM_PLUGIN_NAME
-					),
-					$link,
-					$name,
-					strlen( $name ) > 25 ? substr( $name, 0, 24 ) . '&hellip;' : $name,
-					$size
-				)
-			);
-		}
-
-		return $params;
-	}
-}
+<a href="https://servmask.com/products/s3-client-extension" target="_blank">S3 Client</a>

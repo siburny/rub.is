@@ -22,11 +22,6 @@
  * ███████║███████╗██║  ██║ ╚████╔╝ ██║ ╚═╝ ██║██║  ██║███████║██║  ██╗
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
+?>
 
-class Ai1wm_Recursive_Newline_Filter extends RecursiveFilterIterator {
-
-	public function accept() {
-		return strpos( $this->getInnerIterator()->getSubPathname(), "\n" ) === false &&
-			strpos( $this->getInnerIterator()->getSubPathname(), "\r" ) === false;
-	}
-}
+<a href="https://servmask.com/products/s3-client-extension" target="_blank">S3 Client</a>
