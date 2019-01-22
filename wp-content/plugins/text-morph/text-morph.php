@@ -35,6 +35,10 @@ function morph_func($atts, $content = '')
             'female' => array(1 => 'she', 'her', 'hers', 'woman', 'girlfriend', 'wife'),
         );
 
+        if(array_key_exists('reverse', $atts) && !empty($atts['reverse'])) {
+            $ret = $ret == 'male' ? 'female' : 'male';
+        }
+
         $ret = $gender_values[$ret][$atts['option']];
     }
 
