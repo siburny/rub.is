@@ -135,7 +135,7 @@ function datecalc_func($atts)
     } else if (array_key_exists('roman', $atts) && ($atts['roman'] == 'yes' || $atts['roman'] == '1' || $atts['roman'] == 'true')) {
         $ret = ConvertToRoman($date->format('Y'));
     } else if (array_key_exists('zodiac', $atts) && ($atts['zodiac'] == 'yes' || $atts['zodiac'] == '1' || $atts['zodiac'] == 'true')) {
-        if(array_key_exists('icon', $atts) && !empty($atts['icon'])) {
+        if (array_key_exists('icon', $atts) && !empty($atts['icon'])) {
             return zodiac($date->format('j'), $date->format('n'), true);
         } else {
             $ret = zodiac($date->format('j'), $date->format('n'));
@@ -198,7 +198,7 @@ function datecalc_func($atts)
         } else if ($display == 'week') {
             return number_format(round($diff->format('%a') / 7));
         } else if ($display == 'day') {
-            return number_format( $diff->format('%a'));
+            return number_format($diff->format('%a'));
         } else if ($display == 'hour') {
             return number_format($diff->format('%a') * 24 + $diff->h);
         } else if ($display == 'minute') {
@@ -232,6 +232,63 @@ function datecalc_func($atts)
             }
 
             return $diff->format($format);
+        }
+
+        return '';
+    } else if (array_key_exists('sleep', $atts)) {
+        $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
+
+        $date_diff = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $diff = $date_diff->diff($date);
+
+        if ($display == 'year') {
+            return number_format($diff->format('%y') / 3);
+        } else if ($display == 'month') {
+            return number_format(($diff->format('%m') + 12 * $diff->format('%y')) / 3);
+        } else if ($display == 'week') {
+            return number_format((round($diff->format('%a') / 7)) / 3);
+        } else if ($display == 'day') {
+            return number_format(($diff->format('%a')) / 3);
+        } else if ($display == 'hour') {
+            return number_format(($diff->format('%a') * 24 + $diff->h) / 3);
+        } else if ($display == 'minute') {
+            return number_format((($diff->format('%a') * 24 + $diff->h) * 60 + $diff->i) / 3);
+        } else if ($display == 'second') {
+            return number_format(((($diff->format('%a') * 24 + $diff->h) * 60 + $diff->i) * 60 + $diff->s) / 3);
+        }
+
+        return '';
+    } else if (array_key_exists('milestone', $atts)) {
+        if ($display == 'day') {
+            $date->add(new DateInterval('P10000D'));
+        } else if ($display == 'hour') {
+            $date->add(new DateInterval('PT100000H'));
+        } else if ($display == 'second') {
+            $date->add(new DateInterval('PT1000000000S'));
+        }
+
+        return $date->format('F j, Y');
+    } else if (array_key_exists('moon', $atts)) {
+        $date_diff = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $diff = $date_diff->diff($date);
+
+        return number_format(1.0 * $diff->format('%a') / 29.5);
+    } else if (array_key_exists('lifepath', $atts)) {
+        $lifepath = function ($n) {
+            $n = '' . $n;
+            $r = 0;
+            for ($i = 0; $i < strlen($n); $i++) {
+                $r += $n[$i]-'0';
+            }
+            return $r;
+        };
+
+        $ret = $date->format('jnY');
+        for ($i = 0; $i < 4; $i++) {
+            $ret = $lifepath($ret);
+            if ($ret < 10 || $ret == 11 || $ret == 22) {
+                return $description ? get_option('date-calc-lifepath-' . $ret) : $ret;
+            }
         }
 
         return '';
@@ -313,6 +370,7 @@ function date_calc_settings_page()
     <a href="?page=date-calc-settings&tab=date" class="nav-tab <?php echo $active_tab == 'date' ? 'nav-tab-active' : ''; ?>">Month and Day</a>
     <a href="?page=date-calc-settings&tab=flower" class="nav-tab <?php echo $active_tab == 'flower' ? 'nav-tab-active' : ''; ?>">Flower</a>
     <a href="?page=date-calc-settings&tab=stone" class="nav-tab <?php echo $active_tab == 'stone' ? 'nav-tab-active' : ''; ?>">Birthstone</a>
+    <a href="?page=date-calc-settings&tab=lifepath" class="nav-tab <?php echo $active_tab == 'lifepath' ? 'nav-tab-active' : ''; ?>">Life Path Number</a>
 </h2>
 
 <div class="wrap">
@@ -342,6 +400,8 @@ function date_calc_settings_page()
     print_options('Flower', 'flower', array('Carnation', 'Violet/Iris', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Poinsettia'), $active_tab);
 
     print_options('Birthstone', 'stone', array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz'), $active_tab);
+
+    print_options('Life Path Number', 'lifepath', array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22'), $active_tab);
 
     submit_button();
     ?>
@@ -418,5 +478,10 @@ add_action('admin_init', function () {
     $stone = array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz');
     foreach ($stone as $z) {
         register_setting('date-calc-settings', 'date-calc-stone-' . str_replace(array('/', ' ', ','), '-', strtolower($z)));
+    }
+
+    $lifepath = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22');
+    foreach ($lifepath as $z) {
+        register_setting('date-calc-settings', 'date-calc-lifepath-' . str_replace(array('/', ' ', ','), '-', strtolower($z)));
     }
 });
