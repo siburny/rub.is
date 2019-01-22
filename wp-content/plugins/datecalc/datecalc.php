@@ -7,6 +7,11 @@
 
 require_once 'Numword.php';
 
+function nl2br_str($string)
+{
+    return str_replace(["\r\n", "\r", "\n"], '<br/>', $string);
+}
+
 function ConvertToRoman($num)
 {
     $n = intval($num);
@@ -54,16 +59,35 @@ function _ordinal_suffix($number)
     }
 }
 
+function zodiac($day, $month, $image = false)
+{
+    $zodiac = array('', 'Capricorn', 'Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn');
+    $zodiacImage = array('', '&#9809;', '&#9810;', '&#9811;', '&#9800;', '&#9801;', '&#9802;', '&#9803;', '&#9804;', '&#9805;', '&#9806;', '&#9807;', '&#9808;', '&#9809;');
+    $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
+
+    return
+    $image ? (($day > $last_day[$month]) ? $zodiacImage[$month + 1] : $zodiacImage[$month])
+    : (($day > $last_day[$month]) ? $zodiac[$month + 1] : $zodiac[$month]);
+}
+
 function datecalc_func($atts)
 {
     if (empty($atts)) {
         $atts = array();
     }
 
-    $date = new DateTime($atts['until'], new DateTimeZone(get_option('timezone_string')));
+    if (array_key_exists('until', $atts)) {
+        $date = new DateTime($atts['until'], new DateTimeZone(get_option('timezone_string')));
+        try {
+            $date = new DateTime($atts['until'], new DateTimeZone(get_option('timezone_string')));
+        } catch (Exception $e) {
+            return $atts['until'];
+        }
+    }
+
     if (array_key_exists('date', $atts)) {
         if (is_numeric($atts['date'])) {
-            return $atts['date'];
+            $atts['date'] = $atts['date'] . '/1/1';
         }
         try {
             $date = new DateTime($atts['date'], new DateTimeZone(get_option('timezone_string')));
@@ -100,6 +124,9 @@ function datecalc_func($atts)
     if (array_key_exists('age', $atts) && ($atts['age'] == 'yes' || $atts['age'] == '1' || $atts['age'] == 'true')) {
         $diff = date_diff($date, date_create());
         $ret = $diff->format('%y');
+    } else if (array_key_exists('dogyears', $atts) && ($atts['dogyears'] == 'yes' || $atts['dogyears'] == '1' || $atts['dogyears'] == 'true')) {
+        $diff = date_diff($date, date_create());
+        $ret = floor(($diff->format('%y') - 14) / 4.731136854);
     } else if (array_key_exists('fullage', $atts) && ($atts['fullage'] == 'yes' || $atts['fullage'] == '1' || $atts['fullage'] == 'true')) {
         $diff = date_diff($date, date_create());
         $ret = $diff->format('%y');
@@ -108,22 +135,24 @@ function datecalc_func($atts)
     } else if (array_key_exists('roman', $atts) && ($atts['roman'] == 'yes' || $atts['roman'] == '1' || $atts['roman'] == 'true')) {
         $ret = ConvertToRoman($date->format('Y'));
     } else if (array_key_exists('zodiac', $atts) && ($atts['zodiac'] == 'yes' || $atts['zodiac'] == '1' || $atts['zodiac'] == 'true')) {
-        if (!function_exists('zodiac')) {
-            function zodiac($day, $month)
-            {
-                $zodiac = array('', 'Capricorn', 'Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn');
-                $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
-
-                return ($day > $last_day[$month]) ? $zodiac[$month + 1] : $zodiac[$month];
-            }
+        if(array_key_exists('icon', $atts) && !empty($atts['icon'])) {
+            return zodiac($date->format('j'), $date->format('n'), true);
+        } else {
+            $ret = zodiac($date->format('j'), $date->format('n'));
+            return $description ? nl2br_str(get_option('date-calc-zodiac-' . strtolower($ret))) : $ret;
         }
-
-        $ret = zodiac($date->format('j'), $date->format('n'));
-        return $description ? nl2br(get_option('date-calc-zodiac-' . strtolower($ret))) : $ret;
     } else if (array_key_exists('chinesezodiac', $atts) && ($atts['chinesezodiac'] == 'yes' || $atts['chinesezodiac'] == '1' || $atts['chinesezodiac'] == 'true')) {
         $chineseZodiac = array('Monkey', 'Rooster', 'Dog', 'Pig', 'Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Serpent', 'Horse', 'Goat');
         $ret = $chineseZodiac[$date->format('Y') % 12];
-        return $description ? nl2br(get_option('date-calc-chinesezodiac-' . strtolower($ret))) : $ret;
+        return $description ? nl2br_str(get_option('date-calc-chinesezodiac-' . strtolower($ret))) : $ret;
+    } else if (array_key_exists('flower', $atts) && ($atts['flower'] == 'yes' || $atts['flower'] == '1' || $atts['flower'] == 'true')) {
+        $flower = array('Carnation', 'Violet/Iris', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Poinsettia');
+        $ret = $flower[$date->format('n') - 1];
+        return $description ? nl2br_str(get_option('date-calc-flower-' . str_replace(array('/', ' ', ','), '-', strtolower($ret)))) : $ret;
+    } else if (array_key_exists('stone', $atts) && ($atts['stone'] == 'yes' || $atts['stone'] == '1' || $atts['stone'] == 'true')) {
+        $stone = array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz');
+        $ret = $stone[$date->format('n') - 1];
+        return $description ? nl2br_str(get_option('date-calc-stone-' . str_replace(array('/', ' ', ','), '-', strtolower($ret)))) : $ret;
     } else if (array_key_exists('generation', $atts) && ($atts['generation'] == 'yes' || $atts['generation'] == '1' || $atts['generation'] == 'true')) {
         $year = $date->format('Y');
         if ($year <= 1924) {
@@ -140,11 +169,11 @@ function datecalc_func($atts)
             $ret = "Generation Z";
         }
         $generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials' => 'millennials', 'Generation Z' => 'generation-z');
-        return $description ? nl2br(get_option('date-calc-generation-' . $generation[$ret])) : $ret;
+        return $description ? nl2br_str(get_option('date-calc-generation-' . $generation[$ret])) : $ret;
     } else if (array_key_exists('decade', $atts) && ($atts['decade'] == 'yes' || $atts['decade'] == '1' || $atts['decade'] == 'true')) {
         $ret = intval($date->format('Y') / 10) * 10;
         $ret .= 's';
-        return $description ? nl2br(get_option('date-calc-decade-' . $ret)) : $ret;
+        return $description ? nl2br_str(get_option('date-calc-decade-' . $ret)) : $ret;
     } else if (array_key_exists('planet', $atts) && ($atts['planet'] == 'yes' || $atts['planet'] == '1' || $atts['planet'] == 'true')) {
         if (!function_exists('planet')) {
             function planet($day, $month)
@@ -155,21 +184,27 @@ function datecalc_func($atts)
             }
         }
         $ret = planet($date->format('j'), $date->format('n'));
-        return $description ? nl2br(get_option('date-calc-planet-' . strtolower($ret))) : $ret;
-    }if (array_key_exists('difference', $atts)) {
+        return $description ? nl2br_str(get_option('date-calc-planet-' . strtolower($ret))) : $ret;
+    } else if (array_key_exists('difference', $atts)) {
         $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
 
         $date_diff = new DateTime($atts['difference'], new DateTimeZone(get_option('timezone_string')));
         $diff = $date_diff->diff($date);
 
-        if ($display == 'yyyy') {
-            return $diff->format('%y');
-        } else if ($display == 'm') {
-            return $diff->format('%m');
-        } else if ($display == 'd') {
-            return $diff->format('%a');
-        } else if ($display == 'w') {
-            return round($diff->format('%a') / 7);
+        if ($display == 'year') {
+            return number_format($diff->format('%y'));
+        } else if ($display == 'month') {
+            return number_format($diff->format('%m') * 12 * $diff->format('%y'));
+        } else if ($display == 'week') {
+            return number_format(round($diff->format('%a') / 7));
+        } else if ($display == 'day') {
+            return number_format( $diff->format('%a'));
+        } else if ($display == 'hour') {
+            return number_format($diff->format('%a') * 24 + $diff->h);
+        } else if ($display == 'minute') {
+            return number_format(($diff->format('%a') * 24 + $diff->h) * 60 + $diff->i);
+        } else if ($display == 'second') {
+            return number_format((($diff->format('%a') * 24 + $diff->h) * 60 + $diff->i) * 60 + $diff->s);
         } else if ($display == 'full') {
 
             if ($interval->y !== 0) {
@@ -188,7 +223,7 @@ function datecalc_func($atts)
                 $format = array_pop($format);
             }
 
-            if (strpos(',') !== false) {
+            if (strpos($format, ',') !== false) {
                 $pos = strrpos($format, ',');
 
                 if ($pos !== false) {
@@ -260,124 +295,82 @@ function datecalc_func($atts)
 
 function date_calc_settings_page()
 {
+    if (isset($_GET['tab'])) {
+        $active_tab = $_GET['tab'];
+    } else {
+        $active_tab = 'zodiac';
+    }
     ?>
+
+<h2>Date Calc Plugin Options</h2>
+
+<h2 class="nav-tab-wrapper">
+    <a href="?page=date-calc-settings&tab=zodiac" class="nav-tab <?php echo $active_tab == 'zodiac' ? 'nav-tab-active' : ''; ?>">Zodiac</a>
+    <a href="?page=date-calc-settings&tab=chinesezodiac" class="nav-tab <?php echo $active_tab == 'chinesezodiac' ? 'nav-tab-active' : ''; ?>">Chinese Zodiac</a>
+    <a href="?page=date-calc-settings&tab=planet" class="nav-tab <?php echo $active_tab == 'planet' ? 'nav-tab-active' : ''; ?>">Planet</a>
+    <a href="?page=date-calc-settings&tab=generation" class="nav-tab <?php echo $active_tab == 'generation' ? 'nav-tab-active' : ''; ?>">Generation</a>
+    <a href="?page=date-calc-settings&tab=decade" class="nav-tab <?php echo $active_tab == 'decade' ? 'nav-tab-active' : ''; ?>">Decade</a>
+    <a href="?page=date-calc-settings&tab=date" class="nav-tab <?php echo $active_tab == 'date' ? 'nav-tab-active' : ''; ?>">Month and Day</a>
+    <a href="?page=date-calc-settings&tab=flower" class="nav-tab <?php echo $active_tab == 'flower' ? 'nav-tab-active' : ''; ?>">Flower</a>
+    <a href="?page=date-calc-settings&tab=stone" class="nav-tab <?php echo $active_tab == 'stone' ? 'nav-tab-active' : ''; ?>">Birthstone</a>
+</h2>
+
 <div class="wrap">
-     <form action="options.php" method="post">
-     <h2>Zodiac Description</h2>
-       <?php
-settings_fields('date-calc-settings');
-    ?>
-        <table class="form-table">
-<?php
-$zodiac = array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius');
-    foreach ($zodiac as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-zodiac-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-zodiac-' . $z)); ?></textarea></td>
-             </tr>
-<?php
-}
-    ?>
-<?php
-do_settings_sections('date-calc-chinesezodiac');
-    ?>
-    </table>
+    <form action="options.php" method="post">
+    <?php settings_fields('date-calc-settings');?>
 
-    <h2>Chinese Year Zodiac Description</h2>
-    <table class="form-table">
-            <?php
-$chineseZodiac = array('monkey', 'rooster', 'dog', 'pig', 'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'serpent', 'horse', 'goat');
-    foreach ($chineseZodiac as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-chinesezodiac-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-chinesezodiac-' . $z)); ?></textarea></td>
-             </tr>
 <?php
-}
-    ?>
-    </table>
 
-<h2>Planet Description</h2>
-<table class="form-table">
-<?php
-$planet = array('saturn', 'uranus', 'neptune', 'mars', 'venus', 'mercury', 'moon', 'sun', 'pluto', 'jupiter');
-    foreach ($planet as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-planet-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-planet-' . $z)); ?></textarea></td>
-             </tr>
-<?php
-}
-    ?>
-    </table>
+    print_options('Zodiac', 'zodiac', array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius'), $active_tab);
 
-<h2>Generation Description</h2>
-<table class="form-table">
-<?php
-$generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials' => 'millennials', 'Generation Z' => 'generation-z');
-    foreach ($generation as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-generation-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-generation-' . $z)); ?></textarea></td>
-             </tr>
-<?php
-}
-    ?>
-        </table>
+    print_options('Chinese Zodiac', 'chinesezodiac', array('monkey', 'rooster', 'dog', 'pig', 'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'serpent', 'horse', 'goat'), $active_tab);
 
-<h2>Decades Description</h2>
-<table class="form-table">
-<?php
-for ($z = 0; $z < (date('Y') - 1900) / 10; $z++) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo (1900 + 10 * $z) . 's'; ?></th>
-                 <td><textarea placeholder="" name="date-calc-decade-<?php echo (1900 + 10 * $z); ?>s" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-decade-' . (1900 + 10 * $z) . 's')); ?></textarea></td>
-             </tr>
-<?php
-}
-    ?>
-        </table>
+    print_options('Planet', 'planet', array('saturn', 'uranus', 'neptune', 'mars', 'venus', 'mercury', 'moon', 'sun', 'pluto', 'jupiter'), $active_tab);
 
-<h2>Months Description</h2>
-<table class="form-table">
-<?php
-$days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
-    foreach ($days as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-date-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-date-' . $z)); ?></textarea></td>
-             </tr>
-<?php
-}
-    ?>
-        </table>
+    print_options('Generation', 'generation', array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials' => 'millennials', 'Generation Z' => 'generation-z'), $active_tab);
 
-<h2>Months Description</h2>
-<table class="form-table">
-<?php
-$days = array('january', 'february', 'march', 'may', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
-    foreach ($days as $z) {
-        ?>
-            <tr>
-                 <th style="vertial-align:top;"><?php echo ucfirst($z); ?></th>
-                 <td><textarea placeholder="" name="date-calc-date-<?php echo $z; ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-date-' . $z)); ?></textarea></td>
-             </tr>
-<?php
-}
+    $decades = array();
+    for ($z = 0; $z < (date('Y') - 1900) / 10; $z++) {
+        $decades[] = (1900 + 10 * $z) . 's';
+    }
+    print_options('Decade', 'decade', $decades, $active_tab);
+
+    print_options('Weekday', 'date', array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'), $active_tab);
+
+    print_options('Month', 'date', array('january', 'february', 'march', 'may', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december'), $active_tab);
+
+    print_options('Flower', 'flower', array('Carnation', 'Violet/Iris', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Poinsettia'), $active_tab);
+
+    print_options('Birthstone', 'stone', array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz'), $active_tab);
+
+    submit_button();
     ?>
-             <tr>
-                <td><?php submit_button();?></td>
-            </tr>
-        </table>
      </form>
    </div>
 <?php
+}
+
+function print_options($title, $setting, $options, $active_tab)
+{
+    if ($active_tab == $setting) {?>
+        <h2><?php echo $title; ?> Description</h2>
+        <table class="form-table">
+        <?php
+foreach ($options as $z) {
+        ?>
+                    <tr>
+                         <th style="vertial-align:top;"><?php echo $z; ?></th>
+                         <td><textarea placeholder="" name="date-calc-<?php echo $setting; ?>-<?php echo str_replace(array('/', ' ', ','), '-', strtolower($z)); ?>" rows="5" cols="100"><?php echo esc_attr(get_option('date-calc-' . $setting . '-' . str_replace(array('/', ' ', ','), '-', strtolower($z)))); ?></textarea></td>
+                     </tr>
+        <?php }?>
+            </table>
+
+            <?php } else {
+        foreach ($options as $z) {
+            ?>
+                <input type='hidden' name="date-calc-<?php echo $setting; ?>-<?php echo str_replace(array('/', ' ', ','), '-', strtolower($z)); ?>" value="<?php echo esc_attr(get_option('date-calc-' . $setting . '-' . str_replace(array('/', ' ', ','), '-', strtolower($z)))); ?>" />
+        <?php }
+    }
 }
 
 // Init
@@ -415,5 +408,15 @@ add_action('admin_init', function () {
     $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'january', 'february', 'march', 'may', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
     foreach ($days as $z) {
         register_setting('date-calc-settings', 'date-calc-date-' . $z);
+    }
+
+    $flower = array('carnation', 'violet/iris', 'daffodil', 'sweet pea/daisy', 'lily of the valley', 'rose', 'larkspur', 'gladiolus', 'aster/myosotis', 'marigold', 'chrysanthemum', 'poinsettia');
+    foreach ($flower as $z) {
+        register_setting('date-calc-settings', 'date-calc-flower-' . str_replace(array('/', ' ', ','), '-', $z));
+    }
+
+    $stone = array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz');
+    foreach ($stone as $z) {
+        register_setting('date-calc-settings', 'date-calc-stone-' . str_replace(array('/', ' ', ','), '-', strtolower($z)));
     }
 });
