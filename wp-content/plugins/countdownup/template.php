@@ -74,13 +74,13 @@ jQuery(function() {
 						var count = Math.floor(abs_diff / seconds[display[i]]);
 						
 						if(!large) {
-							text += (text.length ? delimiter : '') + count + ' ' + display[i] + (count != 1 ? 's' : '');
+							text += (text.length ? delimiter : '') + count.toLocaleString() + ' ' + display[i] + (count != 1 ? 's' : '');
 						} else {
 							text += '<div style="text-align:center;display:inline-block;margin:10px;text-transform:capitalize;"><span style="font-weight:bold;font-size:24px;color:#000;">' + count + '</span><br /><span style="font-size:11px;">' + display[i] + (count != 1 ? 's' : '') + '</span></div>'
 						}
 
 						if(count > 0 && !show_zero) {
-							show_zero = true;
+							//show_zero = true;
 						}
 						abs_diff -= count * seconds[display[i]];
 					}
