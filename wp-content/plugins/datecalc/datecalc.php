@@ -6,6 +6,55 @@
  */
 
 require_once 'Numword.php';
+require_once 'load_csv.php';
+
+function is_leap_year($year)
+{
+    return ((($year % 4) == 0) && ((($year % 100) != 0) || (($year % 400) == 0)));
+}
+
+function extraDays($y)
+{
+    // If current year is a leap year,
+    // then number of weekdays move
+    // ahead by 2 in terms of weekdays.
+    if ($y % 400 == 0 ||
+        $y % 100 != 0 &&
+        $y % 4 == 0) {
+        return 2;
+    }
+
+    // Else number of weekdays
+    // move ahead by 1.
+    return 1;
+}
+
+// Returns next identical year.
+function nextYear($y)
+{
+    // Find number of days
+    // moved ahead by y
+    $days = extraDays($y);
+
+    // Start from next year
+    $x = $y + 1;
+
+    // Count total number of weekdays
+    // moved ahead so far.
+    for ($sum = 0;; $x++) {
+        $sum = ($sum + extraDays($x)) % 7;
+
+        // If sum is divisible by 7
+        // and leap-ness of x is
+        // same as y, return x.
+        if ($sum == 0 && (extraDays($x) == $days)) {
+            return $x;
+        }
+
+    }
+
+    return $x;
+}
 
 function nl2br_str($string)
 {
@@ -72,6 +121,8 @@ function zodiac($day, $month, $image = false)
 
 function datecalc_func($atts)
 {
+    global $billboard;
+
     if (empty($atts)) {
         $atts = array();
     }
@@ -174,6 +225,16 @@ function datecalc_func($atts)
         $ret = intval($date->format('Y') / 10) * 10;
         $ret .= 's';
         return $description ? nl2br_str(get_option('date-calc-decade-' . $ret)) : $ret;
+    } else if (array_key_exists('samecalendar', $atts) && ($atts['samecalendar'] == 'yes' || $atts['samecalendar'] == '1' || $atts['samecalendar'] == 'true')) {
+        $ret = $date->format("Y");
+        while (($ret = nextYear($ret)) < date('Y'));
+        return $ret;
+    } else if (array_key_exists('song', $atts) && ($atts['song'] == 'yes' || $atts['song'] == '1' || $atts['song'] == 'true')) {
+        $key = $date->format('n/j/Y');
+        if (array_key_exists($key, $billboard)) {
+            return $billboard[$key]['Song'] . ' by ' . $billboard[$key]['Artist'];
+        }
+        return '';
     } else if (array_key_exists('planet', $atts) && ($atts['planet'] == 'yes' || $atts['planet'] == '1' || $atts['planet'] == 'true')) {
         if (!function_exists('planet')) {
             function planet($day, $month)
@@ -185,6 +246,83 @@ function datecalc_func($atts)
         }
         $ret = planet($date->format('j'), $date->format('n'));
         return $description ? nl2br_str(get_option('date-calc-planet-' . strtolower($ret))) : $ret;
+    } else if (array_key_exists('babyname', $atts)) {
+        global $babynames;
+        $count = array_key_exists('numbers', $atts);
+
+        if (!array_key_exists($date->format('Y'), $babynames)) {
+            return '';
+        }
+        $ret = $babynames[$date->format('Y')];
+
+        if ($count) {
+            if ($display == 'girl') {
+                return number_format(str_replace(',', '', $ret['GirlNumber']));
+            } else if ($display == 'boy') {
+                return number_format(str_replace(',', '', $ret['BoyNumbers']));
+            }
+        } else {
+            if ($display == 'girl') {
+                return str_replace(',', '', $ret['Girl']);
+            } else if ($display == 'boy') {
+                return str_replace(',', '', $ret['Boy']);
+            }
+        }
+        return '';
+    } else if (array_key_exists('nba', $atts)) {
+        global $nba;
+
+        if (!array_key_exists($date->format('Y'), $nba)) {
+            return '';
+        }
+        $ret = $nba[$date->format('Y')];
+
+        return $ret['Winner'] . ' beat ' . $ret['Loser'] . ' ' . $ret['Score'];
+    } else if (array_key_exists('nhl', $atts)) {
+        global $nhl;
+
+        if (!array_key_exists($date->format('Y'), $nhl)) {
+            return '';
+        }
+        $ret = $nhl[$date->format('Y')];
+
+        return $ret['Winner'] . ' beat ' . $ret['Loser'] . ' ' . $ret['Score'];
+    } else if (array_key_exists('nfl', $atts)) {
+        global $nfl;
+
+        if (!array_key_exists($date->format('Y'), $nfl)) {
+            return '';
+        }
+        $ret = $nfl[$date->format('Y')];
+
+        return $ret['Winner'] . ' beat ' . $ret['Loser'] . ' ' . $ret['Score'];
+    } else if (array_key_exists('mlb', $atts)) {
+        global $mlb;
+
+        if (!array_key_exists($date->format('Y'), $mlb)) {
+            return '';
+        }
+        $ret = $mlb[$date->format('Y')];
+
+        return $ret['Winner'] . ' beat ' . $ret['Loser'] . ' ' . $ret['Score'];
+    } else if (array_key_exists('babybirth', $atts)) {
+        global $babybirths;
+
+        if (!array_key_exists($date->format('Y'), $babybirths)) {
+            return '';
+        }
+        $ret = $babybirths[$date->format('Y')];
+
+        if ($display == 'year') {
+            return number_format(str_replace(',', '', $ret['BabiesYear']));
+        } else if ($display == 'month') {
+            return number_format(str_replace(',', '', $ret['BabiesYear']) / 12);
+        } else if ($display == 'day') {
+            return number_format(str_replace(',', '', $ret['BabiesDay']));
+        } else if ($display == 'minute') {
+            return number_format(str_replace(',', '', $ret['BabiesMinute']));
+        }
+        return '';
     } else if (array_key_exists('difference', $atts)) {
         $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
 
@@ -242,7 +380,7 @@ function datecalc_func($atts)
         $diff = $date_diff->diff($date);
 
         if ($display == 'year') {
-            return number_format($diff->format('%y') / 3);
+            return number_format($diff->format('%a') / 365 / 3, 2);
         } else if ($display == 'month') {
             return number_format(($diff->format('%m') + 12 * $diff->format('%y')) / 3);
         } else if ($display == 'week') {
@@ -308,6 +446,8 @@ function datecalc_func($atts)
 
         $ret = $date->format('F') . ' ' . $f2->format($date->format('j')) . ', ' . $f1->format(substr($date->format('Y'), 0, 2)) . ' ' . $f1->format(substr($date->format('Y'), 2, 2));
     } else {
+        $count = array_key_exists('count', $atts);
+
         $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|w)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
         $replace = array(
             'yyyy' => 'Y',
@@ -316,23 +456,29 @@ function datecalc_func($atts)
             'mmm' => 'M',
             'mm' => 'm',
             'm' => 'n',
-            'dddd' => 'l',
+            'dddd' => $count ? 'W' : 'l',
             'ddd' => 'D',
             'dd' => 'd' . ($ordinalize ? 'S' : ''),
-            'd' => 'j' . ($ordinalize ? 'S' : ''),
+            'd' => $count ? 'z' : 'j' . ($ordinalize ? 'S' : ''),
             'h:mm' => 'g:i',
             'hh:mm' => 'h:i',
             'AM/PM' => 'A',
             'AMPM' => 'A',
-            'w' => 'z',
         );
 
         $ret = '';
         foreach ($display as $token) {
             if (array_key_exists($token, $replace)) {
+                if ($replace[$token] == 'z') {
+                    $date->add(new DateInterval('P1D'));
+                }
+
                 $ret .= $date->format($replace[$token]);
+
                 if ($token == 'w') {
                     $ret = 1 + intval($ret / 7);
+                } else if ($token == 'dddd' && $count) {
+                    $ret = $ret . _ordinal_suffix($ret) . ' ' . $date->format('l');
                 }
             } else {
                 $ret .= $token;
