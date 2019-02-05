@@ -370,7 +370,7 @@ function datecalc_func($atts)
         $i = 0;
         foreach ($ret as $key => $value) {
             if ($i++ < $count) {
-                $str .= $value['year'] . ' - ' . $value['event'] . '<br />';
+                $str .= '<p><b>' . $value['year'] . '</b> &ndash; ' . $value['event'] . '</p>';
             }
         }
 
