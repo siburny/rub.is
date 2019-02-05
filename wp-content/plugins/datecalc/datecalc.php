@@ -155,9 +155,9 @@ function datecalc_func($atts)
 
     if (array_key_exists('now', $atts)) {
         $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
-        if($now > $date) {
+        if ($now > $date) {
             $date->setDate($now->format('Y'), $date->format('m'), $date->format('d'));
-            if($now > $date) {
+            if ($now > $date) {
                 $date->setDate($now->format('Y') + 1, $date->format('m'), $date->format('d'));
             }
         }
@@ -321,6 +321,60 @@ function datecalc_func($atts)
         $ret = $mlb[$date->format('Y')];
 
         return $ret['Output'];
+    } else if (array_key_exists('birthdays', $atts)) {
+        global $birthdays;
+
+        if (!array_key_exists($date->format('n/j/Y'), $birthdays)) {
+            return '';
+        }
+        $ret = $birthdays[$date->format('n/j/Y')];
+
+        $count = 3;
+        if (!array_key_exists('count', $atts) && is_numeric($atts['count'])) {
+            $count = 0 + $atts['count'];
+        }
+
+        if (array_key_exists('order', $atts) && $atts['order'] == 'new') {
+            $ret = array_reverse($ret);
+        }
+
+        $str = array();
+        $i = 0;
+        foreach ($ret as $key => $value) {
+            if($i++ < $count) {
+                $str[] = $value['name'] . ' (' . $value['profession'] . ')';
+            }
+        }
+
+        return implode(', ', $str);
+    } else if (array_key_exists('events', $atts)) {
+        global $events;
+
+        if (!array_key_exists($date->format('n/j'), $events)) {
+            return '';
+        }
+        $ret = $events[$date->format('n/j')];
+
+        $count = 3;
+        if (!array_key_exists('count', $atts) && is_numeric($atts['count'])) {
+            $count = 0 + $atts['count'];
+        }
+
+        if (array_key_exists('order', $atts) && $atts['order'] == 'old') {
+            ksort($ret);
+        } else {
+            krsort($ret);
+        }
+
+        $str = '';
+        $i = 0;
+        foreach ($ret as $key => $value) {
+            if ($i++ < $count) {
+                $str .= $value['year'] . ' - ' . $value['event'] . '<br />';
+            }
+        }
+
+        return $str;
     } else if (array_key_exists('babybirth', $atts)) {
         global $babybirths;
 
