@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2018 ServMask Inc.
+ * Copyright (C) 2014-2019 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ define( 'AI1WM_DEBUG', false );
 // ==================
 // = Plugin Version =
 // ==================
-define( 'AI1WM_VERSION', '6.82' );
+define( 'AI1WM_VERSION', '6.84' );
 
 // ===============
 // = Plugin Name =
@@ -183,6 +183,11 @@ define( 'AI1WM_ENDURANCE_BROWSER_CACHE_NAME', 'endurance-browser-cache.php' );
 // =========================
 define( 'AI1WM_GD_SYSTEM_PLUGIN_NAME', 'gd-system-plugin.php' );
 
+// =======================
+// = Wp Stack Cache Name =
+// =======================
+define( 'AI1WM_WP_STACK_CACHE_NAME', 'wp-stack-cache.php' );
+
 // ===================
 // = Export Log Name =
 // ===================
@@ -292,6 +297,16 @@ define( 'AI1WM_MAX_CHUNK_SIZE', 5 * 1024 * 1024 );
 // = Max Chunk Retries =
 // =====================
 define( 'AI1WM_MAX_CHUNK_RETRIES', 10 );
+
+// ===========================
+// = Max Transaction Queries =
+// ===========================
+define( 'AI1WM_MAX_TRANSACTION_QUERIES', 1000 );
+
+// ======================
+// = Max Select Records =
+// ======================
+define( 'AI1WM_MAX_SELECT_RECORDS', 1000 );
 
 // ===========================
 // = WP_CONTENT_DIR Constant =
