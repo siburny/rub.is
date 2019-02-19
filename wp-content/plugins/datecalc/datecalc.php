@@ -560,7 +560,7 @@ function datecalc_func($atts)
                 if ($token == 'w') {
                     $ret = 1 + intval($ret / 7);
                 } else if ($token == 'dddd' && $count) {
-                    $ret = $ret . _ordinal_suffix($ret) . ' ' . $date->format('l');
+                    $ret = (1*$ret) . _ordinal_suffix($ret) . ' ' . $date->format('l');
                 }
             } else {
                 $ret .= $token;
