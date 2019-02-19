@@ -330,8 +330,8 @@ function datecalc_func($atts)
         $ret = $birthdays[$date->format('n/j/Y')];
 
         $count = 3;
-        if (!array_key_exists('count', $atts) && is_numeric($atts['count'])) {
-            $count = 0 + $atts['count'];
+        if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+            $count = 0 + $atts['show'];
         }
 
         if (array_key_exists('order', $atts) && $atts['order'] == 'new') {
@@ -356,8 +356,8 @@ function datecalc_func($atts)
         $ret = $events[$date->format('n/j')];
 
         $count = 3;
-        if (!array_key_exists('count', $atts) && is_numeric($atts['count'])) {
-            $count = 0 + $atts['count'];
+        if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+            $count = 0 + $atts['show'];
         }
 
         if (array_key_exists('order', $atts) && $atts['order'] == 'old') {
@@ -404,7 +404,7 @@ function datecalc_func($atts)
             }
         }
 
-        return '1';
+        return '';
     } else if (array_key_exists('difference', $atts)) {
         $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
 
