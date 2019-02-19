@@ -393,6 +393,18 @@ function datecalc_func($atts)
             return number_format_nozero(str_replace(',', '', $ret['BabiesMinute']));
         }
         return '';
+    } else if (array_key_exists('president', $atts)) {
+        global $presidents;
+
+        foreach($presidents as $key => $val)
+        {
+            if($val['Took office'] <= $date && ($val['Left office'] == 'Incumbent' || $val['Left office'] > $date))
+            {
+                return $val['President'].' ('.$val['Party'].')';
+            }
+        }
+
+        return '1';
     } else if (array_key_exists('difference', $atts)) {
         $doPlural = function ($nb, $str) {return $nb > 1 ? $str . 's' : $str;};
 
