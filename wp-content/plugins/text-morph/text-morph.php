@@ -31,8 +31,8 @@ function morph_func($atts, $content = '')
     if (array_key_exists('option', $atts) && is_numeric($atts['option']) && $atts['option'] >= 1 && $atts['option'] <= 6 && (strtolower($ret) == 'male' || strtolower($ret) == 'female')) {
         $ret = strtolower($ret);
         $gender_values = array(
-            'male' => array(1 => 'he', 'him', 'his', 'man', 'boyfriend', 'husband'),
-            'female' => array(1 => 'she', 'her', 'hers', 'woman', 'girlfriend', 'wife'),
+            'male' => array(1 => 'he', 'his', 'his', 'man', 'boyfriend', 'husband'),
+            'female' => array(1 => 'she', 'her', 'her', 'woman', 'girlfriend', 'wife'),
         );
 
         if(array_key_exists('reverse', $atts) && !empty($atts['reverse'])) {
