@@ -10,6 +10,8 @@ $nba = array();
 $events = array();
 $birthdays = array();
 $presidents = array();
+$movies = array();
+$games = array();
 
 $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/billboard-top100.csv'));
 array_walk($input, function ($a) use (&$billboard, $input) {
@@ -76,6 +78,39 @@ array_walk($input, function ($a) use (&$presidents, $input) {
         if ($presidents[$a[0]]['Left office'] != 'Incumbent') {
             $presidents[$a[0]]['Left office'] = date_create($presidents[$a[0]]['Left office'], new DateTimeZone(get_option('timezone_string')));
         }
+    } else {
+        $skip = false;
+    }
+});
+
+$skip = true;
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/movies.csv'));
+array_walk($input, function ($a) use (&$movies, $input) {
+    global $skip;
+    if (!$skip) {
+        $movies[$a[0]] = array_combine($input[0], $a);
+    } else {
+        $skip = false;
+    }
+});
+
+$skip = true;
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/games.csv'));
+array_walk($input, function ($a) use (&$games, $input) {
+    global $skip;
+    if (!$skip) {
+        $games[$a[0]] = array_combine($input[0], $a);
+    } else {
+        $skip = false;
+    }
+});
+
+$skip = true;
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/holidays.csv'));
+array_walk($input, function ($a) use (&$holidays, $input) {
+    global $skip;
+    if (!$skip) {
+        $holidays[$a[0]] = array_combine($input[0], $a);
     } else {
         $skip = false;
     }
