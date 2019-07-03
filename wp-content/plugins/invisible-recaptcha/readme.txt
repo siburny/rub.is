@@ -3,8 +3,8 @@ Contributors: mihche
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U
 Tags: invisible reCaptcha, woocommerce invisible reCaptcha, contact form 7 invisible reCaptcha
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 1.2.1
+Tested up to: 5.1
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,6 +102,12 @@ See all [reCaptcha Language Codes](https://developers.google.com/recaptcha/docs/
 > **Note: This plugin requires PHP 5.3 or higher to be activated.**
 
 == Changelog ==
+
+= 1.2.3 =
+* Fixed class not found issue [Problem with AJAX after update](https://wordpress.org/support/topic/problem-with-ajax-after-update/)
+
+= 1.2.2 =
+* Fixed the compatibility with  WPML 4.x - the multilingual WordPress plugin
 
 = 1.2.1 =
 * Fixed bug [Users with Author roles cannot reply to comments from backend](https://wordpress.org/support/topic/users-with-author-roles-cannot-reply-to-comments-from-backend/)
