@@ -5,7 +5,7 @@
  * Version: 0.1
  */
 
-function my_awesome_func($data)
+function photobooth_assets_func()
 {
     $attachments = get_children(
         array(
@@ -18,7 +18,7 @@ function my_awesome_func($data)
 
     $ret = array();
     array_walk($attachments, function($item, $key) use(&$ret) {
-        $ret[] = $item->guid;
+        $ret[] = array('url' => $item->guid, 'title' => $item->post_excerpt);
     });
 
     return $ret;
@@ -28,6 +28,6 @@ function my_awesome_func($data)
 add_action('rest_api_init', function () {
     register_rest_route('photobooth-assets/v1', '/get-templates', array(
         'methods' => 'GET',
-        'callback' => 'my_awesome_func',
+        'callback' => 'photobooth_assets_func',
     ));
 });
