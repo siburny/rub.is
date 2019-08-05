@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.5.8
+Version: 1.6.5
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -96,7 +96,7 @@ blockquote, q {
 
 a {
 	&:focus {
-		outline: thin dotted;
+		outline: 0;
 	}
 
 	&:hover,
@@ -524,6 +524,10 @@ a {
 	&:active,
 	&:hover {
 		text-decoration: none;
+	}
+
+	&:focus {
+		outline: none;
 	}
 }
 
@@ -976,6 +980,17 @@ body {
 	width: 28.407225%;
 	margin: 0 2.46305419%;
 	padding: 0px 0px 30px;
+
+	#colophon & {
+		width: 31.7405583%;
+		margin-left: 0;
+		margin-right: 2.38916257%;
+
+		&.tg-after-two-blocks-clearfix {
+			margin-right: 0;
+			float: right;
+		}
+	}
 }
 
 .tg-one-fourth {
@@ -1414,6 +1429,10 @@ body {
 	font-size: 12px;
 	line-height: 1.2;
 	padding-top: 5px;
+}
+
+.footer-widgets-area .gallery-columns-3 .gallery-item{
+	padding: 5px 5px;
 }
 
 /* =COMMENTS
@@ -2180,4 +2199,33 @@ div#wp-custom-header:hover .wp-custom-header-video-button {
 
 .date .updated {
 	display: none;
+}
+
+body {
+	&.page-template-page-builder {
+		#primary {
+			float: none;
+			width: 100%;
+		}
+
+		#main {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	&.no-sidebar-content-stretched {
+		#main {
+
+			.inner-wrap {
+				width: 100%;
+				max-width: 100%;
+
+				#primary {
+					float: none;
+					width: 100%;
+				}
+			}
+		}
+	}
 }

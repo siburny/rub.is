@@ -5,8 +5,8 @@ Contributors: minnur
 Donate link: https://goo.gl/C2cBDF
 Tags: Dropbox, Box, OneDrive, Google Drive, Instagram, CloudApp, Upload from remote, remote media, remote URL, remote image, remote file, external media, wp remote upload, external media upload, external image upload
 Requires at least: 4.4
-Tested up to: 4.9
-Stable tag: 1.0.18
+Tested up to: 5.2
+Stable tag: 1.0.19
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,6 +144,8 @@ Not available at the moment.
 
 == Changelog ==
 
+= 1.0.19 =
+* Version bump. Test with Wordpress 5.2.2
 = 1.0.18 =
 * Add donation box
 = 1.0.17 =

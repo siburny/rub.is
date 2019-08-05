@@ -46,6 +46,41 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+= Version 1.6.5 - 2019-07-12 =
+* Remove - Removed dashboard message to align with the theme review guidelines
+
+= Version 1.6.4 - 2019-07-11 =
+* Tweak - Added `wp_body_open` function to support WordPress 5.2 `wp_body_open` hook.
+* Tweak - Added message to make user aware while installing and activating the ThemeGrill demo importer plugin.
+
+= Version 1.6.3 - 2019-05-23 =
+* Added   - New Demo (Spacious Store) - If you want to create an online store for your website, use this Spacious demo.
+* Feature - Added header button option
+* Feature - Added stretched layout option
+* Feature - Added WooCommerce layout option
+* Feature - Added typography option
+* Feature - Added option to display menu items in one line
+* Tweak   - Add review notice message.
+
+= Version 1.6.2 - 2019-04-10 =
+* Added   - New Demo (Spacious Medical) - Aid your patient's health with the help of this Spacious Medical demo.
+* Feature - Added social icons option
+* Feature - Added Header top menu
+* Feature - Added Header top info text option
+* Feature - Added search icon display in menu
+* Feature - Added cart icon display in menu for WooCommerce
+* Feature - Added footer sidebar column option
+
+= Version 1.6.1 - 2019-03-26 =
+* Fix - Upload Theme button not working
+
+= Version 1.6.0 - 2019-03-06 =
+* Tweak - Added site library and demo import process in About Spacious page.
+
+= Version 1.5.9 - 2019-02-12 =
+* Fix   - Wrong setting id set for Header Display Type option.
+* Tweak - Modify pingback url autodiscovery for single posts, pages, or attachments.
+
 = Version 1.5.8 - 2019-01-16 =
 * Update - Waypoint js to 2.0.5
 

@@ -19,10 +19,9 @@
 <html <?php language_attributes(); ?>>
 <!--<![endif]-->
 <head>
-	<meta charset="<?php bloginfo( 'charset' ); ?>"/>
+	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="profile" href="http://gmpg.org/xfn/11"/>
-	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>"/>
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<?php
 	/**
 	 * This hook is important for wordpress plugins and other many things
@@ -32,6 +31,20 @@
 </head>
 
 <body <?php body_class(); ?>>
+
+<?php
+/**
+ * WordPress function to load custom scripts after body.
+ *
+ * Introduced in WordPress 5.2.0
+ *
+ * @since Spacious 1.6.4
+ */
+if ( function_exists( 'wp_body_open' ) ) {
+	wp_body_open();
+}
+?>
+
 <?php do_action( 'before' ); ?>
 <div id="page" class="hfeed site">
 	<?php do_action( 'spacious_before_header' ); ?>
@@ -40,19 +53,39 @@
 	$spacious_header_display_type = spacious_options( 'spacious_header_display_type', 'one' );
 	$header_class                 = '';
 	if ( $spacious_header_display_type === 'four' ) {
-		$header_class = ' spacious-header-display-four';
+		$header_class = 'spacious-header-display-four';
 	}
 	?>
 
 	<header id="masthead" class="site-header clearfix <?php echo esc_attr( $header_class ); ?>">
 
+		<?php if ( spacious_options( 'spacious_activate_top_header_bar', 0 ) == 1 ) { ?>
+			<div id="header-meta">
+				<div class="inner-wrap clearfix">
+					<?php
+					if ( spacious_options( 'spacious_activate_social_links', 0 ) == 1 ) {
+						spacious_social_links();
+					}
+					spacious_header_info_text();
+					?>
+					<nav class="small-menu" class="clearfix">
+						<?php
+						if ( has_nav_menu( 'header' ) ) {
+							wp_nav_menu( array( 'theme_location' => 'header', 'depth' => - 1 ) );
+						}
+						?>
+					</nav>
+				</div>
+			</div>
+		<?php } ?>
+
 		<?php if ( 'above' === spacious_options( 'spacious_header_image_position', 'above' ) ) {
 			spacious_render_header_image();
 		} ?>
 
-		<div id="header-text-nav-container">
+		<div id="header-text-nav-container" class="<?php echo ( spacious_options( 'spacious_one_line_menu_setting', 0 ) == 1 ) ? 'menu-one-line' : ''; ?>">
 
-			<div class="inner-wrap">
+			<div class="inner-wrap" id="<?php echo esc_attr( $header_class ); ?>">
 
 				<div id="header-text-nav-wrap" class="clearfix">
 					<div id="header-left-section">
@@ -110,6 +143,25 @@
 							<?php
 						} ?>
 
+						<?php if ( 'four' !== spacious_options( 'spacious_header_display_type', 'one' ) ) : ?>
+							<div class="header-action">
+								<?php
+								spacious_cart_icon();
+
+								if ( 1 === spacious_options( 'spacious_header_search_icon', 0 ) ) :
+									?>
+									<div class="search-wrapper">
+										<div class="search">
+											<i class="fa fa-search"> </i>
+										</div>
+										<div class="header-search-form">
+											<?php get_search_form(); ?>
+										</div>
+									</div><!-- /.search-wrapper -->
+								<?php endif; ?>
+							</div>
+						<?php endif; ?>
+
 						<?php if ( ! ( 'four' === spacious_options( 'spacious_header_display_type', 'one' ) ) ) :
 							spacious_main_nav();
 						endif; ?>
@@ -119,9 +171,26 @@
 				</div><!-- #header-text-nav-wrap -->
 			</div><!-- .inner-wrap -->
 			<?php if ( 'four' === spacious_options( 'spacious_header_display_type', 'one' ) ) : ?>
-				<div class="bottom-menu clearfix">
+				<div class="bottom-menu clearfix <?php echo spacious_options( 'spacious_header_button_setting' ) ? 'header-menu-button' : ''; ?>">
 					<div class="inner-wrap">
 						<?php spacious_main_nav(); ?>
+
+						<div class="header-action">
+							<?php
+							spacious_cart_icon();
+
+							if ( 1 === spacious_options( 'spacious_header_search_icon', 0 ) ) :
+								?>
+								<div class="search-wrapper">
+									<div class="search">
+										<i class="fa fa-search"> </i>
+									</div>
+									<div class="header-search-form">
+										<?php get_search_form(); ?>
+									</div>
+								</div><!-- /.search-wrapper -->
+							<?php endif; ?>
+						</div>
 					</div>
 				</div>
 			<?php endif; ?>

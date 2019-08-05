@@ -13,6 +13,8 @@ function spacious_customize_register( $wp_customize ) {
 	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-image-radio-control.php';
 	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-custom-css-control.php';
 	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-text-area-control.php';
+	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-editor-custom-control.php';
+	require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-typography-control.php';
 
 	// Transport postMessage variable set
 	$customizer_selective_refresh = isset( $wp_customize->selective_refresh ) ? 'postMessage' : 'refresh';
@@ -40,8 +42,8 @@ function spacious_customize_register( $wp_customize ) {
 	 */
 	class SPACIOUS_Upsell_Section extends WP_Customize_Section {
 		public $type = 'spacious-upsell-section';
-		public $url = '';
-		public $id = '';
+		public $url  = '';
+		public $id   = '';
 
 		/**
 		 * Gather the parameters passed to client JavaScript via JSON.
@@ -62,7 +64,7 @@ function spacious_customize_register( $wp_customize ) {
 		protected function render_template() {
 			?>
 			<li id="accordion-section-{{ data.id }}"
-				class="spacious-upsell-accordion-section control-section-{{ data.type }} cannot-expand accordion-section">
+			    class="spacious-upsell-accordion-section control-section-{{ data.type }} cannot-expand accordion-section">
 				<h3 class="accordion-section-title"><a href="{{{ data.url }}}" target="_blank">{{ data.title }}</a></h3>
 			</li>
 			<?php
@@ -130,6 +132,56 @@ function spacious_customize_register( $wp_customize ) {
 		),
 	) );
 
+	// Header Top bar activate option
+	$wp_customize->add_section( 'spacious_header_top_bar_activate_section', array(
+		'priority' => 2,
+		'title'    => __( 'Activate Header Top Bar', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_activate_top_header_bar]', array(
+		'default'           => 0,
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_checkbox_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_activate_top_header_bar]', array(
+		'type'     => 'checkbox',
+		'label'    => __( 'Check to show top header bar. The top header bar includes social icons area, small text area and menu area.', 'spacious' ),
+		'section'  => 'spacious_header_top_bar_activate_section',
+		'settings' => $spacious_themename . '[spacious_activate_top_header_bar]',
+	) );
+
+	// Header area small text option
+	$wp_customize->add_section( 'spacious_header_small_text_section', array(
+		'priority' => 2,
+		'title'    => __( 'Header Info Text', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_info_text]', array(
+		'default'           => '',
+		'type'              => 'option',
+		'transport'         => $customizer_selective_refresh,
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_editor_sanitize',
+	) );
+
+	$wp_customize->add_control( new Spacious_Editor_Custom_Control( $wp_customize, $spacious_themename . '[spacious_header_info_text]', array(
+		'label'   => __( 'You can add phone numbers, other contact info here as you like. This box also accepts shortcodes.', 'spacious' ),
+		'section' => 'spacious_header_small_text_section',
+		'setting' => $spacious_themename . '[spacious_header_info_text]',
+	) ) );
+
+	// Selective refresh for header information text
+	if ( isset( $wp_customize->selective_refresh ) ) {
+		$wp_customize->selective_refresh->add_partial( $spacious_themename . '[spacious_header_info_text]', array(
+			'selector'        => '.small-info-text p',
+			'render_callback' => 'spacious_header_info_text',
+		) );
+	}
+
 	// Header display type option
 	$wp_customize->add_section( 'spacious_header_display_type_option', array(
 		'priority' => 2,
@@ -137,18 +189,18 @@ function spacious_customize_register( $wp_customize ) {
 		'panel'    => 'spacious_header_options',
 	) );
 
-	$wp_customize->add_setting( 'spacious[spacious_header_display_type]', array(
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_display_type]', array(
 		'default'           => 'one',
 		'type'              => 'option',
 		'capability'        => 'edit_theme_options',
 		'sanitize_callback' => 'spacious_radio_select_sanitize',
 	) );
 
-	$wp_customize->add_control( new Spacious_Image_Radio_Control( $wp_customize, 'spacious[spacious_header_display_type]', array(
+	$wp_customize->add_control( new Spacious_Image_Radio_Control( $wp_customize, $spacious_themename . '[spacious_header_display_type]', array(
 		'type'     => 'radio',
 		'label'    => __( 'Choose the header display type that you want.', 'spacious' ),
 		'section'  => 'spacious_header_display_type_option',
-		'settings' => 'spacious[spacious_header_display_type]',
+		'settings' => $spacious_themename . '[spacious_header_display_type]',
 		'choices'  => array(
 			'one'  => SPACIOUS_ADMIN_IMAGES_URL . '/header-left.png',
 			'four' => SPACIOUS_ADMIN_IMAGES_URL . '/menu-bottom.png',
@@ -179,6 +231,76 @@ function spacious_customize_register( $wp_customize ) {
 		),
 	) );
 
+	// Header Button option.
+	$wp_customize->add_section( 'spacious_header_button_one', array(
+		'priority' => 4,
+		'title'    => __( 'Header Button One', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_button_one_setting]', array(
+		'default'           => '',
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'wp_filter_nohtml_kses',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_header_button_one_setting]', array(
+		'label'   => __( 'Button Text', 'spacious' ),
+		'section' => 'spacious_header_button_one',
+		'setting' => $spacious_themename . '[spacious_header_button_one_setting]',
+	) );
+
+	// Header button link.
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_button_one_link]', array(
+		'default'           => '',
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_header_button_one_link]', array(
+		'label'   => __( 'Button Link', 'spacious' ),
+		'section' => 'spacious_header_button_one',
+		'setting' => $spacious_themename . '[spacious_header_button_one_link]',
+	) );
+
+	// Header button link in new tab.
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_button_one_tab]', array(
+		'default'           => 0,
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_checkbox_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_header_button_one_tab]', array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Check to show in new tab', 'spacious' ),
+		'section' => 'spacious_header_button_one',
+		'setting' => $spacious_themename . '[spacious_header_button_one_tab]',
+	) );
+
+	// Display menu in one line.
+	$wp_customize->add_section( 'spacious_one_line_menu_section', array(
+		'priority' => 3,
+		'title'    => __( 'Menu Display', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_one_line_menu_setting]', array(
+		'default'           => 0,
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_checkbox_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_one_line_menu_setting]', array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Display menu in one line', 'spacious' ),
+		'section' => 'spacious_one_line_menu_section',
+		'setting' => $spacious_themename . '[spacious_one_line_menu_setting]',
+	) );
+
 	// Responsive collapse menu
 	$wp_customize->add_section( 'spacious_new_menu', array(
 		'priority' => 4,
@@ -199,7 +321,113 @@ function spacious_customize_register( $wp_customize ) {
 		'section' => 'spacious_new_menu',
 	) );
 
+	// Search icon.
+	$wp_customize->add_section( 'spacious_header_search_icon', array(
+		'priority' => 9,
+		'title'    => __( 'Search icon', 'spacious' ),
+		'panel'    => 'spacious_header_options',
+	) );
+	$wp_customize->add_setting( $spacious_themename . '[spacious_header_search_icon]', array(
+		'default'           => 0,
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_checkbox_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_header_search_icon]', array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Show search icon in header.', 'spacious' ),
+		'section' => 'spacious_header_search_icon',
+	) );
+
 	// End of Header Options
+
+	/*************************************Start of the Social Links Options*************************************/
+
+	$wp_customize->add_panel( 'spacious_social_links_options', array(
+		'capabitity' => 'edit_theme_options',
+		'priority'   => 510,
+		'title'      => __( 'Social Links', 'spacious' ),
+	) );
+
+	// Social links activate option
+	$wp_customize->add_section( 'spacious_social_links_setting', array(
+		'priority' => 1,
+		'title'    => __( 'Activate social links area', 'spacious' ),
+		'panel'    => 'spacious_social_links_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_activate_social_links]', array(
+		'default'           => 0,
+		'type'              => 'option',
+		'transport'         => $customizer_selective_refresh,
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_checkbox_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_activate_social_links]', array(
+		'type'     => 'checkbox',
+		'label'    => __( 'Check to activate social links area. You also need to activate the header top bar section in Header options to show this social links area', 'spacious' ),
+		'section'  => 'spacious_social_links_setting',
+		'settings' => $spacious_themename . '[spacious_activate_social_links]',
+	) );
+
+	// Selective refresh for social links enable
+	if ( isset( $wp_customize->selective_refresh ) ) {
+		$wp_customize->selective_refresh->add_partial( $spacious_themename . '[spacious_activate_social_links]', array(
+			'selector'        => '.social-links',
+			'render_callback' => '',
+		) );
+	}
+
+	$spacious_social_links = array(
+		'spacious_social_facebook'  => __( 'Facebook', 'spacious' ),
+		'spacious_social_twitter'   => __( 'Twitter', 'spacious' ),
+		'spacious_social_instagram' => __( 'Instagram', 'spacious' ),
+		'spacious_social_linkedin'  => __( 'LinkedIn', 'spacious' ),
+	);
+
+	$i = 1;
+	foreach ( $spacious_social_links as $key => $value ) {
+
+		$wp_customize->add_section( 'spacious_social_sites_section' . $i, array(
+			'priority' => 2,
+			'title'    => $value,
+			'panel'    => 'spacious_social_links_options',
+		) );
+
+		// adding social sites link
+		$wp_customize->add_setting( $spacious_themename . '[' . $key . ']', array(
+			'default'           => '',
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'esc_url_raw',
+		) );
+
+		$wp_customize->add_control( $spacious_themename . '[' . $key . ']', array(
+			'label'   => sprintf( __( 'Add link for %1$s', 'spacious' ), $value ),
+			'section' => 'spacious_social_sites_section' . $i,
+			'setting' => $spacious_themename . '[' . $key . ']',
+		) );
+
+		// adding social open in new page tab setting
+		$wp_customize->add_setting( $spacious_themename . '[' . $key . 'new_tab]', array(
+			'default'           => 0,
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'spacious_checkbox_sanitize',
+		) );
+
+		$wp_customize->add_control( $spacious_themename . '[' . $key . 'new_tab]', array(
+			'type'    => 'checkbox',
+			'label'   => __( 'Check to show in new tab', 'spacious' ),
+			'section' => 'spacious_social_sites_section' . $i,
+			'setting' => $spacious_themename . '[' . $key . 'new_tab]',
+		) );
+
+		$i ++;
+
+	}
 
 	/****************************************Start of the Design Options****************************************/
 	$wp_customize->add_panel( 'spacious_design_options', array(
@@ -254,10 +482,11 @@ function spacious_customize_register( $wp_customize ) {
 		'section'  => 'spacious_default_layout_setting',
 		'settings' => $spacious_themename . '[spacious_default_layout]',
 		'choices'  => array(
-			'right_sidebar'               => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
-			'left_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
-			'no_sidebar_full_width'       => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
-			'no_sidebar_content_centered' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'right_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
+			'left_sidebar'                 => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
+			'no_sidebar_full_width'        => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
+			'no_sidebar_content_centered'  => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'no_sidebar_content_stretched' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-stretched-layout.png',
 		),
 	) ) );
 
@@ -281,10 +510,11 @@ function spacious_customize_register( $wp_customize ) {
 		'section'  => 'spacious_default_page_layout_setting',
 		'settings' => $spacious_themename . '[spacious_pages_default_layout]',
 		'choices'  => array(
-			'right_sidebar'               => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
-			'left_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
-			'no_sidebar_full_width'       => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
-			'no_sidebar_content_centered' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'right_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
+			'left_sidebar'                 => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
+			'no_sidebar_full_width'        => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
+			'no_sidebar_content_centered'  => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'no_sidebar_content_stretched' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-stretched-layout.png',
 		),
 	) ) );
 
@@ -308,10 +538,11 @@ function spacious_customize_register( $wp_customize ) {
 		'section'  => 'spacious_default_single_posts_layout_setting',
 		'settings' => $spacious_themename . '[spacious_single_posts_default_layout]',
 		'choices'  => array(
-			'right_sidebar'               => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
-			'left_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
-			'no_sidebar_full_width'       => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
-			'no_sidebar_content_centered' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'right_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
+			'left_sidebar'                 => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
+			'no_sidebar_full_width'        => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
+			'no_sidebar_content_centered'  => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			'no_sidebar_content_stretched' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-stretched-layout.png',
 		),
 	) ) );
 
@@ -444,7 +675,7 @@ function spacious_customize_register( $wp_customize ) {
 		'default'           => 'categories',
 		'type'              => 'option',
 		'capability'        => 'edit_theme_options',
-		'sanitize_callback' => 'spacious_radio_sanitize',
+		'sanitize_callback' => 'spacious_radio_select_sanitize',
 	) );
 
 	$wp_customize->add_control( $spacious_themename . '[spacious_related_posts]', array(
@@ -578,7 +809,7 @@ function spacious_customize_register( $wp_customize ) {
 		'settings' => $spacious_themename . '[spacious_blog_slider]',
 	) );
 
-	for ( $i = 1; $i <= 5; $i++ ) {
+	for ( $i = 1; $i <= 5; $i ++ ) {
 		// adding slider section
 		$wp_customize->add_section( 'spacious_slider_number_section' . $i, array(
 			'priority' => 10,
@@ -658,6 +889,179 @@ function spacious_customize_register( $wp_customize ) {
 	}
 	// End of Slider Options
 
+	/****************************************Start of the Footer Options****************************************/
+
+	$wp_customize->add_panel( 'spacious_footer_options', array(
+		'capabitity' => 'edit_theme_options',
+		'priority'   => 545,
+		'title'      => __( 'Footer', 'spacious' ),
+	) );
+
+	// Footer widgets select type
+	$wp_customize->add_section( 'spacious_footer_column_select_section', array(
+		'priority' => 5,
+		'title'    => __( 'Footer Widgets Column', 'spacious' ),
+		'panel'    => 'spacious_footer_options',
+	) );
+
+	$wp_customize->add_setting( $spacious_themename . '[spacious_footer_widget_column_select_type]', array(
+		'default'           => 'four',
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'sanitize_callback' => 'spacious_radio_sanitize',
+	) );
+
+	$wp_customize->add_control( $spacious_themename . '[spacious_footer_widget_column_select_type]', array(
+		'type'    => 'select',
+		'label'   => __( 'Choose the number of column for the footer widgetized areas.', 'spacious' ),
+		'choices' => array(
+			'one'   => __( 'One Column', 'spacious' ),
+			'two'   => __( 'Two Column', 'spacious' ),
+			'three' => __( 'Three Column', 'spacious' ),
+			'four'  => __( 'Four Column', 'spacious' ),
+		),
+		'section' => 'spacious_footer_column_select_section',
+	) );
+
+	// End of footer options.
+
+	/***************************************Start of the Typography Option**************************************/
+
+	$wp_customize->add_panel( 'spacious_typography_options', array(
+		'priority'   => 550,
+		'title'      => __( 'Typography', 'spacious' ),
+		'capability' => 'edit_theme_options',
+	) );
+
+	// Font family options
+	$wp_customize->add_section( 'spacious_google_fonts_settings', array(
+		'priority' => 1,
+		'title'    => __( 'Google Font Options', 'spacious' ),
+		'panel'    => 'spacious_typography_options',
+	) );
+
+	$spacious_fonts = array(
+		'spacious_titles_font'  => array(
+			'id'      => $spacious_themename . '[spacious_titles_font]',
+			'default' => 'Lato',
+			'title'   => __( 'All Titles font. Default is "Lato".', 'spacious' ),
+		),
+		'spacious_content_font' => array(
+			'id'      => $spacious_themename . '[spacious_content_font]',
+			'default' => 'Lato',
+			'title'   => __( 'Content font and for others. Default is "Lato".', 'spacious' ),
+		),
+	);
+
+	foreach ( $spacious_fonts as $spacious_font ) {
+
+		$wp_customize->add_setting( $spacious_font['id'], array(
+			'default'           => $spacious_font['default'],
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'spacious_font_sanitize',
+		) );
+
+		$wp_customize->add_control(
+			new Spacious_Typography_Control(
+				$wp_customize,
+				$spacious_font['id'], array(
+					'label'    => $spacious_font['title'],
+					'settings' => $spacious_font['id'],
+					'section'  => 'spacious_google_fonts_settings',
+				)
+			) );
+	}
+
+	/**************************************Start of the WooCommerce Options*************************************/
+
+	if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+
+		$wp_customize->add_panel( 'spacious_woocommerce_options', array(
+			'priority'   => 570,
+			'title'      => __( 'WooCommerce', 'spacious' ),
+			'capability' => 'edit_theme_options',
+		) );
+
+		// woocommerce archive page layout
+		$wp_customize->add_section( 'spacious_woocommerce_archive_page_layout_setting', array(
+			'priority' => 1,
+			'title'    => __( 'Archive Page Layout', 'spacious' ),
+			'panel'    => 'spacious_woocommerce_options',
+		) );
+
+		$wp_customize->add_setting( $spacious_themename . '[spacious_woo_archive_layout]', array(
+			'default'           => 'no_sidebar_full_width',
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'spacious_radio_sanitize',
+		) );
+
+		$wp_customize->add_control( new Spacious_Image_Radio_Control( $wp_customize, $spacious_themename . '[spacious_woo_archive_layout]', array(
+			'type'     => 'radio',
+			'label'    => __( 'This layout will be reflected in woocommerce archive page only.', 'spacious' ),
+			'section'  => 'spacious_woocommerce_archive_page_layout_setting',
+			'settings' => $spacious_themename . '[spacious_woo_archive_layout]',
+			'choices'  => array(
+				'right_sidebar'               => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
+				'left_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
+				'no_sidebar_full_width'       => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
+				'no_sidebar_content_centered' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			),
+		) ) );
+
+		// WooCommerce product page layout
+		$wp_customize->add_section( 'spacious_woocommerce_product_page_layout_setting', array(
+			'priority' => 2,
+			'title'    => __( 'Product Page Layout', 'spacious' ),
+			'panel'    => 'spacious_woocommerce_options',
+		) );
+
+		$wp_customize->add_setting( $spacious_themename . '[spacious_woo_product_layout]', array(
+			'default'           => 'no_sidebar_full_width',
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'spacious_radio_sanitize',
+		) );
+
+		$wp_customize->add_control( new Spacious_Image_Radio_Control( $wp_customize, $spacious_themename . '[spacious_woo_product_layout]', array(
+			'type'     => 'radio',
+			'label'    => __( 'This layout will be reflected in woocommerce Product page.', 'spacious' ),
+			'section'  => 'spacious_woocommerce_product_page_layout_setting',
+			'settings' => $spacious_themename . '[spacious_woo_product_layout]',
+			'choices'  => array(
+				'right_sidebar'               => SPACIOUS_ADMIN_IMAGES_URL . '/right-sidebar.png',
+				'left_sidebar'                => SPACIOUS_ADMIN_IMAGES_URL . '/left-sidebar.png',
+				'no_sidebar_full_width'       => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-full-width-layout.png',
+				'no_sidebar_content_centered' => SPACIOUS_ADMIN_IMAGES_URL . '/no-sidebar-content-centered-layout.png',
+			),
+		) ) );
+
+		// Section: WooCommerce additional options.
+		$wp_customize->add_section( 'spacious_woocommerce_additional', array(
+			'priority' => 3,
+			'title'    => __( 'Additional', 'spacious' ),
+			'panel'    => 'spacious_woocommerce_options',
+		) );
+
+		// Setting: WooCommerce cart icon.
+		$wp_customize->add_setting( $spacious_themename . '[spacious_cart_icon]', array(
+			'default'           => 0,
+			'type'              => 'option',
+			'capability'        => 'edit_theme_options',
+			'sanitize_callback' => 'spacious_checkbox_sanitize',
+		) );
+
+		$wp_customize->add_control( $spacious_themename . '[spacious_cart_icon]', array(
+			'type'     => 'checkbox',
+			'label'    => __( 'Check to show WooCommerce cart icon on menu bar', 'spacious' ),
+			'section'  => 'spacious_woocommerce_additional',
+			'settings' => $spacious_themename . '[spacious_cart_icon]',
+		) );
+
+	}
+	// End of the WooCommerce Options.
+
 	/****************************************Start of the data sanitization****************************************/
 	// radio/select sanitization
 	function spacious_radio_select_sanitize( $input, $setting ) {
@@ -677,6 +1081,40 @@ function spacious_customize_register( $wp_customize ) {
 		} else {
 			return '';
 		}
+	}
+
+	// Google Font Sanitization
+	function spacious_font_sanitize( $input ) {
+		$spacious_standard_fonts_array = spacious_standard_fonts_array();
+		$spacious_google_fonts         = spacious_google_fonts();
+		$valid_keys                    = array_merge( $spacious_standard_fonts_array, $spacious_google_fonts );
+
+		if ( array_key_exists( $input, $valid_keys ) ) {
+			return $input;
+		} else {
+			return '';
+		}
+	}
+
+	// editor sanitization
+	function spacious_editor_sanitize( $input ) {
+		if ( isset( $input ) ) {
+			$input = stripslashes( wp_filter_post_kses( addslashes( $input ) ) );
+		}
+
+		return $input;
+	}
+
+	// Radio and Select Sanitization
+	function spacious_radio_sanitize( $input, $setting ) {
+		// Ensure input is a slug.
+		$input = sanitize_key( $input );
+
+		// Get list of choices from the control associated with the setting.
+		$choices = $setting->manager->get_control( $setting->id )->choices;
+
+		// If the input is a valid key, return it; otherwise, return the default.
+		return ( array_key_exists( $input, $choices ) ? $input : $setting->default );
 	}
 
 	// text-area sanitize
@@ -813,22 +1251,64 @@ function spacious_customizer_custom_scripts() { ?>
 	</style>
 
 	<script>
-			( function( $, api ) {
-				api.sectionConstructor['spacious-upsell-section'] = api.Section.extend( {
+		( function ( $, api ) {
+			api.sectionConstructor['spacious-upsell-section'] = api.Section.extend( {
 
-					// No events for this type of section.
-					attachEvents: function() {
-					},
+				// No events for this type of section.
+				attachEvents : function () {
+				},
 
-					// Always make the section active.
-					isContextuallyActive: function() {
-						return true;
-					}
-				} );
-			} )( jQuery, wp.customize );
+				// Always make the section active.
+				isContextuallyActive : function () {
+					return true;
+				}
+			} );
+		} )( jQuery, wp.customize );
 
 	</script>
 	<?php
 }
+
+if ( ! function_exists( 'spacious_standard_fonts_array' ) ) :
+
+	/**
+	 * Standard Fonts array
+	 *
+	 * @return array of Standarad Fonts
+	 */
+	function spacious_standard_fonts_array() {
+		$spacious_standard_fonts = array(
+			'Georgia,Times,"Times New Roman",serif'                                                                                                 => 'serif',
+			'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif' => 'sans-serif',
+			'Monaco,"Lucida Sans Typewriter","Lucida Typewriter","Courier New",Courier,monospace'                                                   => 'monospace',
+		);
+
+		return $spacious_standard_fonts;
+	}
+
+endif;
+
+if ( ! function_exists( 'spacious_google_fonts' ) ) :
+
+	/**
+	 * Google Fonts array
+	 *
+	 * @return array of Google Fonts
+	 */
+	function spacious_google_fonts() {
+		$spacious_google_font = array(
+			'Roboto'           => 'Roboto',
+			'Lato'             => 'Lato',
+			'Open Sans'        => 'Open Sans',
+			'Noto Sans'        => 'Noto Sans',
+			'Noto Serif'       => 'Noto Serif',
+			'PT Sans'          => 'PT Sans',
+			'Playfair Display' => 'Playfair Display',
+		);
+
+		return $spacious_google_font;
+	}
+
+endif;
 
 ?>

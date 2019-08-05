@@ -61,8 +61,7 @@ jQuery(function ($) {
       var views = [
         google.picker.ViewId.DOCS,
         google.picker.ViewId.RECENTLY_PICKED,
-        google.picker.ViewId.DOCS_IMAGES
-        ,
+        google.picker.ViewId.DOCS_IMAGES,
         google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS,
         google.picker.ViewId.DOCS_VIDEOS,
         google.picker.ViewId.DOCUMENTS,
