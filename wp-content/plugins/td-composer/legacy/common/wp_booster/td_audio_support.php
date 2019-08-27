@@ -4,6 +4,17 @@ class td_audio_support {
 
     private static $on_save_post_post_id; // here we keep the post_id when the save_post hook runs. We need the post_id to pass it to the other hook @see on_add_attachment_set_featured_image
 
+    // flag to make sure we run the 'on_save_post_get_audio_thumb' save_post hook only once..
+    // ..this is mainly bacause on gutenberg editor this hook runs twice and triggers a duplicate on audio thumb generation
+    private static $on_save_post_did_action = false;
+
+
+    /**
+     * Render an audio on the fornt end from URL
+     * @param $audioUrl - the audio url that we want to render
+     *
+     * @return string - the player HTML
+     */
     static function render_audio($audioUrl) {
         $buffy = '';
 
@@ -21,7 +32,16 @@ class td_audio_support {
                 $soundCloudEmbedHTML = str_replace('height="400"', 'height="120"', $soundCloudEmbedHTML);
 
                 // return embed
-                $buffy .= $soundCloudEmbedHTML;
+                $buffy .= '<div class="td-audio-player">';
+                    $buffy .= $soundCloudEmbedHTML;
+                $buffy .= '</div>';
+
+                break;
+
+            case 'self-hosted':
+                $buffy .= '<div class="td-audio-player">';
+                    $buffy .= do_shortcode('[audio src="' . $audioUrl . '"]');
+                $buffy .= '</div>';
 
                 break;
         }
@@ -36,6 +56,14 @@ class td_audio_support {
      *
      */
     static function on_save_post_get_audio_thumb($post_id) {
+
+        // bail if this hook has already run
+        if( !td_global::get_demo_installing() && self::$on_save_post_did_action ){
+            return;
+        }
+
+        // if this is the first time this hook runs update the flag to avoid running this again
+        self::$on_save_post_did_action = true;
 
         //verify post is not a revision
         if ( !wp_is_post_revision( $post_id ) ) {
@@ -63,6 +91,12 @@ class td_audio_support {
                     update_post_meta( $post_id, 'td_last_set_audio', $td_post_audio['td_audio'] );
                 }
 
+                return;
+            }
+
+            // check to see if the url is valid
+            if ( self::validate_audio_url( $td_post_audio['td_audio'] ) === false ) {
+                // we stop here if we do not have a valid audio url
                 return;
             }
 
@@ -96,11 +130,27 @@ class td_audio_support {
 
 
     /**
-     * set the last uploaded image as a featured image. We 'upload' the audio thumb via the media_sideload_image call from above
+     * Set the last uploaded image as a featured image. We 'upload' the audio thumb via the media_sideload_image call from above
      * @internal
      */
     static function on_add_attachment_set_featured_image($att_id){
         update_post_meta(self::$on_save_post_post_id, '_thumbnail_id', $att_id);
+    }
+
+
+    /**
+     * Detects if we have a recognized audio service and makes sure that it's a valid url
+     * @param $audioUrl
+     * @return bool
+     */
+    private static function validate_audio_url($audioUrl) {
+        if (self::detect_audio_service($audioUrl) === false) {
+            return false;
+        }
+        if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $audioUrl)) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -125,6 +175,7 @@ class td_audio_support {
         return '';
     }
 
+
     /*
      * Detect the audio service from url
      */
@@ -133,8 +184,8 @@ class td_audio_support {
         if (strpos($audioUrl, 'soundcloud.com') !== false) {
             return 'soundcloud';
         }
-        if (strpos($audioUrl, 'mixcloud.com') !== false) {
-            return 'mixcloud';
+        if( preg_match('(.flac|.aiff|.wav|.m4a|.mid|.au|.mp3|.wma|.oga|.opus|.webm)', $audioUrl) != false ) {
+            return 'self-hosted';
         }
 
         return false;

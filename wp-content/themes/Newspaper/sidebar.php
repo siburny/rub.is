@@ -1,7 +1,9 @@
 <?php
-// - Important!
-// - For overwriting sidebar functionality in child-theme, copy the file 'sidebar.php' from the
-// following theme path (../themes/THEME_NAME/includes/wp_booster/sidebar.php) to the child-theme root path,
-// and NOT this sidebar.php file you are reading from.
+/**
+ * Created by PhpStorm.
+ * User: tagdiv
+ * Date: 10.05.2019
+ * Time: 12:29
+ */
 
-require_once('includes/wp_booster/sidebar.php');
+do_action( 'tdc_sidebar' );

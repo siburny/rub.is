@@ -24,6 +24,7 @@ global $post;
     <input type="hidden" id="tdc_action" name="tdc_action" value="tdc_ajax_save_post">
     <input type="hidden" id="tdc_post_id" name="tdc_post_id" value="<?php echo $post->ID ?>">
     <input type="hidden" id="tdc_content" name="tdc_content" value="">
+    <input type="hidden" id="tdc_single_post_content_width" name="tdc_single_post_content_width" value="">
     <input type="hidden" id="tdb_post_settings" name="tdc_customized" value="" data-changed="false">
 
     <?php if ( current_user_can("switch_themes") ) { ?>

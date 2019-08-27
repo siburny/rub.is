@@ -32,30 +32,25 @@ class vc_row_inner extends tdc_composer_block {
                 }
 
                 /* @content_align_vertical */
-                .$unique_block_class.tdc-row-content-vert-center,
-                .$unique_block_class.tdc-row-content-vert-center .tdc-inner-columns {
-                    display: flex;
-                    align-items: center;
-                    flex: 1;
-                }
-                .$unique_block_class.tdc-row-content-vert-bottom,
-                .$unique_block_class.tdc-row-content-vert-bottom .tdc-inner-columns {
-                    display: flex;
-                    align-items: flex-end;
-                    flex: 1;
-                }
-                @media (max-width: 767px) {
-	                .$unique_block_class,
-	                .$unique_block_class .tdc-inner-columns {
-	                	flex-direction: column;
-	                }
-                }
-                .$unique_block_class.tdc-row-content-vert-center .td_block_wrap {
-                	vertical-align: middle;
-                }
-
-                .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
-                	vertical-align: bottom;
+                 @media (min-width: 767px) {
+                    .$unique_block_class.tdc-row-content-vert-center,
+                    .$unique_block_class.tdc-row-content-vert-center .tdc-inner-columns {
+                        display: flex;
+                        align-items: center;
+                        flex: 1;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-bottom,
+                    .$unique_block_class.tdc-row-content-vert-bottom .tdc-inner-columns {
+                        display: flex;
+                        align-items: flex-end;
+                        flex: 1;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-center .td_block_wrap {
+                        vertical-align: middle;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
+                        vertical-align: bottom;
+                    }
                 }
                 
                 /* @row_shadow */

@@ -11,6 +11,9 @@ class td_flex_block_5 extends td_block {
             $modules_on_row = '100%';
         }
 
+        $modules_limit = $res_ctx->get_shortcode_att('limit');
+
+
         // modules clearfix
         $clearfix = 'clearfix';
         $padding = 'padding';
@@ -23,40 +26,58 @@ class td_flex_block_5 extends td_block {
                 $res_ctx->load_settings_raw( $padding,  '1' );
                 break;
             case '50%':
+                $modulo = $modules_limit % 2;
+                if($modulo == 0) { $modulo = 2; }
                 $res_ctx->load_settings_raw( $clearfix,  '2n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+2' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '33.33333333%':
+                $modulo = $modules_limit % 3;
+                if($modulo == 0) { $modulo = 3; }
                 $res_ctx->load_settings_raw( $clearfix,  '3n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+3' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '25%':
+                $modulo = $modules_limit % 4;
+                if($modulo == 0) { $modulo = 4; }
                 $res_ctx->load_settings_raw( $clearfix,  '4n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+4' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '20%':
+                $modulo = $modules_limit % 5;
+                if($modulo == 0) { $modulo = 5; }
                 $res_ctx->load_settings_raw( $clearfix,  '5n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+5' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '16.66666667%':
+                $modulo = $modules_limit % 6;
+                if($modulo == 0) { $modulo = 6; }
                 $res_ctx->load_settings_raw( $clearfix,  '6n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+6' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '14.28571428%':
+                $modulo = $modules_limit % 7;
+                if($modulo == 0) { $modulo = 7; }
                 $res_ctx->load_settings_raw( $clearfix,  '7n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+7' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '12.5%':
+                $modulo = $modules_limit % 8;
+                if($modulo == 0) { $modulo = 8; }
                 $res_ctx->load_settings_raw( $clearfix,  '8n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+8' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '11.11111111%':
+                $modulo = $modules_limit % 9;
+                if($modulo == 0) { $modulo = 9; }
                 $res_ctx->load_settings_raw( $clearfix,  '9n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+9' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
             case '10%':
+                $modulo = $modules_limit % 10;
+                if($modulo == 0) { $modulo = 10; }
                 $res_ctx->load_settings_raw( $clearfix,  '10n+1' );
-                $res_ctx->load_settings_raw( $padding,  '-n+10' );
+                $res_ctx->load_settings_raw( $padding,  '-n+' . $modulo);
                 break;
         }
 
@@ -84,6 +105,17 @@ class td_flex_block_5 extends td_block {
         } else if ( is_numeric( $modules_space ) ) {
             $res_ctx->load_settings_raw( 'all_modules_space', $modules_space / 2 .'px' );
         }
+
+        // modules border size
+        $modules_border_size = $res_ctx->get_shortcode_att('modules_border_size');
+        $res_ctx->load_settings_raw( 'modules_border_size', $modules_border_size );
+        if( $modules_border_size != '' && is_numeric( $modules_border_size ) ) {
+            $res_ctx->load_settings_raw( 'modules_border_size', $modules_border_size . 'px' );
+        }
+        // modules border style
+        $res_ctx->load_settings_raw( 'modules_border_style', $res_ctx->get_shortcode_att('modules_border_style') );
+        // modules border color
+        $res_ctx->load_settings_raw( 'modules_border_color', $res_ctx->get_shortcode_att('modules_border_color') );
 
         // modules divider
         $res_ctx->load_settings_raw( 'modules_divider', $res_ctx->get_shortcode_att('modules_divider') );
@@ -184,6 +216,19 @@ class td_flex_block_5 extends td_block {
 	    if ( is_numeric( $art_excerpt ) ) {
 		    $res_ctx->load_settings_raw( 'art_excerpt', $art_excerpt . 'px' );
 	    }
+
+
+        // show audio player
+        $res_ctx->load_settings_raw( 'show_audio', $res_ctx->get_shortcode_att('show_audio') );
+        // article audio player space
+        $art_audio = $res_ctx->get_shortcode_att('art_audio');
+        $res_ctx->load_settings_raw( 'art_audio', $art_audio );
+        if ( is_numeric( $art_audio ) ) {
+            $res_ctx->load_settings_raw( 'art_audio', $art_audio . 'px' );
+        }
+        // article audio size
+        $art_audio_size = $res_ctx->get_shortcode_att('art_audio_size');
+        $res_ctx->load_settings_raw( 'art_audio_size', 10 + $art_audio_size/0.5 . 'px' );
 
 
         // show category tag
@@ -377,6 +422,11 @@ class td_flex_block_5 extends td_block {
 	    $res_ctx->load_settings_raw( 'com_bg', $res_ctx->get_shortcode_att('com_bg') );
 	    $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
 
+        $res_ctx->load_settings_raw( 'audio_btn_color', $res_ctx->get_shortcode_att( 'audio_btn_color' ) );
+        $res_ctx->load_settings_raw( 'audio_time_color', $res_ctx->get_shortcode_att( 'audio_time_color' ) );
+        $res_ctx->load_settings_raw( 'audio_bar_color', $res_ctx->get_shortcode_att( 'audio_bar_color' ) );
+        $res_ctx->load_settings_raw( 'audio_bar_curr_color', $res_ctx->get_shortcode_att( 'audio_bar_curr_color' ) );
+
 	    $res_ctx->load_settings_raw( 'btn_bg', $res_ctx->get_shortcode_att('btn_bg') );
 	    $res_ctx->load_settings_raw( 'btn_bg_hover', $res_ctx->get_shortcode_att('btn_bg_hover') );
 	    $res_ctx->load_settings_raw( 'btn_txt', $res_ctx->get_shortcode_att('btn_txt') );
@@ -404,6 +454,9 @@ class td_flex_block_5 extends td_block {
 	    $res_ctx->load_font_settings( 'f_ex' );
 	    $res_ctx->load_font_settings( 'f_btn' );
 	    $res_ctx->load_font_settings( 'f_more' );
+
+	    $res_ctx->load_settings_raw( 'equal_height', 1 );
+        $res_ctx->load_settings_raw( 'divider_on', $res_ctx->get_shortcode_att('divider_on') );
 
     }
 
@@ -476,6 +529,20 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .td-module-container:before {
 					bottom: -@all_modules_space;
 				}
+				/* @modules_border_size */
+				.$unique_block_class .td-module-container {
+				    border-width: @modules_border_size;
+				    border-style: solid;
+				    border-color: #000;
+				}
+				/* @modules_border_style */
+				.$unique_block_class .td-module-container {
+				    border-style: @modules_border_style;
+				}
+				/* @modules_border_color */
+				.$unique_block_class .td-module-container {
+				    border-color: @modules_border_color;
+				}
 				/* @modules_divider */
 				.$unique_block_class .td-module-container:before {
 					border-width: 0 0 1px 0;
@@ -485,6 +552,10 @@ class td_flex_block_5 extends td_block {
 				/* @modules_divider_color */
 				.$unique_block_class .td-module-container:before {
 					border-color: @modules_divider_color;
+				}
+				/* @divider_on */
+				body .$unique_block_class .td_block_inner .td_module_wrap .td-module-container:before {
+					display: block !important;
 				}
 				
 
@@ -501,11 +572,6 @@ class td_flex_block_5 extends td_block {
 				/* @image_radius */
 				.$unique_block_class .entry-thumb {
 					border-radius: @image_radius;
-				}
-				/* @image_margin */
-				.$unique_block_class .td-image-container {
-					margin: @image_margin;
-					width: auto;
 				}
 				/* @video_icon */
 				.$unique_block_class .td-video-play-ico > img {
@@ -547,6 +613,12 @@ class td_flex_block_5 extends td_block {
 					padding: @meta_padding2;
 				}
 				
+				/* @image_margin */
+				.$unique_block_class .td-image-container {
+					margin: @image_margin;
+					width: auto;
+				}
+				
 				/* @meta_info_border_size */
 				.$unique_block_class .td-module-meta-info-top {
 					border-width: @meta_info_border_size;
@@ -586,6 +658,19 @@ class td_flex_block_5 extends td_block {
 				/* @art_excerpt */
 				.$unique_block_class .td-excerpt {
 					margin: @art_excerpt;
+				}
+				
+				/* @show_audio */
+				.$unique_block_class .td-audio-player {
+					display: @show_audio;
+				}
+				/* @art_audio */
+				.$unique_block_class .td-audio-player {
+					margin: @art_audio;
+				}
+				/* @art_audio_size */
+				.$unique_block_class .td-audio-player {
+					font-size: @art_audio_size;
 				}
 				
 				/* @excerpt_inline */
@@ -812,6 +897,25 @@ class td_flex_block_5 extends td_block {
 					color: @com_txt;
 				}
 				
+				/* @audio_btn_color */
+                .$unique_block_class .td-audio-player .mejs-button button:after {
+                    color: @audio_btn_color;
+                }
+                /* @audio_time_color */
+                .$unique_block_class .td-audio-player .mejs-time {
+                    color: @audio_time_color;
+                }
+                /* @audio_bar_color */
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-time-rail .mejs-time-total,
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-total {
+                    background: @audio_bar_color;
+                }
+                /* @audio_bar_curr_color */
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-time-rail .mejs-time-current,
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-current {
+                    background: @audio_bar_curr_color;
+                }
+				
 				/* @btn_bg */
 				.$unique_block_class .td-read-more a {
 					background-color: @btn_bg !important;
@@ -912,6 +1016,22 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .td-load-more-wrap a {
 					@f_more
 				}
+				
+				/* @equal_height */
+				.$unique_block_class .td_block_inner {
+                    display: flex;
+                    flex-wrap: wrap;
+				}
+				.$unique_block_class .td_module_wrap {
+				    display: flex;
+				}
+				.$unique_block_class .td-module-container {
+                    flex-grow: 1;
+				}
+				.$unique_block_class .td-image-container {
+				    flex: 0 0 0;
+				}
+				
 			</style>";
 
 
@@ -978,5 +1098,30 @@ class td_flex_block_5 extends td_block {
             $buffy .= $td_block_layout->close_all_tags();
 
         return $buffy;
+    }
+
+    function js_tdc_callback_ajax() {
+        $buffy = '';
+
+        // add a new composer block - that one has the delete callback
+        $buffy .= $this->js_tdc_get_composer_block();
+
+        ob_start();
+
+        ?>
+        <script>
+            /* global jQuery:{} */
+            (function () {
+                var block = jQuery('.<?php echo $this->block_uid; ?>_rand');
+                blockClass = '.<?php echo $this->block_uid; ?>_rand';
+
+                if( block.find('audio').length > 0 ) {
+                    jQuery(blockClass + ' audio').mediaelementplayer();
+                }
+            })();
+        </script>
+        <?php
+
+        return $buffy . td_util::remove_script_tag( ob_get_clean() );
     }
 }

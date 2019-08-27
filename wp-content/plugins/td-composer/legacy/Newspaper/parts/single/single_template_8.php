@@ -2,7 +2,7 @@
 // Template 8  -post-final-8.psd
 //get the global sidebar position from td_single_template_vars.php
 
-locate_template('includes/wp_booster/td_single_template_vars.php', true);
+load_template( TDC_PATH_LEGACY_COMMON . '/wp_booster/td_single_template_vars.php', true);
 
 get_header();
 

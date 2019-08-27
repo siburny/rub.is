@@ -6,6 +6,7 @@ class td_global_mob {
 
 	static $js_files = array();
 	static $js_files_main = array();
+	static $typography_settings_list = array();
 }
 
 td_global_mob::$get_parent_template_directory = td_mobile_theme::$main_dir_path;

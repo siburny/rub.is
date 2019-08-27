@@ -1054,3 +1054,7 @@
 .tdcp_style5:hover {
   background-position: -417px -430px;
 }
+[id*="td_block_ad_box_widget"] a[data-tab-id*="tdc-tab-image"],
+[id*="td_block_ad_box_widget"] a[data-tab-id*="tdc-tab-custom"] {
+  display: none;
+}

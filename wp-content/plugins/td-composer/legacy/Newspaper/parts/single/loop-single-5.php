@@ -37,7 +37,7 @@ if (have_posts()) {
         <?php echo $td_mod_single->get_social_sharing_top();?>
 
 
-        <div class="td-post-content">
+        <div class="td-post-content tagdiv-type">
             <?php echo $td_mod_single->get_content();?>
         </div>
 

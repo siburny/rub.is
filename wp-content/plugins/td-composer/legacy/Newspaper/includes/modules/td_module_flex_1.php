@@ -18,6 +18,7 @@ class td_module_flex_1 extends td_module {
         $author_photo = $this->get_shortcode_att('author_photo');
         $excerpt_length = $this->get_shortcode_att('mc1_el');
         $excerpt_position = $this->get_shortcode_att('excerpt_middle');
+        $custom_field = $this->get_shortcode_att('show_custom_field');
         $modified_date = $this->get_shortcode_att('show_modified_date');
         
         if (empty($image_size)) {
@@ -30,6 +31,12 @@ class td_module_flex_1 extends td_module {
         $excerpt = '<div class="td-excerpt">';
             $excerpt .= $this->get_excerpt($excerpt_length);
         $excerpt .= '</div>';
+
+        if($custom_field) {
+        $excerpt .= '<div class="td-custom-field">';
+            $excerpt .= get_post_meta( $this->post->ID, $custom_field, true );
+        $excerpt .= '</div>';
+        }
 
         ?>
 
@@ -61,6 +68,8 @@ class td_module_flex_1 extends td_module {
                     </div>
 
                     <?php if ($excerpt_position == '') { echo $excerpt; } ?>
+
+                    <?php echo $this->get_audio_embed() ?>
 
                     <div class="td-read-more">
                         <a href="<?php echo $this->href;?>"><?php echo __td($btn_title, TD_THEME_NAME);?></a>

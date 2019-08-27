@@ -40,14 +40,16 @@ function td_register_post_metaboxes() {
             'template' => $td_template_settings_path . 'td_set_video_meta.php',
         ));
 
-//        new WPAlchemy_MetaBox(array(
-//            'id' => 'td_post_audio',
-//            'title' => 'Featured Audio',
-//            'types' => array('post'),
-//            'priority' => 'low',
-//            'context' => 'side',
-//            'template' => $td_template_settings_path . 'td_set_audio_meta.php',
-//        ));
+        if (TD_THEME_NAME === 'Newspaper' ) {
+            new WPAlchemy_MetaBox(array(
+                'id' => 'td_post_audio',
+                'title' => 'Featured Audio',
+                'types' => array('post'),
+                'priority' => 'low',
+                'context' => 'side',
+                'template' => $td_template_settings_path . 'td_set_audio_meta.php',
+            ));
+        }
     }
 
 

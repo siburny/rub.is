@@ -37,9 +37,9 @@
                 'item_id' => '',
                 'option_id' => 'td_sidebar_position',
                 'values' => array(
-                    array('text' => '', 'title' => 'Sidebar Left', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
-                    array('text' => '', 'title' => 'No Sidebar', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
-                    array('text' => '', 'title' => 'Sidebar Right', 'val' => 'sidebar_right', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
+                    array('text' => '', 'title' => 'Sidebar Left', 'val' => 'sidebar_left', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-left.png'),
+                    array('text' => '', 'title' => 'No Sidebar', 'val' => 'no_sidebar', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-full.png'),
+                    array('text' => '', 'title' => 'Sidebar Right', 'val' => 'sidebar_right', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-right.png')
                 ),
                 'selected_value' => $mb->get_the_value('td_sidebar_position')
             ));
@@ -75,7 +75,7 @@
 
         <div class="td-meta-box-row">
             <span class="td-page-o-custom-label">Template layout:</span>
-            <img class="td-doc-image-wp td-doc-image-homepage-loop" style="max-width: 100%" src="<?php echo get_template_directory_uri() ?>/images/pagebuilder/info-homepage-loop.png" />
+            <img class="td-doc-image-wp td-doc-image-homepage-loop" style="max-width: 100%" src="<?php echo TDC_URL_LEGACY ?>/assets/images/pagebuilder/info-homepage-loop.png" />
         </div>
     </div>
 
@@ -165,7 +165,7 @@
             function homepage_filter_get_map () {
 
                 //get the generic filter array
-                $generic_filter_array = td_config_legacy::get_map_filter_array();
+                $generic_filter_array = td_config::get_map_filter_array();
 
                 //remove items from array
                 $offset = 0;

@@ -183,6 +183,17 @@ class td_flex_block_1 extends td_block {
 		    $res_ctx->load_settings_raw( 'm_padding', $m_padding . 'px' );
 	    }
 
+	    // modules border size
+        $modules_border_size = $res_ctx->get_shortcode_att('modules_border_size');
+	    $res_ctx->load_settings_raw( 'modules_border_size', $modules_border_size );
+	    if( $modules_border_size != '' && is_numeric( $modules_border_size ) ) {
+            $res_ctx->load_settings_raw( 'modules_border_size', $modules_border_size . 'px' );
+        }
+	    // modules border style
+        $res_ctx->load_settings_raw( 'modules_border_style', $res_ctx->get_shortcode_att('modules_border_style') );
+	    // modules border color
+        $res_ctx->load_settings_raw( 'modules_border_color', $res_ctx->get_shortcode_att('modules_border_color') );
+
 	    // modules divider
 	    $res_ctx->load_settings_raw( 'modules_divider', $res_ctx->get_shortcode_att('modules_divider') );
 	    // modules divider color
@@ -228,7 +239,7 @@ class td_flex_block_1 extends td_block {
         if ( $excerpt_col == '' ) {
             $res_ctx->load_settings_raw( 'excerpt_col', '1' );
         }
-        // article excerpt space
+        // article excerpt gap
         $excerpt_gap = $res_ctx->get_shortcode_att('excerpt_gap');
         $res_ctx->load_settings_raw( 'excerpt_gap', $excerpt_gap );
         if( $excerpt_gap != '' ) {
@@ -238,6 +249,15 @@ class td_flex_block_1 extends td_block {
         } else {
             $res_ctx->load_settings_raw( 'excerpt_gap', '48px' );
         }
+        // article audio player space
+        $art_audio = $res_ctx->get_shortcode_att('art_audio');
+        $res_ctx->load_settings_raw( 'art_audio', $art_audio );
+        if ( is_numeric( $art_audio ) ) {
+            $res_ctx->load_settings_raw( 'art_audio', $art_audio . 'px' );
+        }
+        // article audio size
+        $art_audio_size = $res_ctx->get_shortcode_att('art_audio_size');
+        $res_ctx->load_settings_raw( 'art_audio_size', 10 + $art_audio_size/0.5 . 'px' );
 	    // article button space
 	    $art_btn = $res_ctx->get_shortcode_att('art_btn');
 	    $res_ctx->load_settings_raw( 'art_btn', $art_btn );
@@ -290,6 +310,8 @@ class td_flex_block_1 extends td_block {
 	    // show meta info details
 	    $res_ctx->load_settings_raw( 'show_cat', $res_ctx->get_shortcode_att('show_cat') );
 	    $res_ctx->load_settings_raw( 'show_excerpt', $res_ctx->get_shortcode_att('show_excerpt') );
+	    $res_ctx->load_settings_raw( 'show_custom_field', !empty($res_ctx->get_shortcode_att('show_custom_field')) ? 'inline-block' : 'none' );
+        $res_ctx->load_settings_raw( 'show_audio', $res_ctx->get_shortcode_att('show_audio') );
 	    $res_ctx->load_settings_raw( 'show_btn', $res_ctx->get_shortcode_att('show_btn') );
 
 	    // inline excerpt
@@ -413,6 +435,10 @@ class td_flex_block_1 extends td_block {
 	    $res_ctx->load_settings_raw( 'com_bg', $res_ctx->get_shortcode_att('com_bg') );
 	    $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
         $res_ctx->load_settings_raw( 'rev_txt', $res_ctx->get_shortcode_att('rev_txt') );
+        $res_ctx->load_settings_raw( 'audio_btn_color', $res_ctx->get_shortcode_att( 'audio_btn_color' ) );
+        $res_ctx->load_settings_raw( 'audio_time_color', $res_ctx->get_shortcode_att( 'audio_time_color' ) );
+        $res_ctx->load_settings_raw( 'audio_bar_color', $res_ctx->get_shortcode_att( 'audio_bar_color' ) );
+        $res_ctx->load_settings_raw( 'audio_bar_curr_color', $res_ctx->get_shortcode_att( 'audio_bar_curr_color' ) );
 	    $res_ctx->load_settings_raw( 'btn_bg', $res_ctx->get_shortcode_att('btn_bg') );
 	    $res_ctx->load_settings_raw( 'btn_bg_hover', $res_ctx->get_shortcode_att('btn_bg_hover') );
 	    $res_ctx->load_settings_raw( 'btn_txt', $res_ctx->get_shortcode_att('btn_txt') );
@@ -600,6 +626,20 @@ class td_flex_block_1 extends td_block {
 				.$unique_block_class .td-module-container {
 					padding: @m_padding;
 				}
+				/* @modules_border_size */
+				.$unique_block_class .td-module-container {
+				    border-width: @modules_border_size;
+				    border-style: solid;
+				    border-color: #000;
+				}
+				/* @modules_border_style */
+				.$unique_block_class .td-module-container {
+				    border-style: @modules_border_style;
+				}
+				/* @modules_border_color */
+				.$unique_block_class .td-module-container {
+				    border-color: @modules_border_color;
+				}
 				/* @modules_divider */
 				.$unique_block_class .td-module-container:before {
 					border-width: 0 0 1px 0;
@@ -650,6 +690,14 @@ class td_flex_block_1 extends td_block {
 				/* @show_excerpt */
 				.$unique_block_class .td-excerpt {
 					display: @show_excerpt;
+				}
+				/* @show_custom_field */
+				.$unique_block_class .td-custom-field {
+					display: @show_custom_field;
+				}
+				/* @show_audio */
+				.$unique_block_class .td-audio-player {
+					display: @show_audio;
 				}
 				/* @show_btn */
 				.$unique_block_class .td-read-more {
@@ -828,6 +876,24 @@ class td_flex_block_1 extends td_block {
 				.$unique_block_class .entry-review-stars {
 					color: @rev_txt;
 				}
+				/* @audio_btn_color */
+                .$unique_block_class .td-audio-player .mejs-button button:after {
+                    color: @audio_btn_color;
+                }
+                /* @audio_time_color */
+                .$unique_block_class .td-audio-player .mejs-time {
+                    color: @audio_time_color;
+                }
+                /* @audio_bar_color */
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-time-rail .mejs-time-total,
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-total {
+                    background: @audio_bar_color;
+                }
+                /* @audio_bar_curr_color */
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-time-rail .mejs-time-current,
+                .$unique_block_class .td-audio-player .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-current {
+                    background: @audio_bar_curr_color;
+                }
 				/* @btn_bg */
 				.$unique_block_class .td-read-more a {
 					background-color: @btn_bg !important;
@@ -954,6 +1020,14 @@ class td_flex_block_1 extends td_block {
 				/* @excerpt_gap */
 				.$unique_block_class .td-excerpt {
 					column-gap: @excerpt_gap;
+				}
+				/* @art_audio */
+				.$unique_block_class .td-audio-player {
+					margin: @art_audio;
+				}
+				/* @art_audio_size */
+				.$unique_block_class .td-audio-player {
+					font-size: @art_audio_size;
 				}
 				/* @art_btn */
 				.$unique_block_class .td-read-more {
@@ -1110,5 +1184,30 @@ class td_flex_block_1 extends td_block {
             $buffy .= $td_block_layout->close_all_tags();
 
         return $buffy;
+    }
+
+    function js_tdc_callback_ajax() {
+        $buffy = '';
+
+        // add a new composer block - that one has the delete callback
+        $buffy .= $this->js_tdc_get_composer_block();
+
+        ob_start();
+
+        ?>
+        <script>
+            /* global jQuery:{} */
+            (function () {
+                var block = jQuery('.<?php echo $this->block_uid; ?>_rand');
+                    blockClass = '.<?php echo $this->block_uid; ?>_rand';
+
+                if( block.find('audio').length > 0 ) {
+                    jQuery(blockClass + ' audio').mediaelementplayer();
+                }
+            })();
+        </script>
+        <?php
+
+        return $buffy . td_util::remove_script_tag( ob_get_clean() );
     }
 }

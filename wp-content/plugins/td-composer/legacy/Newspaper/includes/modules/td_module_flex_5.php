@@ -13,6 +13,7 @@ class td_module_flex_5 extends td_module {
         $art_title_pos = $this->get_shortcode_att('art_title_pos');
         $info_pos = $this->get_shortcode_att('info_pos');
         $art_excerpt_pos = $this->get_shortcode_att('art_excerpt_pos');
+        $art_audio_pos = $this->get_shortcode_att('art_audio_pos');
         $btn_pos = $this->get_shortcode_att('btn_pos');
 
         $hide_image = $this->get_shortcode_att('hide_image');
@@ -48,6 +49,9 @@ class td_module_flex_5 extends td_module {
             $excerpt .= $this->get_excerpt($excerpt_length);
         $excerpt .= '</div>';
 
+        // audio player hmtl
+        $audio_player = $this->get_audio_embed();
+
         // button html
         $button = '<div class="td-read-more">';
             $button .= '<a href="' . $this->href . '">' . __td($btn_title, TD_THEME_NAME) . '</a>';
@@ -58,7 +62,7 @@ class td_module_flex_5 extends td_module {
             <div class="td-module-container td-category-pos-<?php echo $category_position; ?>">
                 <?php
                     // info above title & above image & category above title & title above image
-                    if( $art_title_pos == 'top' || $info_pos == 'top' || ( $category_position == 'above' && $art_title_pos == 'top' ) || $art_excerpt_pos == 'top' || $btn_pos == 'top' ) { ?>
+                    if( $art_title_pos == 'top' || $info_pos == 'top' || ( $category_position == 'above' && $art_title_pos == 'top' ) || $art_excerpt_pos == 'top' || $art_audio_pos == 'top' || $btn_pos == 'top' ) { ?>
                         <div class="td-module-meta-info td-module-meta-info-top">
                             <?php
                                 // category
@@ -86,6 +90,11 @@ class td_module_flex_5 extends td_module {
                                     echo $excerpt;
                                 }
 
+                                // audio player above image
+                                if( $art_audio_pos == 'top' ) {
+                                    echo $audio_player;
+                                }
+
                                 // button above image
                                 if( $btn_pos == 'top' ) {
                                     echo $button;
@@ -107,7 +116,7 @@ class td_module_flex_5 extends td_module {
                         </div>
                 <?php } ?>
 
-                <?php if( $art_title_pos == 'bottom' || $info_pos == 'bottom' || ( $category_position == 'above' && $art_title_pos == 'bottom' ) || $art_excerpt_pos == 'bottom' || $btn_pos == 'bottom' ) { ?>
+                <?php if( $art_title_pos == 'bottom' || $info_pos == 'bottom' || ( $category_position == 'above' && $art_title_pos == 'bottom' ) || $art_excerpt_pos == 'bottom' || $art_audio_pos == 'bottom' || $btn_pos == 'bottom' ) { ?>
                     <div class="td-module-meta-info td-module-meta-info-bottom">
                         <?php
                             // category above title & title under image
@@ -133,6 +142,11 @@ class td_module_flex_5 extends td_module {
                             // excerpt under image
                             if( $art_excerpt_pos == 'bottom' ) {
                                 echo $excerpt;
+                            }
+
+                            // audio player under image
+                            if( $art_audio_pos == 'bottom' ) {
+                                echo $audio_player;
                             }
 
                             // button under image

@@ -19,7 +19,7 @@ if ('posts' == get_option('show_on_front')) {
             </div>
             <div class="td-main-content">
                 <?php
-                locate_template('loop.php', true);
+                load_template( TDC_PATH . '/mobile/loop.php', true);
                 echo td_page_generator_mob::get_pagination();
                 ?>
             </div>
@@ -43,20 +43,42 @@ if ('posts' == get_option('show_on_front')) {
     ?>
 
     <div class="td-main-content-wrap td-main-page-wrap">
-
         <?php
+
+        // panel grid settings
+        $tdm_home_grid = td_util::get_option('tdm_frontpage_grid');
+
+        // the category id filter
+        $tdm_frontpage_grid_cat_filter = td_util::get_option('tdm_frontpage_grid_cat_filter');
+
+        // the panel filter type for the front page grid, if not set the 'featured' category filter type will be used
+        $tdm_frontpage_grid_sort = td_util::get_option('tdm_frontpage_grid_sort');
+
+        // the panel global posts limit for grids
+        $tdm_grids_posts_limit = td_util::get_option('tdm_grids_posts_limit');
+
         // display Big Grid Mob 1 and the content at the top of the page
-        if ( empty( $paged ) or $paged < 2 ) { //show this only on the first page
+        if ( ( empty( $paged ) or $paged < 2 ) and $tdm_home_grid !== 'hide' ) { //show this only on the first page and only if the grid it's enabled from theme's panel
             if ( have_posts() ) { ?>
                 <?php while ( have_posts() ) : the_post(); ?>
 
                     <div class="td-container">
-
                         <?php
-                        //show mobile grid only if Featured cat exists
-                        if ( get_cat_ID(TD_FEATURED_CAT) !== 0) {
-                            echo do_shortcode('[td_block_big_grid_mob_1 sort="featured"]');
+
+                        // the block attributes
+                        $block_atts = array();
+                        $block_atts['limit'] = ( !empty( $tdm_grids_posts_limit ) ? $tdm_grids_posts_limit : 3 );
+                        $block_atts['category_id'] = $tdm_frontpage_grid_cat_filter;
+                        
+                        if( empty( $tdm_frontpage_grid_sort ) && get_cat_ID(TD_FEATURED_CAT ) !== 0 ) {
+	                        $block_atts['sort'] = 'featured';
+                        } else {
+                            // if the sort value is 'latest' we need to send am empty sort value to the block renderer
+	                        $block_atts['sort'] = ( $tdm_frontpage_grid_sort === 'latest' ? '' : $tdm_frontpage_grid_sort );
                         }
+
+                        echo td_global_blocks::get_instance( 'td_block_big_grid_mob_1' )->render( $block_atts );
+                        
                         ?>
                         <?php the_content(); ?>
                     </div>
@@ -73,16 +95,36 @@ if ('posts' == get_option('show_on_front')) {
 
             $posts_per_page = get_query_var('posts_per_page') ? get_query_var('posts_per_page') : 10;
 
+            // the panel posts limit
+            $tdm_frontpage_latest_articles_posts_limit = td_util::get_option('tdm_frontpage_latest_articles_posts_limit' );
+
+            if ( !empty( $tdm_frontpage_latest_articles_posts_limit ) ) {
+                $posts_per_page = $tdm_frontpage_latest_articles_posts_limit;
+            }
+
+            // posts offset
+            $offset = '';
+            $tdm_frontpage_latest_articles_posts_offset = td_util::get_option('tdm_frontpage_latest_articles_posts_offset');
+
+            if ( $tdm_frontpage_grid_sort === 'latest' ) {
+	            if ( empty( $paged ) or $paged < 2 ) {
+		            $offset = ( !empty( $tdm_frontpage_latest_articles_posts_offset ) ? $tdm_frontpage_latest_articles_posts_offset : '' );
+	            } else {
+		            $offset = ( $paged - 1 ) * $posts_per_page;
+	            }
+            }
+
             // query used on Latest Articles section
             $wp_query_args = array(
                 'ignore_sticky_posts' => 1,
                 'post_status' => 'publish',
                 'posts_per_page' => $posts_per_page,
                 'paged' => $paged,
+                'offset' => $offset
             );
             query_posts($wp_query_args);
 
-            locate_template('loop.php', true);
+            load_template( TDC_PATH . '/mobile/loop.php', true);
             echo td_page_generator_mob::get_pagination();
             wp_reset_query();
             ?>

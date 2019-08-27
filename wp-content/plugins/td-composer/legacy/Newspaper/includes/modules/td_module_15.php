@@ -30,7 +30,7 @@ class td_module_15 extends td_module_single_base {
 
                 <?php echo $this->get_image('medium_large');?>
 
-	            <div class="td-post-text-content td-post-content">
+	            <div class="td-post-text-content td-post-content tagdiv-type">
 		            <?php echo $this->get_content();?>
 	            </div>
             </div>

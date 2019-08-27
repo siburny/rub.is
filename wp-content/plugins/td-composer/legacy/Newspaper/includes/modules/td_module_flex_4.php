@@ -57,6 +57,8 @@ class td_module_flex_4 extends td_module {
                     </div>
 
                     <?php if ($excerpt_position == '') { echo $excerpt; } ?>
+
+                    <?php echo $this->get_audio_embed() ?>
                 </div>
             </div>
         </div>

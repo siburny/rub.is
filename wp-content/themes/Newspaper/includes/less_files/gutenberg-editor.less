@@ -1,5 +1,5 @@
 @import "variables.less";
-@import "type.less";
+@import "type-gutenberg.less";
 @import "misc/font-icons.less";
 @import "mixin.less";
 
@@ -10,13 +10,24 @@
   }
 }
 
-.wp-block {
-  max-width: 726px;
+.editor-styles-wrapper {
+  .wp-block {
+    max-width: 1098px;
+
+    .wp-block[data-type="core/pullquote"][data-align="left"],
+    .wp-block[data-type="core/pullquote"][data-align="right"] {
+      .editor-block-list__block-edit {
+        width: 50%;
+      }
+    }
+  }
 }
 
 .td-gutenberg-editor {
-  .wp-block {
-    max-width: 1098px;
+  .editor-styles-wrapper {
+    .wp-block {
+      max-width: 726px;
+    }
   }
 }
 
@@ -36,18 +47,7 @@ body .editor-styles-wrapper {
     margin-right: 0;
     padding-left: unset;
     padding-right: unset;
-
   }
-//Pull quote
-  .wp-block[data-type="core/pullquote"][data-align="left"],
-  .wp-block[data-type="core/pullquote"][data-align="right"] {
-
-    .editor-block-list__block-edit {
-      width: 50%;
-    }
-
-  }
-
 }
 
 //Classic block
@@ -190,6 +190,16 @@ body .editor-styles-wrapper {
     font-style: normal;
   }
 }
+//Blockquotes block
+.wp-block-quote {
+  &.is-large,
+  &.is-style-large {
+    p {
+      font-size: 36px;
+      line-height: 1.2;
+    }
+  }
+}
 
 .editor-block-preview__content {
   .wp-block-quote:not(.is-large):not(.is-style-large) {
@@ -302,33 +312,6 @@ body .editor-styles-wrapper {
 
       &:hover {
         color: #0073aa;
-      }
-    }
-
-    .wp-block-categories__post-count {
-      float: right;
-    }
-  }
-}
-
-// Archives
-.wp-block-archives {
-  padding-left: 0 !important;
-  font-family: @font1;
-
-  li {
-    line-height: 30px;
-    list-style: none;
-    padding: 0;
-    margin-left: 0 !important;
-
-    a {
-      color: #222222;
-
-      &:hover {
-        color: @td_theme_color;
-        text-decoration: none !important;
-
       }
     }
   }
@@ -468,38 +451,10 @@ body .editor-styles-wrapper {
         color: #fff !important;
         text-decoration: none !important;
       }
-
     }
-
   }
-
 }
 
-//Paragraph shortcode - dropcaps
-p.has-drop-cap {
-
-  &:not(:focus):first-letter {
-    font-size: 79px !important;
-    line-height: 69px;
-    margin: 0 9px 0 0;
-    padding: 0 13px 0 0;
-    color: inherit;
-  }
-
-  &:not([class*="has-text-color"]) {
-
-    &:not(:focus)::first-letter {
-      font-size: 79px !important;
-      line-height: 69px;
-      margin: 0 9px 0 0;
-      padding: 0 13px 0 0;
-      color: #4B4B4B;
-
-    }
-
-  }
-
-}
 
 //fix for Yoast metabox
 .wpseo-metabox-sidebar {

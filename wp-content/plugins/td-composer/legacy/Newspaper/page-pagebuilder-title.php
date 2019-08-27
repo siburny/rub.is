@@ -101,7 +101,7 @@ if ($td_use_page_builder) {
 										<span><?php the_title() ?></span>
 									</h1>
 								</div>
-								<div class="td-page-content">
+								<div class="td-page-content tagdiv-type">
 									<?php
 									the_content();
 									endwhile;//end loop
@@ -137,7 +137,7 @@ if ($td_use_page_builder) {
 										<span><?php the_title() ?></span>
 									</h1>
 								</div>
-								<div class="td-page-content">
+								<div class="td-page-content tagdiv-type">
 									<?php
 									the_content();
 									endwhile; //end loop
@@ -171,7 +171,7 @@ if ($td_use_page_builder) {
 									<span><?php the_title() ?></span>
 								</h1>
 							</div>
-							<div class="td-page-content">
+							<div class="td-page-content tagdiv-type">
 								<?php
 								the_content();
 								endwhile; //end loop

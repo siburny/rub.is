@@ -40,6 +40,13 @@ class vc_row extends tdc_composer_block {
                 .$unique_block_class {
                     min-height: 0;
                 }
+                
+                /* @row_anim_off */
+                .$unique_block_class > .td-element-style > .td-element-style-before {
+                    transition: none;
+                    -webkit-transition: none;
+                    opacity: 1;
+                }
 
                 /* @row_fixed */
                 @media (min-width: 768px) {
@@ -97,29 +104,25 @@ class vc_row extends tdc_composer_block {
                 }
 
                 /* @content_align_vertical */
-                .$unique_block_class.tdc-row-content-vert-center,
-                .$unique_block_class.tdc-row-content-vert-center .tdc-columns {
-                    display: flex;
-                    align-items: center;
-                    flex: 1;
-                }
-                .$unique_block_class.tdc-row-content-vert-bottom,
-                .$unique_block_class.tdc-row-content-vert-bottom .tdc-columns {
-                    display: flex;
-                    align-items: flex-end;
-                    flex: 1;
-                }
-                @media (max-width: 767px) {
-	                .$unique_block_class,
-	                .$unique_block_class .tdc-columns {
-	                	flex-direction: column;
-	                }
-                }
-                .$unique_block_class.tdc-row-content-vert-center .td_block_wrap {
-                	vertical-align: middle;
-                }
-                .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
-                	vertical-align: bottom;
+                @media (min-width: 767px) {
+                    .$unique_block_class.tdc-row-content-vert-center,
+                    .$unique_block_class.tdc-row-content-vert-center .tdc-columns {
+                        display: flex;
+                        align-items: center;
+                        flex: 1;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-bottom,
+                    .$unique_block_class.tdc-row-content-vert-bottom .tdc-columns {
+                        display: flex;
+                        align-items: flex-end;
+                        flex: 1;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-center .td_block_wrap {
+                        vertical-align: middle;
+                    }
+                    .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
+                        vertical-align: bottom;
+                    }
                 }
                 
                 /* @svg_z_index */
@@ -255,6 +258,9 @@ class vc_row extends tdc_composer_block {
         // stretch row off
         $res_ctx->load_settings_raw( 'stretch_off', $res_ctx->get_shortcode_att('stretch_off') );
 
+        // bg image transtion off
+        $res_ctx->load_settings_raw( 'row_anim_off', $res_ctx->get_shortcode_att('row_anim_off') );
+
 	    // z-index
 	    $res_ctx->load_settings_raw( 'svg_z_index', $res_ctx->get_shortcode_att('svg_z_index') );
 
@@ -341,6 +347,7 @@ class vc_row extends tdc_composer_block {
 			'row_hide_on_pagination' => '',
 			'row_parallax' => '',
 			'row_fixed' => '',
+			'row_anim_off' => '',
 			'row_bg_gradient' => '',
 			'row_shadow_shadow_size' => '',
 			'row_shadow_shadow_offset_horizontal' => '',

@@ -4,40 +4,31 @@
   Site wide > typography style
 ----------------------------------------------------------------------------
 */
-
-
-body,
-p {
+body {
   font-family: @font2;
   font-size: 14px;
   line-height: 21px;
 }
-
 
 p {
   margin-top: 0;
   margin-bottom: 21px;
 }
 
-
 a:active,
-a:focus { /* IE remove focus */
+a:focus {
   outline: none;
-  //ie-dummy: expression(this.hideFocus=true);
 }
-
 
 a {
-  color:@td_theme_color;
+  color: @td_theme_color;
   text-decoration: none;
 }
-
 
 ins {
-  background: white;
+  background: #fff;
   text-decoration: none;
 }
-
 
 code {
   position: relative;
@@ -47,23 +38,23 @@ code {
   padding: 2px 6px;
 }
 
-
 pre {
   background-color: #f1f1f1;
-  padding: 4px 10px 4px 10px;
+  padding: 4px 10px;
   border: none;
   border-radius: 0;
   margin-top: 24px;
+  overflow: auto;
 }
-
 
 cite {
   font-family: @font3;
-  font-size: 13px; /* ovveride bootstrap */
+  font-size: 13px;
   font-style: italic;
   font-weight: normal;
   text-transform: none;
   color:#000;
+
   a {
     color:#000;
 
@@ -73,13 +64,12 @@ cite {
   }
 }
 
-
 q {
   font-style: italic;
 }
 
-
-ul, ol {
+ul,
+ol {
   padding: 0;
 
   li {
@@ -87,7 +77,6 @@ ul, ol {
     margin-left: 21px;
   }
 }
-
 
 .dl-horizontal {
   a {
@@ -106,7 +95,6 @@ ul, ol {
   }
 }
 
-
 address {
   font-size: inherit !important;
   line-height: inherit !important;
@@ -116,7 +104,6 @@ address {
 big {
   text-transform: uppercase;
 }
-
 
 embed {
   width: 100%;
@@ -152,18 +139,23 @@ table {
 /*  ----------------------------------------------------------------------------
     h
 */
-@h1_size:32px;
-@h1_line_height:40px;
+@h1_size: 32px;
+@h1_line_height: 40px;
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: @font3;
   color: @td_text_color;
   font-weight: 400;
-  margin: 6px 0 6px 0;
-}
+  margin: 6px 0;
 
-h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
-  color: @td_text_color;
+  > a {
+    color: @td_text_color;
+  }
 }
 
 h1 {
@@ -171,7 +163,6 @@ h1 {
   line-height: 40px;
   margin-top: 33px;
   margin-bottom: 23px;
-  //letter-spacing: -0.02em;
 }
 
 h2 {
@@ -179,7 +170,6 @@ h2 {
   line-height: 38px;
   margin-top: 30px;
   margin-bottom: 20px;
-  //letter-spacing: -0.02em;
 }
 
 h3 {
@@ -210,10 +200,7 @@ h6 {
   margin-bottom: 11px;
 }
 
-
-
 // videopress from Jetpack
-// !!!! verificat daca mai trebuie astea 3 ????
 .videopress-placeholder {
   width: 100% !important;
 }
@@ -224,8 +211,6 @@ h6 {
 .video-player {
   width: 100% !important;
 }
-
-
 
 /*
 ----------------------------------------------------------------------------
@@ -241,7 +226,7 @@ textarea {
   max-width: 100%;
   height: 168px;
   min-height: 168px;
-  padding: 6px 9px 6px 9px;
+  padding: 6px 9px;
 
   /* responsive portrait phone */
   @media (max-width: @responsive_p_phone_max) {
@@ -330,19 +315,10 @@ input[type=password] {
   Site wide > WordPress Text, Images & Captions
 ----------------------------------------------------------------------------
 */
-
-
-
-/*  ----------------------------------------------------------------------------
+.tagdiv-type {
+  /*  ----------------------------------------------------------------------------
     text and Images align
-*/
-
-.td-post-content,
-.wpb_text_column, // text widget from VC
-.td_block_text_with_title, // our text widget with title
-.woocommerce #tab-description,
-.mce-content-body
-{
+  */
   img {
     margin-bottom: 21px;
   }
@@ -354,8 +330,6 @@ input[type=password] {
     }
   }
 
-  // this is for small `in content` images..
-  // for large `in content` images use wp's center align to have them look well
   .alignnone {
     display: inline-block;
     margin: 0 5px;
@@ -363,6 +337,204 @@ input[type=password] {
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
       margin: 0 10px 0 0;
+    }
+  }
+
+  font-size: 15px;
+  line-height: 1.74;
+  color: #222;
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 26px;
+  }
+
+  li {
+    ul,
+    ol {
+      margin-bottom: 0;
+    }
+  }
+
+  li[style="text-align: center;"],
+  li[style="text-align: right;"] {
+    list-style-position: inside;
+    margin-left: -21px;
+  }
+
+  p {
+    margin-bottom: 26px;
+  }
+
+  .td-arrow-list {
+    list-style: none;
+    margin-left: 16px;
+
+    li:before {
+      font-family: @font4;
+      content: '\e803';
+      float: left;
+      margin-left: -16px;
+      line-height: 26px;
+      font-size: 14px;
+    }
+  }
+
+  //fix for embeds that overflow content width
+  embed,
+  iframe,
+  object {
+    max-width: 100% !important;
+  }
+
+  iframe {
+    &.instagram-media{
+      margin: 1px 0 12px !important;
+    }
+  }
+
+
+  /*  ----------------------------------------------------------------------------
+    quote :not(.wp-block-quote)
+*/
+  blockquote {
+    padding: 0;
+    position: relative;
+    border-left: none;
+    margin: 40px 5% 38px;
+    font-style: italic;
+    text-align: center;
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      margin: 20px 3% 18px;
+    }
+
+    p {
+      font-family: @font3;
+      font-size: 32px;
+      line-height: 40px;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: @td_theme_color;
+      word-wrap: break-word;
+
+      /* responsive portrait tablet */
+      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+        font-size: 24px;
+        line-height: 32px;
+      }
+
+      /* responsive portrait phone */
+      @media (max-width: @responsive_p_phone_max) {
+        font-size: 22px;
+        line-height: 30px;
+      }
+    }
+  }
+
+  // default blockquote left + right
+  .td_quote_right {
+    float: right;
+    width: 50%;
+    margin: 21px 0 21px 21px;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      float: none;
+      width: auto;
+      margin-right: 5%;
+      margin-left: 5%;
+    }
+  }
+
+  .td_quote_left {
+    float:left;
+    width: 50%;
+    margin: 18px 18px 18px 0;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      float: none;
+      width: auto;
+      margin-right: 5%;
+      margin-left: 5%;
+    }
+
+    p {
+      text-align: left;
+
+      /* responsive portrait phone */
+      @media (max-width: @responsive_p_phone_max) {
+        text-align: center;
+      }
+    }
+  }
+
+  // box quote
+  .td_quote_box {
+    margin: 0;
+    background-color: #FCFCFC;
+    border-left: 2px solid @td_theme_color;
+    padding: 15px 23px 0 23px;
+    position: relative;
+    top: 6px;
+    clear: both;
+
+    p {
+      font-family: @font1;
+      color: #777;
+      font-size: 13px;
+      line-height: 21px;
+      padding-bottom: 16px;
+      margin: 0;
+      text-transform: none;
+    }
+  }
+
+  .td_box_left {
+    width: 40%;
+    float: left;
+    margin: 0 34px 20px 0;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      float: none;
+      margin: 0 0 36px 0;
+      width: auto;
+    }
+
+    p {
+      text-align: left;
+    }
+  }
+
+  .td_box_right {
+    width: 30%;
+    float: right;
+    margin: 0 0 20px 34px;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      float: none;
+      margin: 0 0 36px 0;
+      width: auto;
+    }
+
+    p {
+      text-align: left;
+    }
+  }
+
+  .td_box_center {
+    margin: 0 0 29px 0;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      margin-bottom: 36px;
     }
   }
 }
@@ -386,34 +558,24 @@ img.wp-smiley {
   color:#444;
 }
 
-
 .wp-caption {
   text-align: center;
   max-width: 100%;
-
 }
-
 
 .wp-caption img {
   max-width: 100% !important;
 }
 
-
-
 .alignnone {
   margin-top: 0;
 }
-
 
 .aligncenter {
   text-align: center;
   clear: both;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 6px;
-  margin-bottom: 6px;
-
+  margin: 6px auto;
 }
 
 img.td-center {
@@ -426,13 +588,11 @@ img.td-center {
   margin-right: 0 !important;;
 }
 
-
 figure.alignright,
 figure.alignleft,
 figure.aligncenter {
   margin-bottom: 0;
 }
-
 
 // ?
 .alignnone img,
@@ -450,7 +610,6 @@ figure.aligncenter {
         + fix for tinyMCE padding
      -> on full width td-pb-span12
 */
-
 .alignleft {
   float:left;
   margin-top: 6px;
@@ -465,14 +624,8 @@ figure.aligncenter {
     margin-right: 21px;
   }
 
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    max-width: 220px;
-    margin-right: 21px;
-  }
-
-  /* responsive portrait phone - just a bit, after 500px we make it non float */
-  @media (max-width: @responsive_p_phone_max) {
+  /* responsive portrait tablet + phone */
+  @media (max-width: @responsive_p_tablet_max) {
     max-width: 220px;
     margin-right: 21px;
   }
@@ -551,14 +704,8 @@ figure.aligncenter {
     margin-left: 21px;
   }
 
-  /* responsive portrait tablet */
-  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    max-width: 220px;
-    margin-left: 21px;
-  }
-
-  /* responsive portrait phone - just a bit, after 500px we make it non float */
-  @media (max-width: @responsive_p_phone_max) {
+  /* responsive portrait tablet + phone */
+  @media (max-width: @responsive_p_tablet_max) {
     max-width: 220px;
     margin-left: 21px;
   }
@@ -581,7 +728,6 @@ figure.aligncenter {
     figcaption {
       text-align: center;
     }
-
   }
 }
 
@@ -605,78 +751,6 @@ figure.aligncenter {
   }
 }
 
-
-/*
-----------------------------------------------------------------------------
-  Css for:
-  Page content
-  Post content
-  TinyMCE content
-----------------------------------------------------------------------------
-*/
-
-.td-page-content,
-.td-post-content,
-.wpb_text_column, // text widget from VC
-.td_block_text_with_title, // our text widget with title
-.woocommerce #tab-description,
-.mce-content-body {
-  font-size: 15px;
-  line-height: 26px;
-  color: #222;
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  ul,ol {
-    margin-bottom: 26px;
-  }
-
-  p,
-  li {
-    font-size: 15px;
-    line-height: 1.74; //26px;
-  }
-
-  li[style="text-align: center;"],
-  li[style="text-align: right;"] {
-    list-style-position: inside;
-    margin-left: -21px;
-  }
-
-  p {
-    margin-bottom: 26px;
-  }
-
-  .td-arrow-list {
-    list-style: none;
-    margin-left: 16px;
-
-    li:before {
-      font-family: @font4;
-      content: '\e803';
-      float: left;
-      margin-left: -16px;
-      line-height: 26px;
-      font-size: 14px;
-    }
-  }
-
-  //fix for embeds that overflow content width
-  embed,
-  iframe,
-  object {
-    max-width: 100% !important;
-  }
-
-  iframe {
-    &.instagram-media{
-      margin: 1px 0 12px !important;
-    }
-  }
-}
-
 //remove underline from Titles and Categories
 .entry-title a,
 .td-post-category,
@@ -688,291 +762,156 @@ figure.aligncenter {
   }
 }
 
+// gutenberg
+.wp-block-quote.is-large cite {
+  font-size: 13px;
+}
 
+// separator default
+.wp-block-separator:not(.is-style-wide):not(.is-style-dots) {
+  max-width: 100px;
+  border: none;
+  border-bottom: 2px solid #8f98a1;
+  margin: 1.65em auto;
+}
+.wp-block-separator.is-style-wide {
+  border-width: 0 0 1px 0;
+}
 
+// reset twitter quote issue
+.twitter-tweet p {
+  font-family: initial;
+  font-size: initial;
+  line-height: initial;
+  font-style: initial;
+  text-align: initial;
+  text-transform: initial;
+  color: initial;
+  font-weight: initial;
+}
 
+// pull quote
+.wp-block-pullquote blockquote,
+.td_pull_quote {
+  padding: 18px 25px;
+  margin: 0;
+  clear: both;
 
-
-
-
-
-
-/*  ----------------------------------------------------------------------------
-    quote
-*/
-.td-page-content,
-.td-post-content,
-.wpb_text_column, // text widget from VC
-.td_block_text_with_title, // our text widget with title
-.bbpress, // bbPress forum
-.woocommerce #tab-description,
-.mce-content-body,
-.comment-content {
-  blockquote {
-    padding: 0;
-    position: relative;
-    border-left: none;
-    margin: 40px 5% 38px 5%;
-    font-style: italic;
+  p {
+    font-family: @font1;
+    font-size: 14px;
+    line-height: 26px;
+    font-weight: 600;
+    text-transform: none;
     text-align: center;
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      margin: 20px 3% 18px 3%;
+
+    &:first-child:before {
+      position: absolute;
+      left: 0;
+      display: block;
+      content: '';
+      width: 15px;
+      height: 15px;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAALBAMAAABSacpvAAAALVBMVEUAAAC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLRK0HxpAAAADnRSTlMAd+67mWZR3SKqMxGIzB8/1rAAAABlSURBVAjXFcexDQEBAAXQd+KCRm4CDZURFGICMYFadTHBxQQmEDHCzWAI9XGJ8s/ANS95FBvccKwYr5kuUQ/5omm5dpQ9Fu+H2efEPX07Sg62f+bJ2T6pJkmnTi5FslM2L56r9geMACBhjTsodgAAAABJRU5ErkJggg==') no-repeat;
     }
 
-    p {
-      font-family: @font3;
-      font-size: 32px;
-      line-height: 40px;
-      font-weight: 400;
-      text-transform: uppercase;
-      color: @td_theme_color;
-      word-wrap: break-word;
-
-      /* responsive portrait tablet */
-      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-        font-size: 24px;
-        line-height: 32px;
-      }
-
-      /* responsive portrait phone */
-      @media (max-width: @responsive_p_phone_max) {
-        font-size: 22px;
-        line-height: 30px;
-      }
-    }
-  }
-
-  // reset twitter quote issue
-  .twitter-tweet p {
-    font-family: initial;
-    font-size: initial;
-    line-height: initial;
-    font-style: initial;
-    text-align: initial;
-    text-transform: initial;
-    color: initial;
-    font-weight: initial;
-  }
-
-  // default blockquote left + right
-  .td_quote_right {
-    float:right;
-    width: 50%;
-    margin: 21px 0 21px 21px;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      width: auto;
-      margin-right: 5%;
-      margin-left: 5%;
+    &:after {
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      display: block;
+      content: '';
+      width: 15px;
+      height: 15px;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAALBAMAAABSacpvAAAALVBMVEUAAAC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLRK0HxpAAAADnRSTlMA3ZnuqndmIhG7VYhEMzOiL2oAAABkSURBVAjXY+D1E2PgULZuYGB89+4A07t3AQzn3r1T4Hv3ToCh7t27CUDRBwxAYQe2d+8MGBiuAuWr5BwYGBjeFTAwzEtgYOB6xMDA8RAowGnOwMD6CsjIA4oWKwBFXYGcLQ0MAFHHH+tW1OhlAAAAAElFTkSuQmCC') no-repeat;
     }
   }
+}
 
-  .td_quote_left {
-    float:left;
-    width: 50%;
-    margin: 18px 18px 18px 0;
+.wp-block-pullquote blockquote,
+.td_pull_center {
+  margin: 17px 0;
+  padding: 15px 50px;
 
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      width: auto;
-      margin-right: 5%;
-      margin-left: 5%;
-    }
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    padding: 15px 20px;
+  }
+}
 
-    p {
-      text-align: left;
+.wp-block-pullquote {
+  padding: 0;
+  color: @td_theme_color;
 
-      /* responsive portrait phone */
-      @media (max-width: @responsive_p_phone_max) {
-        text-align: center;
-      }
-    }
+  p {
+    color: inherit;
   }
 
-  // box quote
-  .td_quote_box {
-    margin: 0;
-    background-color: #FCFCFC;
-    border-left: 2px solid @td_theme_color;
-    padding: 15px 23px 0 23px;
-    position: relative;
-    top: 6px;
-    clear: both;
-
-    p {
-      font-family: @font1;
-      color: #777777;
-      font-size: 13px;
-      line-height: 21px;
-      padding-bottom: 16px;
-      margin: 0;
-      text-transform: none;
-    }
+  cite {
+    color: #000;
   }
+}
 
-  .td_box_left {
-    width: 40%;
-    float: left;
-    margin: 0 34px 20px 0;
+.wp-block-pullquote.alignfull blockquote {
+  margin-left: 30px;
+  margin-right: 30px;
+}
 
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      margin: 0 0 36px 0;
-      width: auto;
-    }
+.wp-block-pullquote.alignleft,
+.td_pull_left {
+  width: 40%;
+  margin-right: 34px;
 
-    p {
-      text-align: left;
-    }
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    float: none;
+    margin: 0 0 30px 0;
+    width: auto;
   }
+}
+.td_pull_left {
+  float: left;
+}
 
-  .td_box_right {
-    width: 30%;
-    float: right;
-    margin: 0 0 20px 34px;
+.wp-block-pullquote.alignright,
+.td_pull_right {
+  width: 30%;
+  margin-left: 34px;
 
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      margin: 0 0 36px 0;
-      width: auto;
-    }
-
-    p {
-      text-align: left;
-    }
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    float: none;
+    margin: 0 0 30px 0;
+    width: auto;
   }
+}
+.td_pull_right {
+  float: right;
+}
 
-  .td_box_center {
-    margin: 0 0 29px 0;
+.wp-block-pullquote.alignleft,
+.wp-block-pullquote.alignright {
+  margin-top: 0;
+  margin-bottom: 0 !important;
 
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      margin-bottom: 36px;
-    }
-  }
-
-  // pull quote
-  .wp-block-pullquote blockquote,
-  .td_pull_quote {
-    padding: 18px 25px;
-    margin: 0;
-    clear: both;
-
-    p {
-      font-family: @font1;
-      font-size: 14px;
-      line-height: 26px;
-      font-weight: 600;
-      text-transform: none;
-      text-align: center;
-
-      &:first-child:before {
-        position:absolute;
-        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAALBAMAAABSacpvAAAALVBMVEUAAAC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLRK0HxpAAAADnRSTlMAd+67mWZR3SKqMxGIzB8/1rAAAABlSURBVAjXFcexDQEBAAXQd+KCRm4CDZURFGICMYFadTHBxQQmEDHCzWAI9XGJ8s/ANS95FBvccKwYr5kuUQ/5omm5dpQ9Fu+H2efEPX07Sg62f+bJ2T6pJkmnTi5FslM2L56r9geMACBhjTsodgAAAABJRU5ErkJggg==') no-repeat;
-        left: 0;
-        display:block;
-        content:'';
-        width: 15px;
-        height: 15px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-      }
-
-      &:after {
-        position:absolute;
-        bottom: 10px;
-        right: 0;
-        display:block;
-        content:'';
-        width: 15px;
-        height: 15px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAALBAMAAABSacpvAAAALVBMVEUAAAC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLRK0HxpAAAADnRSTlMA3ZnuqndmIhG7VYhEMzOiL2oAAABkSURBVAjXY+D1E2PgULZuYGB89+4A07t3AQzn3r1T4Hv3ToCh7t27CUDRBwxAYQe2d+8MGBiuAuWr5BwYGBjeFTAwzEtgYOB6xMDA8RAowGnOwMD6CsjIA4oWKwBFXYGcLQ0MAFHHH+tW1OhlAAAAAElFTkSuQmCC') no-repeat;
-      }
-    }
-  }
-
-  .wp-block-pullquote blockquote,
-  .td_pull_center {
-    margin: 17px 0;
-    padding: 15px 50px;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      padding: 15px 20px;
-    }
-  }
-
-  .wp-block-pullquote {
-    padding: 0;
-    color: @td_theme_color;
-
-    p {
-      color: inherit;
-    }
-  }
-
-  .wp-block-pullquote.alignleft,
-  .td_pull_left {
-    width: 40%;
-    margin-right: 34px;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      margin: 0 0 30px 0;
-      width: auto;
-    }
-  }
-  .td_pull_left {
-    float: left;
-  }
-
-  .wp-block-pullquote.alignright,
-  .td_pull_right {
-    width: 30%;
-    margin-left: 34px;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      float: none;
-      margin: 0 0 30px 0;
-      width: auto;
-    }
-  }
-  .td_pull_right {
-    float: right;
-  }
-
-  .wp-block-pullquote.alignleft,
-  .wp-block-pullquote.alignright {
+  blockquote {
     margin-top: 0;
-    margin-bottom: 0 !important;
-
-    blockquote {
-      margin-top: 0;
-      margin-bottom: 0;
-      padding: 0;
-    }
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      max-width: 100%;
-    }
+    margin-bottom: 0;
+    padding: 0;
   }
 
-  .wp-block-pullquote.is-style-solid-color blockquote {
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
     max-width: 100%;
   }
+}
+
+.wp-block-pullquote.is-style-solid-color blockquote {
+  max-width: 100%;
 }
 
 blockquote {
@@ -1002,56 +941,45 @@ blockquote.pull-right:after {
 /*  ----------------------------------------------------------------------------
     dropcaps
 */
-.td-page-content,
-.td-post-content,
-.wpb_text_column, // text widget from VC
-.td_block_text_with_title, // our text widget with title
-.bbpress, // bbPress forum
-.woocommerce #tab-description,
-.mce-content-body,
-.comment-content {
-  .dropcap {
-    float:left;
-    display: block;
-    font-size: 50px;
-    line-height: 56px;
-    background-color: @td_theme_color;
-    color: white;
-    text-align: center;
-    margin: 9px 13px 0 0;
-    padding: 2px 10px 4px;
-    font-family: @font2;
-    text-transform: uppercase;
-    min-width: 62px;
-    min-height: 62px;
-  }
+.dropcap {
+  float:left;
+  display: block;
+  font-size: 50px;
+  line-height: 56px;
+  background-color: @td_theme_color;
+  color: #fff;
+  text-align: center;
+  margin: 9px 13px 0 0;
+  padding: 2px 10px 4px;
+  font-family: @font2;
+  text-transform: uppercase;
+  min-width: 62px;
+  min-height: 62px;
+}
 
-  .dropcap1 {
-    -webkit-border-radius: 70px;
-    -moz-border-radius: 70px;
-    border-radius: 70px;
-    font-size: 40px;
-    padding: 2px 14px 4px;
-  }
+.dropcap1 {
+  border-radius: 70px;
+  font-size: 40px;
+  padding: 2px 14px 4px;
+}
 
-  .dropcap2 {
-    background-color: transparent !important;
-    color: #4B4B4B;
-    font-size: 79px;
-    line-height: 69px;
-    margin: 0 9px 0 0;
-    padding: 0 13px 0 0;
-  }
+.dropcap2 {
+  background-color: transparent !important;
+  color: #4B4B4B;
+  font-size: 79px;
+  line-height: 69px;
+  margin: 0 9px 0 0;
+  padding: 0 13px 0 0;
+}
 
-  .dropcap3 {
-    background-color: transparent !important;
-    color: #4B4B4B;
-    font-weight: bold;
-    font-size: 79px;
-    line-height: 69px;
-    margin: 0 9px 0 0;
-    padding: 0 13px 0 0;
-  }
+.dropcap3 {
+  background-color: transparent !important;
+  color: #4B4B4B;
+  font-weight: bold;
+  font-size: 79px;
+  line-height: 69px;
+  margin: 0 9px 0 0;
+  padding: 0 13px 0 0;
 }
 
 
@@ -1160,10 +1088,8 @@ blockquote.pull-right:after {
 
 //Outlined button
 .td_outlined_btn {
-  border-width: 2px;
-  border-style: solid;
-  border-color: @td_theme_color;
   border-radius: 4px;
+  border: 2px solid @td_theme_color;
   color: @td_theme_color;
   background-color: transparent;
   transition: all 0.1s ease ;
@@ -1395,10 +1321,7 @@ blockquote.pull-right:after {
     padding-left: 8%;
     padding-right: 4%;
   }
-
 }
-
-
 
 /* responsive phone */
 @media (max-width: 500px) {
@@ -1413,4 +1336,3 @@ blockquote.pull-right:after {
     padding-right: 10px !important;
   }
 }
-

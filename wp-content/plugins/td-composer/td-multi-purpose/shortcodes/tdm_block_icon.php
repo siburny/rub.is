@@ -26,6 +26,12 @@ class tdm_block_icon extends td_block {
 				    line-height: @icon_line_height;
 				}
 				
+				/* @vert_align */
+				.$unique_block_class i {
+				    position: relative;
+				    top: @vert_align;
+				}
+				
 				/*@icon_display */
 				.$unique_block_class {
 				    display: inline-block;
@@ -59,6 +65,9 @@ class tdm_block_icon extends td_block {
 
         // icon line height
         $res_ctx->load_settings_raw( 'icon_line_height', $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_spacing' ) . 'px' );
+
+        // icon vertical align
+        $res_ctx->load_settings_raw( 'vert_align', $res_ctx->get_shortcode_att( 'vert_align' ) . 'px' );
 
         // icon display
         $res_ctx->load_settings_raw( 'icon_display', $res_ctx->get_shortcode_att( 'icon_display' ) );

@@ -27,7 +27,18 @@ if (have_posts()) {
 						</h1>
 					</div>
 					<div class="td-page-content">
-						<?php the_content(); ?>
+
+                        <?php
+
+                        // get the mob theme status from post meta
+                        $status = get_post_meta( get_the_ID(), 'tdm_grid_status', true );
+
+		                if ( $status && $status === 'enabled' ) {
+			                echo td_global_blocks::get_instance( 'td_block_big_grid_mob_1' )->render( array() );
+                        }
+
+                        ?>
+                        <?php the_content(); ?>
 					</div>
 					<?php
 					if($td_enable_or_disable_page_comments == 'show_comments') {

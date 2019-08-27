@@ -5,9 +5,8 @@
             locate_template('parts/logo.php', true, false);
         ?>
     </div>
-</div>
-
-<!-- Search -->
-<div class="td-search-icon">
-    <a id="td-header-search-button" href="#" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
+    <!-- Search -->
+    <div class="td-search-icon">
+        <a id="td-header-search-button" href="#" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
+    </div>
 </div>

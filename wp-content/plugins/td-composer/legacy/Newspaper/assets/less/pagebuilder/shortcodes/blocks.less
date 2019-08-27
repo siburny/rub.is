@@ -48,9 +48,6 @@
 }
 
 // All blocks header with theme accent color
-.block-title > span,
-.block-title > a,
-.block-title > label,
 .widgettitle,
 .widgettitle:after,
 .td-trending-now-title,
@@ -59,15 +56,7 @@
 .wpb_tabs li:hover a,
 .woocommerce .product .products h2:not(.woocommerce-loop-product__title),
 .td-subcat-filter .td-subcat-dropdown:hover .td-subcat-more {
-  background-color: @td_theme_color;
-}
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active {
-  background-color: @td_theme_color !important;
-}
-.block-title,
-.wpb_tabs .wpb_tabs_nav,
-.woocommerce div.product .woocommerce-tabs ul.tabs:before {
-  border-color: @td_theme_color;
+  background-color: @td_black;
 }
 .td_block_wrap .td-subcat-item .td-cur-simple-item {
   color: @td_theme_color;
@@ -2202,6 +2191,7 @@
 
 .td-main-page-wrap .td-container > .td-pb-row:first-child, // visual composer
 .td-main-page-wrap .tdc-row:first-child .wpb_wrapper, // tdc live
+.td-main-page-wrap .tdc_zone .tdc-row:first-of-type .wpb_wrapper, // tdc live
 .td-main-page-wrap .tdc-row:first-of-type .tdc-element:first-of-type,
 .td-main-page-wrap .tdc-row-composer:first-child .wpb_wrapper, // tdc live
 .td-main-page-wrap .tdc-row-composer:first-of-type .tdc-element:first-of-type{ // tdc editor

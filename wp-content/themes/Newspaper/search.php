@@ -1,104 +1,54 @@
-<?php
-/*  ----------------------------------------------------------------------------
-    the search template
- */
+<?php get_header(); ?>
 
+    <div class="td-main-content-wrap td-container-wrap">
+        <div class="td-container">
+            <div class="td-crumb-container">
+                <?php echo tagdiv_page_generator::get_breadcrumbs(array(
+                    'template' => 'search',
+                )); ?>
+            </div>
 
-get_header();
+            <div class="td-pb-row">
+                <div class="td-pb-span8 td-main-content">
+                    <div class="td-ss-main-content">
+                        <div class="td-page-header">
+                            <h1 class="entry-title td-page-title">
+                                <?php
+                                    if (get_search_query() != '') { ?>
+                                        <span class="td-search-query"><?php echo get_search_query(); ?></span> - <span> <?php esc_html_e('search results', 'newspaper');?></span>
+                                    <?php } else { ?>
+                                        <span><?php esc_html_e('Search', 'newspaper');?></span>
+                                <?php } ?>
+                            </h1>
 
-
-
-//set the template id, used to get the template specific settings
-$template_id = 'search';
-
-//prepare the loop variables
-global $loop_module_id, $loop_sidebar_position;
-
-/* after */
-$loop_module_id = td_util::get_option('tds_' . $template_id . '_page_layout', 16); //module 16 is default
-$loop_sidebar_position = td_util::get_option('tds_' . $template_id . '_sidebar_pos'); //sidebar right is default (empty)
-
-// sidebar position used to align the breadcrumb on sidebar left + sidebar first on mobile issue
-$td_sidebar_position = '';
-if($loop_sidebar_position == 'sidebar_left') {
-	$td_sidebar_position = 'td-sidebar-left';
-}
-
-td_global::$custom_no_posts_message = __td('No results for your search', TD_THEME_NAME);
-
-
-?>
-<div class="td-main-content-wrap td-container-wrap">
-
-<div class="td-container <?php echo esc_attr($td_sidebar_position) ?>">
-    <div class="td-crumb-container">
-        <?php echo td_page_generator::get_search_breadcrumbs(); ?>
-    </div>
-    <div class="td-pb-row">
-        <?php
-
-        switch ($loop_sidebar_position) {
-            default:
-                ?>
-                    <div class="td-pb-span8 td-main-content">
-                        <div class="td-ss-main-content">
-                            <div class="td-page-header">
-                                <?php locate_template('parts/page-search-box.php', true); ?>
+                            <div class="search-page-search-wrap">
+                                <form method="get" class="td-search-form-widget" action="<?php echo esc_url(home_url( '/' )); ?>">
+                                    <div role="search">
+                                        <input class="td-widget-search-input" type="text" value="<?php echo get_search_query(); ?>" name="s" id="s" /><input class="wpb_button wpb_btn-inverse btn" type="submit" id="searchsubmit" value="<?php esc_html_e('Search', 'newspaper')?>" />
+                                    </div>
+                                </form>
+                                <?php
+                                    if (get_search_query() != '') { ?>
+                                        <div class="td_search_subtitle">
+                                            <?php esc_html_e('If you\'re not happy with the results, please do another search', 'newspaper');?>
+                                        </div>
+                                <?php } ?>
                             </div>
-                            <?php locate_template('loop.php', true);?>
-
-                            <?php echo td_page_generator::get_pagination(); ?>
                         </div>
-                    </div>
-                    <div class="td-pb-span4 td-main-sidebar">
-                        <div class="td-ss-main-sidebar">
-                            <?php get_sidebar(); ?>
-                        </div>
-                    </div>
-                <?php
-                break;
 
-            case 'sidebar_left':
-                ?>
-                <div class="td-pb-span8 td-main-content <?php echo esc_attr($td_sidebar_position) ?>-content">
-                    <div class="td-ss-main-content">
-                        <div class="td-page-header">
-                            <?php locate_template('parts/page-search-box.php', true); ?>
-                        </div>
-                        <?php locate_template('loop.php', true);?>
-
-                        <?php echo td_page_generator::get_pagination(); ?>
+                        <?php
+                            get_template_part('loop-archive' );
+                        ?>
                     </div>
                 </div>
-	            <div class="td-pb-span4 td-main-sidebar">
-		            <div class="td-ss-main-sidebar">
-			            <?php get_sidebar(); ?>
-		            </div>
-	            </div>
-                <?php
-                break;
 
-            case 'no_sidebar':
-                ?>
-                <div class="td-pb-span12 td-main-content">
-                    <div class="td-ss-main-content">
-                        <div class="td-page-header">
-                            <?php locate_template('parts/page-search-box.php', true); ?>
-                        </div>
-                        <?php locate_template('loop.php', true);?>
-
-                        <?php echo td_page_generator::get_pagination(); ?>
+                <div class="td-pb-span4 td-main-sidebar">
+                    <div class="td-ss-main-sidebar">
+                        <?php dynamic_sidebar( 'td-default' ) ?>
                     </div>
                 </div>
-                <?php
-                break;
-        }
-        ?>
-    </div> <!-- /.td-pb-row -->
-</div> <!-- /.td-container -->
-</div> <!-- /.td-main-content-wrap -->
+            </div>
+        </div>
+    </div>
 
-
-<?php
-get_footer();
-?>
+<?php get_footer(); ?>

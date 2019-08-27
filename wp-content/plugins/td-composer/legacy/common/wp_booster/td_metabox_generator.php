@@ -69,9 +69,9 @@ class td_metabox_generator {
             }
 
             $buffer_field .=  '</div>';
-            echo $buffer_field;
-        }
 
+            echo '<!-- metabox row -->' . $buffer_field;
+        }
     }
 
 }//end class

@@ -7,9 +7,6 @@
 
 class tdc_config {
 
-
-
-
 	static $js_files_for_wp_admin = array (
 		'tdcWindowFrame'        => '/assets/js/tdcWindowFrame.js',
 		'tdcNotice'             => '/assets/js/tdcNotice.js',
@@ -17,7 +14,6 @@ class tdc_config {
 		'tdcInit'               => '/assets/js/wp-admin/tdcInit.js',  //@todo this should load only on edit post in wp-admin
 		'tdcDebug'              => '/assets/js/tdcDebug.js',  //inject tdcDebug in the iframe also
 	);
-
 
 	static $js_files_for_wrapper = array (
 		'tdcNotice'             => '/assets/js/tdcNotice.js',
@@ -73,7 +69,6 @@ class tdc_config {
 		'tdcLivePanelPageSettings'      => '/assets/js/tdcLivePanelPageSettings.js',
 	);
 
-
 	static $js_files_for_widget = array (
         'tdcAdminIFrameUI'      => '/assets/js/tdcAdminIFrameUI.js',
         'tdcCss'                => '/assets/js/tdcCssEditor.js',
@@ -81,7 +76,6 @@ class tdc_config {
         'tdcUtil'               => '/assets/js/tdcUtil.js',
         'tdcJobManager'         => '/assets/js/tdcJobManager.js',
     );
-
 
 	static $js_files_for_iframe = array (
 		'tdcComposerBlocksApi'  => '/assets/js/iframe/tdcComposerBlocksApi.js',
@@ -91,6 +85,10 @@ class tdc_config {
     static $js_files_for_gutenberg_editor = array(
         'tdcGutenberg' => '/assets/js/tdcGutenberg.js',
     );
+
+	static $js_files_for_gutenberg_style = array(
+		'tdcGutenbergStyle' => '/assets/js/tdcGutenbergStyle.js',
+	);
 
     static $js_files_for_live_css = array(
 		'td_live_css_state'                     => '/css-live/assets/js/tdLiveCssState.js',
@@ -162,9 +160,6 @@ class tdc_config {
         'tdm_pic_8' => '/assets/images/placeholders/thumb_08.jpg',
         'tdm_pic_9' => '/assets/images/placeholders/thumb_09.jpg',
     );
-
-
-
 
     /**
      * !!!! COMPATIBILITY ISSUE WITH Newsletter Plugin V1.0 !!!!!

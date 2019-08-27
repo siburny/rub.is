@@ -24,7 +24,7 @@ if ( !td_util::get_option('tds_header_background_image') == '' ) {
         <div class="td-banner-wrap-full td-container-wrap <?php echo td_util::get_option('td_full_header'); ?>">
             <div class="td-header-container td-header-row td-header-header">
                 <div class="td-header-sp-recs">
-                    <?php require_once('header/ads.php'); ?>
+                    <?php require_once('ads.php'); ?>
                 </div>
             </div>
         </div>

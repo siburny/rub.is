@@ -155,10 +155,10 @@ class tds_social6 extends td_style {
 
         // columns
         $columns = $res_ctx->get_style_att( 'columns', __CLASS__ );
-        $res_ctx->load_settings_raw( 'columns', $columns );
         if ( $columns == '' ) {
             $columns = '100%';
         }
+        $res_ctx->load_settings_raw( 'columns', $columns );
 
         $clearfix = 'clearfix';
         $padding = 'padding';
@@ -316,7 +316,6 @@ class tds_social6 extends td_style {
             $social_array['dribbble']   = array( $this->get_shortcode_att( 'dribbble' ), 'Dribbble' );
             $social_array['facebook']   = array( $this->get_shortcode_att( 'facebook' ), 'Facebook' );
             $social_array['flickr']     = array( $this->get_shortcode_att( 'flickr' ), 'Flickr' );
-            $social_array['googleplus'] = array( $this->get_shortcode_att( 'googleplus' ), 'Google+' );
             $social_array['instagram']  = array( $this->get_shortcode_att( 'instagram' ), 'Instagram' );
             $social_array['lastfm']     = array( $this->get_shortcode_att( 'lastfm' ), 'Lastfm' );
             $social_array['linkedin']   = array( $this->get_shortcode_att( 'linkedin' ), 'LinkedIn' );

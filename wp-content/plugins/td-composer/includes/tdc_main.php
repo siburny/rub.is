@@ -11,6 +11,16 @@ require_once('tdc_state.php');
 require_once('tdc_ajax.php');
 require_once('tdc_guttenberg.php');
 
+add_action( 'enqueue_block_editor_assets', function() {
+	if (TDC_DEPLOY_MODE == 'deploy' ) {
+		wp_enqueue_script('js_files_for_gutenberg_style', TDC_URL . '/assets/js/js_files_for_gutenberg_style.min.js', array('jquery', 'wp-blocks', 'wp-editor', 'wp-element', 'wp-i18n', 'wp-data'
+		), TD_COMPOSER, true);
+	}else {
+		wp_enqueue_script('tdcGutenbergStyle', TDC_URL . '/assets/js/tdcGutenbergStyle.js', array('jquery', 'wp-blocks', 'wp-editor', 'wp-element', 'wp-i18n', 'wp-data'
+		), TD_COMPOSER, true);
+	}
+});
+
 if ( tdc_guttenberg::is_gutenberg() or substr( get_bloginfo('version'), 0, 1) > 4 )
     new tdc_guttenberg();
 
@@ -892,40 +902,43 @@ if (!empty($td_action)) {
 					$handle_file = fopen( $file_path, 'w+');
 
 					//check response
-			        if ( $handle_file !== false && filesize( $file_path ) ) {
-				        $response[ $font_id ]['output'] = fread( $handle_file, filesize( $file_path ) );
-				        fclose( $handle_file );
-			        } else {
-				        switch ( $font_settings['name'] ) {
-					        case 'Font Awesome':
-					        case 'Typicons':
-					        case 'Open Iconic':
-					        case 'tagDiv Multi-purpose':
+                    if ( $handle_file !== false ) {
 
-						        $json_font_response = td_remote_http::get_page( TDC_URL . $font_settings['css_file'], __CLASS__);
+	                    if ( filesize( $file_path ) ) {
+		                    $response[ $font_id ][ 'output' ] = fread( $handle_file, filesize( $file_path ) );
+		                    fclose( $handle_file );
+	                    } else {
+		                    switch ( $font_settings[ 'name' ] ) {
+			                    case 'Font Awesome':
+			                    case 'Typicons':
+			                    case 'Open Iconic':
+			                    case 'tagDiv Multi-purpose':
 
-								if ( false === $json_font_response ) {
-									td_log::log(__FILE__, __FUNCTION__, 'Failed to get font icons', $json_font_response);
-								} else {
-									preg_match_all("/\.tdc-font-" . $font_settings['family_class'] . "-(.*)\:before/", $json_font_response, $output_array);
+				                    $json_font_response = td_remote_http::get_page( TDC_URL . $font_settings[ 'css_file' ], __CLASS__ );
 
-									if ( is_array( $output_array ) && count( $output_array ) ) {
-								        $response[$font_id]['classes'] = $output_array[1];
+				                    if ( false === $json_font_response ) {
+					                    td_log::log( __FILE__, __FUNCTION__, 'Failed to get font icons', $json_font_response );
+				                    } else {
+					                    preg_match_all( "/\.tdc-font-" . $font_settings[ 'family_class' ] . "-(.*)\:before/", $json_font_response, $output_array );
 
-								        $span_icons = '';
+					                    if ( is_array( $output_array ) && count( $output_array ) ) {
+						                    $response[ $font_id ][ 'classes' ] = $output_array[ 1 ];
 
-								        foreach ( $response[$font_id]['classes'] as $font_class ) {
-									        $css_class = 'tdc-font-' . $font_settings['family_class'] . ' tdc-font-' . $font_settings['family_class'] . '-' . $font_class;
-									        $span_icons .= '<span data-font_class="' . $css_class . '"><i class="' . $css_class . '"></i></span>' . PHP_EOL;
-								        }
-										fwrite( $handle_file , $span_icons );
-										clearstatcache();
-										fclose( $handle_file );
-							        }
-								}
-					        break;
-				        }
-			        }
+						                    $span_icons = '';
+
+						                    foreach ( $response[ $font_id ][ 'classes' ] as $font_class ) {
+							                    $css_class  = 'tdc-font-' . $font_settings[ 'family_class' ] . ' tdc-font-' . $font_settings[ 'family_class' ] . '-' . $font_class;
+							                    $span_icons .= '<span data-font_class="' . $css_class . '"><i class="' . $css_class . '"></i></span>' . PHP_EOL;
+						                    }
+						                    fwrite( $handle_file, $span_icons );
+						                    clearstatcache();
+						                    fclose( $handle_file );
+					                    }
+				                    }
+				                    break;
+		                    }
+	                    }
+                    }
 				}
 			}
 
@@ -943,10 +956,47 @@ if (!empty($td_action)) {
 				return $classes;
 			}
 
+			add_filter( 'the_content', function($content) {
+
+			    if ( ! function_exists( 'td_replace_vc_column_text' ) ) {
+                    function td_replace_vc_column_text( $matches ) {
+                        return '[vc_column_text' . $matches[ 1 ] . ']' . base64_encode( $matches[ 2 ] ) . '[/vc_column_text]';
+                    }
+                }
+
+                if ( shortcode_exists( 'vc_column_text' ) && has_shortcode( $content, 'vc_column_text' ) ) {
+			        // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+                    // This first regex check is to allow second regex replacement to apply only when 'vc_column_text' has content
+                    preg_match("/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", $content, $matches);
+                    if ( is_array( $matches ) && count( $matches ) ) {
+                        $content = preg_replace_callback( "/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", 'td_replace_vc_column_text', $content );
+                    }
+			    }
+
+			    if ( ! function_exists( 'td_replace_td_block_text_with_title' ) ) {
+                    function td_replace_td_block_text_with_title( $matches ) {
+                        return '[td_block_text_with_title' . $matches[ 1 ] . ']' . base64_encode( $matches[ 2 ] ) . '[/td_block_text_with_title]';
+                    }
+                }
+
+			    if ( shortcode_exists( 'td_block_text_with_title' ) && has_shortcode( $content, 'td_block_text_with_title' ) ) {
+
+                    // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+                    // This first regex check is to allow second regex replacement to apply only when 'td_block_text_with_title' has content
+                    preg_match("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", $content, $matches);
+                    if ( is_array( $matches ) && count( $matches ) ) {
+                        $content = preg_replace_callback("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", 'td_replace_td_block_text_with_title', $content);
+                    }
+                }
+
+                return $content;
+
+            }, 10, 1 );
+
 			add_filter( 'the_content', 'tdc_on_the_content', 10000, 1 );
 			function tdc_on_the_content( $content ) {
 
-				if ( isset( $_POST['tdc_content'] ) ) {
+			    if ( isset( $_POST['tdc_content'] ) ) {
 
 					//echo $_POST['tdc_content'];die;
 					//return $_POST['tdc_content'];
@@ -1287,3 +1337,6 @@ function tdc_load_widget() {
 
 	}
 }
+
+
+

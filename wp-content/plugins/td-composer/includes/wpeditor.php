@@ -30,9 +30,9 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 			wp_enqueue_style( 'common' );
 			wp_enqueue_style( 'forms' );
 
-			wp_enqueue_style( 'td-wp-admin-td-panel-2', td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/css/wp-admin.css', false, TD_THEME_VERSION, 'all' );
+			wp_enqueue_style( 'td-wp-admin-td-panel-2', TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/css/wp-admin.css', false, TD_THEME_VERSION, 'all' );
 
-			wp_enqueue_script( 'td_confirm', td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/js/tdConfirm.js', array( 'jquery' ) );
+			wp_enqueue_script( 'td_confirm', TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdConfirm.js', array( 'jquery' ) );
 
 		?>
 
@@ -368,10 +368,12 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 				}
 
 				if ( 'deploy' === TDC_DEPLOY_MODE ) {
-					require_once get_template_directory() . '/includes/wp_booster/td_api.php';
+					require_once TDC_PATH_LEGACY_COMMON . '/wp_booster/td_api.php';
 				} else {
-					require_once get_template_directory() . '/includes/wp_booster/td_api_tinymce_formats.php';
+					require_once TDC_PATH_LEGACY_COMMON . '/wp_booster/td_api_tinymce_formats.php';
 				}
+
+				$mceInit['body_class'] .= ' tagdiv-type';
 
 				td_api_tinymce_formats::_helper_get_tinymce_format();
 
@@ -380,7 +382,7 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 
 
 			// Add editor extensions as they are in theme
-			require_once get_template_directory() . '/includes/wp_booster/wp-admin/tinymce/tinymce.php';
+			require_once TDC_PATH_LEGACY_COMMON . '/wp_booster/wp-admin/tinymce/tinymce.php';
 
 			add_filter( 'mce_external_plugins', 'fb_add_tinymce_plugin' );
 			// Add to line 1 form WP TinyMCE

@@ -5,7 +5,7 @@
 $td_customLogo = td_util::get_option('tds_logo_upload');
 $td_customLogoR = td_util::get_option('tds_logo_upload_r');
 
-$td_logo_text = td_util::get_option('tds_logo_text');
+$td_logo_text = stripslashes(td_util::get_option('tds_logo_text'));
 $td_tagline_text = stripslashes(td_util::get_option('tds_tagline_text'));
 
 $td_logo_alt = td_util::get_option('tds_logo_alt');

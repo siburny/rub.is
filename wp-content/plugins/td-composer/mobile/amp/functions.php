@@ -117,6 +117,9 @@ add_action( 'wp', function (){
 		remove_action('wp_footer', 'tdc_on_live_css_inject_editor', 100000 );
 		remove_action('wp_footer', 'td_js_buffer_footer_render', 100);
 
+		// disqus comments fix
+		add_filter( 'dsq_can_load', '__return_false' );
+
 	}
 
 });

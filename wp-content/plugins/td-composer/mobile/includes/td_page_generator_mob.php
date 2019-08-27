@@ -11,12 +11,15 @@ class td_page_generator_mob extends td_page_generator {
 	static function get_pagination() {
 		global $wp_query;
 
+//		echo '<pre>';
+//		print_r($wp_query);
+//		echo '</pre>';
+
 		/**
 		 * use normal pagination
 		 */
 		$pagenavi_options = self::pagenavi_init();
 
-		$request = $wp_query->request;
 		$posts_per_page = intval(get_query_var('posts_per_page'));
 		$paged = intval(get_query_var('paged'));
 		$numposts = $wp_query->found_posts;

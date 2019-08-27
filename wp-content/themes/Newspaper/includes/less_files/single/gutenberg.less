@@ -3,6 +3,7 @@
 /*  ----------------------------------------------------------------------------
     less for Gutenberg elements
 */
+// gutenberg style front-end
 .wp-block-image {
   figcaption {
     font-family: @font2;
@@ -13,6 +14,13 @@
     font-weight: normal;
     line-height: 17px;
     color: #444;
+  }
+
+  &.alignfull {
+    figcaption {
+      margin-right: 20px;
+      margin-left: 20px;
+    }
   }
 }
 
@@ -28,6 +36,9 @@
       line-height: 17px;
     }
   }
+}
+.wp-block-gallery.alignnone {
+  display: flex;
 }
 
 // Categories - block
@@ -67,7 +78,7 @@
   }
 
   select {
-   // width: 100%;
+    // width: 100%;
     height: 30px;
     margin-bottom: 10px;
     margin-top: 13px;
@@ -77,6 +88,18 @@
 
 //Blockquotes block
 .wp-block-quote {
+  &.is-large,
+  &.is-style-large {
+    p {
+      font-size: 36px;
+      line-height: 1.2;
+    }
+
+    cite {
+      font-size: 13px;
+    }
+  }
+
   cite {
     color: #6c7781;
     font-size: 13px;
@@ -248,28 +271,6 @@
 
 }
 
-//Paragraph shortcode - dropcaps
-p.has-drop-cap {
-
-  &:not(:focus):first-letter {
-    font-size: 79px;
-    line-height: 69px;
-    margin: 0 9px 0 0;
-    padding: 0 13px 0 0;
-    color: inherit;
-  }
-  &:not([class*="has-text-color"]) {
-
-    &:not(:focus):first-letter {
-      //font-size: 79px;
-      //line-height: 69px;
-      //margin: 0 9px 0 0;
-      //padding: 0 13px 0 0;
-      color: #4B4B4B;
-    }
-  }
-}
-
 .alignwide {
 
   @media (min-width: 1485px) {
@@ -279,6 +280,12 @@ p.has-drop-cap {
 
     &.wp-block-video video {
       width: 100%;
+    }
+
+    &.wp-block-embed {
+      iframe {
+        width: 100%;
+      }
     }
   }
 }
@@ -316,21 +323,14 @@ p.has-drop-cap {
       padding-right: 8px;
     }
   }
+
+  &.wp-block-embed {
+    iframe {
+      width: 100%;
+    }
+  }
 }
 
 .wp-block-media-text {
   margin-bottom: 26px;
 }
-
-.td-post-content p {
-  &.has-small-font-size {
-    font-size: 11px;
-  }
-  &.has-large-font-size {
-    font-size: 32px;
-  }
-  &.has-larger-font-size {
-  font-size: 50px;
-  }
-}
-

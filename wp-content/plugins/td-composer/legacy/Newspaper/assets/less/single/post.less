@@ -1,4 +1,39 @@
 /*  ----------------------------------------------------------------------------
+    Breadcrumbs
+*/
+// align breadcrumb when sidebar left
+.td-sidebar-left {
+  .td-crumb-container {
+    padding-left: 372px;
+
+    /* responsive landscape tablet */
+    @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
+      padding-left: 341px;
+    }
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      padding-left: 256px;
+    }
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      padding-left: 0;
+    }
+  }
+}
+
+// float the left sidebar to fix on mobile the sidebar first issue
+.td-sidebar-left-content {
+  float: right !important;
+
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    float: none !important;
+  }
+}
+
+
+
+/*  ----------------------------------------------------------------------------
     Related / similar articles
 */
 
@@ -198,3 +233,4 @@
     //padding-top: 130px;
   }
 }
+

@@ -24,17 +24,21 @@ class td_config_mob {
             'tdAjaxCount' =>            '/mobile/includes/js_dev/tdAjaxCount.js',
             'tdCustomEvents' =>         '/mobile/includes/js_dev/tdCustomEvents.js',
             'tdAffix' =>                '/mobile/includes/js_dev/tdAffix.js',
-            'tdLogin' =>                '/mobile/includes/js_dev/tdLogin.js'
+            'tdLogin' =>                '/mobile/includes/js_dev/tdLogin.js',
         );
 
         /**
          * js files list - loaded from the main theme
          */
 		td_global_mob::$js_files_main = array(
-            'tdViewport' =>             '/includes/wp_booster/js_dev/tdViewport.js',
-            'tdPullDown' =>             '/includes/wp_booster/js_dev/tdPullDown.js',
-            'tdSocialSharing'=>         '/includes/wp_booster/js_dev/tdSocialSharing.js'
+            'tdViewport' =>             '/legacy/common/wp_booster/js_dev/tdViewport.js',
+            'tdPullDown' =>             '/legacy/common/wp_booster/js_dev/tdPullDown.js',
+            'tdSocialSharing'=>         '/legacy/common/wp_booster/js_dev/tdSocialSharing.js'
         );
+
+		static $js_mob_files_for_admin = array (
+			'tdBlocksEditorAssets' => 	'/mobile/includes/js_dev/tdBlocksEditorAssets.js'
+		);
 
 		/**
 		 * modules list
@@ -233,7 +237,7 @@ class td_config_mob {
 				"category" => 'Blocks',
 				'icon' => 'icon-pagebuilder-td_block_related_posts_mob',
 				'file' => TDC_PATH . '/mobile/includes/shortcodes/td_block_related_posts_mob.php',
-				"params" => td_config_legacy::td_block_big_grid_params(),
+				"params" => td_config::td_block_big_grid_params(),
 			)
 		);
 
@@ -247,7 +251,7 @@ class td_config_mob {
 				"category" => 'Blocks',
 				'icon' => 'icon-pagebuilder-td_block_big_grid_mob_1',
 				'file' => TDC_PATH . '/mobile/includes/shortcodes/td_block_big_grid_mob_1.php',
-				"params" => td_config_legacy::td_block_big_grid_params(),
+				"params" => td_config::td_block_big_grid_params(),
 			)
 		);
 
@@ -255,13 +259,13 @@ class td_config_mob {
 			td_api_block::add('td_block_video_youtube',
 				array(
 					'map_in_visual_composer' => true,
-					"name" => 'Video Playlist',
-					"base" => "td_block_video_youtube",
-					"class" => "td_block_video_playlist_youtube",
-					"controls" => "full",
-					"category" => 'Blocks',
-					'icon' => 'icon-pagebuilder-td-youtube',
-					'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_video_youtube.php',
+					"name"                   => 'Video Playlist',
+					"base"                   => "td_block_video_youtube",
+					"class"                  => "td_block_video_playlist_youtube",
+					"controls"               => "full",
+					"category"               => 'Blocks',
+					'icon'                   => 'icon-pagebuilder-td-youtube',
+					'file'                   => TDC_PATH . '/mobile/includes/shortcodes/td_block_video_youtube_mob.php',
 				)
 			);
 		}
@@ -276,7 +280,7 @@ class td_config_mob {
 					"controls"               => "full",
 					"category"               => 'Blocks',
 					'icon'                   => 'icon-pagebuilder-td-vimeo',
-					'file'                   => td_global_mob::$get_parent_template_directory . '/includes/shortcodes/td_block_video_vimeo.php',
+					'file'                   => TDC_PATH . '/mobile/includes/shortcodes/td_block_video_vimeo_mob.php',
 				)
 			);
 		}
@@ -342,5 +346,146 @@ class td_config_mob {
                 'img' => TDC_URL . '/assets/images/panel/post_sharing_styles/icon-post-sharing-1.png'
             ));
         }
+
+		/**
+		 * The typography settings for the panel and css compiler
+		 */
+		td_global_mob::$typography_settings_list = array (
+			'mt_Header' => array (
+				'mt_main_menu_mob' => array(
+					'text' => 'Main Menu',
+					'type' => 'default',
+				),
+                'mt_text_logo' => array(
+                    'text' => 'Text logo',
+                    'type' => 'default',
+                ),
+                'mt_tagline_text' => array(
+                    'text' => 'Tagline text',
+                    'type' => 'default',
+                )
+			),
+            'mt_Modules - Article title' => array (
+                'mt_module_general' => array(
+                    'text' => 'General',
+                    'type' => 'general_setting',
+                ),
+                'mt_module_1' => array(
+                    'text' => 'Module 1',
+                    'type' => 'default',
+                ),
+                'mt_module_2' => array(
+                    'text' => 'Module 2',
+                    'type' => 'default',
+                )
+            ),
+			'mt_Post content' => array (
+                'mt_post_title' => array(
+                    'text' => 'Post Title',
+                    'type' => 'default',
+                ),
+				'mt_post_content' => array(
+					'text' => 'Post Content',
+					'type' => 'default',
+				),
+                'mt_blockquote' => array(
+                    'text' => 'Default blockquote',
+                    'type' => 'default',
+                ),
+                'mt_box_quote' => array(
+                    'text' => 'Box quote',
+                    'type' => 'default',
+                ),
+                'mt_pull_quote' => array(
+                    'text' => 'Pull quote',
+                    'type' => 'default',
+                ),
+                'mt_lists' => array(
+                    'text' => 'Lists',
+                    'type' => 'default',
+                ),
+                'mt_h1' => array(
+                    'text' => 'H1',
+                    'type' => 'default',
+                ),
+                'mt_h2' => array(
+                    'text' => 'H2',
+                    'type' => 'default',
+                ),
+                'mt_h3' => array(
+                    'text' => 'H3',
+                    'type' => 'default',
+                ),
+                'mt_h4' => array(
+                    'text' => 'H4',
+                    'type' => 'default',
+                ),
+                'mt_h5' => array(
+                    'text' => 'H5',
+                    'type' => 'default',
+                ),
+                'mt_h6' => array(
+                    'text' => 'H6',
+                    'type' => 'default',
+                )
+			),
+			'mt_Post elements' => array (
+				'mt_post_category' => array(
+					'text' => 'Category tag',
+					'type' => 'default',
+				),
+                'mt_post_author' => array(
+                    'text' => 'Author',
+                    'type' => 'default',
+                ),
+                'mt_post_date' => array(
+                    'text' => 'Date',
+                    'type' => 'default',
+                ),
+                'mt_post_views_comments' => array(
+                    'text' => 'Views and comments',
+                    'type' => 'default',
+                ),
+                'mt_post_via_source_tags' => array(
+                    'text' => 'Via/source/tags',
+                    'type' => 'default',
+                ),
+                'mt_post_next_prev_title' => array(
+                    'text' => 'Next/prev post title',
+                    'type' => 'default',
+                ),
+                'mt_post_author_name' => array(
+                    'text' => 'Box author name',
+                    'type' => 'default',
+                ),
+                'mt_post_author_url' => array(
+                    'text' => 'Box author url',
+                    'type' => 'default',
+                ),
+                'mt_post_author_descr' => array(
+                    'text' => 'Box author description',
+                    'type' => 'default',
+                ),
+                'mt_post_related_title' => array(
+                    'text' => 'Related article title',
+                    'type' => 'default',
+                )
+			),
+            'mt_Footer' => array (
+                'mt_footer_copyright' => array(
+                    'text' => 'Copyright text',
+                    'type' => 'default',
+                ),
+                'mt_footer_menu' => array(
+                    'text' => 'Footer menu',
+                    'type' => 'default',
+                )
+            ),
+		);
+
+		td_global::$typography_settings_list = array_merge(
+			td_global::$typography_settings_list,
+			td_global_mob::$typography_settings_list
+		);
 	}
 }

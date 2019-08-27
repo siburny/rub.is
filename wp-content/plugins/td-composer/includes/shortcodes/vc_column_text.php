@@ -144,7 +144,7 @@ class vc_column_text extends td_block {
 
 	function render($atts, $content = null) {
 
-		parent::render($atts);
+    	parent::render($atts);
 
 		$atts = shortcode_atts(
 			array(
@@ -156,15 +156,33 @@ class vc_column_text extends td_block {
 			$content = $atts[ 'content' ];
 		}
 
+		td_global::set_in_ed_element(true);
+
+		if ( base64_decode( $content, true ) && base64_encode( base64_decode( $content, true ) ) === $content ) {
+			$content = base64_decode( $content );
+		}
+
 		// As vc does
 		$content = wpautop( preg_replace( '/<\/?p\>/', "\n", $content ) . "\n" );
 
-//		if ( ! ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
-//		    $content = do_shortcode( shortcode_unautop( $content ) );
-//		}
-		$content = do_shortcode( shortcode_unautop( $content ) );
+		$render_content = true;
 
-        $buffy = '<div class="wpb_wrapper wpb_text_column ' . $this->get_wrapper_class() . ' ' . $this->get_block_classes( array( $atts['el_class'] ) ) . '" ' . $this->get_block_html_atts() . '>';
+		if ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) {
+			$mapped_shortcodes = tdc_mapper::get_mapped_shortcodes();
+			foreach ( $mapped_shortcodes as $base => $mapped_shortcode ) {
+				if ( has_shortcode( $content, $base ) ) {
+					$render_content = false;
+					break;
+				}
+			}
+		}
+
+		if ( $render_content ) {
+			$content = do_shortcode( shortcode_unautop( $content ) );
+		}
+
+
+        $buffy = '<div class="wpb_wrapper wpb_text_column ' . $this->get_wrapper_class() . ' ' . $this->get_block_classes( array( $atts['el_class'], 'tagdiv-type' ) ) . '" ' . $this->get_block_html_atts() . '>';
 
 			//get the block css
 		    $buffy .= $this->get_block_css();
@@ -176,6 +194,8 @@ class vc_column_text extends td_block {
             $buffy .= '</div>';
 
 		$buffy .= '<div class="td-fix-index">' . $content . '</div></div>';
+
+		td_global::set_in_ed_element(false);
 
 		return $buffy;
 	}

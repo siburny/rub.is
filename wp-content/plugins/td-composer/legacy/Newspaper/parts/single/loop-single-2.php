@@ -13,7 +13,7 @@ if (have_posts()) {
         <?php echo $td_mod_single->get_social_sharing_top();?>
 
 
-        <div class="td-post-content">
+        <div class="td-post-content tagdiv-type">
             <?php
             // override the default featured image by the templates (single.php and home.php/index.php - blog loop)
             if (!empty(td_global::$load_featured_img_from_template)) {

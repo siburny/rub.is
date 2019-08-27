@@ -155,7 +155,7 @@ class td_instagram {
                             if ( $image['node']['is_video'] === true ) {
                                 ?>
                                 <span class="td-video-play-ico">
-                                    <img width="40" class="td-retina" src="<?php echo td_global::$get_template_directory_uri . '/images/icons/ico-video-large.png' ?>" alt="video"/>
+                                    <img width="40" class="td-retina" src="<?php echo TDC_URL_LEGACY . '/assets/images/icons/ico-video-large.png' ?>" alt="video"/>
                                 </span>
                                 <?php
                             }

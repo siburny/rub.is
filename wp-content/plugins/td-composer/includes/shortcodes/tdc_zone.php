@@ -358,7 +358,11 @@ class tdc_zone extends tdc_composer_block {
 
 		$buffy = '';
 
-		$block_classes = array('wpb_row', 'td-pb-row');
+        if ( 'Newspaper' === TD_THEME_NAME ) {
+            $block_classes = array('wpb_row', 'td-pb-row');
+        } else {
+            $block_classes = '';
+        }
 
 		$addElementStyle = false;
 		$css_elements = $this->get_block_css($clearfixColumns, $addElementStyle);

@@ -47,6 +47,8 @@ class td_module_flex_3 extends td_module {
                             <?php echo $this->get_comments();?>
                         </span>
                     </div>
+
+                    <?php echo $this->get_audio_embed() ?>
                 </div>
             </div>
         </div>

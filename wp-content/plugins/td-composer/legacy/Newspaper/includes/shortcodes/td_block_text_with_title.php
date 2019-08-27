@@ -160,7 +160,7 @@ class td_block_text_with_title extends td_block {
 		}
 
 	    $buffy = '';
-        $buffy .= '<div class="' . $this->get_block_classes() . '" ' . $this->get_block_html_atts() . '>';
+        $buffy .= '<div class="' . $this->get_block_classes(array('tagdiv-type')) . '" ' . $this->get_block_html_atts() . '>';
 
 		    //get the block js
 		    $buffy .= $this->get_block_css();
@@ -172,7 +172,7 @@ class td_block_text_with_title extends td_block {
             $buffy .= '</div>';
 
 			//td-fix-index class to fix background color z-index
-            $buffy .= '<div class="td_mod_wrap td-fix-index">';
+            $buffy .= '<div class="td_mod_wrap td-fix-inde">';
 //                //only run the filter if we have visual composer
 //	            if ( ! ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
 //	                if (function_exists('wpb_js_remove_wpautop')) {
@@ -184,14 +184,28 @@ class td_block_text_with_title extends td_block {
 //		            $buffy .= $content;   //no visual composer
 //	            }
 
+	    if ( base64_decode( $content, true ) && base64_encode( base64_decode( $content, true ) ) === $content ) {
+			$content = base64_decode( $content );
+		}
+
 	    // As vc does
 		$content = wpautop( preg_replace( '/<\/?p\>/', "\n", $content ) . "\n" );
 
-//		if ( ! ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
-//			$content = do_shortcode( shortcode_unautop( $content ) );
-//		}
+	    $render_content = true;
 
-		$content = do_shortcode( shortcode_unautop( $content ) );
+		if ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) {
+			$mapped_shortcodes = tdc_mapper::get_mapped_shortcodes();
+			foreach ( $mapped_shortcodes as $base => $mapped_shortcode ) {
+				if ( has_shortcode( $content, $base ) ) {
+					$render_content = false;
+					break;
+				}
+			}
+		}
+
+		if ( $render_content ) {
+			$content = do_shortcode( shortcode_unautop( $content ) );
+		}
 
         $buffy .= $content;
 

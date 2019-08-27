@@ -18,7 +18,7 @@ class td_module_mob_2 extends td_module {
             <div class="td-meta-info-container">
                 <div class="td-meta-align">
                     <div class="td-big-grid-meta">
-                        <?php echo $this->get_category(); ?>
+                        <?php if ( td_util::get_option('tds_category_mobule_mob_2') == 'yes' ) { echo $this->get_category(); }?>
                         <?php echo $this->get_title();?>
                     </div>
                     <div class="td-module-meta-info">

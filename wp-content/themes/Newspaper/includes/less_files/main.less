@@ -41,53 +41,16 @@ Table of content:
 
 */
 
-
-// speed booster fix
-body {
-  visibility: visible !important;
-}
-
 @import "variables.less";
 @import "mixin.less";
 
 // Reset
 @import "normalize.less";
 
-// Reset the box-sizing
-* {
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
-}
-*:before,
-*:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-img {
-  max-width: 100%;
-  width : auto\9;
-  height: auto;
-}
-
-.td-main-content-wrap,
-.td-category-grid {
-  background-color: #fff;
-}
-
-// item scope meta
-.td-page-meta {
-  display: none;
-}
-
-
 // grid
 @import "grid/grid.less";
 @import "grid/grid_blocks.less";
 @import "grid/grid_responsive.less";
-
 
 // header
 @import "header/header.less";
@@ -95,46 +58,28 @@ img {
 @import "header/header-style.less";
 @import "header/menu-header.less";
 @import "header/menu-mobile.less";
-@import "header/magnific-popup.less";
-
 
 // type
 @import "type.less";
 
-
 // modules
 @import "pagebuilder/modules/modules.less";
 @import "pagebuilder/modules/module_15.less";
-@import "pagebuilder/modules/module_16.less";
-@import "pagebuilder/modules/module_mx2.less";
 @import "block-templates.less";
 
-
-//css splitter for ie8 ie9
-;#td_css_split_separator{visibility: visible};
-
 // post and page
-@import "page.less";
+@import "page/page.less";
 @import "single/post.less";
 @import "single/post-templates.less";
 @import "single/comments.less";
 @import "single/gutenberg.less";
 @import "single/galleries.less";
 
-
-//css splitter for ie8 ie9
-;#td_css_split_separator{visibility: visible};
-
-
 // misc
 @import "misc/font-icons.less";
 @import "misc/widgets-default.less";
-@import "misc/retina.less";
-@import "misc/totop.less";
-@import "misc/style_customizer.less";
 @import "misc/print.less";
-@import "misc/animation-stack.less";
-
 
 // footer
 @import "footer/footer.less";
+@import "style-extra.less";

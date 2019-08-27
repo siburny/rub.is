@@ -8,26 +8,50 @@
 require_once('includes/td_global_mob.php');
 
 // the deploy mode
-require_once (td_global_mob::$get_parent_template_directory . '/td_deploy_mode.php');
+require_once (td_global_mob::$get_parent_template_directory . '/tagdiv-deploy-mode.php');
+
+require_once (td_global_mob::$get_parent_template_directory . '/includes/tagdiv-config.php');
+
+if ( ! defined( 'TDC_PATH_LEGACY' ) ) {
+	define( 'TDC_PATH_LEGACY', TDC_PATH . '/legacy/' . TD_THEME_NAME );
+}
+
+if ( ! defined( 'TDC_URL_LEGACY' ) ) {
+	define( 'TDC_URL_LEGACY', TDC_URL . '/legacy/' . TD_THEME_NAME );
+}
+
+if ( ! defined( 'TDC_PATH_LEGACY_COMMON' ) ) {
+	define( 'TDC_PATH_LEGACY_COMMON', TDC_PATH . '/legacy/common' );
+}
+
+if ( ! defined( 'TDC_URL_LEGACY_COMMON' ) ) {
+	define( 'TDC_URL_LEGACY_COMMON', TDC_URL . '/legacy/common' );
+}
 
 // theme config
-require_once (td_global_mob::$get_parent_template_directory . '/includes/td_config.php');
-require_once (td_global_mob::$get_parent_template_directory . '/includes/td_config_helper.php');
+require_once (TDC_PATH_LEGACY . '/includes/td_config.php');
+require_once (TDC_PATH_LEGACY . '/includes/td_config_helper.php');
 require_once ('includes/td_config_mob.php');
 add_action('td_wp_booster_loaded', array('td_config_mob', 'on_td_global_after_config'), 11);
 
 // theme fonts
-require_once (td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_fonts.php');
+require_once (TDC_PATH_LEGACY_COMMON . '/wp_booster/td_fonts.php');
 
 require_once('includes/shortcodes/td_misc_shortcodes.php'); // buttons shortcodes
 
 // theme utility files
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_global.php');
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_options.php');
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_util.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_global.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_options.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_util.php');
 
 // the wp_booster_api
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_api.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_api.php');
+
+/**
+ * add wp blocks editor(gutenberg) assets
+ * .. is loaded from the mob theme plugin @see td-mobile-plugin.php because we need this to always run.. not just on mob theme setup 
+ */
+//require_once('/includes/td_block_editor_assets_mob.php');
 
 // hook here to use the theme api
 do_action('td_global_after');
@@ -36,42 +60,41 @@ if ( td_util::get_option('tdm_amp') !== '' && td_util::is_amp_plugin_installed()
 	require_once('amp/functions.php');
 }
 
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_global_blocks.php'); // module builder
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_social_icons.php'); // no autoload (almost always needed) - The social icons
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_unique_posts.php');
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_js_buffer.php'); // no autoload - the theme always outputs JS form this buffer
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_block_widget.php');
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_block_template.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_global_blocks.php'); // module builder
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_social_icons.php'); // no autoload (almost always needed) - The social icons
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_unique_posts.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_js_buffer.php'); // no autoload - the theme always outputs JS form this buffer
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_block_widget.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_block_template.php');
 
 require_once('includes/td_js_generator_mob.php'); // no autoload - the theme always outputs JS
 
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_autoload_classes.php'); //used to autoload classes [modules, blocks]
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_module.php'); // module builder
-require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_block.php'); // module builder
-//require_once(td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_video_support.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_autoload_classes.php'); //used to autoload classes [modules, blocks]
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_module.php'); // module builder
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_block.php'); // module builder
+
 // the file location was changed from booster to legacy
-require_once(TDC_PATH  . '/legacy/common/wp_booster/td_video_support.php');
-require_once(TDC_PATH  . '/legacy/common/wp_booster/td_audio_support.php');
+require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_video_support.php');
 
 require_once('includes/td_css_generator_mob.php'); // css generator - outputs the css generated by the theme panel settings
 
-td_api_autoload::add('td_category_template',        td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_category_template.php');
-td_api_autoload::add('td_category_top_posts_style', td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_category_top_posts_style.php');
-td_api_autoload::add('td_block_layout',             td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_block_layout.php');
-td_api_autoload::add('td_module_single_base',       td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_module_single_base.php');
-td_api_autoload::add('td_data_source',              td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_data_source.php');
-td_api_autoload::add('td_page_generator',           td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_page_generator.php');
-td_api_autoload::add('td_template_layout',          td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_template_layout.php');
-td_api_autoload::add('td_review',                   td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_review.php');
-td_api_autoload::add('td_css_inline',               td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_css_inline.php');
-td_api_autoload::add('td_smart_list',               td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_smart_list.php');
-td_api_autoload::add('td_remote_cache',             td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_remote_cache.php');
-td_api_autoload::add('td_css_compiler',             td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_css_compiler.php');
-td_api_autoload::add('td_log',                      td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_log.php');
-td_api_autoload::add('td_css_buffer',               td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_css_buffer.php');
-td_api_autoload::add('td_page_views',               td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_page_views.php');
-td_api_autoload::add('td_css_res_compiler',         td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_css_res_compiler.php');
-td_api_autoload::add('td_social_sharing',           td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_social_sharing.php');
+td_api_autoload::add('td_category_template',        TDC_PATH_LEGACY_COMMON . '/wp_booster/td_category_template.php');
+td_api_autoload::add('td_category_top_posts_style', TDC_PATH_LEGACY_COMMON . '/wp_booster/td_category_top_posts_style.php');
+td_api_autoload::add('td_block_layout',             TDC_PATH_LEGACY_COMMON . '/wp_booster/td_block_layout.php');
+td_api_autoload::add('td_module_single_base',       TDC_PATH_LEGACY_COMMON . '/wp_booster/td_module_single_base.php');
+td_api_autoload::add('td_data_source',              TDC_PATH_LEGACY_COMMON . '/wp_booster/td_data_source.php');
+td_api_autoload::add('td_page_generator',           TDC_PATH_LEGACY_COMMON . '/wp_booster/td_page_generator.php');
+td_api_autoload::add('td_template_layout',          TDC_PATH_LEGACY_COMMON . '/wp_booster/td_template_layout.php');
+td_api_autoload::add('td_review',                   TDC_PATH_LEGACY_COMMON . '/wp_booster/td_review.php');
+td_api_autoload::add('td_css_inline',               TDC_PATH_LEGACY_COMMON . '/wp_booster/td_css_inline.php');
+td_api_autoload::add('td_smart_list',               TDC_PATH_LEGACY_COMMON . '/wp_booster/td_smart_list.php');
+td_api_autoload::add('td_remote_cache',             TDC_PATH_LEGACY_COMMON . '/wp_booster/td_remote_cache.php');
+td_api_autoload::add('td_css_compiler',             TDC_PATH_LEGACY_COMMON . '/wp_booster/td_css_compiler.php');
+td_api_autoload::add('td_log',                      TDC_PATH_LEGACY_COMMON . '/wp_booster/td_log.php');
+td_api_autoload::add('td_css_buffer',               TDC_PATH_LEGACY_COMMON . '/wp_booster/td_css_buffer.php');
+td_api_autoload::add('td_page_views',               TDC_PATH_LEGACY_COMMON . '/wp_booster/td_page_views.php');
+td_api_autoload::add('td_css_res_compiler',         TDC_PATH_LEGACY_COMMON . '/wp_booster/td_css_res_compiler.php');
+td_api_autoload::add('td_social_sharing',           TDC_PATH_LEGACY_COMMON . '/wp_booster/td_social_sharing.php');
 td_api_autoload::add('td_page_generator_mob',       get_template_directory() . '/includes/td_page_generator_mob.php');
 td_api_autoload::add('td_ajax_mob',                 get_template_directory() . '/includes/td_ajax_mob.php');
 td_api_autoload::add('td_walker_mobile_menu',       get_template_directory() . '/parts/td_walker_mobile_menu.php');
@@ -96,7 +119,7 @@ foreach ( td_api_block::get_all() as $block_settings_key => $block_settings_valu
 add_action( 'after_setup_theme', 'td_on_after_setup_theme' );
 function td_on_after_setup_theme() {
     add_theme_support( 'woocommerce' );
-    add_theme_support('html5', array('caption'));
+    add_theme_support( 'html5', array('caption'));
     add_theme_support( 'title-tag' );
 }
 
@@ -170,10 +193,10 @@ function load_front_js() {
             foreach ( td_global_mob::$js_files_main as $js_file_id => $js_file ) {
                 if ( $last_js_file_id == '' ) {
 	                //first, load it with jQuery dependency
-                    wp_enqueue_script( $js_file_id, td_global_mob::$get_parent_template_directory_uri . $js_file, array( 'jquery' ), TD_THEME_VERSION, true );
+                    wp_enqueue_script( $js_file_id, TDC_URL . $js_file, array( 'jquery' ), TD_THEME_VERSION, true );
                 } else {
 	                //not first - load with the last file dependency
-                    wp_enqueue_script( $js_file_id, td_global_mob::$get_parent_template_directory_uri . $js_file, array( $last_js_file_id ), TD_THEME_VERSION, true );
+                    wp_enqueue_script( $js_file_id, TDC_URL . $js_file, array( $last_js_file_id ), TD_THEME_VERSION, true );
                 }
                 $last_js_file_id = $js_file_id;
             }
@@ -195,50 +218,69 @@ function td_load_text_domains() {
 	load_theme_textdomain( TD_THEME_NAME, td_global_mob::$get_parent_template_directory . '/translation' );
 
 	// theme specific config values
-	require_once( td_global_mob::$get_parent_template_directory . '/includes/wp_booster/td_translate.php' );
+	require_once( TDC_PATH_LEGACY_COMMON . '/wp_booster/td_translate.php' );
 }
 
 /* ----------------------------------------------------------------------------
- * this hook sets the gird posts number as offset for posts loop on categories
+ * this hook sets the global panel limit and the grid posts number(as offset - on categories) for loop posts
  */
-add_action('pre_get_posts', 'td_modify_main_query_for_category_page');
-function td_modify_main_query_for_category_page( $query ) {
+add_action('pre_get_posts', function( $query ) {
 
-	//checking for category page and main query
-	if( ! is_admin() and is_category() and $query->is_main_query() ) {
+	// checking for category page and main query
+	if( ! is_admin() and $query->is_main_query() ) {
 
-		// get the category object - with or without permalinks
-		if ( empty( $query->query_vars['cat'] ) ) {
-			// when we have permalinks, we have to get the category object like this.
-			td_global::$current_category_obj = get_category_by_path( get_query_var('category_name'), false );
-		} else {
-			td_global::$current_category_obj = get_category( $query->query_vars['cat'] );
+		// check the panel global posts limit for latest articles sections to determine how many posts we need to set for the  main loop
+		$tdm_frontpage_latest_articles_posts_limit = td_util::get_option('tdm_frontpage_latest_articles_posts_limit' );
+
+		// if available, set the latest articles loop posts limit to user's panel setting
+		if ( ! empty( $tdm_frontpage_latest_articles_posts_limit ) ) {
+			$query->set( 'posts_per_page', $tdm_frontpage_latest_articles_posts_limit );
 		}
 
-		// we are on a category page with an ID that doesn't exists - wp will show a 404 and we do nothing
-		if ( is_null( td_global::$current_category_obj ) ) {
-			return;
-		}
+		if ( is_category() ) {
 
-		//get the number of page where on
-		$paged = get_query_var('paged');
-
-		//get the limit of posts on the category page
-		$limit = get_option('posts_per_page');
-
-		// how many posts are we showing in the big grid for this category
-		$offset = td_api_category_top_posts_style::get_key('td_category_top_posts_style_mob_1', 'posts_shown_in_the_loop' );
-
-		// offset + custom pagination - if we have offset, WordPress overwrites the pagination and works with offset + limit
-		if( empty( $query->is_feed ) ) {
-			if ( $paged > 1 ) {
-				$query->set( 'offset', intval($offset) + ( ( $paged - 1 ) * $limit ) );
+			// get the category object - with or without permalinks
+			if ( empty( $query->query_vars['cat'] ) ) {
+				// when we have permalinks, we have to get the category object like this.
+				td_global::$current_category_obj = get_category_by_path( get_query_var('category_name'), false );
 			} else {
-				$query->set( 'offset', intval($offset) );
+				td_global::$current_category_obj = get_category( $query->query_vars['cat'] );
 			}
+
+			// we are on a category page with an ID that doesn't exists - wp will show a 404 and we do nothing
+			if ( is_null( td_global::$current_category_obj ) ) {
+				return;
+			}
+
+			// get the number of page where on
+			$paged = get_query_var('paged');
+
+			// get the limit of posts on the category page
+			$limit = get_option('posts_per_page');
+
+			// check the panel global posts limit for grids to determine how many posts are we showing in the big grid for this category ( if no user setting.. use the config value )
+			$tdm_grids_posts_limit = td_util::get_option('tdm_grids_posts_limit');
+			$offset = ( !empty( $tdm_grids_posts_limit ) ? $tdm_grids_posts_limit : td_api_category_top_posts_style::get_key( 'td_category_top_posts_style_mob_1', 'posts_shown_in_the_loop' ) );
+
+			// check the cat grid status
+			$tdm_category_grid = td_util::get_option('tdm_category_grid');
+
+			// offset + custom pagination - if we have offset, WordPress overwrites the pagination and works with offset + limit
+			// if the grid is disabled from category pages we don't need to set the offset
+			if( empty( $query->is_feed ) && $tdm_category_grid !== 'hide' ) {
+				if ( $paged > 1 ) {
+					$query->set( 'offset', intval($offset) + ( ( $paged - 1 ) * $limit ) );
+				} else {
+					$query->set( 'offset', intval($offset) );
+				}
+			}
+
 		}
+
 	}
-}
+
+});
+
 
 /* ----------------------------------------------------------------------------
  * the footer bottom code ( panel custom css/ theme data/ ajax post view count update on single posts
@@ -640,3 +682,47 @@ function td_on_pre_option_theme_mods_( $default, $option ) {
 }
 
 
+/**
+ * Remove 'template_include' hook, to allow mobile theme to use its own templates
+ */
+remove_filter( 'template_include', 'tdc_template_include', 99);
+remove_filter( 'comments_template', 'tdc_template_include', 99 );
+
+
+/* ----------------------------------------------------------------------------
+ * Fonts in front end
+ */
+add_action('wp_enqueue_scripts', 'td_load_css_fonts');
+function td_load_css_fonts() {
+
+	$cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+	$unique_google_fonts_ids = array();
+
+	//filter the google fonts used by user
+	if (!empty($cur_td_fonts)) {
+
+		foreach ( $cur_td_fonts as $section_font_settings ) {
+			if ( isset( $section_font_settings['font_family'] ) ) {
+				$explode_font_family = explode( '_', $section_font_settings['font_family'] );
+				if ( $explode_font_family[0] == 'g' ) {
+					$unique_google_fonts_ids[] = $explode_font_family[1];
+				}
+			}
+		}
+	}
+
+	// remove duplicated font ids
+	$unique_google_fonts_ids = array_unique( $unique_google_fonts_ids );
+
+	if ( empty($unique_google_fonts_ids) ) {
+		return;
+	}
+
+	//used to pull fonts from google
+	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query();
+
+	if( ! empty( $td_fonts_css_files ) ) {
+		wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
+	}
+
+}

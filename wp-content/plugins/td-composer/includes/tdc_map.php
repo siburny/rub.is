@@ -76,7 +76,6 @@ $external_shortcodes = array(
             'facebook',
             'twitter',
             'youtube',
-            'googleplus',
             'instagram',
             'pinterest',
             'soundcloud',
@@ -86,18 +85,6 @@ $external_shortcodes = array(
         ),
         "params" => array_merge(
 			$block_general_params_array,
-            array(
-                array(
-                    "param_name" => "style",
-                    "type" => "dropdown",
-                    "value" => array('Default' => '', 'Style 1 - Default black' => 'style1', 'Style 2 - Default with border' => 'style2 td-social-font-icons', 'Style 3 - Default colored circle' => 'style3 td-social-colored', 'Style 4 - Default colored square' => 'style4 td-social-colored', 'Style 5 - Boxes with space' => 'style5 td-social-boxed', 'Style 6 - Full boxes' => 'style6 td-social-boxed', 'Style 7 - Black boxes' => 'style7 td-social-boxed', 'Style 8 - Boxes with border' => 'style8 td-social-boxed td-social-font-icons', 'Style 9 - Colored circles' => 'style9 td-social-boxed td-social-colored', 'Style 10 - Colored squares' => 'style10 td-social-boxed td-social-colored'),
-                    "heading" => 'Style',
-                    "description" => "Style of the Social Counter widget",
-                    "holder" => "div",
-                    "class" => "tdc-dropdown-extrabig"
-                ),
-            ),
-            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header'),
             array(
                 array(
                     "param_name" => "separator",
@@ -195,24 +182,24 @@ $external_shortcodes = array(
 //                    "holder" => "div",
 //                    "class" => "tdc-textfield-big"
 //                ),
-                array(
-                    "param_name" => "googleplus",
-                    "type" => "textfield",
-                    "value" => '',
-                    "heading" => __("Google Plus User", TD_THEME_NAME),
-                    "description" => "",
-                    "holder" => "div",
-                    "class" => "tdc-textfield-big"
-                ),
-				array(
-					"param_name" => "manual_count_googleplus",
-					"type" => "textfield",
-					"value" => "",
-					"heading" => __("Google+ fixed count", TD_THEME_NAME),
-					"description" => "Add a fixed followers count for google plus",
-					"holder" => "div",
-					"class" => "tdc-textfield-big"
-				),
+//                array(
+//                    "param_name" => "googleplus",
+//                    "type" => "textfield",
+//                    "value" => '',
+//                    "heading" => __("Google Plus User", TD_THEME_NAME),
+//                    "description" => "",
+//                    "holder" => "div",
+//                    "class" => "tdc-textfield-big"
+//                ),
+//				array(
+//					"param_name" => "manual_count_googleplus",
+//					"type" => "textfield",
+//					"value" => "",
+//					"heading" => __("Google+ fixed count", TD_THEME_NAME),
+//					"description" => "Add a fixed followers count for google plus",
+//					"holder" => "div",
+//					"class" => "tdc-textfield-big"
+//				),
                 array(
                     "param_name" => "instagram",
                     "type" => "textfield",
@@ -323,6 +310,100 @@ $external_shortcodes = array(
                     'class' => 'tdc-textfield-extrabig',
                     'group' => ''
                 ),
+
+                array(
+                    "param_name" => "style",
+                    "type" => "dropdown",
+                    "value" => array('Default' => '', 'Style 1 - Default black' => 'style1', 'Style 2 - Default with border' => 'style2 td-social-font-icons', 'Style 3 - Default colored circle' => 'style3 td-social-colored', 'Style 4 - Default colored square' => 'style4 td-social-colored', 'Style 5 - Boxes with space' => 'style5 td-social-boxed', 'Style 6 - Full boxes' => 'style6 td-social-boxed', 'Style 7 - Black boxes' => 'style7 td-social-boxed', 'Style 8 - Boxes with border' => 'style8 td-social-boxed td-social-font-icons', 'Style 9 - Colored circles' => 'style9 td-social-boxed td-social-colored', 'Style 10 - Colored squares' => 'style10 td-social-boxed td-social-colored'),
+                    "heading" => 'Style',
+                    "description" => "Style of the Social Counter widget",
+                    "holder" => "div",
+                    "class" => "tdc-dropdown-extrabig",
+                    "group"      => "Style",
+                ),
+                array(
+                    "param_name" => "separator",
+                    "type"       => "text_separator",
+                    'heading'    => 'Colors',
+                    "value"      => "",
+                    "class"      => "",
+                    "group"      => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-a",
+                    "heading"     => 'Counters color',
+                    "param_name"  => "counter_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-b",
+                    "heading"     => 'Counter hover color',
+                    "param_name"  => "counter_color_h",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-a",
+                    "heading"     => 'Social network name color',
+                    "param_name"  => "network_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-b",
+                    "heading"     => 'Social network name hover',
+                    "param_name"  => "network_color_h",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-a",
+                    "heading"     => 'Buttons color',
+                    "param_name"  => "btn_color",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "type"        => "colorpicker",
+                    "holder"      => "div",
+                    "class"       => "td-colorpicker-double-b",
+                    "heading"     => 'Buttons hover color ',
+                    "param_name"  => "btn_color_h",
+                    "value"       => '',
+                    "description" => '',
+                    "group"       => "Style",
+                ),
+                array(
+                    "param_name" => "separator",
+                    "type"       => "text_separator",
+                    'heading'    => 'Fonts',
+                    "value"      => "",
+                    "class"      => "",
+                    "group"      => "Style",
+                ),
+            ),
+            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style'),
+            td_config_helper::get_map_block_font_array( 'f_counters', false, 'Counters text', 'Style'),
+            td_config_helper::get_map_block_font_array( 'f_network', false, 'Social networks name text', 'Style'),
+            td_config_helper::get_map_block_font_array( 'f_btn', false, 'Buttons text', 'Style'),
+
+            array(
                 array(
                     'param_name' => 'css',
                     'value' => '',
@@ -476,13 +557,16 @@ function tdc_load_internal_shortcodes() {
 	tdc_global_blocks::add_lazy_shortcode('vc_column');
 	tdc_global_blocks::add_lazy_shortcode('vc_row_inner');
 	tdc_global_blocks::add_lazy_shortcode('vc_column_inner');
-	tdc_global_blocks::add_lazy_shortcode('vc_column_text');
 	tdc_global_blocks::add_lazy_shortcode('vc_raw_html');
 	tdc_global_blocks::add_lazy_shortcode('vc_empty_space');
 	tdc_global_blocks::add_lazy_shortcode('vc_widget_sidebar');
-	tdc_global_blocks::add_lazy_shortcode('vc_single_image');
 	tdc_global_blocks::add_lazy_shortcode('vc_separator');
-	tdc_global_blocks::add_lazy_shortcode('vc_wp_recentcomments');
+	//exclude tagdiv shortcodes when V.C. is active
+	if (!td_util::is_vc_installed()) {
+		tdc_global_blocks::add_lazy_shortcode('vc_single_image');
+		tdc_global_blocks::add_lazy_shortcode('vc_wp_recentcomments');
+		tdc_global_blocks::add_lazy_shortcode('vc_column_text');
+	}
 }
 
 
@@ -945,6 +1029,16 @@ $rowParams = array_merge(
             "value" => '',
             "heading" => "Add parallax",
             "description" => "",
+            "holder" => "div",
+            "class" => "",
+        ),
+
+        array(
+            "param_name" => "row_anim_off",
+            "type" => "checkbox",
+            "value" => '',
+            "heading" => "Turn off bg transition",
+            "description" => "This option turn off the image transition on load",
             "holder" => "div",
             "class" => "",
         ),
@@ -1681,7 +1775,6 @@ tdc_mapper::map_shortcode(
 		)
 	)
 );
-
 tdc_mapper::map_shortcode(
 	array(
 		'base' => 'vc_raw_html',
@@ -1690,10 +1783,10 @@ tdc_mapper::map_shortcode(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Raw html description', 'td_composer' ),
-        'tdc_style_params' => array(
-            'content',
-            'el_class'
-        ),
+		'tdc_style_params' => array(
+			'content',
+			'el_class'
+		),
 		'params' => array(
 			array(
 				"param_name" => "content",
@@ -1721,12 +1814,12 @@ tdc_mapper::map_shortcode(
 				'group' => 'Design options',
 			),
 			array (
-	            'param_name' => 'tdc_css',
-	            'value' => '',
-	            'type' => 'tdc_css_editor',
-	            'heading' => '',
-	            'group' => 'Design options',
-	        ),
+				'param_name' => 'tdc_css',
+				'value' => '',
+				'type' => 'tdc_css_editor',
+				'heading' => '',
+				'group' => 'Design options',
+			),
 		),
 	)
 );
@@ -1764,12 +1857,12 @@ tdc_mapper::map_shortcode(
 				'group' => 'Design options',
 			),
 			array(
-	            'param_name' => 'tdc_css',
-	            'value' => '',
-	            'type' => 'tdc_css_editor',
-	            'heading' => '',
-	            'group' => 'Design options',
-	        )
+				'param_name' => 'tdc_css',
+				'value' => '',
+				'type' => 'tdc_css_editor',
+				'heading' => '',
+				'group' => 'Design options',
+			)
 		)
 	)
 );
@@ -1827,115 +1920,114 @@ tdc_mapper::map_shortcode(
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
 		'description' => __( 'Separator description', 'td_composer' ),
-        'tdc_style_params' => array(
-            'el_class'
-        ),
+		'tdc_style_params' => array(
+			'el_class'
+		),
 		'params' => array(
 			array(
-                "param_name" => "color",
-                "type" => "colorpicker",
-                "value" => '#EBEBEB',
-                "heading" => __( "Color", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "",
-            ),
+				"param_name" => "color",
+				"type" => "colorpicker",
+				"value" => '#EBEBEB',
+				"heading" => __( "Color", 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "",
+			),
 			array(
-                "param_name" => "align",
-                "type" => "dropdown",
-                "value" => array(
-                    'Center' => 'align_center',
-                    'Left' => 'align_left',
-                    'Right' => 'align_right',
-                ),
-                "heading" => __( "Alignment", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big"
-            ),
+				"param_name" => "align",
+				"type" => "dropdown",
+				"value" => array(
+					'Center' => 'align_center',
+					'Left' => 'align_left',
+					'Right' => 'align_right',
+				),
+				"heading" => __( "Alignment", 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big"
+			),
 			array(
-                "param_name" => "style",
-                "type" => "dropdown",
-                "value" => array(
-                    'Border' => 'solid',
-                    'Dashed' => 'dashed',
-                    'Dotted' => 'dotted',
-                    'Double' => 'double',
-                    'Shadow' => 'shadow',
-                ),
-                "heading" => __( "Style", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big"
-            ),
+				"param_name" => "style",
+				"type" => "dropdown",
+				"value" => array(
+					'Border' => 'solid',
+					'Dashed' => 'dashed',
+					'Dotted' => 'dotted',
+					'Double' => 'double',
+					'Shadow' => 'shadow',
+				),
+				"heading" => __( "Style", 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big"
+			),
 			array(
-                "param_name" => "border_width",
-                "type" => "dropdown",
-                "value" => array(
-                    '1px' => '1',
-                    '2px' => '2',
-                    '3px' => '3',
-                    '4px' => '4',
-                    '5px' => '5',
-                    '6px' => '6',
-                    '7px' => '7',
-                    '8px' => '8',
-                    '9px' => '9',
-                    '10px' => '10',
-                ),
-                "heading" => __( "Border width", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big"
-            ),
+				"param_name" => "border_width",
+				"type" => "dropdown",
+				"value" => array(
+					'1px' => '1',
+					'2px' => '2',
+					'3px' => '3',
+					'4px' => '4',
+					'5px' => '5',
+					'6px' => '6',
+					'7px' => '7',
+					'8px' => '8',
+					'9px' => '9',
+					'10px' => '10',
+				),
+				"heading" => __( "Border width", 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big"
+			),
 			array(
-                "param_name" => "el_width",
-                "type" => "dropdown",
-                "value" => array(
-                    '100%' => '',
-                    '90%' => '90',
-                    '80%' => '80',
-                    '70%' => '70',
-                    '60%' => '60',
-                    '50%' => '50',
-                    '40%' => '40',
-                    '30%' => '30',
-                    '20%' => '20',
-                    '10%' => '10',
-                ),
-                "heading" => __( "Element width", 'td_composer' ),
-                "description" => "",
-                "holder" => "div",
-                "class" => "tdc-dropdown-big"
-            ),
+				"param_name" => "el_width",
+				"type" => "dropdown",
+				"value" => array(
+					'100%' => '',
+					'90%' => '90',
+					'80%' => '80',
+					'70%' => '70',
+					'60%' => '60',
+					'50%' => '50',
+					'40%' => '40',
+					'30%' => '30',
+					'20%' => '20',
+					'10%' => '10',
+				),
+				"heading" => __( "Element width", 'td_composer' ),
+				"description" => "",
+				"holder" => "div",
+				"class" => "tdc-dropdown-big"
+			),
 
 			array(
-                'param_name' => 'el_class',
-                'type' => 'textfield',
-                'value' => '',
-                'heading' => 'Extra class',
-                'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
-                'class' => 'tdc-textfield-extrabig'
-            ),
+				'param_name' => 'el_class',
+				'type' => 'textfield',
+				'value' => '',
+				'heading' => 'Extra class',
+				'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+				'class' => 'tdc-textfield-extrabig'
+			),
 
 			array (
-                'param_name' => 'css',
-                'value' => '',
-                'type' => 'css_editor',
-                'heading' => 'Css',
-                'group' => 'Design options',
-            ),
-            array (
-                'param_name' => 'tdc_css',
-                'value' => '',
-                'type' => 'tdc_css_editor',
-                'heading' => '',
-                'group' => 'Design options',
-            ),
+				'param_name' => 'css',
+				'value' => '',
+				'type' => 'css_editor',
+				'heading' => 'Css',
+				'group' => 'Design options',
+			),
+			array (
+				'param_name' => 'tdc_css',
+				'value' => '',
+				'type' => 'tdc_css_editor',
+				'heading' => '',
+				'group' => 'Design options',
+			),
 		),
 	)
 );
-
 $tdc_api_blocks = array(
 	array(
 		'base' => 'vc_wp_recentcomments',
@@ -2585,11 +2677,13 @@ $tdc_api_blocks = array(
 	)
 );
 
-foreach ( $tdc_api_blocks as $tdc_api_block ) {
-	td_api_block::add( $tdc_api_block['base'], $tdc_api_block );
-	tdc_mapper::map_shortcode( $tdc_api_block );
+// check for V.C.
+if (!td_util::is_vc_installed()) {
+	foreach ($tdc_api_blocks as $tdc_api_block) {
+		td_api_block::add($tdc_api_block['base'], $tdc_api_block);
+		tdc_mapper::map_shortcode($tdc_api_block);
+	}
 }
-
 
 
 function register_external_shortcodes() {

@@ -50,6 +50,16 @@ if (!empty($td_homepage_loop['list_custom_title_show'])) {
 			<?php while ( have_posts() ) : the_post(); ?>
 
 				<div class="td-container">
+					<?php
+
+					// get the mob theme status from post meta
+					$status = get_post_meta( get_the_ID(), 'tdm_grid_status', true );
+
+					if ( $status && $status === 'enabled' ) {
+						echo td_global_blocks::get_instance( 'td_block_big_grid_mob_1' )->render( array() );
+					}
+
+					?>
 					<?php the_content(); ?>
 				</div>
 

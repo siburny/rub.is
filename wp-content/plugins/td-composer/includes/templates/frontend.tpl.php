@@ -37,8 +37,10 @@ $postContent = $post->post_content;
  * So, because this content has \r,\n or \r\n characters inside, it can't be used as it is for window.tdcPostSettings.postContent. It needs to be formatted as wordpress does,
  * changing these characters to paragraphs.
  */
-function td_replace_vc_column_text($matches) {
-    return '[vc_column_text' . $matches[1] . ']' . base64_encode( $matches[2] ) . '[/vc_column_text]';
+if ( ! function_exists( 'td_replace_vc_column_text' ) ) {
+	function td_replace_vc_column_text( $matches ) {
+		return '[vc_column_text' . $matches[ 1 ] . ']' . base64_encode( $matches[ 2 ] ) . '[/vc_column_text]';
+	}
 }
 
 if ( shortcode_exists( 'vc_column_text' ) && has_shortcode( $postContent, 'vc_column_text' ) ) {
@@ -51,8 +53,10 @@ if ( shortcode_exists( 'vc_column_text' ) && has_shortcode( $postContent, 'vc_co
     }
 }
 
-function td_replace_td_block_text_with_title($matches) {
-    return '[td_block_text_with_title' . $matches[1] . ']' . base64_encode( $matches[2] ) . '[/td_block_text_with_title]';
+if ( ! function_exists( 'td_replace_td_block_text_with_title' ) ) {
+	function td_replace_td_block_text_with_title( $matches ) {
+		return '[td_block_text_with_title' . $matches[ 1 ] . ']' . base64_encode( $matches[ 2 ] ) . '[/td_block_text_with_title]';
+	}
 }
 
 if ( shortcode_exists( 'td_block_text_with_title' ) && has_shortcode( $postContent, 'td_block_text_with_title' ) ) {
@@ -408,6 +412,30 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 		</div>
 
 		<div id="tdc-restore-content">
+            <?php
+
+            $tdc_history = get_post_meta( $post->ID, 'tdc_history', true );
+
+            if ( ! empty( $tdc_history ) ) {
+                //var_dump( json_decode( base64_decode( $tdc_history ), true ) );
+                $restore_points = json_decode( base64_decode( $tdc_history ), true );
+
+                if ( count( $restore_points )) {
+                    $restore_points = array_reverse( $restore_points );
+                    ob_start();
+                    foreach( $restore_points as $restore_point ) {
+                        echo '<div class="tdc-snapshot">';
+                        echo '<div style="width:150px;float:left" data-timestamp="' . $restore_point['timestamp'] . '">' . date('j/n/Y g:i:s A', $restore_point['timestamp'] / 1000 ) . '</div>';
+                        echo '<div style="width:350px;float:left">Before Restore point</div>';
+                        echo '<div class="tdc-snapshot-shortcode" style="display:none">' . $restore_point['shortcode'] . '</div>';
+                        echo '<div class="tdc-snapshot-header" style="display:none">' . $restore_point['headerTemplateData'] . '</div>';
+                        echo '</div>';
+                    }
+                    echo ob_get_clean();
+                }
+            }
+
+            ?>
 		</div>
 
 		<!-- modal window -->
@@ -545,68 +573,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 						'</div>';
 
 
-					if ( ! empty( $block_mapped_shortcodes ) ) {
-
-						// Separator
-						echo '<div class="tdc-sidebar-separator">Block shortcodes</div>';
-
-						foreach ( $block_mapped_shortcodes as $mapped_shortcode ) {
-							if ( isset( $mapped_shortcode['map_in_td_composer'] ) && true === $mapped_shortcode['map_in_td_composer'] ) {
-
-								$data_row_start_values = '';
-
-								if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
-									$tdc_class = 'tdc-element-with-row tdc-row-temp';
-								} else {
-									$tdc_class = 'tdc-element';
-								}
-
-								$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
-
-								$buffer =
-									'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
-									'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
-									'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
-									'</div>';
-
-								echo $buffer;
-							}
-						}
-					}
-
-					if ( ! empty( $big_grids_mapped_shortcodes ) ) {
-
-						// Separator
-						echo '<div class="tdc-sidebar-separator">Big Grid shortcodes</div>';
-
-						foreach ( $big_grids_mapped_shortcodes as $mapped_shortcode ) {
-							if ( isset( $mapped_shortcode['map_in_td_composer'] ) && true === $mapped_shortcode['map_in_td_composer'] ) {
-
-								$data_row_start_values = '';
-
-								if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
-									$tdc_class = 'tdc-element-with-row tdc-row-temp';
-									if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
-										$data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
-									}
-								} else {
-									$tdc_class = 'tdc-element';
-								}
-
-								$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
-
-								$buffer =
-									'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
-									'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
-									'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
-									'</div>';
-
-								echo $buffer;
-							}
-						}
-					}
-
-                    if ( ! empty( $header_mapped_shortcodes ) ) {
+					if ( ! empty( $header_mapped_shortcodes ) ) {
 
                         // Separator
                         echo '<div class="tdc-sidebar-separator">Header shortcodes</div>';
@@ -835,7 +802,10 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                             if ( 'single' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
                                 continue;
 
-                            if ( '404' === $tdbTemplateType && $mapped_shortcode['base'] === 'tdb_title' )
+							if ( 'attachment' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
+								continue;
+
+                            if ( '404' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_title' || $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
                                 continue;
 
                             $data_row_start_values = '';
@@ -860,6 +830,70 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                             echo $buffer;
                         }
                     }
+
+
+                    if ( ! empty( $block_mapped_shortcodes ) ) {
+
+						// Separator
+						echo '<div class="tdc-sidebar-separator">Block shortcodes</div>';
+
+						foreach ( $block_mapped_shortcodes as $mapped_shortcode ) {
+							if ( isset( $mapped_shortcode['map_in_td_composer'] ) && true === $mapped_shortcode['map_in_td_composer'] ) {
+
+								$data_row_start_values = '';
+
+								if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+									$tdc_class = 'tdc-element-with-row tdc-row-temp';
+								} else {
+									$tdc_class = 'tdc-element';
+								}
+
+								$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+								$buffer =
+									'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+									'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+									'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+									'</div>';
+
+								echo $buffer;
+							}
+						}
+					}
+
+					if ( ! empty( $big_grids_mapped_shortcodes ) ) {
+
+						// Separator
+						echo '<div class="tdc-sidebar-separator">Big Grid shortcodes</div>';
+
+						foreach ( $big_grids_mapped_shortcodes as $mapped_shortcode ) {
+							if ( isset( $mapped_shortcode['map_in_td_composer'] ) && true === $mapped_shortcode['map_in_td_composer'] ) {
+
+								$data_row_start_values = '';
+
+								if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+									$tdc_class = 'tdc-element-with-row tdc-row-temp';
+									if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+										$data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+									}
+								} else {
+									$tdc_class = 'tdc-element';
+								}
+
+								$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+								$buffer =
+									'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+									'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+									'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+									'</div>';
+
+								echo $buffer;
+							}
+						}
+					}
+
+
 
 
 					if ( ! empty( $extended_mapped_shortcodes ) ) {

@@ -2,28 +2,29 @@
 <?php
 
 
-if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
+//if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
 
     //check if admin allow registration
     $users_can_register = get_option('users_can_register');
 
-
     //add the Register tab to the modal window if `Anyone can register` check
     $users_can_register_link = '';
     $users_can_register_form = '';
-    if($users_can_register == 1){
+    if( $users_can_register == 1 ){
+
         $users_can_register_link = '<a id="register-link">' . __td('Create an account', TD_THEME_NAME) . '</a>';
         $users_can_register_form = '
-                <div id="td-register-div" class="td-login-form-div td-display-none">
-                    <div class="td-login-panel-title">' . __td('Create an account', TD_THEME_NAME) . '</div>
-                    <div class="td-login-panel-descr">' . __td('Welcome! Register for an account', TD_THEME_NAME) .'</div>
-                    <div class="td_display_err"></div>
-                    <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_email" id="register_email" value="" required><label>' . __td('your email', TD_THEME_NAME) .'</label></div>
-                    <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
-                    <input type="button" name="register_button" id="register_button" class="wpb_button btn td-login-button" value="' . __td('Register', TD_THEME_NAME) . '">
-                    <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
-                    ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
-                </div>';
+        <div id="td-register-div" class="td-login-form-div td-display-none">
+            <div class="td-login-panel-title">' . __td('Create an account', TD_THEME_NAME) . '</div>
+            <div class="td-login-panel-descr">' . __td('Welcome! Register for an account', TD_THEME_NAME) .'</div>
+            <div class="td_display_err"></div>
+            <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_email" id="register_email" value="" required><label>' . __td('your email', TD_THEME_NAME) .'</label></div>
+            <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user" value="" required><label>' . __td('your username', TD_THEME_NAME) .'</label></div>
+            <input type="button" name="register_button" id="register_button" class="wpb_button btn td-login-button" value="' . __td('Register', TD_THEME_NAME) . '">
+            <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
+            ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
+        </div>';
+
     }
 
 
@@ -62,4 +63,4 @@ if (td_util::get_option('tds_login_sign_in_widget') == 'show') {
                     </div>
                 </div>
                 ';
-}
+//}

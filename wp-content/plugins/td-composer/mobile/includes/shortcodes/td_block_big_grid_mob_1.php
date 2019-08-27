@@ -15,9 +15,8 @@ class td_block_big_grid_mob_1 extends td_block {
             array(
                 'td_grid_style' => 'td-grid-style-1'
             ), $atts));
-
-
-        $atts['limit'] = self::POST_LIMIT;
+        
+//        $atts['limit'] = self::POST_LIMIT;
 
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 

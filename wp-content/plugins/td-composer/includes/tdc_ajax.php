@@ -24,6 +24,11 @@ function tdc_register_api_routes() {
 		'callback' => array ('tdc_ajax', 'on_ajax_save_post'),
 	));
 
+	register_rest_route($namespace, '/save_history/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_save_history'),
+	));
+
 	register_rest_route($namespace, '/load_header_template/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_load_header_template'),
@@ -201,8 +206,44 @@ class tdc_ajax {
 
 		//tdc_map_not_registered_shortcodes($request->get_param('postId'));
 
-		//$reply_html = do_shortcode( stripslashes( $request->get_param( 'shortcode' ) ) );
-		$reply_html = do_shortcode( $request->get_param( 'shortcode' ) );
+        $shortcode = $request->get_param( 'shortcode' );
+
+
+
+
+        function td_replace_vc_column_text($matches) {
+            return '[vc_column_text' . $matches[1] . ']' . base64_encode( $matches[2] ) . '[/vc_column_text]';
+        }
+
+        if ( shortcode_exists( 'vc_column_text' ) && has_shortcode( $shortcode, 'vc_column_text' ) ) {
+            // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+            // This first regex check is to allow second regex replacement to apply only when 'vc_column_text' has content
+            preg_match("/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", $shortcode, $matches);
+            if ( is_array( $matches ) && count( $matches ) ) {
+                $shortcode = preg_replace_callback( "/\[vc_column_text(.*)\](.*)\[\/vc_column_text\]/sU", 'td_replace_vc_column_text', $shortcode );
+            }
+        }
+
+        function td_replace_td_block_text_with_title($matches) {
+            return '[td_block_text_with_title' . $matches[1] . ']' . base64_encode( $matches[2] ) . '[/td_block_text_with_title]';
+        }
+
+        if ( shortcode_exists( 'td_block_text_with_title' ) && has_shortcode( $shortcode, 'td_block_text_with_title' ) ) {
+
+            // Double regex instead of one regex (preg_match and preg_replace_callback) - with one regex we need to parse content for replacing text, to supply what does the second regex
+            // This first regex check is to allow second regex replacement to apply only when 'td_block_text_with_title' has content
+            preg_match("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", $shortcode, $matches);
+            if ( is_array( $matches ) && count( $matches ) ) {
+                $shortcode = preg_replace_callback("/\[td_block_text_with_title(.*)\](.*)\[\/td_block_text_with_title\]/sU", 'td_replace_td_block_text_with_title', $shortcode);
+            }
+        }
+
+        $parameters['shortcode'] = $shortcode;
+
+
+
+        //$reply_html = do_shortcode( stripslashes( $request->get_param( 'shortcode' ) ) );
+		$reply_html = do_shortcode( $shortcode );
 
 
 		// read the buffer that was set by the 'td_block__get_block_js' hook above
@@ -227,6 +268,9 @@ class tdc_ajax {
 
 		//print_r($request);
 		//die;
+
+
+
 
 		die( json_encode( $parameters ) );
 	}
@@ -254,6 +298,7 @@ class tdc_ajax {
 		$post_content = $_POST['tdc_content'];
 
 		$meta = $_POST['tdc_customized'];
+		$single_post_content_width = @$_POST['tdc_single_post_content_width'];
 
 		if ( ! isset( $action ) || 'tdc_ajax_save_post' !== $action || ! isset( $post_id ) || ! isset( $post_content ) ) {
 
@@ -323,12 +368,49 @@ class tdc_ajax {
 				delete_post_meta( $post_id, 'tdb_installed_images' );
 				delete_post_meta( $post_id, 'tdb_install_uid' );
 
+				if ( ! empty( $single_post_content_width )) {
+				    update_post_meta( $post_id, 'tdc_single_post_content_width', $single_post_content_width );
+                }
+
 				// Update the live panel settings
 				td_panel_data_source::update();
 
 				// Extensions do their own savings
 				do_action( 'tdc_extension_save', $request );
 			}
+		}
+
+		die( json_encode( $parameters ) );
+	}
+
+
+
+
+	static function on_ajax_save_history( WP_REST_Request $request ) {
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$action       = $_POST['tdc_action'];
+		$post_id      = $_POST['tdc_post_id'];
+		$post_content = $_POST['tdc_content'];
+
+		if ( ! isset( $action ) || 'tdc_ajax_save_history' !== $action || ! isset( $post_id ) || ! isset( $post_content ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+			$the_post = get_post( $post_id );
+
+			if ( is_null( $the_post ) ) {
+			    $parameters['errors'][] = 'Post not found!';
+            } else {
+                update_post_meta( $post_id, 'tdc_history', $post_content );
+            }
 		}
 
 		die( json_encode( $parameters ) );

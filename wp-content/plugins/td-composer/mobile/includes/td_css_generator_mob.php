@@ -161,6 +161,155 @@ function td_css_generator_mob() {
 	    .td-search-background {
 	        background-position: @mobile_background_position_mob;
 	    }
+	    
+	    /* @mt_main_menu_mob */
+	    .td-mobile-content li a {
+            @mt_main_menu_mob
+	    }
+	    /* @mt_text_logo */
+	    .td-main-menu-logo .td-logo-text {
+	        @mt_text_logo
+	    }
+	    /* @mt_tagline_text */
+	    .td-main-menu-logo .td-tagline-text {
+	        @mt_tagline_text
+	    }
+	    
+	    /* @mt_module_general */
+	    .td_module_mob_1 .entry-title,
+	    .td_module_mob_2 .entry-title {
+	        @mt_module_general
+	    }
+	    /* @mt_module_1 */
+	    .td_module_mob_1 .entry-title {
+	        @mt_module_1
+	    }
+	    /* @mt_module_2 */
+	    .td_module_mob_2 .entry-title {
+	        @mt_module_2
+	    }
+	    
+	    /* @mt_post_title */
+	    header .entry-title {
+	        @mt_post_title
+	    }
+	    /* @mt_post_content */
+	    .td-post-content p,
+	    .td-post-content {
+	        @mt_post_content
+	    }
+	    /* @mt_post_title */
+	    header .entry-title {
+	        @mt_post_title
+	    }
+	    /* @mt_blockquote */
+	    .td-page-content blockquote p,
+	    .td-post-content blockquote p,
+	    .bbpress blockquote p,
+	    .woocommerce #tab-description blockquote p,
+	    .comment-content blockquote p {
+	        @mt_blockquote
+	    }
+	    /* @mt_box_quote */
+	    .td-page-content .td_quote_box p,
+	    .td-post-content .td_quote_box p,
+	    .bbpress .td_quote_box p,
+	    .woocommerce #tab-description .td_quote_box p,
+	    .comment-content .td_quote_box p {
+	        @mt_box_quote
+	    }
+	    /* @mt_pull_quote */
+	    .td-page-content .td_pull_quote p,
+	    .td-post-content .td_pull_quote p,
+	    .bbpress .td_pull_quote p,
+	    .woocommerce #tab-description .td_pull_quote p,
+	    .comment-content .td_pull_quote p {
+	        @mt_pull_quote
+	    }
+	    /* @mt_lists */
+	    .td-page-content p,
+	    .td-post-content p,
+	    .woocommerce #tab-descriptiony p,
+	    .td-page-content li,
+	    .td-post-content li,
+	    .woocommerce #tab-descriptiony li {
+	        @mt_lists
+	    }
+	    /* @mt_h1 */
+	    .td-post-content h1 {
+	        @mt_h1
+	    }
+	    /* @mt_h2 */
+	    .td-post-content h2 {
+	        @mt_h2
+	    }
+	    /* @mt_h3 */
+	    .td-post-content h3 {
+	        @mt_h3
+	    }
+	    /* @mt_h4 */
+	    .td-post-content h4 {
+	        @mt_h4
+	    }
+	    /* @mt_h5 */
+	    .td-post-content h5 {
+	        @mt_h5
+	    }
+	    /* @mt_h6 */
+	    .td-post-content h6 {
+	        @mt_h6
+	    }
+	    
+	    /* @mt_post_category */
+	    .td-post-header .td-category a {
+	        @mt_post_category
+	    }
+	    /* @mt_post_author */
+	    header .td-module-meta-info .td-post-author-name {
+	        @mt_post_author
+	    }
+	    /* @mt_post_date */
+	    header .td-module-meta-info .td-post-date {
+	        @mt_post_date
+	    }
+	    /* @mt_post_views_comments */
+	    header .td-module-meta-info .td-post-comments,
+	    header .td-module-meta-info .td-post-views {
+	        @mt_post_views_comments
+	    }
+	    /* @mt_post_via_source_tags */
+	    .td-post-source-tags .td-post-small-box {
+	        @mt_post_via_source_tags
+	    }
+	    /* @mt_post_next_prev_title */
+	    .td-post-next-prev-content a {
+	        @mt_post_next_prev_title
+	    }
+	    /* @mt_post_author_name */
+	    .td-author-name a {
+	        @mt_post_author_name
+	    }
+	    /* @mt_post_author_url */
+	    .td-author-url {
+	        @mt_post_author_url
+	    }
+	    /* @mt_post_author_descr */
+	    .td-author-description {
+	        @mt_post_author_descr
+	    }
+	    /* @mt_post_related_title */
+	    .td_block_related_posts_mob .td_module_mob_1 .entry-title a {
+	        @mt_post_related_title
+	    }
+	    
+	    /* @mt_footer_copyright */
+	    .td-sub-footer-copy {
+	        @mt_footer_copyright
+	    }
+	    /* @mt_footer_menu */
+	    .td-sub-footer-menu li {
+	        @mt_footer_menu
+	    }
 	
 	    </style>
     ";
@@ -168,6 +317,17 @@ function td_css_generator_mob() {
 
 
     $td_css_compiler = new td_css_compiler($raw_css);
+
+
+	//get $typography array from db and added to generated css
+	$td_typography_array = td_fonts::td_get_typography_sections_from_db();
+
+	if(is_array($td_typography_array) and !empty($td_typography_array)) {
+
+		foreach ($td_typography_array as $section_id => $section_css_array) {
+			$td_css_compiler->load_setting_array(array($section_id => $section_css_array));
+		}
+	}
 
     // theme color
     $td_css_compiler->load_setting('theme_color_mob');

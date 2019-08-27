@@ -270,3 +270,9 @@
 <span data-font_class="td-icon-leaves-right-line"><i class="td-icon-leaves-right-line td-size-big"></i></span>
 <span data-font_class="td-icon-leaves-right-fill"><i class="td-icon-leaves-right-fill td-size-big"></i></span>
 <span data-font_class="td-icon-tulips-left-fill"><i class="td-icon-tulips-left-fill td-size-big"></i></span>
+
+<span data-font_class="td-icon-audio-pause"><i class="td-icon-audio-pause td-size-big"></i></span>
+<span data-font_class="td-icon-audio-play"><i class="td-icon-audio-play td-size-big"></i></span>
+<span data-font_class="td-icon-audio-speaker"><i class="td-icon-audio-speaker td-size-big"></i></span>
+<span data-font_class="td-icon-audio-speaker-mute"><i class="td-icon-audio-speaker-mute td-size-big"></i></span>
+<span data-font_class="td-icon-audio-refresh"><i class="td-icon-audio-refresh td-size-big"></i></span>

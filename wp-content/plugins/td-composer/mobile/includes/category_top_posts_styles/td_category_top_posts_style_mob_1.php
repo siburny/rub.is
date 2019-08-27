@@ -6,18 +6,24 @@ class td_category_top_posts_style_mob_1 extends td_category_top_posts_style {
 
 
 	protected function render_posts_to_buffer() {
-		// get the global category top posts grid style setting
 
+		// the global category top posts grid style
 		$td_grid_style = 'td-grid-style-1';
-		$limit = td_api_category_top_posts_style::get_key(get_class($this), 'posts_shown_in_the_loop');
+
+		// the panel global posts limit for grids
+		$tdm_grids_posts_limit = td_util::get_option('tdm_grids_posts_limit');
+		$limit = ( !empty( $tdm_grids_posts_limit ) ? $tdm_grids_posts_limit : td_api_category_top_posts_style::get_key(get_class($this), 'posts_shown_in_the_loop') );
+
+		// current block
 		$block_name = td_api_category_top_posts_style::get_key(get_class($this), 'td_block_name');
 
+		// check the filter
 		$filter_by = '';
-		if (isset($_GET['filter_by'])) {
+		if ( isset( $_GET['filter_by'] ) ) {
 			$filter_by = $_GET['filter_by'];
 		}
 
-		//parameters to filter to for big grid
+		// parameters to filter to for big grid
 		$atts_for_big_grid = array(
 			'limit' => $limit,
 			'category_id' => td_global::$current_category_obj->cat_ID,
@@ -60,12 +66,13 @@ class td_category_top_posts_style_mob_1 extends td_category_top_posts_style {
 	function show_top_posts() {
 
 		$this->render_posts_to_buffer();
+		$tdm_category_grid = td_util::get_option('tdm_category_grid');
 
-
-		if ($this->get_rendered_post_count() == 0) {
-
-			return; // die here
+		// stop here if we don't have any posts to show in the grid of if the grid is disabled
+		if ( $this->get_rendered_post_count() == 0 or $tdm_category_grid === 'hide' ) {
+			return;
 		}
+
 		?>
 
 		<!-- big grid -->

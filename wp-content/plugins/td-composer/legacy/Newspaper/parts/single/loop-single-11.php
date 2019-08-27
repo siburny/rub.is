@@ -10,7 +10,7 @@ if (have_posts()) {
 
     ?>
 
-    <div class="td-post-content">
+    <div class="td-post-content tagdiv-type">
 
         <?php echo $td_mod_single->get_content();?>
     </div>

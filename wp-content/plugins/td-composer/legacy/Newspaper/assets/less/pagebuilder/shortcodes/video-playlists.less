@@ -47,7 +47,7 @@ video list player
     font-family: @font1;
     font-weight: bold;
     font-size: 15px;
-    color:#ffffff;
+    color: #ffffff;
     margin-left: 17px;
     margin-right: 17px;
     vertical-align: middle;
@@ -64,6 +64,7 @@ video list player
 .td_wrapper_video_playlist {
   z-index: 1;
   position: relative;
+  display: flex;
 
   .td_video_controls_playlist_wrapper {
     background-color: @td_theme_color;
@@ -171,7 +172,7 @@ video list player
 
   .td_video_thumb {
     position: relative;
-    top:10px;
+    top: 10px;
     width: 72px;
     height: 40px;
     overflow: hidden;
@@ -186,7 +187,8 @@ video list player
   .td_video_title_and_time {
     position: absolute;
     top: 10px;
-    margin: 0 30px 0 103px;
+    width: 100%;
+    padding: 0 30px 0 103px;
 
     .td_video_title {
       font-family: @font1;
@@ -210,18 +212,25 @@ video list player
     background-color: #000;
     overflow: hidden;
 
+    /* responsive portrait tablet + phone */
+    @media (max-width: @responsive_p_tablet_max) {
+      flex: auto !important;
+    }
+
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
       margin-bottom: -5px;
     }
 
-    iframe{
+    iframe {
       width: 100%;
-      height: 100%;
+      height: 100% !important;
     }
   }
 
   .td_container_video_playlist {
+    display: flex;
+    flex-direction: column;
     background-color: #222;
     vertical-align: top;
     overflow: hidden;
@@ -231,23 +240,33 @@ video list player
   .td_playlist_clickable {
     overflow-y: auto;
     overflow-x: hidden;
-    height: 347px;
   }
 }
 
 
+
 //3 columns
 .td_video_playlist_column_3 {
-  .td_wrapper_player {
-    display: block;
-    width: @video-wrapper-3;
+  /* responsive portrait tablet + phone */
+  @media (max-width: @responsive_p_tablet_max) {
+    .td_wrapper_video_playlist {
+      flex-direction: column;
+    }
+  }
+
+  .td_wrapper_player,
+  .td_container_video_playlist {
     height: @video-wrapper-height-3;
 
     /* responsive landscape tablet */
     @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
       height: 365px;
-      width: 649px;
     }
+  }
+
+  .td_wrapper_player {
+    display: block;
+    flex: 1;
 
     /* responsive portrait tablet */
     @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
@@ -257,50 +276,27 @@ video list player
 
     @media (max-width: @responsive_p_phone_max) {
       width: 100%;
-      height: auto;
+      height: 260px;
     }
   }
 
   .td_container_video_playlist {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
     width: @playlist-wrapper-3;
-    height: @video-wrapper-height-3;
 
     /* responsive landscape tablet */
     @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-      height: 365px;
       width: 331px;
     }
 
-    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-      position: relative;
+    /* responsive portrait tablet + phone */
+    @media (max-width: @responsive_p_tablet_max) {
       width: 100%;
       height: 305px;
-      right: 0;
-    }
-
-    @media (max-width: @responsive_p_phone_max) {
-      position: relative;
-      width: 100%;
-      height: 305px;
-      right: 0;
-    }
-
-    @media (max-width: 480px) {
-      position: relative;
-      width: 100%;
-      height: 245px;
-      right: 0;
     }
   }
 
   //add scroll bar for tablet portrait and mobile
   .td_playlist_clickable.td_add_scrollbar_to_playlist_for_mobile {
-    height: 348px;
-
     @media screen and (-webkit-min-device-pixel-ratio:0) and (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
       margin-right: 10px;
     }
@@ -310,50 +306,25 @@ video list player
     }
 
     @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-      height: 240px;
       overflow-x: hidden;
       overflow-y: auto;
       .MIXIN_chrome_sidebar;
     }
 
     @media (max-width: @responsive_p_phone_max) {
-      height: 240px;
       overflow-x: hidden;
       overflow-y: auto;
       .MIXIN_chrome_sidebar;
-    }
-
-    @media (max-width: 480px) {
-      height: 180px;
     }
   }
 
   //add scroll bar for desktop and tablet landscape
   .td_playlist_clickable.td_add_scrollbar_to_playlist {
-    height: 348px;
-
     @media screen and (-webkit-min-device-pixel-ratio:0) {
       margin-right: 10px;
     }
 
     .MIXIN_chrome_sidebar;
-
-    /* responsive landscape tablet */
-    @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-      height: 300px;
-    }
-
-    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-      height: 240px;
-    }
-
-    @media (max-width: @responsive_p_phone_max) {
-      height: 240px;
-    }
-
-    @media (max-width: 480px) {
-      height: 180px;
-    }
   }
 }
 
@@ -362,11 +333,7 @@ video list player
 //2 columns
 .td_video_playlist_column_2 {
   .td_wrapper_video_playlist {
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-      left: 0;
-    }
+    flex-direction: column;
   }
 
   .td_video_title_playing {
@@ -399,19 +366,10 @@ video list player
   }
 
   .td_container_video_playlist {
-    display: block;
     height: 305px;
 
     @media (max-width: 480px) {
       height: 245px;
-    }
-
-    .td_playlist_clickable {
-      height: 240px;
-
-      @media (max-width: 480px) {
-        height: 180px;
-      }
     }
 
     .td_playlist_clickable.td_add_scrollbar_to_playlist_for_mobile,
@@ -427,6 +385,9 @@ video list player
 
 //1 column
 .td_video_playlist_column_1 {
+  .td_wrapper_video_playlist {
+    flex-direction: column;
+  }
 
   .td_wrapper_player {
     display: block;
@@ -434,7 +395,7 @@ video list player
 
     /* responsive landscape tablet */
     @media (min-width: @responsive_l_tablet_min) and (max-width: @responsive_l_tablet_max) {
-        height: 169px;
+      height: 169px;
     }
 
     /* responsive portrait tablet */
@@ -450,22 +411,16 @@ video list player
   }
 
   .td_container_video_playlist {
-    display: block;
+    height: 412px;
 
     @media (max-width: 480px) {
       height: 245px;
     }
 
     .td_playlist_clickable.td_add_scrollbar_to_playlist_for_mobile,
-    .td_playlist_clickable.td_add_scrollbar_to_playlist{
-      height: 301px;
-
+    .td_playlist_clickable.td_add_scrollbar_to_playlist {
       @media screen and (-webkit-min-device-pixel-ratio:0) {
         margin-right: 10px;
-      }
-
-      @media (max-width: 480px) {
-        height: 180px;
       }
 
       .MIXIN_chrome_sidebar;

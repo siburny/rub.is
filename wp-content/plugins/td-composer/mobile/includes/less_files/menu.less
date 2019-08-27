@@ -15,6 +15,11 @@
   -o-transform: translateZ(0);
   transform: translateZ(0);
 }
+
+#td-header-menu {
+  position: relative;
+}
+
 // open menu icon
 #td-top-mobile-toggle {
   display: inline-block;
@@ -52,6 +57,34 @@
       max-width: 210px;
     }
   }
+
+  .td-logo-text-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .td-logo-text,
+  .td-tagline-text {
+    display: block;
+    font-family: serif;
+    line-height: 1;
+  }
+
+  .td-logo-text {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .td-tagline-text {
+    padding-top: 2px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #fff;
+  }
 }
 
 
@@ -64,7 +97,7 @@
 // search icon
 .td-search-icon {
   position: absolute;
-  right: 0;
+  right: -3px;
   top: 0;
 
   i {

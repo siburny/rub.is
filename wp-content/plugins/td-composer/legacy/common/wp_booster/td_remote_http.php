@@ -9,7 +9,8 @@
  */
 class td_remote_http {
 
-	const http_request_timeout = 10;
+	// set at 30 to avoid timeout error for fb
+	const http_request_timeout = 30;
 	const run_test_on_fail_after = 10; // if all channels failed, run the test again after 2 hours
 
 

@@ -271,37 +271,6 @@ class td_block_big_grid_flex_1 extends td_block {
 				 	flex: 0 0 @image_width;
 				 	width: @image_width;
 			    }
-				/* @no_float */
-				.$unique_block_class .td-module-container {
-					flex-direction: column;
-				}
-                .$unique_block_class .td-image-container {
-                	display: block; order: 0;
-                }
-				/* @float_left */
-				.$unique_block_class .td-module-container {
-					flex-direction: row;
-				}
-                .$unique_block_class .td-image-container {
-                	display: block; order: 0;
-                }
-				/* @float_right */
-				.$unique_block_class .td-module-container {
-					flex-direction: row;
-				}
-                .$unique_block_class .td-image-container {
-                	display: block; order: 1;
-                }
-                .$unique_block_class .td-module-meta-info {
-                	flex: 1;
-                }
-                /* @hide_desktop */
-                .$unique_block_class .td-image-container {
-                	display: none;
-                }
-                .$unique_block_class .entry-thumb {
-                	background-image: none !important;
-                }
 				/* @hide */
 				.$unique_block_class .td-image-container {
 					display: none;
