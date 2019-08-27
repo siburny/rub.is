@@ -1478,3 +1478,24 @@ function ai1wm_get_filters( $tag ) {
 
 	return $filters;
 }
+
+/**
+ * i18n friendly version of basename()
+ *
+ * @param  string $path   File path
+ * @param  string $suffix If the filename ends in suffix this will also be cut off
+ * @return string
+ */
+function ai1wm_basename( $path, $suffix = '' ) {
+	return urldecode( basename( str_replace( array( '%2F', '%5C' ), '/', urlencode( $path ) ), $suffix ) );
+}
+
+/**
+ * i18n friendly version of dirname()
+ *
+ * @param  string $path File path
+ * @return string
+ */
+function ai1wm_dirname( $path ) {
+	return urldecode( dirname( str_replace( array( '%2F', '%5C' ), '/', urlencode( $path ) ) ) );
+}
