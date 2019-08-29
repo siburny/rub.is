@@ -4,7 +4,7 @@
  * Description: Plugin that performs an API request to a shopping platform and returns requested metadata fields.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.2.0
+ * Version: 0.3.0
  */
 
 function api_metadata_shortcode($atts, $content = '')
@@ -49,10 +49,54 @@ function api_metadata_shortcode($atts, $content = '')
                 case 'runtime':
                     return $data['Items']['Item']['ItemAttributes']['RunningTime'];
 
+                case 'saleprice':
+                    return $data['Items']['Item']['Offers']['Offer']['OfferListing']['Price']['FormattedPrice'];
+
+                case 'poster':
+                    return '<img src="' . $data['Items']['Item']['ImageSets']['ImageSet'][0]['LargeImage']['URL'] . '" />';
+
                 case 'actors':
                     $display = isset($atts['display']) ? $atts['display'] : 3;
                     return is_array($data['Items']['Item']['ItemAttributes']['Actor']) ?
                     implode(", ", array_slice($data['Items']['Item']['ItemAttributes']['Actor'], 0, $display)) : '';
+            }
+        }
+    } else if (isset($atts['imdb']) && isset($atts['show'])) {
+        $apiKey = get_option('api-metadata-settings-omdbapi-apikey');
+        if (empty($apiKey)) {
+            return '';
+        }
+
+        $data = make_omdbapi_request($atts['imdb']);
+        if (!empty($data)) {
+            switch (strtolower($atts['show'])) {
+                case 'poster':
+                    return '<img src="' . $data['Poster'] . '" />';
+
+                case 'metascore':
+                    return $data['Metascore'];
+
+                case 'rottentomatoesscore':
+                    if (!is_array($data['Ratings'])) {
+                        return 'N/A';
+                    }
+
+                    $score = array_filter($data['Ratings'], function ($v) {return $v['Source'] == 'Rotten Tomatoes';});
+
+                    if (!$score || !is_array($score) || count($score) != 1) {
+                        return 'N/A';
+                    }
+
+                    return array_pop($score)['Value'];
+
+                case 'imdbrating':
+                    return $data['imdbRating'];
+
+                case 'imdbvotes':
+                    return $data['imdbVotes'];
+
+                case 'boxoffice':
+                    return $data['BoxOffice'];
             }
         }
     }
@@ -105,24 +149,35 @@ function api_metadata_settings_page()
     ?>
 <div class="wrap">
      <form action="options.php" method="post">
-     <h2>API Metadata Settings for Amazon</h2>
-       <?php settings_fields('api-metadata-settings');?>
+        <h2>API Metadata Settings for Amazon</h2>
+        <?php settings_fields('api-metadata-settings');?>
         <table class="form-table">
             <tr>
-				<td width="10%">Access Key</td>
+                <td width="10%">Access Key</td>
                 <td><input placeholder="" name="api-metadata-settings-amazon-accesskey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-accesskey')); ?>" style="width:100%;"></td>
             </tr>
             <tr>
-				<td>Secret Key</td>
+                <td>Secret Key</td>
                 <td><input placeholder="" name="api-metadata-settings-amazon-secretkey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-secretkey')); ?>" style="width:100%;"></td>
             </tr>
             <tr>
-				<td>Tag</td>
+                <td>Tag</td>
                 <td><input placeholder="" name="api-metadata-settings-amazon-tag" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-tag')); ?>" style="width:100%;"></td>
             </tr>
             <tr>
-				<td>Endpoint</td>
+                <td>Endpoint</td>
                 <td><input placeholder="" name="api-metadata-settings-amazon-endpoint" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-endpoint')); ?>" style="width:100%;"></td>
+            </tr>
+            <tr>
+                <td><?php submit_button();?></td>
+            </tr>
+        </table>
+
+        <h2>API Metadata Settings for OMDB API</h2>
+        <table class="form-table">
+            <tr>
+                <td width="10%">Api Key</td>
+                <td><input placeholder="" name="api-metadata-settings-omdbapi-apikey" value="<?php echo esc_attr(get_option('api-metadata-settings-omdbapi-apikey')); ?>" style="width:100%;"></td>
             </tr>
             <tr>
                 <td><?php submit_button();?></td>
@@ -131,6 +186,31 @@ function api_metadata_settings_page()
     </form>
 </div>
 <?php
+}
+
+function make_omdbapi_request($itemId)
+{
+    if (empty($itemId)) {
+        return '';
+    }
+
+    $apiKey = get_option('api-metadata-settings-omdbapi-apikey');
+    if (empty($apiKey)) {
+        return '';
+    }
+
+    $imdb = get_transient('omdb_api_' . $itemId);
+    if ($imdb !== false) {
+        return $imdb;
+    }
+
+    $json = json_decode(make_http_request('http://www.omdbapi.com/?i=' . $itemId . '&apikey=' . $apiKey), true);
+    if (!empty($json) && is_array($json)) {
+        set_transient('omdb_api_' . $itemId, $json, WEEK_IN_SECONDS);
+        return $json;
+    } else {
+        return '';
+    }
 }
 
 function make_amazon_request($itemId)
@@ -158,7 +238,7 @@ function make_amazon_request($itemId)
         'AssociateTag' => $tag,
         'ItemId' => $itemId,
         'IdType' => 'ASIN',
-        'ResponseGroup' => 'ItemAttributes',
+        'ResponseGroup' => 'ItemAttributes,Offers,Images',
         'Timestamp' => gmdate('Y-m-d\TH:i:s\Z'),
     );
 
@@ -181,6 +261,17 @@ function make_amazon_request($itemId)
     return $data;
 }
 
+function make_http_request($url)
+{
+    $response = wp_remote_get($url);
+
+    if (is_array($response) && !is_wp_error($response)) {
+        return $response['body'];
+    } else {
+        return '';
+    }
+}
+
 // Init
 add_shortcode('api', 'api_metadata_shortcode');
 
@@ -193,4 +284,5 @@ add_action('admin_init', function () {
     register_setting('api-metadata-settings', 'api-metadata-settings-amazon-secretkey');
     register_setting('api-metadata-settings', 'api-metadata-settings-amazon-tag');
     register_setting('api-metadata-settings', 'api-metadata-settings-amazon-endpoint');
+    register_setting('api-metadata-settings', 'api-metadata-settings-omdbapi-apikey');
 });
