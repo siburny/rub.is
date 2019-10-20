@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.6.5
+Version: 1.6.6
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -470,7 +470,7 @@ a:focus, a:active, a:hover {
 }
 
 a:focus {
-	outline: none;
+	outline: thin dotted;
 }
 
 /* =IMAGES
@@ -1460,7 +1460,47 @@ body {
 }
 
 .screen-reader-text {
-	display: none;
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	-webkit-clip-path: inset(50%);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important;
+	/* Many screen reader and browser combinations announce broken words as they would appear visually. */
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	clip: auto !important;
+	-webkit-clip-path: none;
+	clip-path: none;
+	color: #21759b;
+	display: block;
+	font-size: 0.875rem;
+	font-size: 14px;
+	font-weight: bold;
+	height: auto;
+	left: 5px;
+	line-height: normal;
+	padding: 15px 23px 14px;
+	text-decoration: none;
+	top: 5px;
+	width: auto;
+	z-index: 100000;
+	/* Above WP toolbar. */
+}
+
+/* Do not show the outline on the skip link target. */
+#main[tabindex="-1"]:focus {
+	outline: 0;
 }
 
 .nav-previous, .nav-next {
@@ -2295,12 +2335,14 @@ li.default-menu {
 }
 
 .main-navigation ul li ul, .main-navigation ul li:hover ul ul {
-	display: none;
-	z-index: 9999;
+	z-index: 99999;
+	position: absolute;
+	left: -999999px;
 }
 
-.main-navigation ul li:hover ul {
-	display: block;
+.main-navigation ul li:hover > ul,
+.main-navigation ul li.focus > ul {
+	left: auto;
 }
 
 .main-navigation ul li .sub-toggle {
@@ -2326,13 +2368,31 @@ li.default-menu {
 	left: -100%;
 }
 
-.main-navigation ul ul li:hover ul {
-	display: block;
+.main-navigation ul ul {
+	position: absolute;
+	float: left;
+	left: -99999px;
+	z-index: 99999;
+}
+
+.main-navigation ul ul li:hover > ul,
+.main-navigation ul ul li.focus > ul {
+	left: 100%;
 }
 
 .main-navigation ul ul li:hover ul ul {
 	display: none;
 	z-index: 9999;
+}
+
+.main-navigation ul ul ul {
+	left: -99999px;
+	top: 0;
+}
+
+.main-navigation ul ul ul li:hover > ul,
+.main-navigation ul ul ul li.focus > ul {
+	left: 100%;
 }
 
 .main-navigation ul ul ul li:hover ul ul,
@@ -2355,7 +2415,7 @@ li.default-menu {
 	background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8);
 	border-top: 1px solid #0FBE7C;
 	top: 30px;
-	left: 0;
+	left: -99999px;
 	width: 150px;
 }
 
@@ -2410,7 +2470,6 @@ li.default-menu {
 }
 
 .main-navigation ul li ul li ul {
-	left: 150px;
 	top: -1px;
 }
 
