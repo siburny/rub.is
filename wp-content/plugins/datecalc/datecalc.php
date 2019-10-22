@@ -103,14 +103,16 @@ function ConvertToRoman($num)
     return $res;
 }
 
-function _ordinal_suffix($number)
-{
-    $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+if (!function_exists("_ordinal_suffix")) {
+    function _ordinal_suffix($number)
+    {
+        $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
 
-    if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
-        return 'th';
-    } else {
-        return $ends[$number % 10];
+        if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+            return 'th';
+        } else {
+            return $ends[$number % 10];
+        }
     }
 }
 

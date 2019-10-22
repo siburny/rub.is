@@ -4,8 +4,10 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.1.0
+ * Version: 0.4.0
  */
+
+require_once 'Numword.php';
 
 function morph_func($atts, $content = '')
 {
@@ -14,6 +16,12 @@ function morph_func($atts, $content = '')
             $content = $atts['text'];
         } else if (array_key_exists('data', $atts)) {
             $content = $atts['data'];
+        } else if (array_key_exists('mass', $atts)) {
+            $content = $atts['mass'];
+        } else if (array_key_exists('number', $atts)) {
+            $content = $atts['number'];
+        } else if (array_key_exists('length', $atts)) {
+            $content = $atts['length'];
         } else {
             $content = '';
         }
@@ -28,6 +36,41 @@ function morph_func($atts, $content = '')
         $ret .= $atts['add'];
     }
 
+    if (array_key_exists('time', $atts)) {
+        if (empty($atts['time'])) {
+            return 'TBA';
+        }
+
+        if (array_key_exists('display', $atts)) {
+            $date = new DateTime($atts['time'], new DateTimeZone(get_option('timezone_string')));
+
+            if (array_key_exists('option', $atts) && substr($atts['option'], 0, 3) == 'gmt') {
+                $date->setTimezone(new DateTimeZone(substr($atts['option'], 3)));
+            }
+
+            if (array_key_exists('math', $atts)) {
+                $parts = explode(':', substr($atts['math'], 1));
+
+                if (substr($atts['math'], 0, 1) == '+') {
+                    $date->add(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                } else if (substr($atts['math'], 0, 1) == '-') {
+                    $date->sub(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                }
+            }
+
+            switch ($atts['display']) {
+                case 'hh:mm':
+                    $ret = $date->format('H:i');
+                    break;
+                case 'h:mm':
+                    $ret = $date->format('g:i A');
+                    break;
+            }
+        } else {
+            $ret = $atts['time'];
+        }
+    }
+
     if (array_key_exists('option', $atts) && is_numeric($atts['option']) && $atts['option'] >= 1 && $atts['option'] <= 6 && (strtolower($ret) == 'male' || strtolower($ret) == 'female')) {
         $ret = strtolower($ret);
         $gender_values = array(
@@ -35,11 +78,63 @@ function morph_func($atts, $content = '')
             'female' => array(1 => 'she', 'her', 'her', 'woman', 'girlfriend', 'wife'),
         );
 
-        if(array_key_exists('reverse', $atts) && !empty($atts['reverse'])) {
+        if (array_key_exists('reverse', $atts) && !empty($atts['reverse'])) {
             $ret = $ret == 'male' ? 'female' : 'male';
         }
 
         $ret = $gender_values[$ret][$atts['option']];
+    }
+
+    if (is_numeric($ret)) {
+        if (array_key_exists('math', $atts) && is_numeric(substr($atts['math'], 1)) &&
+            (substr($atts['math'], 0, 1) == '+' || substr($atts['math'], 0, 1) == '-')) {
+            if (substr($atts['math'], 0, 1) == '+') {
+                $ret += substr($atts['math'], 1);
+            } else if (substr($atts['math'], 0, 1) == '-') {
+                $ret -= substr($atts['math'], 1);
+            }
+
+        }
+        if (array_key_exists('display', $atts) && $atts['display'] == 'percent' && is_numeric($atts['math'])) {
+            $ret = number_format(100 * $atts['math'] / $ret, 0) . '%';
+        }
+
+        if (array_key_exists('display', $atts) && $atts['display'] == 'text') {
+            rub\is\mjohnson\numword\Numword::$sep = ' ';
+            rub\is\mjohnson\numword\Numword::$ordinal = array_key_exists('ordinalize', $atts) && !empty($atts['ordinalize']);
+            $ret = rub\is\mjohnson\numword\Numword::single($ret);
+        } else if (array_key_exists('ordinalize', $atts) && !empty($atts['ordinalize'])) {
+            $ret .= _ordinal_suffix($ret);
+        }
+    }
+
+    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone'))) {
+        if (empty($ret)) {
+            return 'N/A';
+        }
+        switch ($atts['display']) {
+            case 'meter':
+                $ret = number_format(2.54 * $ret / 100, 2);
+                break;
+            case 'cm':
+                $ret = number_format(2.54 * $ret, 0);
+                break;
+            case 'foot':
+                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet ' : ' foot ') : '') . ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es');
+                break;
+            case 'feet':
+                $ret = floor($ret / 12) . '\' ' . ($ret % 12) . ' "';
+                break;
+            case 'ft':
+                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . ' ft, ' : '') . ($ret % 12) . ' in';
+                break;
+            case 'kg':
+                $ret = number_format($ret * 0.45359237, 0);
+                break;
+            case 'stone':
+                $ret = number_format($ret / 14, 1);
+                break;
+        }
     }
 
     if (array_key_exists('clean', $atts) && !empty($atts['clean'])) {
@@ -114,6 +209,19 @@ settings_fields('text-morph-settings');
 </div>
 <?php
 
+}
+
+if (!function_exists("_ordinal_suffix")) {
+    function _ordinal_suffix($number)
+    {
+        $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+
+        if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+            return 'th';
+        } else {
+            return $ends[$number % 10];
+        }
+    }
 }
 
 // Init
