@@ -208,8 +208,7 @@ class td_flex_block_1 extends td_block {
 
         // video icon size
         $video_icon = $res_ctx->get_shortcode_att('video_icon');
-        $res_ctx->load_settings_raw( 'video_icon', $video_icon );
-        if ( is_numeric( $video_icon ) ) {
+        if ( $video_icon != '' && is_numeric( $video_icon ) ) {
             $res_ctx->load_settings_raw( 'video_icon', $video_icon . 'px' );
         }
 
@@ -311,7 +310,12 @@ class td_flex_block_1 extends td_block {
 	    $res_ctx->load_settings_raw( 'show_cat', $res_ctx->get_shortcode_att('show_cat') );
 	    $res_ctx->load_settings_raw( 'show_excerpt', $res_ctx->get_shortcode_att('show_excerpt') );
 	    $res_ctx->load_settings_raw( 'show_custom_field', !empty($res_ctx->get_shortcode_att('show_custom_field')) ? 'inline-block' : 'none' );
-        $res_ctx->load_settings_raw( 'show_audio', $res_ctx->get_shortcode_att('show_audio') );
+        $show_audio = $res_ctx->get_shortcode_att('show_audio');
+        if( $show_audio == '' || $show_audio == 'block' ) {
+            $res_ctx->load_settings_raw( 'show_audio', 1 );
+        } else if( $show_audio == 'none' ) {
+            $res_ctx->load_settings_raw( 'hide_audio', 1 );
+        }
 	    $res_ctx->load_settings_raw( 'show_btn', $res_ctx->get_shortcode_att('show_btn') );
 
 	    // inline excerpt
@@ -397,6 +401,8 @@ class td_flex_block_1 extends td_block {
         $show_author = $res_ctx->get_shortcode_att('show_author');
         $show_date = $res_ctx->get_shortcode_att('show_date');
         $show_review = $res_ctx->get_shortcode_att('show_review');
+        $review_size = $res_ctx->get_shortcode_att('review_size');
+        $res_ctx->load_settings_raw( 'review_size', 10 + $review_size/0.5 . 'px' );
         $show_com = $res_ctx->get_shortcode_att('show_com');
         if( $show_author == 'none' && $show_date == 'none' && $show_com == 'none' && $show_review == 'none' ) {
             $res_ctx->load_settings_raw( 'hide_author_date', 1 );
@@ -467,11 +473,77 @@ class td_flex_block_1 extends td_block {
 	    $res_ctx->load_font_settings( 'f_btn' );
 	    $res_ctx->load_font_settings( 'f_more' );
 
+
+
+	    // mix blend
+        $mix_type = $res_ctx->get_shortcode_att('mix_type');
+        if ( $mix_type != '' ) {
+            $res_ctx->load_settings_raw('mix_type', $res_ctx->get_shortcode_att('mix_type'));
+        }
+        $res_ctx->load_color_settings( 'mix_color', 'color', 'mix_gradient', '', '' );
+
+        $mix_type_h = $res_ctx->get_shortcode_att('mix_type_h');
+        if ( $mix_type_h != '' ) {
+            $res_ctx->load_settings_raw('mix_type_h', $res_ctx->get_shortcode_att('mix_type_h'));
+        } else {
+            $res_ctx->load_settings_raw('mix_type_off', 1);
+        }
+        $res_ctx->load_color_settings( 'mix_color_h', 'color_h', 'mix_gradient_h', '', '' );
+
+        // effects
+        $res_ctx->load_settings_raw('fe_brightness', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate', 'saturate(1)');
+
+        $fe_brightness = $res_ctx->get_shortcode_att('fe_brightness');
+        if ($fe_brightness != '1') {
+            $res_ctx->load_settings_raw('fe_brightness', 'brightness(' . $fe_brightness . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_contrast = $res_ctx->get_shortcode_att('fe_contrast');
+        if ($fe_contrast != '1') {
+            $res_ctx->load_settings_raw('fe_contrast', 'contrast(' . $fe_contrast . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_saturate = $res_ctx->get_shortcode_att('fe_saturate');
+        if ($fe_saturate != '1') {
+            $res_ctx->load_settings_raw('fe_saturate', 'saturate(' . $fe_saturate . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+
+        // effects hover
+        $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(1)');
+
+        $fe_brightness_h = $res_ctx->get_shortcode_att('fe_brightness_h');
+        $fe_contrast_h = $res_ctx->get_shortcode_att('fe_contrast_h');
+        $fe_saturate_h = $res_ctx->get_shortcode_att('fe_saturate_h');
+
+        if ($fe_brightness_h != '1') {
+            $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(' . $fe_brightness_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_contrast_h != '1') {
+            $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(' . $fe_contrast_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(' . $fe_saturate_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        // make hover to work
+        if ($fe_brightness_h != '1' || $fe_contrast_h != '1' || $fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        if ($fe_brightness != '1' || $fe_contrast != '1' || $fe_saturate != '1') {
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
     }
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -651,12 +723,16 @@ class td_flex_block_1 extends td_block {
 					border-color: @modules_divider_color;
 				}
 				/* @image_radius */
-				.$unique_block_class .entry-thumb {
+				.$unique_block_class .entry-thumb,
+				.$unique_block_class .entry-thumb:before,
+				.$unique_block_class .entry-thumb:after {
 					border-radius: @image_radius;
 				}
 				/* @video_icon */
-				.$unique_block_class .td-video-play-ico > img {
+				.$unique_block_class .td-video-play-ico {
 					width: @video_icon;
+					height: @video_icon;
+					font-size: @video_icon;
 				}
 				/* @modules_category_margin */
 				.$unique_block_class .td-post-category {
@@ -697,7 +773,15 @@ class td_flex_block_1 extends td_block {
 				}
 				/* @show_audio */
 				.$unique_block_class .td-audio-player {
-					display: @show_audio;
+					opacity: 1;
+					visibility: visible;
+					height: auto;
+				}
+				/* @hide_audio */
+				.$unique_block_class .td-audio-player {
+					opacity: 0;
+					visibility: hidden;
+					height: 0;
 				}
 				/* @show_btn */
 				.$unique_block_class .td-read-more {
@@ -719,6 +803,12 @@ class td_flex_block_1 extends td_block {
 				/* @show_review */
 				.$unique_block_class .entry-review-stars {
 					display: @show_review;
+				}
+				/* @review_size */
+				.$unique_block_class .td-icon-star,
+                .$unique_block_class .td-icon-star-empty,
+                .$unique_block_class .td-icon-star-half {
+					font-size: @review_size;
 				}
 				/* @show_com */
 				.$unique_block_class .td-module-comments {
@@ -812,7 +902,9 @@ class td_flex_block_1 extends td_block {
 				}
 				/* @modules_cat_border */
 				.$unique_block_class .td-post-category {
-					border: @modules_cat_border solid #aaa;
+					border-width: @modules_cat_border;
+					border-style: solid;
+					border-color: #aaa;
 				}
 				/* @cat_border */
 				.$unique_block_class .td-post-category {
@@ -961,7 +1053,7 @@ class td_flex_block_1 extends td_block {
                     margin-right: auto;
 				}
 				.$unique_block_class .td-category-pos-above .td-post-category {
-				    align-self: center;
+				    align-self: center !important;
 				}
 				.$unique_block_class .td-category-pos-image .td-post-category {
 					left: 50%;
@@ -978,7 +1070,7 @@ class td_flex_block_1 extends td_block {
 					text-align: right;
 				}
 				.$unique_block_class .td-category-pos-above .td-post-category {
-				    align-self: flex-end;
+				    align-self: flex-end  !important;
 				}
 				.$unique_block_class .td-category-pos-image .td-post-category {
 					left: auto;
@@ -1118,6 +1210,70 @@ class td_flex_block_1 extends td_block {
 				.$unique_block_class .td-load-more-wrap a {
 					@f_more
 				}
+								
+				/* @mix_type */
+				.$unique_block_class .entry-thumb:before {
+				    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+					opacity: 1;
+					transition: opacity 1s ease;
+					-webkit-transition: opacity 1s ease;
+					mix-blend-mode: @mix_type;
+				}
+				/* @color */
+				.$unique_block_class .entry-thumb:before {
+                    background: @color;
+				}
+				/* @mix_gradient */
+				.$unique_block_class .entry-thumb:before {
+                    @mix_gradient;
+				}
+				
+				
+                /* @mix_type_h */
+                @media (min-width: 1141px) {
+                    .$unique_block_class .entry-thumb:after {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        opacity: 0;
+                        transition: opacity 1s ease;
+                        -webkit-transition: opacity 1s ease;
+                        mix-blend-mode: @mix_type_h;
+                    }
+                    .$unique_block_class .td-module-container:hover .entry-thumb:after {
+                        opacity: 1;
+                    }
+                }
+                
+                /* @color_h */
+                .$unique_block_class .entry-thumb:after {
+                    background: @color_h;
+                }
+                /* @mix_gradient_h */
+                .$unique_block_class .entry-thumb:after {
+                    @mix_gradient_h;
+                }
+                /* @mix_type_off */
+                .$unique_block_class .td-module-container:hover .entry-thumb:before {
+                    opacity: 0;
+                }
+                    
+				/* @effect_on */
+                .$unique_block_class .entry-thumb {
+                    filter: @fe_brightness @fe_contrast @fe_saturate;
+                    transition: all 1s ease;
+					-webkit-transition: all 1s ease;
+                }
+				/* @effect_on_h */
+				@media (min-width: 1141px) {
+                    .$unique_block_class .td-module-container:hover .entry-thumb {
+                        filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
+                    }
+                }
 			</style>";
 
 
@@ -1165,7 +1321,7 @@ class td_flex_block_1 extends td_block {
             $prev_icon = $this->get_att('prev_tdicon');
             $next_icon = $this->get_att('next_tdicon');
             $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
-        $buffy .= '</div> <!-- ./block -->';
+        $buffy .= '</div>';
         return $buffy;
     }
 
@@ -1196,10 +1352,29 @@ class td_flex_block_1 extends td_block {
 
         ?>
         <script>
+            // block subcategory ajax filters!
+            var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>');
+            if ( jquery_object_container.length) {
+                var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
+
+                if ( horizontal_jquery_obj.length) {
+                    // make a new item
+                    var pulldown_item_obj = new tdPullDown.item();
+                    pulldown_item_obj.blockUid = jquery_object_container.data('td-block-uid'); // get the block UID
+                    pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
+                    pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
+                    pulldown_item_obj.horizontal_element_css_class = 'td-subcat-item';
+                    pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.closest('.td-block-title-wrap');
+                    pulldown_item_obj.excluded_jquery_elements = [pulldown_item_obj.container_jquery_obj.find('.td-pulldown-size')];
+                    tdPullDown.add_item(pulldown_item_obj); // add the item
+
+                }
+            }
+            
             /* global jQuery:{} */
             (function () {
-                var block = jQuery('.<?php echo $this->block_uid; ?>_rand');
-                    blockClass = '.<?php echo $this->block_uid; ?>_rand';
+                var block = jQuery('.<?php echo $this->block_uid; ?>');
+                    blockClass = '.<?php echo $this->block_uid; ?>';
 
                 if( block.find('audio').length > 0 ) {
                     jQuery(blockClass + ' audio').mediaelementplayer();

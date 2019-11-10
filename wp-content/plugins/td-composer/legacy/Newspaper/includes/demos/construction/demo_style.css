@@ -78,11 +78,9 @@
 }
 .td-construction .td-instagram-black .td-instagram-image {
   -webkit-filter: grayscale(100%);
-  filter: grayscale(100%);
 }
-.td-construction .td-instagram-black a:hover .td-instagram-image {
+.td-construction .td-instagram-black .td-instagram-image:hover {
   -webkit-filter: grayscale(0%);
-  filter: grayscale(0%);
 }
 .td-construction .tdm-counter-wrap .tdm-counter-number {
   font-size: 70px;

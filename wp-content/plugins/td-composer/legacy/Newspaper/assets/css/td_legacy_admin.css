@@ -478,6 +478,11 @@
   width: 40px;
   height: 24px;
 }
+.tdc-ico-tdc_woo_shortcodes {
+  background-position: -505px -175px;
+  width: 40px;
+  height: 24px;
+}
 .tdc-preset-values-list .tdcp_separator {
   pointer-events: none;
   border-bottom: 1px solid #ebebeb;
@@ -1056,5 +1061,87 @@
 }
 [id*="td_block_ad_box_widget"] a[data-tab-id*="tdc-tab-image"],
 [id*="td_block_ad_box_widget"] a[data-tab-id*="tdc-tab-custom"] {
+  display: none;
+}
+.td_panel_box_instagram_account_access_configuration .about-wrap {
+  margin-left: 0;
+  margin-right: 15px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-title {
+  padding-bottom: 12px;
+}
+.td_panel_box_instagram_account_access_configuration tbody td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  vertical-align: middle;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #555;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-wrap > div {
+  box-sizing: border-box;
+  padding: 12px 10px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-photo {
+  width: 8%;
+  border-radius: 5px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-user,
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-followers {
+  width: 22%;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-user {
+  font-weight: 700;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg {
+  width: 35%;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check {
+  margin-top: 1px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check {
+  top: -1px;
+  width: 16px;
+  height: 16px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check:after {
+  width: 8px;
+  height: 8px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check-title {
+  font-size: 11px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-remove {
+  width: 13%;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-remove a {
+  width: 100%;
+  text-align: center;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token {
+  display: none;
+  width: 100%;
+  padding-top: 5px !important;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-inner {
+  display: flex;
+  font-size: 11px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-inner > div {
+  padding: 5px 9px;
+}
+.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-info {
+  background-color: #fbfbfb;
+  border-right: 1px solid #eee;
+}
+body:not(.td-standard-pack) .tdsp-hide {
   display: none;
 }

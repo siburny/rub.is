@@ -32,6 +32,7 @@ require_once('shortcodes/vc_row_inner.php' );
 require_once('shortcodes/vc_column.php' );
 require_once('shortcodes/vc_column_inner.php' );
 require_once('shortcodes/vc_column_text.php' );
+require_once('shortcodes/tdc_woo_shortcodes.php' );
 require_once('shortcodes/vc_raw_html.php' );
 require_once('shortcodes/vc_empty_space.php' );
 require_once('shortcodes/vc_widget_sidebar.php' );
@@ -652,7 +653,9 @@ function tdc_on_admin_head() {
 
         'tdbHeaderTemplates' => $tdb_header_templates,
         'headerTemplateId' => $global_header_template_id,
-        'headerTemplateContent' => $global_header_template_content
+        'headerTemplateContent' => $global_header_template_content,
+
+        'listStyles' => td_config::get_list_style_params()
 	);
 
 
@@ -885,7 +888,8 @@ if (!empty($td_action)) {
 			 */
 			add_action( 'admin_enqueue_scripts', 'on_admin_enqueue_scripts'); // load them last
 			function on_admin_enqueue_scripts() {
-				foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
+
+			    foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
 
 					if ( $font_id === 'font_newspaper' && 'Newsmag' === TD_THEME_NAME ) {
 						continue;
@@ -899,45 +903,44 @@ if (!empty($td_action)) {
 					wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
 
 					$file_path = plugin_dir_path( __FILE__ ) . 'templates/' . $font_settings['template_file'];
-					$handle_file = fopen( $file_path, 'w+');
 
-					//check response
-                    if ( $handle_file !== false ) {
+					if ( ! file_exists( $file_path ) ) {
+					    $handle_file = fopen( $file_path, 'w+');
 
-	                    if ( filesize( $file_path ) ) {
-		                    $response[ $font_id ][ 'output' ] = fread( $handle_file, filesize( $file_path ) );
-		                    fclose( $handle_file );
-	                    } else {
-		                    switch ( $font_settings[ 'name' ] ) {
-			                    case 'Font Awesome':
-			                    case 'Typicons':
-			                    case 'Open Iconic':
-			                    case 'tagDiv Multi-purpose':
+					    //check response
+                        if ( $handle_file !== false ) {
 
-				                    $json_font_response = td_remote_http::get_page( TDC_URL . $font_settings[ 'css_file' ], __CLASS__ );
+                            switch ( $font_settings[ 'name' ] ) {
+                                case 'Font Awesome':
+                                case 'Typicons':
+                                case 'Open Iconic':
+                                case 'tagDiv Multi-purpose':
 
-				                    if ( false === $json_font_response ) {
-					                    td_log::log( __FILE__, __FUNCTION__, 'Failed to get font icons', $json_font_response );
-				                    } else {
-					                    preg_match_all( "/\.tdc-font-" . $font_settings[ 'family_class' ] . "-(.*)\:before/", $json_font_response, $output_array );
+                                    $json_font_response = td_remote_http::get_page( TDC_URL . $font_settings[ 'css_file' ], __CLASS__ );
 
-					                    if ( is_array( $output_array ) && count( $output_array ) ) {
-						                    $response[ $font_id ][ 'classes' ] = $output_array[ 1 ];
+                                    if ( false === $json_font_response ) {
+                                        td_log::log( __FILE__, __FUNCTION__, 'Failed to get font icons', $json_font_response );
+                                    } else {
+                                        preg_match_all( "/\.tdc-font-" . $font_settings[ 'family_class' ] . "-(.*)\:before/", $json_font_response, $output_array );
 
-						                    $span_icons = '';
+                                        if ( is_array( $output_array ) && count( $output_array ) ) {
+                                            $response[ $font_id ][ 'classes' ] = $output_array[ 1 ];
 
-						                    foreach ( $response[ $font_id ][ 'classes' ] as $font_class ) {
-							                    $css_class  = 'tdc-font-' . $font_settings[ 'family_class' ] . ' tdc-font-' . $font_settings[ 'family_class' ] . '-' . $font_class;
-							                    $span_icons .= '<span data-font_class="' . $css_class . '"><i class="' . $css_class . '"></i></span>' . PHP_EOL;
-						                    }
-						                    fwrite( $handle_file, $span_icons );
-						                    clearstatcache();
-						                    fclose( $handle_file );
-					                    }
-				                    }
-				                    break;
-		                    }
-	                    }
+                                            $span_icons = '';
+
+                                            foreach ( $response[ $font_id ][ 'classes' ] as $font_class ) {
+                                                $css_class  = 'tdc-font-' . $font_settings[ 'family_class' ] . ' tdc-font-' . $font_settings[ 'family_class' ] . '-' . $font_class;
+                                                $span_icons .= '<span data-font_class="' . $css_class . '"><i class="' . $css_class . '"></i></span>' . PHP_EOL;
+                                            }
+                                            fwrite( $handle_file, $span_icons );
+                                            clearstatcache();
+                                        }
+                                    }
+                                    break;
+                            }
+
+                            fclose( $handle_file );
+                        }
                     }
 				}
 			}
@@ -1257,17 +1260,8 @@ if (!empty($td_action)) {
 				}
 			}
 
-
-
-
-
-			// This stops 'td_animation_stack' library to be applied
-			// @todo - trebuie sa fie din thema?
-			td_options::update_temp('tds_animation_stack', 'lorem ipsum ..');
 			break;
-
-
-
+		
 		default:
 			// Unknown td_action - kill execution
             echo 'Unknown td_action received: ' . $td_action;

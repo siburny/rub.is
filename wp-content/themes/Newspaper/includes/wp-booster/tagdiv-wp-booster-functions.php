@@ -137,7 +137,7 @@ if( !function_exists('load_front_js') ) {
 	function tagdiv_theme_js() {
 
 		// Load main theme js
-		wp_enqueue_script( 'tagdiv-theme-js', TAGDIV_ROOT . '/includes/js/tagdiv-theme.js', array('jquery'), TD_THEME_VERSION, true );
+		wp_enqueue_script( 'tagdiv-theme-js', TAGDIV_ROOT . '/includes/js/tagdiv-theme.min.js', array('jquery'), TD_THEME_VERSION, true );
 
 		// Load comments reply support if needed
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {

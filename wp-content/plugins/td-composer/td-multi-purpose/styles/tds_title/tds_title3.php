@@ -43,11 +43,7 @@ class tds_title3 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class .tdm-title {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_style_class .tdm-title,
-				.td-md-is-ios .$unique_style_class .tdm-title {
+				html[class*='ie'] .$unique_style_class .tdm-title {
 				    background: none;
 					color: @title_color_gradient_1;
 				}

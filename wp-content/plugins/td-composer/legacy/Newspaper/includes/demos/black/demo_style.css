@@ -304,9 +304,12 @@ usage:
 .td-black .logged-in-as a {
   color: #fff;
 }
+.td-black .comment,
+.td-black .comment-content {
+  color: #eee;
+}
 .td-black .comment {
   border-color: #444;
-  color: #eee;
 }
 .td-black .comment cite {
   color: #fff;
@@ -339,8 +342,6 @@ usage:
   background-color: #fff;
   color: #000;
   -webkit-transition: none;
-  -moz-transition: none;
-  -o-transition: none;
   transition: none;
 }
 .td-black .td-left-smart-list:hover,

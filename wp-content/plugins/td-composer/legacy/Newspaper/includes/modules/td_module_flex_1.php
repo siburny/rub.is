@@ -20,6 +20,7 @@ class td_module_flex_1 extends td_module {
         $excerpt_position = $this->get_shortcode_att('excerpt_middle');
         $custom_field = $this->get_shortcode_att('show_custom_field');
         $modified_date = $this->get_shortcode_att('show_modified_date');
+        $hide_audio = $this->get_shortcode_att('hide_audio');
         
         if (empty($image_size)) {
             $image_size = 'td_696x0';
@@ -69,7 +70,9 @@ class td_module_flex_1 extends td_module {
 
                     <?php if ($excerpt_position == '') { echo $excerpt; } ?>
 
-                    <?php echo $this->get_audio_embed() ?>
+                    <?php if( $hide_audio == '' ) {
+                        echo $this->get_audio_embed();
+                    } ?>
 
                     <div class="td-read-more">
                         <a href="<?php echo $this->href;?>"><?php echo __td($btn_title, TD_THEME_NAME);?></a>

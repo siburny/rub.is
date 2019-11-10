@@ -139,9 +139,6 @@ usage:
     left: 50%;
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
   }
 }
 @media (min-width: 1019px) and (max-width: 1140px) {
@@ -197,32 +194,24 @@ usage:
 .td-art-creek .td_module_mega_menu .td-module-thumb img,
 .td-art-creek .td_module_related_posts .td-module-thumb img {
   -webkit-transition: box-shadow 0.3s ease-out;
-  -moz-transition: box-shadow 0.3s ease-out;
-  -o-transition: box-shadow 0.3s ease-out;
   transition: box-shadow 0.3s ease-out;
 }
 .td-art-creek .td_module_wrap .td-module-thumb img.td-animation-stack-type0-2,
 .td-art-creek .td_module_mega_menu .td-module-thumb img.td-animation-stack-type0-2,
 .td-art-creek .td_module_related_posts .td-module-thumb img.td-animation-stack-type0-2 {
   -webkit-transition: box-shadow 0.3s ease-out, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56);
-  -moz-transition: box-shadow 0.3s ease-out, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56);
-  -o-transition: box-shadow 0.3s ease-out, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56);
   transition: box-shadow 0.3s ease-out, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56);
 }
 .td-art-creek .td_module_wrap .td-module-thumb img.td-animation-stack-type1-2,
 .td-art-creek .td_module_mega_menu .td-module-thumb img.td-animation-stack-type1-2,
 .td-art-creek .td_module_related_posts .td-module-thumb img.td-animation-stack-type1-2 {
   -webkit-transition: box-shadow 0.3s ease-out, transform 0.5s ease, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56) 0s;
-  -moz-transition: box-shadow 0.3s ease-out, transform 0.5s ease, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56) 0s;
-  -o-transition: box-shadow 0.3s ease-out, transform 0.5s ease, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56) 0s;
   transition: box-shadow 0.3s ease-out, transform 0.5s ease, opacity 0.3s cubic-bezier(0.39, 0.76, 0.51, 0.56) 0s;
 }
 .td-art-creek .td_module_wrap .td-module-thumb img.td-animation-stack-type2-2,
 .td-art-creek .td_module_mega_menu .td-module-thumb img.td-animation-stack-type2-2,
 .td-art-creek .td_module_related_posts .td-module-thumb img.td-animation-stack-type2-2 {
   -webkit-transition: box-shadow 0.3s ease-out, transform 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88), opacity 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88);
-  -moz-transition: box-shadow 0.3s ease-out, transform 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88), opacity 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88);
-  -o-transition: box-shadow 0.3s ease-out, transform 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88), opacity 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88);
   transition: box-shadow 0.3s ease-out, transform 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88), opacity 0.4s cubic-bezier(0.13, 0.43, 0.57, 0.88);
 }
 .td-art-creek .td_module_wrap .td-module-thumb:hover img,
@@ -423,8 +412,6 @@ usage:
   text-align: center;
 }
 .td-art-creek .td_block_author .avatar {
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
   border-radius: 10px;
 }
 .td-art-creek .td_block_author .td-author-name {

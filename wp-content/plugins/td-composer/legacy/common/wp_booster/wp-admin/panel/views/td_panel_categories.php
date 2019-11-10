@@ -1,7 +1,6 @@
 <!-- CATEGORY page -->
 <?php echo td_panel_generator::box_start('Category global settings', true);
 
-
 $tdb_category_template_is_set = false;
 
 if ( td_global::is_tdb_registered() ) {
@@ -64,217 +63,219 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 </div>
 
-<div class="td-box-section-separator tdb-hide"></div>
+<?php }
 
-<?php } ?>
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+    <div class="td-box-section-separator tdb-hide"></div>
 
-<div class="td-box-description td-box-full tdb-hide">
-    <p>Set the default layout for all the categories. Note that you can change the layout and settings on each category from Theme panel ⇢ Categories</p>
-    <ul>
-        <li>You can view each category page by going to Posts ⇢ Categories ⇢ hover on a category ⇢ select view</li>
-        <li>This WordPress template is located in <strong>category.php</strong> file.</li>
-    </ul>
-</div>
-
-<!-- Category template -->
-<div class="td-box-row tdb-hide">
-    <div class="td-box-description">
-        <span class="td-box-title">Category template</span>
-        <p>
-            This is the header of the category
-            <?php td_util::tooltip_html('
-                    <h3>Category template:</h3>
-                    <p>From here you can change the category header.</p>
-                    <ul>
-                        <li>This setting can be overwritten on a per category basis from the boxes below</li>
-                        <li>Some of the headers also show the category description</li>
-                        <li>For advanced users who want to customize the category header, here is the <a target="_blank" href="http://forum.tagdiv.com/api-category-top-section-template-introduction/">API documentation</a></li>
-                        <li>Have fun finding the header that you like!</li>
-                    </ul>
-            ', 'right')?>
-        </p>
+    <div class="td-box-description td-box-full tdb-hide">
+        <p>Set the default layout for all the categories. Note that you can change the layout and settings on each category from Theme panel ⇢ Categories</p>
+        <ul>
+            <li>You can view each category page by going to Posts ⇢ Categories ⇢ hover on a category ⇢ select view</li>
+            <li>This WordPress template is located in <strong>category.php</strong> file.</li>
+        </ul>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::visual_select_o(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_category_template',
-            'values' => td_api_category_template::_helper_to_panel_values()
-        ));
-        ?>
-    </div>
-</div>
 
-<!-- Category pull-down filter -->
-<div class="td-box-row tdb-hide">
-    <div class="td-box-description">
-        <span class="td-box-title">Category pull-down filter</span>
-        <p>
-            This setting controls the display of the category pull-down filter.
-            <?php td_util::tooltip_html('
-                    <h3>Category pull-down filter:</h3>
-                    <p>This option allows you to enable or disable this filter:</p>
-                    <ul>
-                        <li>By default it\'s enabled.</li>
-                        <li>This filter allows you to set a different post sort order and it can be found on the top section of the category page.</li>
-                        <li>If you select "Disable" this filter will be removed from all category pages.</li>
-                    </ul>
-            ', 'right')?>
-        </p>
-    </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_category_pull_down',
-            'true_value' => '',
-            'false_value' => 'hide'
-        ));
-        ?>
-    </div>
-</div>
-
-<div class="td-box-section-separator tdb-hide"></div>
-
-<!-- Category top posts style -->
-<div class="td-box-row tdb-hide">
-    <div class="td-box-description">
-        <span class="td-box-title">Category top posts style</span>
-        <p>
-            Set top post style
-            <?php td_util::tooltip_html('
-                    <h3>Category top post styles:</h3>
-                    <p>Highlight the latest posts on a category page</p>
-                    <ul>
-                        <li>This setting can be overwritten on a per category basis from the boxes below</li>
-                        <li>Use this setting + the <i>grid style</i> setting to get the results that you want</li>
-                        <li>For advanced users, here is the <a target="_blank" href="http://forum.tagdiv.com/api-category-top-section-style-introduction/">API documentation</a></li>
-                    </ul>
-            ', 'right')?>
-        </p>
-    </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::visual_select_o(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_category_top_posts_style',
-            'values' => td_api_category_top_posts_style::_helper_to_panel_values()
-        ));
-        ?>
-    </div>
-</div>
-
-<div class="td-box-row tdb-hide">
+    <!-- Category template -->
+    <div class="td-box-row tdb-hide">
         <div class="td-box-description">
-            <span class="td-box-title">Category top posts GRID STYLE</span>
-            <p>Each category grid supports multiple styles</p>
+            <span class="td-box-title">Category template</span>
+            <p>
+                This is the header of the category
+                <?php td_util::tooltip_html('
+                        <h3>Category template:</h3>
+                        <p>From here you can change the category header.</p>
+                        <ul>
+                            <li>This setting can be overwritten on a per category basis from the boxes below</li>
+                            <li>Some of the headers also show the category description</li>
+                            <li>For advanced users who want to customize the category header, here is the <a target="_blank" href="http://forum.tagdiv.com/api-category-top-section-template-introduction/">API documentation</a></li>
+                            <li>Have fun finding the header that you like!</li>
+                        </ul>
+                ', 'right')?>
+            </p>
         </div>
         <div class="td-box-control-full">
             <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_category_template',
+                'values' => td_api_category_template::_helper_to_panel_values()
+            ));
+            ?>
+        </div>
+    </div>
 
-            $td_grid_style_values = array();
-            foreach (td_global::$big_grid_styles_list as $big_grid_id => $params) {
-                $td_grid_style_values []= array(
-                    'text' => $params['text'],
-                    'val' => $big_grid_id
-                );
-            }
+    <!-- Category pull-down filter -->
+    <div class="td-box-row tdb-hide">
+        <div class="td-box-description">
+            <span class="td-box-title">Category pull-down filter</span>
+            <p>
+                This setting controls the display of the category pull-down filter.
+                <?php td_util::tooltip_html('
+                        <h3>Category pull-down filter:</h3>
+                        <p>This option allows you to enable or disable this filter:</p>
+                        <ul>
+                            <li>By default it\'s enabled.</li>
+                            <li>This filter allows you to set a different post sort order and it can be found on the top section of the category page.</li>
+                            <li>If you select "Disable" this filter will be removed from all category pages.</li>
+                        </ul>
+                ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_category_pull_down',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="td-box-section-separator tdb-hide"></div>
+
+    <!-- Category top posts style -->
+    <div class="td-box-row tdb-hide">
+        <div class="td-box-description">
+            <span class="td-box-title">Category top posts style</span>
+            <p>
+                Set top post style
+                <?php td_util::tooltip_html('
+                        <h3>Category top post styles:</h3>
+                        <p>Highlight the latest posts on a category page</p>
+                        <ul>
+                            <li>This setting can be overwritten on a per category basis from the boxes below</li>
+                            <li>Use this setting + the <i>grid style</i> setting to get the results that you want</li>
+                            <li>For advanced users, here is the <a target="_blank" href="http://forum.tagdiv.com/api-category-top-section-style-introduction/">API documentation</a></li>
+                        </ul>
+                ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_category_top_posts_style',
+                'values' => td_api_category_top_posts_style::_helper_to_panel_values()
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="td-box-row tdb-hide">
+            <div class="td-box-description">
+                <span class="td-box-title">Category top posts GRID STYLE</span>
+                <p>Each category grid supports multiple styles</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+
+                $td_grid_style_values = array();
+                foreach (td_global::$big_grid_styles_list as $big_grid_id => $params) {
+                    $td_grid_style_values []= array(
+                        'text' => $params['text'],
+                        'val' => $big_grid_id
+                    );
+                }
+                echo td_panel_generator::dropdown(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_category_td_grid_style',
+                    'values' => $td_grid_style_values
+                ));
+                ?>
+            </div>
+        </div>
+
+    <div class="td-box-section-separator tdb-hide"></div>
+
+    <!-- DISPLAY VIEW -->
+    <div class="td-box-row tdb-hide">
+            <div class="td-box-description">
+                <span class="td-box-title">ARTICLE DISPLAY VIEW</span>
+                <p>Select a module type, this is how your article list will be displayed. For custom modules or tuning, read <a target="_blank" href="http://forum.tagdiv.com/api-modules-introduction/">the module API</a></p>
+            </div>
+            <div class="td-box-control-full td-panel-module">
+                <?php
+                echo td_panel_generator::visual_select_o(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_category_page_layout',
+                    'values' => td_panel_generator::helper_display_modules('enabled_on_loops')
+                ));
+                ?>
+            </div>
+        </div>
+
+    <div class="td-box-section-separator tdb-hide"></div>
+
+    <div class="td-box-row tdb-hide">
+        <div class="td-box-description">
+            <span class="td-box-title">Pagination style</span>
+            <p>Set a pagination style for all categories</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
             echo td_panel_generator::dropdown(array(
                 'ds' => 'td_option',
-                'option_id' => 'tds_category_td_grid_style',
-                'values' => $td_grid_style_values
-            ));
-            ?>
-        </div>
-    </div>
-
-<div class="td-box-section-separator tdb-hide"></div>
-
-<!-- DISPLAY VIEW -->
-<div class="td-box-row tdb-hide">
-        <div class="td-box-description">
-            <span class="td-box-title">ARTICLE DISPLAY VIEW</span>
-            <p>Select a module type, this is how your article list will be displayed. For custom modules or tuning, read <a target="_blank" href="http://forum.tagdiv.com/api-modules-introduction/">the module API</a></p>
-        </div>
-        <div class="td-box-control-full td-panel-module">
-            <?php
-            echo td_panel_generator::visual_select_o(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_category_page_layout',
-                'values' => td_panel_generator::helper_display_modules('enabled_on_loops')
-            ));
-            ?>
-        </div>
-    </div>
-
-<div class="td-box-section-separator tdb-hide"></div>
-
-<div class="td-box-row tdb-hide">
-    <div class="td-box-description">
-        <span class="td-box-title">Pagination style</span>
-        <p>Set a pagination style for all categories</p>
-    </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::dropdown(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_category_pagination_style',
-            'values' => array(
-                array (
-                    'val' => '',
-                    'text' => 'Normal pagination'
-                ),
-                array (
-                    'val' => 'infinite',
-                    'text' => 'Infinite loading'
-                ),
-                array (
-                    'val' => 'infinite_load_more',
-                    'text' => 'Infinite loading + Load more'
-                )
-            )
-        ));
-        ?>
-    </div>
-</div>
-
-<div class="td-box-section-separator tdb-hide"></div>
-
-<!-- Custom Sidebar + position -->
-<div class="td-box-row tdb-hide">
-    <div class="td-box-description">
-        <span class="td-box-title">CUSTOM SIDEBAR + POSITION</span>
-        <p>Sidebar position and custom sidebars</p>
-    </div>
-    <div class="td-box-control-full td-panel-sidebar-pos">
-        <div class="td-display-inline-block">
-            <?php
-            echo td_panel_generator::visual_select_o(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_category_sidebar_pos',
+                'option_id' => 'tds_category_pagination_style',
                 'values' => array(
-                    array('text' => '', 'title' => 'Sidebar Left', 'val' => 'sidebar_left', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-left.png'),
-                    array('text' => '', 'title' => 'No Sidebar', 'val' => 'no_sidebar', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-full.png'),
-                    array('text' => '', 'title' => 'Sidebar Right', 'val' => '', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-right.png')
+                    array (
+                        'val' => '',
+                        'text' => 'Normal pagination'
+                    ),
+                    array (
+                        'val' => 'infinite',
+                        'text' => 'Infinite loading'
+                    ),
+                    array (
+                        'val' => 'infinite_load_more',
+                        'text' => 'Infinite loading + Load more'
+                    )
                 )
             ));
             ?>
-            <div class="td-panel-control-comment td-text-align-right">Select sidebar position</div>
-        </div>
-        <div class="td-display-inline-block td_sidebars_pulldown_align">
-            <?php
-            echo td_panel_generator::sidebar_pulldown(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_category_sidebar'
-            ));
-            ?>
-            <div class="td-panel-control-comment td-text-align-right">Create or select an existing sidebar</div>
         </div>
     </div>
-</div>
+
+    <div class="td-box-section-separator tdb-hide"></div>
+
+    <!-- Custom Sidebar + position -->
+    <div class="td-box-row tdb-hide">
+        <div class="td-box-description">
+            <span class="td-box-title">CUSTOM SIDEBAR + POSITION</span>
+            <p>Sidebar position and custom sidebars</p>
+        </div>
+        <div class="td-box-control-full td-panel-sidebar-pos">
+            <div class="td-display-inline-block">
+                <?php
+                echo td_panel_generator::visual_select_o(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_category_sidebar_pos',
+                    'values' => array(
+                        array('text' => '', 'title' => 'Sidebar Left', 'val' => 'sidebar_left', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => 'No Sidebar', 'val' => 'no_sidebar', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => 'Sidebar Right', 'val' => '', 'img' => TDC_URL_LEGACY . '/assets/images/panel/sidebar/sidebar-right.png')
+                    )
+                ));
+                ?>
+                <div class="td-panel-control-comment td-text-align-right">Select sidebar position</div>
+            </div>
+            <div class="td-display-inline-block td_sidebars_pulldown_align">
+                <?php
+                echo td_panel_generator::sidebar_pulldown(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_category_sidebar'
+                ));
+                ?>
+                <div class="td-panel-control-comment td-text-align-right">Create or select an existing sidebar</div>
+            </div>
+        </div>
+    </div>
 
 
-<?php echo td_panel_generator::box_end();?>
+    <?php }
+echo td_panel_generator::box_end();?>
 
 
 

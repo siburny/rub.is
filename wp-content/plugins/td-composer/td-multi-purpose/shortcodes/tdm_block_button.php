@@ -5,7 +5,7 @@ class tdm_block_button extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -51,7 +51,7 @@ class tdm_block_button extends td_block {
 	function render($atts, $content = null) {
 		parent::render($atts);
 
-        $this->unique_block_class = $this->block_uid . '_rand';
+        $this->unique_block_class = $this->block_uid;
 
 		$this->shortcode_atts = shortcode_atts(
 			array_merge(

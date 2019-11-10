@@ -1,6 +1,8 @@
 <div class="td-page-options-tab-wrap">
     <div class="td-page-options-tab td-page-options-tab-active" data-panel-class="td-post-option-general"><a href="#">General</a></div>
-    <div class="td-page-options-tab" data-panel-class="td-page-option-post-smart-list"><a href="#">Smart List</a></div>
+    <?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+        <div class="td-page-options-tab" data-panel-class="td-page-option-post-smart-list"><a href="#">Smart List</a></div>
+    <?php } ?>
     <div class="td-page-options-tab" data-panel-class="td-page-option-post-review"><a href="#">Reviews</a></div>
 </div>
 
@@ -183,84 +185,86 @@
     </div> <!-- /post option general -->
 
     <!-- post option smart list -->
-    <div class="td-page-option-panel td-page-option-post-smart-list">
-            <!-- smart list -->
-            <div class="td-meta-box-row">
-                <span class="td-page-o-custom-label">
-                    Use a smart list? :
-                    <?php
-                    td_util::tooltip_html('
-                        <h3>Smart Lists:</h3>
-                        <p>Using <i>Smart lists</i> you can transform your article in a list of items. Each item must have a title, an image and a description</p>
-                        <p>How to make an item:</p>
-                        <ul>
-                            <li><strong>add a text wrapped in H3</strong> - this will be the title of the item</li>
-                            <li><strong>add any picture</strong> from the media library</li>
-                            <li>in a new paragraph below the picture, <strong>add some text</strong></li>
-                            <li><i>repeat the last 3 steps for each item that you want to add</i></li>
-                        </ul>
+    <?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+        <div class="td-page-option-panel td-page-option-post-smart-list">
+                <!-- smart list -->
+                <div class="td-meta-box-row">
+                    <span class="td-page-o-custom-label">
+                        Use a smart list? :
+                        <?php
+                        td_util::tooltip_html('
+                            <h3>Smart Lists:</h3>
+                            <p>Using <i>Smart lists</i> you can transform your article in a list of items. Each item must have a title, an image and a description</p>
+                            <p>How to make an item:</p>
+                            <ul>
+                                <li><strong>add a text wrapped in H3</strong> - this will be the title of the item</li>
+                                <li><strong>add any picture</strong> from the media library</li>
+                                <li>in a new paragraph below the picture, <strong>add some text</strong></li>
+                                <li><i>repeat the last 3 steps for each item that you want to add</i></li>
+                            </ul>
+    
+                            <p>The system will use the H3 from the tiles to split your article and make each individual slide or numbered item</p>
+                        ', 'right')
+                        ?>
+                    </span>
 
-                        <p>The system will use the H3 from the tiles to split your article and make each individual slide or numbered item</p>
-                    ', 'right')
-                    ?>
-                </span>
-
-                <div class="td-inline-block-wrap">
-                    <?php
-                    echo td_panel_generator::visual_select_o(array(
-                        'ds' => 'td_post_theme_settings',
-                        'item_id' => '',
-                        'option_id' => 'smart_list_template',
-                        'values' => td_api_smart_list::_helper_td_smart_list_api_to_panel_values(TDC_URL_LEGACY),
-                        'selected_value' => $mb->get_the_value('smart_list_template')
-                    ));
-                    ?>
+                    <div class="td-inline-block-wrap">
+                        <?php
+                        echo td_panel_generator::visual_select_o(array(
+                            'ds' => 'td_post_theme_settings',
+                            'item_id' => '',
+                            'option_id' => 'smart_list_template',
+                            'values' => td_api_smart_list::_helper_td_smart_list_api_to_panel_values(TDC_URL_LEGACY),
+                            'selected_value' => $mb->get_the_value('smart_list_template')
+                        ));
+                        ?>
+                    </div>
                 </div>
-            </div>
 
-            <!-- title tag -->
-            <div class="td-meta-box-row">
-                <span class="td-page-o-custom-label">
-                    Title tags:
-                    <?php
-                    td_util::tooltip_html('
-                        <h3>Smart lists title tags:</h3>
-                        <p>Customize what tag is used for <i>Title</i> lookup. This setting is useful if for example, you already have articles that use H2 for items</p>
-                    ', 'right')
-                    ?>
-                </span>
-                <?php $mb->the_field('td_smart_list_h'); ?>
-                <div class="td-select-style-overwrite td-inline-block-wrap">
-                    <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
-                        <option value="h1"<?php $mb->the_select_state('h1'); ?>>Heading 1 ( H1 tag )</option>
-                        <option value="h2"<?php $mb->the_select_state('h2'); ?>>Heading 2 ( H2 tag )</option>
-                        <option value="" <?php $mb->the_select_state(''); ?>>Heading 3 ( H3 tag )</option>
-                        <option value="h4"<?php $mb->the_select_state('h4'); ?>>Heading 4 ( H4 tag )</option>
-                        <option value="h5"<?php $mb->the_select_state('h5'); ?>>Heading 5 ( H5 tag )</option>
-                        <option value="h6"<?php $mb->the_select_state('h6'); ?>>Heading 6 ( H6 tag )</option>
-                    </select>
+                <!-- title tag -->
+                <div class="td-meta-box-row">
+                    <span class="td-page-o-custom-label">
+                        Title tags:
+                        <?php
+                        td_util::tooltip_html('
+                            <h3>Smart lists title tags:</h3>
+                            <p>Customize what tag is used for <i>Title</i> lookup. This setting is useful if for example, you already have articles that use H2 for items</p>
+                        ', 'right')
+                        ?>
+                    </span>
+                    <?php $mb->the_field('td_smart_list_h'); ?>
+                    <div class="td-select-style-overwrite td-inline-block-wrap">
+                        <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
+                            <option value="h1"<?php $mb->the_select_state('h1'); ?>>Heading 1 ( H1 tag )</option>
+                            <option value="h2"<?php $mb->the_select_state('h2'); ?>>Heading 2 ( H2 tag )</option>
+                            <option value="" <?php $mb->the_select_state(''); ?>>Heading 3 ( H3 tag )</option>
+                            <option value="h4"<?php $mb->the_select_state('h4'); ?>>Heading 4 ( H4 tag )</option>
+                            <option value="h5"<?php $mb->the_select_state('h5'); ?>>Heading 5 ( H5 tag )</option>
+                            <option value="h6"<?php $mb->the_select_state('h6'); ?>>Heading 6 ( H6 tag )</option>
+                        </select>
+                    </div>
+                    <span class="td-page-o-info">The tags that wrap the title of each Smart List item.</span>
                 </div>
-                <span class="td-page-o-info">The tags that wrap the title of each Smart List item.</span>
-            </div>
 
-            <!-- smart list numbering -->
-            <div class="td-meta-box-row">
-                <span class="td-page-o-custom-label">
-                    Smart list numbering:
-                    <?php
-                    td_util::tooltip('Change the sort order of the items', 'right')
-                    ?>
-                </span>
-                <?php $mb->the_field('td_smart_list_order'); ?>
-                <div class="td-select-style-overwrite td-inline-block-wrap">
-                    <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
-                        <option value=""<?php $mb->the_select_state(''); ?>>Descending (ex: 3, 2, 1)</option>
-                        <option value="asc_1" <?php $mb->the_select_state('asc_1'); ?>>Ascending (ex: 1, 2, 3)</option>
-                    </select>
+                <!-- smart list numbering -->
+                <div class="td-meta-box-row">
+                    <span class="td-page-o-custom-label">
+                        Smart list numbering:
+                        <?php
+                        td_util::tooltip('Change the sort order of the items', 'right')
+                        ?>
+                    </span>
+                    <?php $mb->the_field('td_smart_list_order'); ?>
+                    <div class="td-select-style-overwrite td-inline-block-wrap">
+                        <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
+                            <option value=""<?php $mb->the_select_state(''); ?>>Descending (ex: 3, 2, 1)</option>
+                            <option value="asc_1" <?php $mb->the_select_state('asc_1'); ?>>Ascending (ex: 1, 2, 3)</option>
+                        </select>
+                    </div>
+                    <span class="td-page-o-info">The smart lists put a number on each item, select the counting method.</span>
                 </div>
-                <span class="td-page-o-info">The smart lists put a number on each item, select the counting method.</span>
-            </div>
-    </div> <!-- /post option smart list -->
+        </div> <!-- /post option smart list -->
+    <?php } ?>
 
     <!-- post option review -->
     <div class="td-page-option-panel td-page-option-post-review">

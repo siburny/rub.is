@@ -95,28 +95,20 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
                 height: calc(100% - 69px) !important;
             }
 
+            .tdc-wpeditor .mce-tinymce {
+                height: 100%;
+            }
+
             .tdc-wpeditor #tdc-wpeditor_ifr {
-                height: calc(100% - 98px) !important;
+                height: calc(100% - 62px) !important;
             }
 
             .tdc-one-column .tdc-wpeditor #tdc-wpeditor_ifr {
-                height: calc(100% - 175px) !important;
-            }
-
-            .tdc-two-column .tdc-wpeditor #tdc-wpeditor_ifr {
-                height: calc(100% - 139px) !important;
+                height: calc(100% - 104px) !important;
             }
 
             .td-md-is-firefox .tdc-wpeditor #tdc-wpeditor_ifr {
                 height: 100% !important;
-            }
-
-            .td-md-is-firefox .tdc-wpeditor .mce-tinymce {
-                height: calc(100% - 98px) !important;
-            }
-
-            .td-md-is-firefox .tdc-one-column .tdc-wpeditor .mce-tinymce {
-                height: calc(100% - 140px) !important;
             }
 
             #wp-tdc-wpeditor-wrap {

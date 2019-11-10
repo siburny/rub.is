@@ -49,6 +49,7 @@
     </div>
 </div>
 
+
 <!-- Live search date text color -->
 <div class="td-box-row">
     <div class="td-box-description">

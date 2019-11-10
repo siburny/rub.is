@@ -138,29 +138,28 @@ class td_flex_block_3 extends td_block {
 
         // video icon size
         $video_icon1 = $res_ctx->get_shortcode_att('video_icon1');
-        $res_ctx->load_settings_raw( 'video_icon1', $video_icon1 );
-        if ( is_numeric( $video_icon1 ) ) {
+        if ( $video_icon1 != '' && is_numeric( $video_icon1 ) ) {
             $res_ctx->load_settings_raw( 'video_icon1', $video_icon1 . 'px' );
         }
         $video_icon2 = $res_ctx->get_shortcode_att('video_icon2');
-        $res_ctx->load_settings_raw( 'video_icon2', $video_icon2 );
-        if ( is_numeric( $video_icon2 ) ) {
-            $res_ctx->load_settings_raw( 'video_icon2', $video_icon2 . 'px' );
+        if( $video_icon2 == '' ) {
+            $res_ctx->load_settings_raw( 'video_icon2', '20px' );
+        } else {
+            if ( is_numeric( $video_icon2 ) ) {
+                $res_ctx->load_settings_raw( 'video_icon2', $video_icon2 . 'px' );
+            }
         }
+
 
 
 
         /*-- META INFO -- */
         // meta info align
         $meta_info_align1 = $res_ctx->get_shortcode_att('meta_info_align1');
-	    $res_ctx->load_settings_raw( 'meta_info_align1', $meta_info_align1 );
-	    // meta info align to fix top when no float is selected
-        if ( $meta_info_align1 == 'initial' ) {
-	        $res_ctx->load_settings_raw( 'meta_info_align_top1',  1 );
-        }
-        // meta info align top/bottom - align category
-        if ( $meta_info_align1 == 'initial' ) {
-	        $res_ctx->load_settings_raw( 'align_category_top1',  1 );
+        if( $meta_info_align1 == '' ) {
+            $res_ctx->load_settings_raw( 'meta_info_align_bottom1', 1 );
+        } else if ( $meta_info_align1 == 'initial' ) {
+            $res_ctx->load_settings_raw( 'meta_info_align_top1', 1 );
         }
 
         // meta info horizontal align
@@ -360,12 +359,24 @@ class td_flex_block_3 extends td_block {
         $res_ctx->load_settings_raw( 'show_cat1', $res_ctx->get_shortcode_att('show_cat1') );
         $res_ctx->load_settings_raw( 'show_cat2', $res_ctx->get_shortcode_att('show_cat2') );
         $res_ctx->load_settings_raw( 'show_excerpt1', $res_ctx->get_shortcode_att('show_excerpt1') );
-        $res_ctx->load_settings_raw( 'show_audio1', $res_ctx->get_shortcode_att('show_audio1') );
-        $res_ctx->load_settings_raw( 'show_audio2', $res_ctx->get_shortcode_att('show_audio2') );
+        $show_audio1 = $res_ctx->get_shortcode_att('show_audio1');
+        if( $show_audio1 == '' || $show_audio1 == 'block' ) {
+            $res_ctx->load_settings_raw( 'show_audio1', 1 );
+        } else if( $show_audio1 == 'none' ) {
+            $res_ctx->load_settings_raw( 'hide_audio1', 1 );
+        }
+        $show_audio2 = $res_ctx->get_shortcode_att('show_audio2');
+        if( $show_audio2 == '' || $show_audio2 == 'block' ) {
+            $res_ctx->load_settings_raw( 'show_audio2', 1 );
+        } else if( $show_audio2 == 'none' ) {
+            $res_ctx->load_settings_raw( 'hide_audio2', 1 );
+        }
 
         $show_author1 = $res_ctx->get_shortcode_att('show_author1');
         $show_date1 = $res_ctx->get_shortcode_att('show_date1');
         $show_review1 = $res_ctx->get_shortcode_att('show_review1');
+        $review_size1 = $res_ctx->get_shortcode_att('review_size1');
+        $res_ctx->load_settings_raw( 'review_size1', 10 + $review_size1/0.5 . 'px' );
         $show_com1 = $res_ctx->get_shortcode_att('show_com1');
         if( $show_author1 == 'none' && $show_date1 == 'none' && $show_com1 == 'none' && $show_review1 == 'none' ) {
             $res_ctx->load_settings_raw( 'hide_author_date1', 1 );
@@ -378,6 +389,8 @@ class td_flex_block_3 extends td_block {
         $show_author2 = $res_ctx->get_shortcode_att('show_author2');
         $show_date2 = $res_ctx->get_shortcode_att('show_date2');
         $show_review2 = $res_ctx->get_shortcode_att('show_review2');
+        $review_size2 = $res_ctx->get_shortcode_att('review_size2');
+        $res_ctx->load_settings_raw( 'review_size2', 10 + $review_size2/0.5 . 'px' );
         $show_com2 = $res_ctx->get_shortcode_att('show_com2');
         if( $show_author2 == 'none' && $show_date2 == 'none' && $show_com2 == 'none' && $show_review2 == 'none' ) {
             $res_ctx->load_settings_raw( 'hide_author_date2', 1 );
@@ -474,11 +487,76 @@ class td_flex_block_3 extends td_block {
         $res_ctx->load_font_settings( 'f_cat2' );
         $res_ctx->load_font_settings( 'f_meta2' );
 
+        // mix blend
+        $mix_type = $res_ctx->get_shortcode_att('mix_type');
+        if ( $mix_type != '' ) {
+            $res_ctx->load_settings_raw('mix_type', $res_ctx->get_shortcode_att('mix_type'));
+        }
+        $res_ctx->load_color_settings( 'mix_color', 'color', 'mix_gradient', '', '' );
+
+        $mix_type_h = $res_ctx->get_shortcode_att('mix_type_h');
+        if ( $mix_type_h != '' ) {
+            $res_ctx->load_settings_raw('mix_type_h', $res_ctx->get_shortcode_att('mix_type_h'));
+        } else {
+            $res_ctx->load_settings_raw('mix_type_off', 1);
+        }
+        $res_ctx->load_color_settings( 'mix_color_h', 'color_h', 'mix_gradient_h', '', '' );
+
+        // effects
+        $res_ctx->load_settings_raw('fe_brightness', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate', 'saturate(1)');
+
+        $fe_brightness = $res_ctx->get_shortcode_att('fe_brightness');
+        if ($fe_brightness != '1') {
+            $res_ctx->load_settings_raw('fe_brightness', 'brightness(' . $fe_brightness . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_contrast = $res_ctx->get_shortcode_att('fe_contrast');
+        if ($fe_contrast != '1') {
+            $res_ctx->load_settings_raw('fe_contrast', 'contrast(' . $fe_contrast . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_saturate = $res_ctx->get_shortcode_att('fe_saturate');
+        if ($fe_saturate != '1') {
+            $res_ctx->load_settings_raw('fe_saturate', 'saturate(' . $fe_saturate . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+
+        // effects hover
+        $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(1)');
+
+        $fe_brightness_h = $res_ctx->get_shortcode_att('fe_brightness_h');
+        $fe_contrast_h = $res_ctx->get_shortcode_att('fe_contrast_h');
+        $fe_saturate_h = $res_ctx->get_shortcode_att('fe_saturate_h');
+
+        if ($fe_brightness_h != '1') {
+            $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(' . $fe_brightness_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_contrast_h != '1') {
+            $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(' . $fe_contrast_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(' . $fe_saturate_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        // make hover to work
+        if ($fe_brightness_h != '1' || $fe_contrast_h != '1' || $fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        if ($fe_brightness != '1' || $fe_contrast != '1' || $fe_saturate != '1') {
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+
     }
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -633,38 +711,46 @@ class td_flex_block_3 extends td_block {
 			    }
 			    
 			    /* @image_radius1 */
-				.$unique_block_class .td_module_flex_1 .entry-thumb {
+				.$unique_block_class .td_module_flex_1 .entry-thumb,
+				.$unique_block_class .td_module_flex_1 .entry-thumb:before,
+				.$unique_block_class .td_module_flex_1 .entry-thumb:after {
 					border-radius: @image_radius1;
 				}
 			    /* @image_radius2 */
-				.$unique_block_class .td_module_flex_3 .entry-thumb {
+				.$unique_block_class .td_module_flex_3 .entry-thumb,
+				.$unique_block_class .td_module_flex_3 .entry-thumb:before,
+				.$unique_block_class .td_module_flex_3 .entry-thumb:after {
 					border-radius: @image_radius2;
 				}
 				
 				/* @video_icon1 */
-				.$unique_block_class .td_module_flex_1 .td-video-play-ico > img {
+				.$unique_block_class .td_module_flex_1 .td-video-play-ico {
 					width: @video_icon1;
+					height: @video_icon1;
+					font-size: @video_icon1;
 				}
 				/* @video_icon2 */
-				.$unique_block_class .td_module_flex_3 .td-video-play-ico > img {
+				.$unique_block_class .td_module_flex_3 .td-video-play-ico {
 					width: @video_icon2;
+					height: @video_icon2;
+					font-size: @video_icon2;
 				}
 				
-				/* @meta_info_align1 */
-				.$unique_block_class .td_module_flex_1 .td-module-container {
-					align-items: @meta_info_align1;
-				}
 				/* @meta_info_align_top1 */
-				.$unique_block_class .td_module_flex_1 .td-image-container {
-					order: 1;
+				.$unique_block_class .td_module_flex_1 .td-module-container {
+					flex-direction: column-reverse;
 				}
-				.$unique_block_class .td_module_flex_1 .td-module-meta-info {
-				    flex: 1;
-				}
-				/* @align_category_top1 */
 				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
 					top: 0;
 					bottom: auto;
+				}
+				/* @meta_info_align_bottom1 */
+				.$unique_block_class .td_module_flex_1 .td-module-container {
+					flex-direction: column;
+				}
+				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
+					top: auto;
+					bottom: 0;
 				}
 				
 				/* @meta_horiz_align_center1 */
@@ -850,11 +936,27 @@ class td_flex_block_3 extends td_block {
 				
 				/* @show_audio1 */
 				.$unique_block_class .td_module_flex_1 .td-audio-player {
-					display: @show_audio1;
+					opacity: 1;
+					visibility: visible;
+					height: auto;
+				}
+				/* @hide_audio1 */
+				.$unique_block_class .td_module_flex_1 .td-audio-player {
+					opacity: 0;
+					visibility: hidden;
+					height: 0;
 				}
 				/* @show_audio2 */
 				.$unique_block_class .td_module_flex_3 .td-audio-player {
-					display: @show_audio2;
+					opacity: 1;
+					visibility: visible;
+					height: auto;
+				}
+				/* @hide_audio2 */
+				.$unique_block_class .td_module_flex_3 .td-audio-player {
+					opacity: 0;
+					visibility: hidden;
+					height: 0;
 				}
 				
 				/* @hide_author_date1 */
@@ -890,9 +992,21 @@ class td_flex_block_3 extends td_block {
 				.$unique_block_class .td_module_flex_1 .entry-review-stars {
 					display: @show_review1;
 				}
+				/* @review_size1 */
+				.$unique_block_class .td_module_flex_1 .td-icon-star,
+                .$unique_block_class .td_module_flex_1 .td-icon-star-empty,
+                .$unique_block_class .td_module_flex_1 .td-icon-star-half {
+					font-size: @review_size1;
+				}
 				/* @show_review2 */
 				.$unique_block_class .td_module_flex_3 .entry-review-stars {
 					display: @show_review2;
+				}
+				/* @review_size2 */
+				.$unique_block_class .td_module_flex_3 .td-icon-star,
+                .$unique_block_class .td_module_flex_3 .td-icon-star-empty,
+                .$unique_block_class .td_module_flex_3 .td-icon-star-half {
+					font-size: @review_size2;
 				}
 				
 				/* @show_com1 */
@@ -1190,6 +1304,70 @@ class td_flex_block_3 extends td_block {
 				.$unique_block_class .td-load-more-wrap a {
 					@f_more
 				}
+				
+				/* @mix_type */
+				.$unique_block_class .entry-thumb:before {
+				    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+					opacity: 1;
+					transition: opacity 1s ease;
+					-webkit-transition: opacity 1s ease;
+					mix-blend-mode: @mix_type;
+				}
+				/* @color */
+				.$unique_block_class .entry-thumb:before {
+                    background: @color;
+				}
+				/* @mix_gradient */
+				.$unique_block_class .entry-thumb:before {
+                    @mix_gradient;
+				}
+				
+				
+                /* @mix_type_h */
+                @media (min-width: 1141px) {
+                    .$unique_block_class .entry-thumb:after {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        opacity: 0;
+                        transition: opacity 1s ease;
+                        -webkit-transition: opacity 1s ease;
+                        mix-blend-mode: @mix_type_h;
+                    }
+                    .$unique_block_class .td-module-container:hover .entry-thumb:after {
+                        opacity: 1;
+                    }
+                }
+                
+                /* @color_h */
+                .$unique_block_class .entry-thumb:after {
+                    background: @color_h;
+                }
+                /* @mix_gradient_h */
+                .$unique_block_class .entry-thumb:after {
+                    @mix_gradient_h;
+                }
+                /* @mix_type_off */
+                .$unique_block_class .td-module-container:hover .entry-thumb:before {
+                    opacity: 0;
+                }
+                    
+				/* @effect_on */
+                .$unique_block_class .entry-thumb {
+                    filter: @fe_brightness @fe_contrast @fe_saturate;
+                    transition: all 1s ease;
+					-webkit-transition: all 1s ease;
+                }
+				/* @effect_on_h */
+				@media (min-width: 1141px) {
+                    .$unique_block_class .td-module-container:hover .entry-thumb {
+                        filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
+                    }
+                }
 			</style>";
 
 
@@ -1237,7 +1415,7 @@ class td_flex_block_3 extends td_block {
             $prev_icon = $this->get_att('prev_tdicon');
             $next_icon = $this->get_att('next_tdicon');
             $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
-        $buffy .= '</div> <!-- ./block -->';
+        $buffy .= '</div>';
         return $buffy;
     }
 
@@ -1284,10 +1462,29 @@ class td_flex_block_3 extends td_block {
 
         ?>
         <script>
+            // block subcategory ajax filters!
+            var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>');
+            if ( jquery_object_container.length) {
+                var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
+
+                if ( horizontal_jquery_obj.length) {
+                    // make a new item
+                    var pulldown_item_obj = new tdPullDown.item();
+                    pulldown_item_obj.blockUid = jquery_object_container.data('td-block-uid'); // get the block UID
+                    pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
+                    pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
+                    pulldown_item_obj.horizontal_element_css_class = 'td-subcat-item';
+                    pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.closest('.td-block-title-wrap');
+                    pulldown_item_obj.excluded_jquery_elements = [pulldown_item_obj.container_jquery_obj.find('.td-pulldown-size')];
+                    tdPullDown.add_item(pulldown_item_obj); // add the item
+
+                }
+            }
+            
             /* global jQuery:{} */
             (function () {
-                var block = jQuery('.<?php echo $this->block_uid; ?>_rand');
-                blockClass = '.<?php echo $this->block_uid; ?>_rand';
+                var block = jQuery('.<?php echo $this->block_uid; ?>');
+                blockClass = '.<?php echo $this->block_uid; ?>';
 
                 if( block.find('audio').length > 0 ) {
                     jQuery(blockClass + ' audio').mediaelementplayer();

@@ -213,26 +213,63 @@ class td_ajax {
 			$td_template_layout = new td_template_layout($loopState['sidebarPosition']);
 			$td_module_class = td_api_module::_helper_get_module_class_from_loop_id($loopState['moduleId']);
 
-			//disable the grid for some of the modules
-			$td_module_api = td_api_module::get_by_id($td_module_class);
-			if ($td_module_api['uses_columns'] === false) {
-				$td_template_layout->disable_output();
-			}
+			//module 15 get all post content, so we need custom query
+			if ( $td_module_class === 'td_module_15' ) {
+				$td_module_api = td_api_module::get_by_id($td_module_class);
+				if ($td_module_api['uses_columns'] === false) {
+					$td_template_layout->disable_output();
+				}
+				
+				global $wp_query;
+				$wp_query = $td_query;
 
-			foreach ($td_query->posts as $post) {
-				$buffy .= $td_template_layout->layout_open_element();
+				if ( have_posts() ) {
+					while ( have_posts() ) : the_post();
 
-				if (class_exists($td_module_class)) {
-					$td_mod = new $td_module_class($post);
-					$buffy .= $td_mod->render();
+						$buffy .= $td_template_layout->layout_open_element();
+
+						$post = get_post();
+
+						if ( class_exists('td_module_15') ) {
+							$td_mod = new td_module_15($post);
+							$buffy .= $td_mod->render();
+						} else {
+							td_util::error(__FILE__, 'Missing module: ' . $td_module_class);
+						}
+
+						$buffy .= $td_template_layout->layout_close_element();
+						$td_template_layout->layout_next();
+
+					endwhile;
+
+
 				} else {
-					td_util::error(__FILE__, 'Missing module: ' . $td_module_class);
+					echo 'NO POSTS - AJAX MOD 15';
 				}
 
-				$buffy .= $td_template_layout->layout_close_element();
-				$td_template_layout->layout_next();
+			} else {
+				//disable the grid for some of the modules
+				$td_module_api = td_api_module::get_by_id($td_module_class);
+				if ($td_module_api['uses_columns'] === false) {
+					$td_template_layout->disable_output();
+				}
+
+				foreach ($td_query->posts as $post) {
+					$buffy .= $td_template_layout->layout_open_element();
+
+					if (class_exists($td_module_class)) {
+						$td_mod = new $td_module_class($post);
+						$buffy .= $td_mod->render();
+					} else {
+						td_util::error(__FILE__, 'Missing module: ' . $td_module_class);
+					}
+
+					$buffy .= $td_template_layout->layout_close_element();
+					$td_template_layout->layout_next();
+				}
+				$buffy .= $td_template_layout->close_all_tags();
 			}
-			$buffy .= $td_template_layout->close_all_tags();
+			
 		} else {
 			// no posts
 
@@ -1080,7 +1117,6 @@ class td_ajax {
 
 
 
-
     static function on_ajax_get_template_style() {
 		if ( ! current_user_can( 'edit_pages' ) ) {
 			//@todo - ceva eroare sa afisam aici
@@ -1117,6 +1153,30 @@ class td_ajax {
 
 		die( json_encode( $parameters ) );
 	}
+
+
+
+	static function on_ajax_render_content( ) {
+
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$content = $_POST['content'];
+
+		if ( ! isset( $content ) ) {
+			$parameters['errors'][] = 'Invalid data';
+		} else {
+		    $parameters['content'] = wp_strip_all_tags( do_shortcode( stripslashes ($content ) ) );
+		}
+
+		die( json_encode( $parameters ) );
+	}
+
 
 }
 

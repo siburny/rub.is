@@ -1,6 +1,6 @@
 <div class="td-search-background"></div>
 <div class="td-search-wrap">
-	<div class="td-drop-down-search" aria-labelledby="td-header-search-button">
+	<div class="td-drop-down-search">
 		<form method="get" class="td-search-form" action="<?php echo esc_url(home_url( '/' )); ?>">
 			<!-- close button -->
 			<div class="td-search-close">

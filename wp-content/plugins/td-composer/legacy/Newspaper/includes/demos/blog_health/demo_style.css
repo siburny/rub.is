@@ -20,13 +20,11 @@ Health blog demo
 }
 .td-blog-health.td-boxed-layout .td-main-content-wrap {
   -webkit-box-shadow: 0 0 200px 0 rgba(0, 0, 0, 0.03);
-  -moz-box-shadow: 0 0 200px 0 rgba(0, 0, 0, 0.03);
   box-shadow: 0 0 200px 0 rgba(0, 0, 0, 0.03);
 }
 .td-blog-health.td-boxed-layout .td-main-content-wrap.td-footer-instagram-container {
   background-color: transparent;
   -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
   margin-top: 48px;
 }

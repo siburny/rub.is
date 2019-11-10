@@ -64,8 +64,7 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
     <h1>Install premium plugins</h1>
     <div class="about-text">
         <p>
-            Install the included plugins with ease using this panel. All the plugins are well tested to work with the theme and we keep them up to date.
-            The theme comes packed with the following premium plugins:
+            Install the included plugins with ease. All the plugins are well-tested to work with the theme and we keep them up to date. The theme comes packed with the following premium plugins:
         </p>
     </div>
 

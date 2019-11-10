@@ -960,6 +960,9 @@ function show_content_panel(jquery_panel_obj, keep_position, callback, trigger) 
                         // add the ajax response html to the box content element
                         td_box_content_el.html(jQuery.parseJSON(response));
 
+                        // validate new sidebar input also on ajax request
+                        td_add_event_to_validate_new_sidebar_field();
+                        
                         // the callback function is called
                         if ( callback !== undefined ) {
                             callback.apply();

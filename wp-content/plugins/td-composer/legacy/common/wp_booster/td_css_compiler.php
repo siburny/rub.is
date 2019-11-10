@@ -101,6 +101,68 @@ class td_css_compiler {
     }
 
 
+    function compress_sections( $section_css ) {
+
+        $new_section_css = '';
+        $new_section_props = [];
+
+        // clear all internal medias
+        $clean_section_css = preg_replace('/@media[^{]+\{[\s\S]+?}\s*}/', '', $section_css);
+
+        preg_match_all('/([^{]+)\{([^}]+)\}/U', $clean_section_css, $matches);
+
+        if (!empty($matches) && is_array($matches) && 3 === count($matches)) {
+
+            foreach( $matches[1] as $index => $css_prop ){
+
+                $found = false;
+                foreach ($new_section_props as &$new_section_prop ) {
+                    if ($new_section_prop['key'] === trim($css_prop)) {
+                        $new_section_prop['val'][] = $matches[2][$index];
+                        $found = true;
+                        break;
+				    }
+			    }
+
+			    if (!$found) {
+			        $new_section_props[] = array(
+			            'key' => trim($css_prop),
+			            'val' => [$matches[2][$index]],
+				    );
+			    }
+		    }
+	    }
+
+	    foreach ($new_section_props as $section_prop) {
+	        $new_section_css .= $section_prop['key'] . '{';
+            foreach ( $section_prop['val'] as $val ) {
+                $new_section_css .= $val;
+            }
+            $new_section_css .= '}';
+	    }
+
+	    if (!empty($new_section_css)) {
+
+	    	// extract content of internal media
+            preg_match_all('/@media[^{]+\{[\s\S]+?}\s*}/', $section_css, $matches);
+
+            if (!empty($matches) && is_array($matches)) {
+
+            	foreach ($matches as $match ) {
+		            if ( ! empty( $match[ 0 ] ) ) {
+		            	foreach ($match as $media ) {
+		            		$new_section_css .= $media;
+			            }
+		            }
+	            }
+            }
+
+	        return $new_section_css;
+	    }
+	    return $section_css;
+    }
+
+
 
 
     function compile_css() {
@@ -115,9 +177,9 @@ class td_css_compiler {
         $buffy = '';
 
         foreach ($this->css_sections as $section_name => $section_css) {
-            if (!empty($this->settings[str_replace('@', '', $section_name)])) {
-                $buffy.= $section_css;
-            }
+        	if (!empty($this->settings[str_replace('@', '', $section_name)])) {
+		        $buffy .= $section_css;
+	        }
         }
 
         $buffy = trim($buffy);

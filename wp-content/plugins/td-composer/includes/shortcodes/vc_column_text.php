@@ -10,7 +10,7 @@ class vc_column_text extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 

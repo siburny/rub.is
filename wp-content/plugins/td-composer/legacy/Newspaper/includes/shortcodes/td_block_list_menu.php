@@ -12,7 +12,7 @@ class td_block_list_menu extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -22,6 +22,9 @@ class td_block_list_menu extends td_block {
                 /* @inline */
 				.$unique_block_class li {
 					display: inline-block;
+				}
+				.$unique_block_class .sub-menu {
+					display: none;
 				}
 				/* @list_padding */
 				.$unique_block_class ul {
@@ -163,7 +166,7 @@ class td_block_list_menu extends td_block {
 			$buffy .= td_util::get_block_error('List Menu', 'Render failed - please select a menu' );
 			$buffy .= '</div>';
 
-			$buffy .= '</div> <!-- ./block -->';
+			$buffy .= '</div>';
 
 			return $buffy;
 		}
@@ -176,7 +179,7 @@ class td_block_list_menu extends td_block {
 
 		//get the ajax pagination for this block
 		$buffy .= $this->get_block_pagination();
-		$buffy .= '</div> <!-- ./block -->';
+		$buffy .= '</div>';
 		return $buffy;
 	}
 
@@ -194,7 +197,6 @@ class td_block_list_menu extends td_block {
 			wp_nav_menu( array( 'menu' => $menu_id ) );
 
 			add_filter( 'wp_nav_menu_objects', array($td_menu_instance, 'hook_wp_nav_menu_objects'),  10, 2 );
-
 			$buffy .= ob_get_clean();
 
 		}

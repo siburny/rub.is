@@ -283,8 +283,6 @@ usage:
   background-color: #fff;
   color: #000;
   -webkit-transition: none;
-  -moz-transition: none;
-  -o-transition: none;
   transition: none;
 }
 .td-retro .td-left-smart-list:hover,

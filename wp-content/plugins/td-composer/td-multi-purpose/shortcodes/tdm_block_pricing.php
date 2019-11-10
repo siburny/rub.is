@@ -8,7 +8,7 @@ class tdm_block_pricing extends td_block {
         parent::render($atts);
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $this->unique_block_class = $this->block_uid . '_rand';
+        $this->unique_block_class = $this->block_uid;
 
         $this->shortcode_atts = shortcode_atts(
 			array_merge(

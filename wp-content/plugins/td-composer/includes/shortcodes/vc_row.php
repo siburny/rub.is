@@ -474,6 +474,16 @@ class vc_row extends tdc_composer_block {
                             pointer-events: none;
                             top: 0;
                         }
+                        .tdc-video-thumb-on-mobile {
+                            display: none;
+                            background-size: cover;
+                            background-position: center top;
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                        }
                         @media (max-width: 767px) {
                             .tdc-video-outer-wrapper {
                                 width: 100vw;
@@ -530,6 +540,7 @@ class vc_row extends tdc_composer_block {
 
                     foreach ( $videos_info as $video_id => $video_info ) {
                         $output .= $videos_info[ $video_id ]['embedHtml'];
+                        $output .= '<div class="tdc-video-thumb-on-mobile" style="background-image:url(' . $video_info['standard'] . ');"></div>';
                         break;
                     }
 
@@ -561,6 +572,11 @@ class vc_row extends tdc_composer_block {
 
                                 var $tdcVideoInnerWrappers = $content.find('#<?php echo $this->block_uid ?> .tdc-video-inner-wrapper:first');
 
+                                if ( tdDetect.isMobileDevice ) {
+                                    $content.find('.tdc-video-parallax-wrapper iframe').remove();
+                                    $content.find('.tdc-video-thumb-on-mobile').show();
+
+                                }
 
 
                                 $tdcVideoInnerWrappers.each(function() {

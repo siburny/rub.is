@@ -230,3 +230,58 @@ var ThemePluginsSetup = (function($){
 })(jQuery);
 
 ThemePluginsSetup.init();
+
+jQuery(window).load(function () {
+    if ('undefined' !== typeof YoastSEO) {
+
+        YoastSEO.app.registerPlugin( 'tdYoastSEOPlugin', {status: 'loading'} );
+
+        window.tdYoastSEOUpdateContent = function() {
+
+            if ( 'undefined' !== typeof window.tdYoastSEOUpdateContentFlag ) {
+                return;
+            }
+
+            window.tdYoastSEOUpdateContentFlag = setTimeout(function() {
+                window.tdYoastSEOUpdateContentFlag = undefined;
+            }, 1500);
+
+            var content = wp.data.select('core/editor').getEditedPostContent();
+
+            jQuery.ajax({
+                timeout: 10000,
+                type: 'POST',
+
+                url: td_ajax_url,
+
+                beforeSend: function ( xhr ) {
+                    xhr.setRequestHeader( 'X-WP-Nonce', window.tdwGlobal.wpRestNonce);
+                },
+
+                dataType: 'json',
+                data: {
+                    action: 'td_render_content',
+                    content: content
+                }
+            }).done(function( data, textStatus, jqXHR ) {
+
+                if ( 'success' === textStatus && 'undefined' !== typeof data.content ) {
+
+                    YoastSEO.app.registerModification( 'content', function() { return data.content }, 'tdYoastSEOPlugin', 5 );
+
+                    // wp.data.dispatch( 'core/notices' ).createNotice( 'info', 'Yoast SEO Analysis has been updated!', { id: 'td_yoast_info'} );
+                    //
+                    // setTimeout(function() {
+                    //     wp.data.dispatch( 'core/notices' ).removeNotice('td_yoast_info');
+                    // }, 1200);
+                }
+            });
+        };
+
+        tdYoastSEOUpdateContent();
+
+
+
+        YoastSEO.app.pluginReady( 'tdYoastSEOPlugin' );
+    }
+});

@@ -1,23 +1,90 @@
-<!-- post settings -->
-<?php echo td_panel_generator::box_start('Post and Custom Post Types', false); ?>
+<!-- general post settings -->
+<?php echo td_panel_generator::box_start('General post settings', false); ?>
 
-	<!-- Show categories -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">SHOW CATEGORIES TAGS</span>
-			<p>Enable or disable the categories tags (on single posts and custom post types)</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::checkbox(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_p_categories_tags',
-				'true_value' => '',
-				'false_value' => 'hide'
-			));
-			?>
-		</div>
-	</div>
+<!-- set general modal image -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">GENERAL MODAL IMAGE</span>
+        <p>Enable or disable general modal image viewer over all post images, so you won't have to go on each post
+            to set them individually.</p>
+        <p>Consider that disabling this feature, the individual settings of an image post are applied.</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_general_modal_image',
+            'true_value' => 'yes',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- set general modal image -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Disable article schema</span>
+        <p>Activating the option will disable the schema.org/Article markups in the theme. Use this when you use an SEO plugin that comes with its own markups.</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_disable_article_schema',
+            'true_value' => 'yes',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
+
+<?php echo td_panel_generator::box_end(); ?>
+<!-- post settings -->
+<?php echo td_panel_generator::box_start('Default post template (site wide)', false); ?>
+
+    <!-- Default post template -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">DEFAULT SITE POST TEMPLATE</span>
+            <p>Setting this option will make all post pages, that don't have a post template set, to be displayed using this template. You can overwrite this setting on a per post basis.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'td_default_site_post_template',
+                'values' => td_api_single_template::_helper_td_global_list_to_panel_values()
+            ));
+            ?>
+        </div>
+    </div>
+
+<?php echo td_panel_generator::box_end(); ?>
+
+
+
+<!-- Post and custom pst types -->
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    echo td_panel_generator::box_start('Post and Custom Post Types', false); ?>
+
+    <!-- Show categories -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">SHOW CATEGORIES TAGS</span>
+            <p>Enable or disable the categories tags (on single posts and custom post types)</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_p_categories_tags',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
 
     <!-- Show categories -->
     <div class="td-box-row">
@@ -31,7 +98,7 @@
                                 <li>Disable - display the parent category tag first</li>
                                 <li>Enable - display the category tags alphabetically</li>
                             </ul>
-                          ', 'right')?>
+                          ', 'right') ?>
             </p>
         </div>
         <div class="td-box-control-full">
@@ -82,25 +149,25 @@
         </div>
     </div>
 
-<!-- Show modified date -->
-<?php if ('Newsmag' == TD_THEME_NAME ) { ?>
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">SHOW MODIFIED DATE</span>
-        <p>Enable or disable the post modified date (on single post page)</p>
-    </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_p_show_modified_date',
-            'true_value' => 'yes',
-            'false_value' => ''
-        ));
-        ?>
-    </div>
-</div>
-<?php } ?>
+    <!-- Show modified date -->
+    <?php if ('Newsmag' == TD_THEME_NAME) { ?>
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">SHOW MODIFIED DATE</span>
+                <p>Enable or disable the post modified date (on single post page)</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_p_show_modified_date',
+                    'true_value' => 'yes',
+                    'false_value' => ''
+                ));
+                ?>
+            </div>
+        </div>
+    <?php } ?>
 
     <!-- Show post views -->
     <div class="td-box-row">
@@ -138,8 +205,6 @@
             ?>
         </div>
     </div>
-
-
 
 
     <!-- Show tags -->
@@ -217,63 +282,15 @@
         </div>
     </div>
 
-
-
-	<!-- set general modal image -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">GENERAL MODAL IMAGE</span>
-			<p>Enable or disable general modal image viewer over all post images, so you won't have to go on each post to set them individually.</p>
-			<p>Consider that disabling this feature, the individual settings of an image post are applied.</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::checkbox(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_general_modal_image',
-				'true_value' => 'yes',
-				'false_value' => ''
-			));
-			?>
-		</div>
-	</div>
-
-
-
-<?php echo td_panel_generator::box_end();?>
-
-
-
-<!-- Default site post template -->
-<?php echo td_panel_generator::box_start('Default post template (site wide)', false);?>
-
-<!-- Default post template -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">DEFAULT SITE POST TEMPLATE</span>
-        <p>Setting this option will make all post pages, that don't have a post template set, to be displayed using this template. You can overwrite this setting on a per post basis.</p>
-    </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::visual_select_o(array(
-            'ds' => 'td_option',
-            'option_id' => 'td_default_site_post_template',
-            'values' => td_api_single_template::_helper_td_global_list_to_panel_values()
-        ));
-        ?>
-    </div>
-</div>
-
-<?php echo td_panel_generator::box_end();?>
-
-
-
+    <?php echo td_panel_generator::box_end();
+}?>
 
 
 
 
 <!-- featured images -->
-<?php echo td_panel_generator::box_start('Featured images', false); ?>
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    echo td_panel_generator::box_start('Featured images', false); ?>
 
     <!-- SHOW FEATURED IMAGE -->
     <div class="td-box-row">
@@ -333,17 +350,17 @@
         </div>
     </div>
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end(); ?>
 
 
-
-<!-- related article -->
-<?php echo td_panel_generator::box_start('Related article', false); ?>
+    <!-- related article -->
+    <?php echo td_panel_generator::box_start('Related article', false); ?>
 
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>On each single post at the bottom, the theme shows three or five similar posts in the related articles section.</p>
+            <p>On each single post at the bottom, the theme shows three or five similar posts in the related articles
+                section.</p>
             <ul>
                 <li>Three articles are shown on the layout with sidebar</li>
                 <li>Five articles are shown on the full width layout</li>
@@ -396,8 +413,6 @@
     </div>
 
 
-
-
     <!-- Related articles count -->
     <div class="td-box-row">
         <div class="td-box-description">
@@ -424,186 +439,187 @@
         </div>
     </div>
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end();
+}?>
 
 
 
 <!-- sharing -->
-<?php echo td_panel_generator::box_start('Sharing', false); ?>
+<?php echo td_panel_generator::box_start('Sharing', false);
+    if ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
 
-
-
-    <!-- text -->
-    <div class="td-box-row">
-        <div class="td-box-description td-box-full">
-            <p>All the articles of <?php echo TD_THEME_NAME?> have sharing buttons at the start of the article (usually under the title) and at the end of the article (after tags). You can sort the social networks with drag and drop.</p>
+        <!-- text -->
+        <div class="td-box-row">
+            <div class="td-box-description td-box-full">
+                <p>All the articles of <?php echo TD_THEME_NAME ?> have sharing buttons at the start of the article
+                    (usually under the title) and at the end of the article (after tags). You can sort the social
+                    networks with drag and drop.</p>
+            </div>
+            <div class="td-box-row-margin-bottom"></div>
         </div>
-        <div class="td-box-row-margin-bottom"></div>
-    </div>
 
 
-<div class="td-box-section-separator"></div>
+        <div class="td-box-section-separator"></div>
 
 
-    <!-- ARTICLE sharing top -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">TOP ARTICLE SHARING</span>
-            <p>Show or hide the top article sharing on single post</p>
+        <!-- ARTICLE sharing top -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">TOP ARTICLE SHARING</span>
+                <p>Show or hide the top article sharing on single post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_top_social_show',
+                    'true_value' => '',
+                    'false_value' => 'hide'
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_top_social_show',
-                'true_value' => '',
-                'false_value' => 'hide'
-            ));
-            ?>
+
+        <!-- ARTICLE top like -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">TOP ARTICLE LIKE</span>
+                <p>Show or hide the top article like on single post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_top_like_show',
+                    'true_value' => 'show',
+                    'false_value' => ''
+                ));
+                ?>
+            </div>
         </div>
-    </div>
 
-    <!-- ARTICLE top like -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">TOP ARTICLE LIKE</span>
-            <p>Show or hide the top article like on single post</p>
+        <!-- ARTICLE top share text -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">TOP ARTICLE SHARE TEXT</span>
+                <p>Show or hide the top article share text on single post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_top_like_share_text_show',
+                    'true_value' => 'show',
+                    'false_value' => ''
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_top_like_show',
-                'true_value' => 'show',
-                'false_value' => ''
-            ));
-            ?>
+
+        <!-- TOP sharing style -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">TOP SHARE BUTTONS STYLE</span>
+                <p>Change the appearance of the top sharing buttons.</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::visual_select_o(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_social_sharing_top_style',
+                    'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
+                ));
+                ?>
+            </div>
         </div>
-    </div>
 
-    <!-- ARTICLE top share text -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">TOP ARTICLE SHARE TEXT</span>
-            <p>Show or hide the top article share text on single post</p>
+
+        <div class="td-box-section-separator"></div>
+
+
+        <!-- ARTICLE sharing bottom -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">BOTTOM ARTICLE SHARING</span>
+                <p>Show or hide the bottom article sharing on post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_bottom_social_show',
+                    'true_value' => '',
+                    'false_value' => 'hide'
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_top_like_share_text_show',
-                'true_value' => 'show',
-                'false_value' => ''
-            ));
-            ?>
+
+
+        <!-- ARTICLE bottom like -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">BOTTOM ARTICLE LIKE</span>
+                <p>Show or hide the bottom article like on post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_bottom_like_show',
+                    'true_value' => '',
+                    'false_value' => 'hide'
+                ));
+                ?>
+            </div>
         </div>
-    </div>
 
-    <!-- TOP sharing style -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">TOP SHARE BUTTONS STYLE</span>
-            <p>Change the appearance of the top sharing buttons.</p>
+        <!-- ARTICLE bottom share text -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">BOTTOM ARTICLE SHARE TEXT</span>
+                <p>Show or hide the bottom article share text on single post</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_bottom_like_share_text_show',
+                    'true_value' => 'show',
+                    'false_value' => ''
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::visual_select_o(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_social_sharing_top_style',
-                'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
-            ));
-            ?>
+
+        <!-- BOTTOM sharing style -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">BOTTOM SHARE BUTTONS STYLE</span>
+                <p>Change the appearance of the bottom sharing buttons.</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::visual_select_o(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_social_sharing_bottom_style',
+                    'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
+                ));
+                ?>
+            </div>
         </div>
-    </div>
 
 
-
-
-
-<div class="td-box-section-separator"></div>
-
-
-    <!-- ARTICLE sharing bottom -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">BOTTOM ARTICLE SHARING</span>
-            <p>Show or hide the bottom article sharing on post</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_bottom_social_show',
-                'true_value' => '',
-                'false_value' => 'hide'
-            ));
-            ?>
-        </div>
-    </div>
-
-
-    <!-- ARTICLE bottom like -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">BOTTOM ARTICLE LIKE</span>
-            <p>Show or hide the bottom article like on post</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_bottom_like_show',
-                'true_value' => '',
-                'false_value' => 'hide'
-            ));
-            ?>
-        </div>
-    </div>
-
-    <!-- ARTICLE bottom share text -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">BOTTOM ARTICLE SHARE TEXT</span>
-            <p>Show or hide the bottom article share text on single post</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_bottom_like_share_text_show',
-                'true_value' => 'show',
-                'false_value' => ''
-            ));
-            ?>
-        </div>
-    </div>
-
-    <!-- BOTTOM sharing style -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">BOTTOM SHARE BUTTONS STYLE</span>
-            <p>Change the appearance of the bottom sharing buttons.</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::visual_select_o(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_social_sharing_bottom_style',
-                'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
-            ));
-            ?>
-        </div>
-    </div>
-
-
-<div class="td-box-section-separator"></div>
+        <div class="td-box-section-separator"></div>
+    <?php } ?>
 
 
     <!-- Twitter name -->
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">TWITTER USERNAME</span>
-            <p>This will be used in the tweet for the via parameter. The site name will be used if no twitter username is provided. <br> Do not include the @</p>
+            <p>This will be used in the tweet for the via parameter. The site name will be used if no twitter username
+                is provided. <br> Do not include the @</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -616,34 +632,36 @@
     </div>
 
 
-<div class="td-box-section-separator"></div>
+    <div class="td-box-section-separator"></div>
 
 
-<!-- Twitter name -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">SOCIAL NETWORKS</span>
-        <p>Select active social share links and sort them with drag and drop:</p>
+    <!-- Twitter name -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">SOCIAL NETWORKS</span>
+            <p>Select active social share links and sort them with drag and drop:</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::social_drag_and_drop(array(
+                'ds' => 'td_social_drag_and_drop'
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::social_drag_and_drop(array(
-            'ds' => 'td_social_drag_and_drop'
-        ));
-        ?>
-    </div>
-</div>
 
-<?php echo td_panel_generator::box_end();?>
+<?php echo td_panel_generator::box_end(); ?>
 
 
 
-<?php echo td_panel_generator::box_start('More Article Box', false); ?>
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    echo td_panel_generator::box_start('More Article Box', false); ?>
 
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>This is a box that appears when a user scrolls on a single post at least 400px. The box appears in the right bottom corner and it can show one or more posts related with the current one.</p>
+            <p>This is a box that appears when a user scrolls on a single post at least 400px. The box appears in the
+                right bottom corner and it can show one or more posts related with the current one.</p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
@@ -667,11 +685,11 @@
     </div>
 
 
-
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">DISTANCE FROM THE TOP</span>
-            <p>This is the distance from the top, that user have to scroll, before the window will appear, default 400</p>
+            <p>This is the distance from the top, that user have to scroll, before the window will appear, default
+                400</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -682,7 +700,6 @@
             ?>
         </div>
     </div>
-
 
 
     <div class="td-box-row">
@@ -696,11 +713,11 @@
                 'ds' => 'td_option',
                 'option_id' => 'tds_more_articles_on_post_pages_display',
                 'values' => array(
-                    array('text' => 'Latest Article' , 'val' => ''),
-                    array('text' => 'From Same Category' , 'val' => 'same_category'),
-                    array('text' => 'From Post Tags' , 'val' => 'same_tag'),
-                    array('text' => 'From Same Author' , 'val' => 'same_author'),
-                    array('text' => 'Random' , 'val' => 'random')
+                    array('text' => 'Latest Article', 'val' => ''),
+                    array('text' => 'From Same Category', 'val' => 'same_category'),
+                    array('text' => 'From Post Tags', 'val' => 'same_tag'),
+                    array('text' => 'From Same Author', 'val' => 'same_author'),
+                    array('text' => 'Random', 'val' => 'random')
                 )
             ));
             ?>
@@ -726,7 +743,6 @@
     </div>
 
 
-
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">NUMBER OF POSTS</span>
@@ -738,12 +754,12 @@
                 'ds' => 'td_option',
                 'option_id' => 'tds_more_articles_on_post_pages_number',
                 'values' => array(
-                    array('text' => '1' , 'val' => ''),
-                    array('text' => '2' , 'val' => 2),
-                    array('text' => '3' , 'val' => 3),
-                    array('text' => '4' , 'val' => 4),
-                    array('text' => '5' , 'val' => 5),
-                    array('text' => '6' , 'val' => 6)
+                    array('text' => '1', 'val' => ''),
+                    array('text' => '2', 'val' => 2),
+                    array('text' => '3', 'val' => 3),
+                    array('text' => '4', 'val' => 4),
+                    array('text' => '5', 'val' => 5),
+                    array('text' => '6', 'val' => 6)
                 )
             ));
             ?>
@@ -754,7 +770,8 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">DISABLE TIME</span>
-            <p>If the user closes the More Articles box, this is the time (in days) to wait before seeing the box again</p>
+            <p>If the user closes the More Articles box, this is the time (in days) to wait before seeing the box
+                again</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -762,23 +779,21 @@
                 'ds' => 'td_option',
                 'option_id' => 'tds_more_articles_on_post_pages_time_to_wait',
                 'values' => array(
-                    array('text' => 'never' , 'val' => ''),
-                    array('text' => 'for 1 day' , 'val' => 1),
-                    array('text' => 'for 2 days' , 'val' => 2),
-                    array('text' => 'for 3 days' , 'val' => 3)
+                    array('text' => 'never', 'val' => ''),
+                    array('text' => 'for 1 day', 'val' => 1),
+                    array('text' => 'for 2 days', 'val' => 2),
+                    array('text' => 'for 3 days', 'val' => 3)
                 )
             ));
             ?>
         </div>
     </div>
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end(); ?>
 
 
-
-
-<!-- Advanced options -->
-<?php echo td_panel_generator::box_start('Ajax view count (keep counting with cache plugins)', false); ?>
+    <!-- Advanced options -->
+    <?php echo td_panel_generator::box_start('Ajax view count (keep counting with cache plugins)', false); ?>
 
 
     <!-- text -->
@@ -794,9 +809,6 @@
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
-
-
-
 
 
     <!-- Enable / Disabled Ajax post count -->
@@ -818,4 +830,5 @@
 
     </div>
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end();
+}?>

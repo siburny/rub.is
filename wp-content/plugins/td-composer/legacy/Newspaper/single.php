@@ -6,11 +6,7 @@ get_header();
 
 global $loop_module_id, $loop_sidebar_position, $post, $td_sidebar_position;
 
-$td_mod_single = new td_module_single_base($post);
-
-if ( !td_util::tdc_is_installed() ) {
-    $loop_sidebar_position = 'no_sidebar';
-}
+$td_mod_single = new td_module_single($post);
 ?>
     <div class="td-main-content-wrap td-container-wrap">
 
@@ -27,7 +23,12 @@ if ( !td_util::tdc_is_installed() ) {
                         <div class="td-pb-span8 td-main-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                require_once( 'loop-single.php');
+                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                    require_once('loop-single.php');
+                                } else {
+                                    require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                }
+
                                 comments_template('', true);
                                 ?>
                             </div>
@@ -45,7 +46,11 @@ if ( !td_util::tdc_is_installed() ) {
                         <div class="td-pb-span8 td-main-content <?php echo esc_attr($td_sidebar_position) ?>-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                require_once( 'loop-single.php');
+                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                    require_once('loop-single.php');
+                                } else {
+                                    require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                }
                                 comments_template('', true);
                                 ?>
                             </div>
@@ -64,7 +69,11 @@ if ( !td_util::tdc_is_installed() ) {
                         <div class="td-pb-span12 td-main-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                require_once( 'loop-single.php');
+                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                    require_once('loop-single.php');
+                                } else {
+                                    require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                }
                                 comments_template('', true);
                                 ?>
                             </div>

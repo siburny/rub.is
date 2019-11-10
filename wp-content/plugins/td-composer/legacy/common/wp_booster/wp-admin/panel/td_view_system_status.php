@@ -242,7 +242,7 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
     // php version
     td_system_status::add('php.ini configuration', array(
         'check_name' => 'PHP Version',
-        'tooltip' => 'You should have PHP version 5.2.4 or greater (recommended: PHP 5.4 or greater)',
+        'tooltip' => 'You should use PHP 7 (recommended: PHP 7.2.2)',
         'value' => phpversion(),
         'status' => 'info'
     ));

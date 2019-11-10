@@ -59,7 +59,7 @@ var td_wp_admin_demos = {};
                         td_wp_admin_demos,
                         function(demoId) {
 
-                            td_wp_admin_demos._install_full(demoId);
+                            td_wp_admin_demos._install(demoId);
 
                             tb_remove();
                         },
@@ -89,7 +89,7 @@ var td_wp_admin_demos = {};
                             td_wp_admin_demos,
                             function(demoId) {
                                 //testtestest
-                                td_wp_admin_demos._install_no_content(demoId);
+                                td_wp_admin_demos._install(demoId, true);
                                 tb_remove();
                             },
                             [demo_id],
@@ -104,7 +104,7 @@ var td_wp_admin_demos = {};
                             td_wp_admin_demos,
                             function(demoId) {
 
-                                td_wp_admin_demos._install_full(demoId);
+                                td_wp_admin_demos._install(demoId);
                                 tb_remove();
                             },
                             [demo_id],
@@ -140,7 +140,7 @@ var td_wp_admin_demos = {};
 
                     if (jQuery(this).hasClass('td-checkbox-active')) {
                         // we are deactivating
-                        jQuery(this).parent().find('p').text('Only settings');
+                        jQuery(this).parent().find('p').text('Design only');
 
                     } else {
                         // we are activating
@@ -217,75 +217,96 @@ var td_wp_admin_demos = {};
 
         },
 
-        _install_no_content: function (demo_id) {
-            td_wp_admin_demos._block_navigation();
-            td_wp_admin_demos._ui_install_start(demo_id);
-
-            tdDemoProgressBar.timer_change(70);
-
-
-            /* ---------------------------------------------------------------------------------------
-             Remove content before install
-             */
-            var request_data = {
-                action: 'td_ajax_demo_install',
-                td_demo_action:'remove_content_before_install',
-                td_demo_id: demo_id,
-                td_magic_token: tdWpAdminImportNonce
-            };
-            jQuery.ajax({
-                type: 'POST',
-                url: td_wp_admin_demos._getAdminAjax('remove_content_before_install'),
-                cache:false,
-                data: request_data,
-                dataType: 'json',
-                success: function(data, textStatus, XMLHttpRequest){
-
-
-                    /* ---------------------------------------------------------------------------------------
-                     install_no_content_demo
-                     */
-                    tdDemoProgressBar.timer_change(98);
-                    //tdAjaxBlockProcessResponse(data, td_user_action);
-                    var request_data = {
-                        action: 'td_ajax_demo_install',
-                        td_demo_action:'install_no_content_demo',
-                        td_demo_id: demo_id,
-                        td_magic_token: tdWpAdminImportNonce
-                    };
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: td_wp_admin_demos._getAdminAjax('install_no_content_demo'),
-                        cache:false,
-                        data: request_data,
-                        dataType: 'json',
-                        success: function(data, textStatus, XMLHttpRequest){
-                            //tdAjaxBlockProcessResponse(data, td_user_action);
-                            td_wp_admin_demos._unblock_navigation();
-                            td_wp_admin_demos._ui_install_end(demo_id);
-                        },
-                        error: function(MLHttpRequest, textStatus, errorThrown){
-                            td_wp_admin_demos._show_network_error('no_content_install_demo', MLHttpRequest, textStatus, errorThrown);
-                        }
-                    });
-
-
-
-                },
-                error: function(MLHttpRequest, textStatus, errorThrown){
-                    td_wp_admin_demos._show_network_error('no_content_remove_content_before_install', MLHttpRequest, textStatus, errorThrown);
-                }
-            });
-
-
-
-
-        },
-
-
+        // _install_no_content: function (demo_id) {
+        //     td_wp_admin_demos._block_navigation();
+        //     td_wp_admin_demos._ui_install_start(demo_id);
+        //
+        //     tdDemoProgressBar.timer_change(70);
+        //
+        //
+        //     /* ---------------------------------------------------------------------------------------
+        //      Remove content before install
+        //      */
+        //     var request_data = {
+        //         action: 'td_ajax_demo_install',
+        //         td_demo_action:'remove_content_before_install',
+        //         td_demo_id: demo_id,
+        //         td_magic_token: tdWpAdminImportNonce
+        //     };
+        //     jQuery.ajax({
+        //         type: 'POST',
+        //         url: td_wp_admin_demos._getAdminAjax('remove_content_before_install'),
+        //         cache:false,
+        //         data: request_data,
+        //         dataType: 'json',
+        //         success: function(data, textStatus, XMLHttpRequest){
+        //
+        //
+        //             /* ---------------------------------------------------------------------------------------
+        //              install_no_content_demo
+        //              */
+        //             tdDemoProgressBar.timer_change(98);
+        //             //tdAjaxBlockProcessResponse(data, td_user_action);
+        //             var request_data = {
+        //                 action: 'td_ajax_demo_install',
+        //                 td_demo_action:'install_no_content_demo',
+        //                 td_demo_id: demo_id,
+        //                 td_magic_token: tdWpAdminImportNonce
+        //             };
+        //             jQuery.ajax({
+        //                 type: 'POST',
+        //                 url: td_wp_admin_demos._getAdminAjax('install_no_content_demo'),
+        //                 cache:false,
+        //                 data: request_data,
+        //                 dataType: 'json',
+        //                 success: function(data, textStatus, XMLHttpRequest){
+        //                     //tdAjaxBlockProcessResponse(data, td_user_action);
+        //                     td_wp_admin_demos._unblock_navigation();
+        //                     td_wp_admin_demos._ui_install_end(demo_id);
+        //                 },
+        //                 error: function(MLHttpRequest, textStatus, errorThrown){
+        //                     td_wp_admin_demos._show_network_error('no_content_install_demo', MLHttpRequest, textStatus, errorThrown);
+        //                 }
+        //             });
+        //
+        //
+        //
+        //         },
+        //         error: function(MLHttpRequest, textStatus, errorThrown){
+        //             td_wp_admin_demos._show_network_error('no_content_remove_content_before_install', MLHttpRequest, textStatus, errorThrown);
+        //         }
+        //     });
+        //
+        //
+        //
+        //
+        // },
 
 
-        _install_full: function (demoId) {
+
+        //
+        // _install_full: function (demoId ) {
+        //     td_wp_admin_demos._block_navigation();
+        //     td_wp_admin_demos._ui_install_start(demoId);
+        //     tdDemoProgressBar.timer_change(10);
+        //
+        //     tdDemoFullInstaller.installNextStep(demoId, 0, function () {
+        //         // on finish!
+        //         td_wp_admin_demos._unblock_navigation();
+        //         td_wp_admin_demos._ui_install_end(demoId);
+        //     });
+        // },
+
+
+
+
+        _install: function(demoId, noContent) {
+
+            var content;
+            if ( 'undefined' !== typeof noContent && true === noContent ) {
+                content = true;
+            }
+
             td_wp_admin_demos._block_navigation();
             td_wp_admin_demos._ui_install_start(demoId);
             tdDemoProgressBar.timer_change(10);
@@ -294,7 +315,7 @@ var td_wp_admin_demos = {};
                 // on finish!
                 td_wp_admin_demos._unblock_navigation();
                 td_wp_admin_demos._ui_install_end(demoId);
-            });
+            }, content);
         },
 
 

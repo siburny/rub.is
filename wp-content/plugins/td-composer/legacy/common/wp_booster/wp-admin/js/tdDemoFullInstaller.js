@@ -28,8 +28,9 @@ var tdDemoFullInstaller = {};
          * @param demoId - the demo id that you want to install
          * @param step - not needed, it will be 0 by default
          * @param onFinishCallback - this callback is called whent he install is finished. Event on error, the install will be finished!
+         * @param noContent - boolean - not needed. If it's true the .._no_content.php file steps are loaded
          */
-        installNextStep: function (demoId, step, onFinishCallback) {
+        installNextStep: function (demoId, step, onFinishCallback, noContent) {
             if (typeof step === 'undefined') {
                 step = 0;
             }
@@ -40,6 +41,13 @@ var tdDemoFullInstaller = {};
             // the current step
             var currentStep = steps[step];
             tdDemoProgressBar.timer_change(currentStep.progress);
+
+            var content;
+            if ( 'undefined' !== typeof noContent && true === noContent ) {
+                content = true;
+                currentStep.data.td_demo_action += '_no_content';
+            }
+
 
 
             //console.log(currentStep);
@@ -54,7 +62,7 @@ var tdDemoFullInstaller = {};
                 dataType: 'json',
                 success: function(data, textStatus, XMLHttpRequest){
                     if (typeof steps[step + 1] !== 'undefined') {
-                        tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback);
+                        tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback, content);
                     } else {
                         // on finish finally call the callback
                         onFinishCallback();
@@ -83,7 +91,7 @@ var tdDemoFullInstaller = {};
 
                     // continue even on error :)
                     if (typeof steps[step + 1] !== 'undefined') {
-                        tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback);
+                        tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback, content);
                     } else {
                         // on finish finally call the callback
                         onFinishCallback();
@@ -116,6 +124,7 @@ var tdDemoFullInstaller = {};
         /**
          * generates the steps needed for a particular demoId
          * @param demoId
+          @param noContent - boolean - not needed. If it's true the .._no_content.php file steps are loaded
          * @returns {{0: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: string}}, 1: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 2: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 3: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 4: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 5: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 6: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 7: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}}}
          * @private
          */

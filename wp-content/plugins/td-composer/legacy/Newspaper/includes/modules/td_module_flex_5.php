@@ -24,6 +24,7 @@ class td_module_flex_5 extends td_module {
         $author_photo = $this->get_shortcode_att('author_photo');
         $excerpt_length = $this->get_shortcode_att('mc5_el');
         $modified_date = $this->get_shortcode_att('show_modified_date');
+        $hide_audio = $this->get_shortcode_att('hide_audio');
 
         if (empty($image_size)) {
             $image_size = 'td_696x0';
@@ -91,7 +92,7 @@ class td_module_flex_5 extends td_module {
                                 }
 
                                 // audio player above image
-                                if( $art_audio_pos == 'top' ) {
+                                if( $art_audio_pos == 'top' && $hide_audio == '' ) {
                                     echo $audio_player;
                                 }
 
@@ -145,7 +146,7 @@ class td_module_flex_5 extends td_module {
                             }
 
                             // audio player under image
-                            if( $art_audio_pos == 'bottom' ) {
+                            if( $art_audio_pos == 'bottom' && $hide_audio == '' ) {
                                 echo $audio_player;
                             }
 

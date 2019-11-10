@@ -38,14 +38,8 @@ class tds_button4 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class .tdm-btn-text,
-				.td-md-is-ios .$unique_style_class i {
-					-webkit-text-fill-color: initial;
-				}
 				html[class*='ie'] .$unique_style_class .tdm-btn-text,
-				html[class*='ie'] .$unique_style_class i,
-				.td-md-is-ios .$unique_style_class .tdm-btn-text,
-				.td-md-is-ios .$unique_style_class i {
+				html[class*='ie'] .$unique_style_class i {
 				    background: none;
 					color: @text_color_gradient_1;
 				}
@@ -74,11 +68,7 @@ class tds_button4 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class i {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_style_class i,
-				.td-md-is-ios .$unique_style_class i {
+				html[class*='ie'] .$unique_style_class i {
 				    background: none;
 					color: @icon_color_gradient_1;
 				}

@@ -135,7 +135,10 @@ function td_comment( $comment, $args, $depth ) {
                     <?php echo get_avatar($td_comment_auth_email, 50) ?>
                     <cite><?php comment_author_link() ?></cite>
                     <a class="comment-link" href="#comment-<?php comment_ID() ?>">
-                        <time pubdate="<?php echo esc_attr( $td_article_date_unix ) ?>"><?php comment_date() ?> at <?php comment_time() ?></time>
+                        <time pubdate="<?php echo esc_attr( $td_article_date_unix ) ?>">
+                            <?php comment_date() ?>
+                            <?php echo __td('At', TD_THEME_NAME); ?>
+                            <?php comment_time() ?></time>
                     </a>
                     <?php edit_comment_link( esc_html__('Edit', 'newspaper')) ?>
                 </footer>

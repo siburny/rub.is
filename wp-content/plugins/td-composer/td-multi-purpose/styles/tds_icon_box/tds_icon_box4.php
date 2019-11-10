@@ -226,21 +226,8 @@ class tds_icon_box4 extends td_style {
             $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('description') ) ) );
             $buffy .= '<p class="tdm-descr">' . $description . '</p>';
 
-            // Button
-            $button_text = $this->get_shortcode_att('button_text');
-            if ( !empty( $button_text ) ) {
-
-                // Get button_style_id
-                $tds_button = $this->get_shortcode_att('tds_button');
-                if ( empty( $tds_button ) ) {
-                    $tds_button = td_util::get_option( 'tds_button', 'tds_button1');
-                }
-                $tds_button_instance = new $tds_button( $this->atts );
-                $buffy .= $tds_button_instance->render();
-            }
-
             //url on icon box
-	        $icon_box_url = $this->get_style_att( 'icon_box_url' );
+            $icon_box_url = $this->get_style_att( 'icon_box_url' );
             if ( !empty( $icon_box_url ) ) {
 
                 /**
@@ -288,11 +275,24 @@ class tds_icon_box4 extends td_style {
 
                 // with link
                 $target_blank = '';
-	            $open_in_new_window = $this->get_style_att( 'open_in_new_window' );
+                $open_in_new_window = $this->get_style_att( 'open_in_new_window' );
                 if  ( !empty( $open_in_new_window ) ) {
                     $target_blank = 'target="_blank"';
                 }
                 $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+            }
+
+            // Button
+            $button_text = $this->get_shortcode_att('button_text');
+            if ( !empty( $button_text ) ) {
+
+                // Get button_style_id
+                $tds_button = $this->get_shortcode_att('tds_button');
+                if ( empty( $tds_button ) ) {
+                    $tds_button = td_util::get_option( 'tds_button', 'tds_button1');
+                }
+                $tds_button_instance = new $tds_button( $this->atts );
+                $buffy .= $tds_button_instance->render();
             }
 
         $buffy .= '</div>';

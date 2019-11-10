@@ -18,7 +18,7 @@ class tagdiv_old_plugins_deactivate {
 	static function td_deactivate_old_plugins() {
 
 		if ( TD_DEPLOY_MODE === 'dev' || TD_DEPLOY_MODE === 'demo' ) {
-			//return;
+			return;
 		}
 
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );

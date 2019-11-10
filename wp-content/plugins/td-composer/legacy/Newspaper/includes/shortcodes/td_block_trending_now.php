@@ -5,12 +5,17 @@ class td_block_trending_now extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
+            
+                /* @title_padding */
+                .$unique_block_class .td-trending-now-title {
+					padding: @title_padding;
+				}
 
                 /* @header_color */
 				body .$unique_block_class .td-trending-now-title,
@@ -41,6 +46,10 @@ class td_block_trending_now extends td_block {
 				.$unique_block_class .td-trending-now-title {
 					@f_title
 				}
+				/* @f_article_line_height */
+				.$unique_block_class .td-trending-now-display-area {
+				    height: @f_article_line_height;
+				}
 				/* @f_article */
 				.$unique_block_class .entry-title a {
 					@f_article
@@ -58,6 +67,14 @@ class td_block_trending_now extends td_block {
 
     static function cssMedia( $res_ctx ) {
 
+
+        // title padding
+        $title_padding = $res_ctx->get_shortcode_att('title_padding');
+        $res_ctx->load_settings_raw( 'title_padding', $title_padding );
+        if( $title_padding != '' && is_numeric( $title_padding ) ) {
+            $res_ctx->load_settings_raw( 'title_padding', $title_padding . 'px' );
+        }
+
 	    $res_ctx->load_settings_raw( 'header_color', $res_ctx->get_shortcode_att('header_color') );
 	    $res_ctx->load_settings_raw( 'header_text_color', $res_ctx->get_shortcode_att('header_text_color') );
         // articles title color
@@ -74,6 +91,7 @@ class td_block_trending_now extends td_block {
         /*-- FONTS -- */
 	    $res_ctx->load_font_settings( 'f_title' );
 	    $res_ctx->load_font_settings( 'f_article' );
+        $res_ctx->load_settings_raw( 'f_article_line_height', $res_ctx->get_shortcode_att('f_article_font_line_height') );
     }
 
     function render($atts, $content = null) {
@@ -103,7 +121,7 @@ class td_block_trending_now extends td_block {
             //get the sub category filter for this block
             //$buffy .= $this->get_pull_down_filter();
 
-            $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner">';
+            $buffy .= '<div class="td_block_inner">';
 
                 $buffy .= $this->inner($this->td_query->posts, '' , $atts);  //inner content of the block
 
@@ -111,7 +129,7 @@ class td_block_trending_now extends td_block {
 
             //get the ajax pagination for this block (not required - this block comes with it's own pagination)
             //$buffy .= $this->get_block_pagination();
-        $buffy .= '</div> <!-- ./block -->';
+        $buffy .= '</div>';
         return $buffy;
     }
 
@@ -124,14 +142,17 @@ class td_block_trending_now extends td_block {
             $navigation = $atts['navigation'];
         }
 
+        $custom_title = $this->get_att('custom_title');
+        if( $custom_title == '' ) {
+            $custom_title = __td('Trending Now', TD_THEME_NAME);
+        }
+
+
         $td_block_layout = new td_block_layout();
 
         if (!empty($posts)) {
-
-            $buffy .= $td_block_layout->open_row();
-
             $buffy .= '<div class="td-trending-now-wrapper" id="' . $this->block_uid . '" data-start="' . esc_attr($navigation) . '">';
-                $buffy .= '<div class="td-trending-now-title">' . __td('Trending Now', TD_THEME_NAME) . '</div><div class="td-trending-now-display-area">';
+                $buffy .= '<div class="td-trending-now-title">' . $custom_title . '</div><div class="td-trending-now-display-area">';
 
                 foreach ($posts as $post_count => $post) {
 
@@ -156,11 +177,7 @@ class td_block_trending_now extends td_block {
                                   data-control-start="' . $navigation . '"><i class="td-icon-menu-right"></i></a>';
                 $buffy .= '</div>';
             $buffy .= '</div>';
-
-            $buffy .= $td_block_layout->close_row();
         }
-
-        $buffy .= $td_block_layout->close_all_tags();
         return $buffy;
     }
 

@@ -302,6 +302,10 @@ function td_css_generator_mob() {
 	        @mt_post_related_title
 	    }
 	    
+	    /* @mt_footer_text_about */
+	    .td-footer-description {
+	        @mt_footer_text_about
+	    }
 	    /* @mt_footer_copyright */
 	    .td-sub-footer-copy {
 	        @mt_footer_copyright

@@ -46,8 +46,18 @@ function td_remove_googleplus_social() {
 	td_options::update_array('td_social_networks', $td_social_networks);
 
 }
-
 td_remove_googleplus_social();
+
+function td_add_new_social_network() {
+	$social_drag_and_drop = td_options::get_array('td_social_drag_and_drop');
+
+	if ($social_drag_and_drop != '' && array_key_exists('naver', $social_drag_and_drop) != true) {
+		$social_drag_and_drop += array('naver' => '');
+	}
+
+	td_options::update_array('td_social_drag_and_drop', $social_drag_and_drop);
+}
+td_add_new_social_network();
 
 function td_theme_migration() {
 	$td_db_version = td_util::get_option('td_version');
@@ -74,7 +84,8 @@ function td_theme_migration() {
                 'digg'          => '',
                 'line'          => '',
                 'viber'         => '',
-            ));
+				'naver'         => ''
+			));
         }
     }
 

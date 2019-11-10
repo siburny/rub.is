@@ -4,7 +4,7 @@ class td_block_text_with_title extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -172,7 +172,7 @@ class td_block_text_with_title extends td_block {
             $buffy .= '</div>';
 
 			//td-fix-index class to fix background color z-index
-            $buffy .= '<div class="td_mod_wrap td-fix-inde">';
+            $buffy .= '<div class="td_mod_wrap td-fix-index">';
 //                //only run the filter if we have visual composer
 //	            if ( ! ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
 //	                if (function_exists('wpb_js_remove_wpautop')) {

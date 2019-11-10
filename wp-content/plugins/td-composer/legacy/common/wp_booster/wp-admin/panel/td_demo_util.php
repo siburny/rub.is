@@ -399,8 +399,14 @@ class td_demo_misc extends td_demo_base {
             }
         }
 
+        $generated_css = td_css_generator();
+
+        if (function_exists('tdsp_css_generator')) {
+        	$generated_css .= tdsp_css_generator();
+        }
+
         //recompile user css
-        td_options::update('tds_user_compile_css', td_css_generator());
+        td_options::update('tds_user_compile_css', $generated_css);
 
     }
 
@@ -576,17 +582,8 @@ class td_demo_category extends td_demo_base {
 class td_demo_content extends td_demo_base {
 
 
-    static private function parse_content_file($file_path)
-    {
-
-        if (!file_exists($file_path)) {
-            self::kill(__CLASS__, __FUNCTION__, 'file not found: ' . $file_path);
-        }
-
-        global $wp_filesystem;
-        $file_content = $wp_filesystem->get_contents( $file_path );
-
-        $b64_encodable = false;
+	static function parse_content( $file_content ) {
+		$b64_encodable = false;
 
         if ( td_util::tdc_is_installed() ) {
 	        $b64_encodable = tdc_b64_decode( $file_content, true ) && tdc_b64_encode( tdc_b64_decode( $file_content, true ) ) === $file_content && mb_detect_encoding( tdc_b64_decode( $file_content, true ) ) === mb_detect_encoding( $file_content );
@@ -775,12 +772,13 @@ class td_demo_content extends td_demo_base {
 	    ));
 
 
+	    $template_name = basename( $params['file']);
 
-        $new_post = array(
+	    $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'post',
-            'post_content' => self::parse_content_file($params['file']),
+            'post_content' => self::parse_content(td_global::$td_demo_installer->templates[$template_name]),
             'comment_status' => 'open',
             'post_category' => $params['categories_id_array'], //adding category to this post
             'guid' => td_global::td_generate_unique_id()
@@ -863,12 +861,13 @@ class td_demo_content extends td_demo_base {
 		    'file' => 'Param is requiered!',
 	    ));
 
+	    $template_name = basename( $params['file']);
 
-        $new_post = array(
+	    $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'page',
-            'post_content' => self::parse_content_file($params['file']),
+            'post_content' => td_demo_content::parse_content( td_global::$td_demo_installer->templates[$template_name] ),
             'comment_status' => 'open',
             'guid' => td_global::td_generate_unique_id()
         );
@@ -943,6 +942,10 @@ class td_demo_content extends td_demo_base {
 		    update_post_meta($page_id, 'td_page', $td_page);
 	    }
 
+	    if (!empty($template_name)) {
+            update_post_meta($page_id, 'tdc_template_name', $template_name);
+        }
+
 	    // Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
 	    update_post_meta($page_id, 'tdc_dirty_content', false);
 
@@ -958,7 +961,9 @@ class td_demo_content extends td_demo_base {
 		    'template_type' => 'Param is requiered!',
 	    ));
 
-        $template_type = $params['template_type'];
+	    $template_name = basename( $params['file']);
+
+	    $template_type = $params['template_type'];
 
         $template_types = array(
             'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header'
@@ -973,7 +978,7 @@ class td_demo_content extends td_demo_base {
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'tdb_templates',
-            'post_content' => self::parse_content_file($params['file']),
+            'post_content' => td_demo_content::parse_content( td_global::$td_demo_installer->templates[$template_name] ),
             'comment_status' => 'closed',
             'meta_input'   => array(
                 'tdb_template_type' => $template_type,
@@ -1006,6 +1011,10 @@ class td_demo_content extends td_demo_base {
         // set the header template if we have one
         if (!empty($params['header_template_id'])) {
             update_post_meta($template_id, 'tdc_header_template_id', $params['header_template_id']);
+        }
+
+        if ('header' === $template_type) {
+        	update_post_meta($template_id, 'tdc_header_template_id', $template_id);
         }
 
         return $template_id;
@@ -1465,7 +1474,7 @@ class td_demo_media extends td_demo_base {
     }
 
     static function  get_menu_id($menu_name) {
-        $menu_id = get_term_by('name', $menu_name, 'nav_menu');
+    	$menu_id = get_term_by('name', $menu_name, 'nav_menu');
 
         if( $menu_id ) {
             return $menu_id->term_id;

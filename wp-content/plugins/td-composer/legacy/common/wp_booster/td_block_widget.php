@@ -91,6 +91,24 @@ class td_block_widget extends WP_Widget {
                 <?php
                 break;
 
+			case 'textarea_raw_html':
+				//print_r($param);
+
+				?>
+				<p>
+					<label for="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading'] ) ?></label>
+
+					<textarea  class="widefat" name="<?php echo esc_attr( $this->get_field_name($param['param_name'])) ?>" id="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>" cols="30" rows="10"><?php echo esc_textarea($instance[$param['param_name']]); ?></textarea>
+
+
+				<div class="td-wpa-info">
+					<?php echo esc_textarea( $param['description'] ) ?>
+				</div>
+
+				</p>
+				<?php
+				break;
+
             case 'textfield':
 
 				// we have to change custom_title to custom-title to have "-title" at the end. That's what

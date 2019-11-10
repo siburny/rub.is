@@ -4,7 +4,7 @@
 	Plugin URI: http://tagdiv.com
 	Description: tagDiv Composer - Create everything on your website right on the frontend with this drag and drop builder. Perfect for articles, pages, headers, and footers. No coding skills required.
 	Author: tagDiv
-	Version: 2.4 | built on 30.07.2019 7:51
+	Version: 2.5 | built on 06.11.2019 9:53
 	Author URI: http://tagdiv.com
 */
 
@@ -17,7 +17,7 @@ if ( is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
 
 
 //hash
-define('TD_COMPOSER',       '5a862b9d7c39671de80dd6dee389818b');
+define('TD_COMPOSER',       'c4e3da18d11732bf68ab9e3cf0d701cc');
 define('TDC_VERSION',       '__td_aurora_deploy_version__');
 define('TDC_URL',           plugins_url('td-composer'));
 define('TDC_PATH',          dirname(__FILE__));
@@ -84,14 +84,16 @@ function tdc_plugin_init() {
 
 add_action('td_wp_booster_legacy', function() {
 
-	define('TDC_URL_LEGACY',    TDC_URL . '/legacy/' . TD_THEME_NAME );
-	define('TDC_PATH_LEGACY',   TDC_PATH . '/legacy/' . TD_THEME_NAME );
+    define('TDC_URL_LEGACY',    TDC_URL . '/legacy/' . TD_THEME_NAME );
+    define('TDC_PATH_LEGACY',   TDC_PATH . '/legacy/' . TD_THEME_NAME );
 
-	define('TDC_URL_LEGACY_COMMON',   TDC_URL . '/legacy/common' );
-	define('TDC_PATH_LEGACY_COMMON',   TDC_PATH . '/legacy/common' );
+    define('TDC_URL_LEGACY_COMMON',   TDC_URL . '/legacy/common' );
+    define('TDC_PATH_LEGACY_COMMON',   TDC_PATH . '/legacy/common' );
 
-	// load the wp booster
-	require_once('legacy/' . TD_THEME_NAME . '/functions.php');
+    define('TDC_URL_DEMO', 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME );
+
+    // load the wp booster
+    require_once('legacy/' . TD_THEME_NAME . '/functions.php');
 });
 
 
@@ -107,6 +109,18 @@ function tdc_template_include($template) {
 	$legacy_theme_file_path = TDC_PATH_LEGACY . '/' . $template_file;
 	$child_theme_file_path = STYLESHEETPATH . '/' . $template_file;
 
+	if ( defined('TD_STANDARD_PACK') ) {
+		$std_pack_file_path = TDSP_THEME_PATH . '/' . $template_file;
+
+		if ( is_child_theme() && file_exists( $child_theme_file_path ) ) {
+			return $child_theme_file_path;
+		}
+
+		if ( file_exists( $std_pack_file_path ) ) {
+			return $std_pack_file_path;
+		}
+	}
+
 	if ( is_child_theme() && file_exists( $child_theme_file_path ) ) {
 		return $child_theme_file_path;
 	}
@@ -116,19 +130,28 @@ function tdc_template_include($template) {
 	}
 
 	return $template;
+
 }
 
 
 add_action( 'tdc_sidebar', function() {
-	require_once( TDC_PATH_LEGACY_COMMON . '/wp_booster/sidebar.php');
+    require_once( TDC_PATH_LEGACY_COMMON . '/wp_booster/sidebar.php');
 });
 
 add_action( 'tdc_header', function() {
-	require_once( TDC_PATH_LEGACY . '/header.php');
+    $template_path = TDC_PATH_LEGACY;
+    if( defined('TD_STANDARD_PACK') ) {
+        $template_path = TDSP_THEME_PATH;
+    }
+    require_once( $template_path . '/header.php');
 });
 
 add_action( 'tdc_footer', function() {
-	require_once( TDC_PATH_LEGACY . '/footer.php');
+    $template_path = TDC_PATH_LEGACY;
+    if( defined('TD_STANDARD_PACK') ) {
+        $template_path = TDSP_THEME_PATH;
+    }
+	require_once( $template_path . '/footer.php');
 });
 
 add_action( 'tdc_woo_archive_product', function() {

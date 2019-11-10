@@ -6,10 +6,14 @@ class td_demo_installer {
 
 
 
+	public $templates;
+
 
     function __construct() {
         //AJAX VIEW PANEL LOADING
         add_action( 'wp_ajax_td_ajax_demo_install', array( $this, 'ajax_demos_controller' ) );
+
+        $this->templates = [];
     }
 
 
@@ -79,27 +83,11 @@ class td_demo_installer {
             td_demo_menus::remove();
             td_demo_widgets::remove();
 
+            // change our state
+            td_demo_state::update_state($td_demo_id, 'no_content');
 
-	        $td_options = &td_options::get_all_by_ref();
-
-            // remove panel settings and recompile the css as empty
-            foreach ($td_options as $option_id => $option_value) {
-	            $td_options[$option_id] = '';
-            }
-            //typography settings
-	        $td_options['td_fonts'] = array();
-
-            /**
-             * css font files (google) buffer
-             * since 10.01.2017 the google fonts moved at run time
-            and do not store the g fonts css files to the database therefore this key is not used anymore */
-	        //$td_options['td_fonts_css_files'] = '';
-
-            //compile user css if any
-	        $td_options['tds_user_compile_css'] = td_css_generator();
-
-	        td_options::schedule_save();
-	        //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+            // load panel settings
+            $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', false);
         }
 
         /*  ----------------------------------------------------------------------------
@@ -170,14 +158,75 @@ class td_demo_installer {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_6.php');
         }
-
-
         else if ($td_demo_action == 'td_import')  {
+
+        	//$api_url = 'http://demo_content.tagdiv.com/Newspaper_6/romania_news/td_settings.txt';
+
+	        $api_url = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
+	        $api_index_url = $api_url . 'index';
+
+            $api_response = td_remote_http::get_page( $api_index_url, __CLASS__);
+
+            //check response
+            if ($api_response === false) {
+
+                td_log::log(__FILE__, __FUNCTION__, 'Failed to get demo settings', $api_index_url);
+
+            } else {
+
+	            $template_files = explode( "\n", $api_response );
+
+	            foreach ( $template_files as $template_file ) {
+	            	$template_file = trim( $template_file );
+		            $current_url      = $api_url . $template_file;
+
+		            $current_response = td_remote_http::get_page( $current_url, __CLASS__ );
+
+		            if ( $current_response === false ) {
+			            td_log::log( __FILE__, __FUNCTION__, 'Failed to get demo settings', $current_url );
+		            } else {
+		            	$this->templates[$template_file] = $current_response;
+		            }
+	            }
+            }
 
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_import.php');
 
-        }
+        } else if ( file_exists(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php')) {
 
+        	if ( 0 === strpos( $td_demo_action, 'td_import_' )) {
+
+		        $api_url       = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
+		        $api_index_url = $api_url . 'index';
+
+		        $api_response = td_remote_http::get_page( $api_index_url, __CLASS__ );
+
+		        //check response
+		        if ( $api_response === false ) {
+
+			        td_log::log( __FILE__, __FUNCTION__, 'Failed to get demo settings', $api_index_url );
+
+		        } else {
+
+			        $template_files = explode( "\n", $api_response );
+
+			        foreach ( $template_files as $template_file ) {
+				        $template_file = trim( $template_file );
+				        $current_url   = $api_url . $template_file;
+
+				        $current_response = td_remote_http::get_page( $current_url, __CLASS__ );
+
+				        if ( $current_response === false ) {
+					        td_log::log( __FILE__, __FUNCTION__, 'Failed to get demo settings', $current_url );
+				        } else {
+				        	$this->templates[ $template_file ] = $current_response;
+				        }
+			        }
+		        }
+	        }
+
+        	require_once(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php');
+        }
 
     }
 
@@ -241,8 +290,14 @@ class td_demo_installer {
             }
         }
 
+        $generated_css = td_css_generator();
+
+        if (function_exists('tdsp_css_generator')) {
+        	$generated_css .= tdsp_css_generator();
+        }
+
         //compile user css if any
-	    $td_options['tds_user_compile_css'] = td_css_generator();
+	    $td_options['tds_user_compile_css'] = $generated_css;
         //write the changes to the database
 	    td_options::schedule_save();
         //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
@@ -250,4 +305,4 @@ class td_demo_installer {
 
 }
 
-new td_demo_installer();
+td_global::$td_demo_installer = new td_demo_installer();

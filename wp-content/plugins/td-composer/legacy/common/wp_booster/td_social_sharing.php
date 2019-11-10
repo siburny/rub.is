@@ -228,6 +228,13 @@ class td_social_sharing {
                 );
                 break;
 
+            case 'naver':
+                return array(
+                    'url' => 'https://share.naver.com/web/shareView.nhn?url=' . $page_permalink . '&title=' . htmlspecialchars(urlencode(html_entity_decode($page_title))),
+                    'title' => 'Naver'
+                );
+                break;
+
             default:
                 return '';
         }

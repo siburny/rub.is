@@ -4,7 +4,7 @@ class td_block_exchange extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -124,7 +124,7 @@ class td_block_exchange extends td_block {
 	        $buffy .= '<div id=' . $this->block_uid . ' class="td-exchange-wrap td_block_inner td-column-' . $td_column_number . '">';
                 $buffy.= td_exchange::render_generic($atts);
             $buffy .= '</div>';
-        $buffy .= '</div> <!-- ./block -->';
+        $buffy .= '</div>';
         return $buffy;
     }
 

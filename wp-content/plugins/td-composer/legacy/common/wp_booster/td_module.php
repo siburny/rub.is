@@ -158,9 +158,9 @@ abstract class td_module {
         $buffy = '';
         if ($this->is_review and td_util::get_option('tds_m_show_review') != 'hide') {
             //if review show stars
-            $buffy .= '<div class="entry-review-stars">';
+            $buffy .= '<span class="entry-review-stars">';
                 $buffy .=  td_review::render_stars($this->td_review);
-            $buffy .= '</div>';
+            $buffy .= '</span>';
 
         } else {
             if (td_util::get_option('tds_m_show_date') != 'hide') {
@@ -190,11 +190,11 @@ abstract class td_module {
     function get_comments() {
         $buffy = '';
         if (td_util::get_option('tds_m_show_comments') != 'hide') {
-            $buffy .= '<div class="td-module-comments">';
+            $buffy .= '<span class="td-module-comments">';
                 $buffy .= '<a href="' . get_comments_link($this->post->ID) . '">';
                     $buffy .= get_comments_number($this->post->ID);
                 $buffy .= '</a>';
-            $buffy .= '</div>';
+            $buffy .= '</span>';
         }
 
         return $buffy;
@@ -435,9 +435,9 @@ abstract class td_module {
 
                         // load the small or medium play icon
                         if ($use_small_post_format_icon_size === true) {
-                            $buffy .= '<span class="td-video-play-ico td-video-small"><img width="20" height="20" class="td-retina" src="' . TDC_URL_LEGACY . '/assets/images/icons/' . $post_type . '-small.png' . '" alt="' . $post_type . '"/></span>';
+                            $buffy .= '<span class="td-video-play-ico td-video-small"><i class="td-icon-' . $post_type . '-thumb-play"></i></span>';
                         } else {
-                            $buffy .= '<span class="td-video-play-ico"><img width="40" height="40" class="td-retina" src="' . TDC_URL_LEGACY . '/assets/images/icons/ico-' . $post_type . '-large.png' . '" alt="' . $post_type . '"/></span>';
+                            $buffy .= '<span class="td-video-play-ico"><i class="td-icon-' . $post_type . '-thumb-play"></i></span>';
                         }
                     } // end on video if
 

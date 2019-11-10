@@ -42,7 +42,8 @@
 <?php
 foreach (td_api_module::get_all() as $td_module_class => $td_module_array) {
 
-    if (!empty($td_module_array['excerpt_title']) or !empty($td_module_array['excerpt_content'])) {
+    if ( (!empty($td_module_array['excerpt_title']) or !empty($td_module_array['excerpt_content']))
+         && !(isset($td_module_array['enabled_excerpt_in_panel']) && $td_module_array['enabled_excerpt_in_panel'] == false) ) {
 
         $td_box_title = $td_module_array['text'];
         if (!empty($td_module_array['used_on_blocks'])) {
@@ -102,9 +103,9 @@ foreach (td_api_module::get_all() as $td_module_class => $td_module_array) {
             </div>
         <?php } ?>
 
-
         <?php
         echo td_panel_generator::box_end();
+
     }
 
 

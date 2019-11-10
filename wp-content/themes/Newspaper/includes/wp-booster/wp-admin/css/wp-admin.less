@@ -25,13 +25,10 @@
 
 .td-panel-remove-transitions {
   -webkit-transition-property: initial;
-  -moz-transition-property: initial;
   transition-property: initial;
   -webkit-transition-duration: 0s;
-  -moz-transition-duration: 0s;
   transition-duration: 0s;
   -webkit-transition-timing-function: initial;
-  -moz-transition-timing-function: initial;
   transition-timing-function: initial;
 }
 
@@ -39,8 +36,6 @@
 // Transitions
 .transition(@transition) {
   -webkit-transition: @transition;
-  -moz-transition: @transition;
-  -o-transition: @transition;
   transition: @transition;
 }
 
@@ -48,15 +43,11 @@
 .transform(@string){
   transform: @string;
   -webkit-transform: @string;
-  -moz-transform: 	 @string;
-  -ms-transform: 		 @string;
-  -o-transform: 		 @string;
 }
 
 // Drop shadows
 .box-shadow(@shadow) {
   -webkit-box-shadow: @shadow;
-  -moz-box-shadow: @shadow;
   box-shadow: @shadow;
 }
 

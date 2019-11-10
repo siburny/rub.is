@@ -114,7 +114,9 @@ $category_id = td_util::get_http_post_val('category_id');
 
     <div class="td-box-section-separator"></div>
 
-<?php } ?>
+<?php }
+
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
 
     <!-- Category template -->
     <div class="td-box-row tdb-hide">
@@ -283,6 +285,7 @@ if (!empty(td_global::$big_grid_styles_list)) { ?>
             </div>
         </div>
     </div>
+<?php } ?>
 
     <!-- Category color -->
     <div class="td-box-row">
@@ -344,7 +347,8 @@ if (!empty(td_global::$big_grid_styles_list)) { ?>
         </div>
     </div>
 
-<?php } ?>
+<?php }
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
 
     <!-- BACKGROUND STYLE -->
     <div class="td-box-row">
@@ -371,6 +375,7 @@ if (!empty(td_global::$big_grid_styles_list)) { ?>
             ?>
         </div>
     </div>
+<?php } ?>
 
     <!-- Background color -->
     <div class="td-box-row">
@@ -390,6 +395,7 @@ if (!empty(td_global::$big_grid_styles_list)) { ?>
         </div>
     </div>
 
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
     <!-- Hide category tag on post -->
     <div class="td-box-row">
     <div class="td-box-description">
@@ -407,4 +413,5 @@ if (!empty(td_global::$big_grid_styles_list)) { ?>
         ));
         ?>
     </div>
+<?php } ?>
 </div>

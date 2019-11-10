@@ -43,7 +43,7 @@ class td_block_weather extends td_block {
 			$buffy .= '<div id=' . $this->block_uid . ' class="td-weather-wrap td_block_inner td-column-' . $td_column_number . '">';
 				$buffy.= td_weather::render_generic($atts, $this->block_uid);
 			$buffy .= '</div>';
-		$buffy .= '</div> <!-- ./block -->';
+		$buffy .= '</div>';
 		return $buffy;
 	}
 
@@ -93,7 +93,7 @@ class td_block_weather extends td_block {
 			(function () {
 				var tdAnimationSpriteItem = new tdAnimationSprite.item();
 
-				tdAnimationSpriteItem.jqueryObj = jQuery('.<?php echo $this->block_uid ?>_rand span[class^="td_animation_sprite"]');
+				tdAnimationSpriteItem.jqueryObj = jQuery('.<?php echo $this->block_uid ?> span[class^="td_animation_sprite"]');
 				if (tdAnimationSpriteItem.jqueryObj.length) {
 					tdAnimationSpriteItem.blockUid = tdAnimationSpriteItem.jqueryObj.data('td-block-uid');   // the block uid is used on the front end editor when we want to delete this item via it's blockuid
 					tdAnimationSprite.addItem( tdAnimationSpriteItem );

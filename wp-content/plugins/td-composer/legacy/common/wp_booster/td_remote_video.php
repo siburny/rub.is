@@ -82,9 +82,10 @@ class td_remote_video {
 
                         $duration = gmdate("H:i:s", intval($h * 3600 + $m * 60  + $s));
                     }
-
+//var_dump($video_item);
                     $buffy_videos[$video_item['id']] = array(
                         'thumb' => td_global::$http_or_https . '://img.youtube.com/vi/' . $video_item['id'] . '/default.jpg',
+						'standard' => td_global::$http_or_https . '://img.youtube.com/vi/' . $video_item['id'] . '/sddefault.jpg',
                         'title' => $video_item['snippet']['title'],
                         'time' => $duration,
                         'embedHtml' => $video_item['player']['embedHtml'],

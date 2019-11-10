@@ -7,10 +7,10 @@ $users_can_register_link = '';
 
 if ($users_can_register == 1) {
 
-	//add the Register tab to the modal window if `Anyone can register` chec
-	$users_can_register_link = '<a id="signin-register-link-mob">' . __td('Create an account', TD_THEME_NAME) . '</a>';
+    //add the Register tab to the modal window if `Anyone can register` chec
+    $users_can_register_link = '<a id="signin-register-link-mob">' . __td('Create an account', TD_THEME_NAME) . '</a>';
 
-	$users_can_register_form = '
+    $users_can_register_form = '
             <div id="td-register-mob" class="td-login-animation td-login-hide-mob">
             	<!-- close button -->
 	            <div class="td-register-close">

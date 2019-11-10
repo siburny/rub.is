@@ -148,7 +148,10 @@ function td_comment( $comment, $args, $depth ) {
                     <cite><?php comment_author_link() ?></cite>
 
                     <a class="comment-link" href="#comment-<?php comment_ID() ?>">
-                        <time itemprop="datePublished" datetime="<?php echo $td_article_date_unix ?>"><?php comment_date() ?> at <?php comment_time() ?></time>
+                        <time itemprop="datePublished" datetime="<?php echo $td_article_date_unix ?>">
+                            <?php comment_date() ?>
+                            <?php echo __td('At', TD_THEME_NAME); ?>
+                            <?php comment_time() ?></time>
                     </a>
                 </footer>
 	            <div class="comment-content">

@@ -327,6 +327,9 @@
 .icon-tagdiv-drag:before {
   content: "\e25d";
 }
+.icon-tagdiv-naver:before {
+  content: "\e900";
+}
 #toplevel_page_td_cake_panel .dashicons-admin-generic:before,
 #toplevel_page_td_theme_welcome .dashicons-admin-generic:before {
   font-family: 'tagDiv';
@@ -367,7 +370,6 @@
 }
 .td-wp-admin-plugin:hover .td-plugin-image {
   -webkit-box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
-  -moz-box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
 }
 .td-plugin-image {
@@ -377,8 +379,6 @@
   height: 360px;
   background-color: #fff;
   -webkit-transition: box-shadow 0.3s ease;
-  -moz-transition: box-shadow 0.3s ease;
-  -o-transition: box-shadow 0.3s ease;
   transition: box-shadow 0.3s ease;
 }
 .td-plugin-meta {
@@ -450,8 +450,6 @@
   opacity: 0.4;
   z-index: -1;
   -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
 .td-plugin-meta .td-plugin-button:hover:before {
@@ -543,9 +541,6 @@
 .td-amp-plugin-warning {
   transform: translateY(-1px);
   -webkit-transform: translateY(-1px);
-  -moz-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  -o-transform: translateY(-1px);
 }
 .td-amp-plugin-warning .notice-warning {
   padding: 10px 12px;
@@ -563,8 +558,6 @@
   max-width: 130px !important;
   background-color: #fff;
   -webkit-transition: box-shadow 0.3s ease;
-  -moz-transition: box-shadow 0.3s ease;
-  -o-transition: box-shadow 0.3s ease;
   transition: box-shadow 0.3s ease;
 }
 .td-wp-admin-welcome-plugin .td-plugin-meta {
@@ -573,7 +566,6 @@
 }
 .td-wp-admin-welcome-plugin:hover .td-plugin-image {
   -webkit-box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
-  -moz-box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 0 21px 0 rgba(0, 0, 0, 0.12);
 }
 .td-admin-setup-plugins {
@@ -768,13 +760,10 @@
 */
 .td-panel-remove-transitions {
   -webkit-transition-property: initial;
-  -moz-transition-property: initial;
   transition-property: initial;
   -webkit-transition-duration: 0s;
-  -moz-transition-duration: 0s;
   transition-duration: 0s;
   -webkit-transition-timing-function: initial;
-  -moz-transition-timing-function: initial;
   transition-timing-function: initial;
 }
 .td-visual-selector-o a {

@@ -51,7 +51,9 @@ class tds_team_member3 extends td_style {
 					padding-right: @img_space;
 				}
 				/* @image_border_radius */
-				.$unique_style_class .tdm-member-image {
+				.$unique_style_class .tdm-member-image,
+				.$unique_style_class .tdm-member-image:before,
+				.$unique_style_class .tdm-member-image:after {
 					border-radius: @image_border_radius;
 				}
 				

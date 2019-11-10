@@ -98,7 +98,7 @@
 
     <div class="td-search-background"></div>
     <div class="td-search-wrap">
-        <div class="td-drop-down-search" aria-labelledby="td-header-search-button">
+        <div class="td-drop-down-search">
 
             <form
                     id="srcfrm"
@@ -163,7 +163,7 @@
                                 <div class="td_module_mob_1 td_module_wrap td-animation-stack">
 
                                     <div class="td-module-thumb">
-                                        <a href="{{post_url}}" rel="bookmark" class="td-image-wrap" title="{{post_title_attribute}}">
+                                        <a href="{{post_url}}" rel="bookmark nofollow" class="td-image-wrap" title="{{post_title_attribute}}">
                                             <amp-img
                                                     src="{{post_thumb_url}}"
                                                     class="entry-thumb"
@@ -180,10 +180,10 @@
 
                                     <div class="item-details">
                                         <h3 class="entry-title td-module-title">
-                                            <a href="{{post_url}}" rel="bookmark" title="{{post_title_attribute}}">{{post_title}}</a>
+                                            <a href="{{post_url}}" rel="bookmark nofollow" title="{{post_title_attribute}}">{{post_title}}</a>
                                         </h3>
                                         <div class="td-module-meta-info">
-                                            <a href="{{post_cat_link}}" class="td-post-category {{post_no_cat}}">{{post_cat_name}}</a>
+                                            <a href="{{post_cat_link}}" rel="nofollow" class="td-post-category {{post_no_cat}}">{{post_cat_name}}</a>
                                             <span class="td-post-date">
                                                 <time class="entry-date updated td-module-date" datetime="{{post_date_unix}}">{{post_date}}</time>
                                             </span>
@@ -194,7 +194,7 @@
                                 {{/td_query_posts}}
                             </div>
                             <div class="result-msg">
-                                <a href="{{td_query_all_results}}">View all results</a>
+                                <a href="{{td_query_all_results}}" rel="nofollow">View all results</a>
                             </div>
                         </div>
                     </template>

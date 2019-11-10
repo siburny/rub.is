@@ -260,7 +260,7 @@ jQuery().ready(function() {
                         $head.append(data.style);
 
                         if ( ! _.isUndefined(data.content_width) && '' !== data.content_width ) {
-                            $head.append('<style>/* custom css */ .td-gutenberg-editor .editor-styles-wrapper .wp-block {max-width: ' + data.content_width + 'px} </style>');
+                            $head.append('<style>/* custom css */ .td-gutenberg-editor .editor-styles-wrapper .wp-block {max-width: ' + data.content_width + 'px}</style>');
                         }
                     }
                 }

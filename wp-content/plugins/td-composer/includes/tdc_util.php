@@ -8,12 +8,9 @@
 
 
 class tdc_util {
-	private static $unique_id_counter = 0;
-
 
 	static function generate_unique_id() {
-		self::$unique_id_counter ++;
-		return 'td_uid_' . self::$unique_id_counter . '_' . uniqid();
+		return td_global::td_generate_unique_id();
 	}
 
 

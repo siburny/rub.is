@@ -70,7 +70,10 @@ if ( td_global::is_tdb_registered() ) {
 <hr>
 <?php } ?>
 
-<?php echo td_panel_generator::box_start('Header Style',true, 'tdb-hide'); ?>
+<?php
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+
+    echo td_panel_generator::box_start('Header Style', true, 'tdb-hide'); ?>
 
     <!-- HEADER STYLE -->
     <div class="td-box-row">
@@ -90,7 +93,7 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
     <?php
-    if ( 'Newspaper' == TD_THEME_NAME ) { ?>
+    if ('Newspaper' == TD_THEME_NAME) { ?>
         <!-- SEARCH POSITION -->
         <div class="td-box-row">
             <div class="td-box-description">
@@ -102,7 +105,7 @@ if ( td_global::is_tdb_registered() ) {
                 echo td_panel_generator::radio_button_control(array(
                     'ds' => 'td_option',
                     'option_id' => 'tds_search_placement',
-                    'values' => array (
+                    'values' => array(
                         array('text' => '<strong>Main menu</strong> - Default', 'val' => ''),
                         array('text' => '<strong>Top bar</strong>', 'val' => 'top_bar'),
                         array('text' => '<strong>Hidden</strong>', 'val' => 'hide')
@@ -114,20 +117,21 @@ if ( td_global::is_tdb_registered() ) {
     <?php } ?>
 
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end(); ?>
 
 
-
-
-<!-- TOP BAR -->
-<?php echo td_panel_generator::box_start('Top Bar', false, 'tdb-hide'); ?>
+    <!-- TOP BAR -->
+    <?php echo td_panel_generator::box_start('Top Bar', false, 'tdb-hide'); ?>
 
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
             <p>
-            The top bar is the black top menu. It is very useful when you want to add a <i>login option, social icons</i> and pages like <i>About us, Contact us etc..</i>.
-            If you are an advanced user and want to customize it or register new top bar layouts, have a look at our <a target="_blank" href="http://forum.tagdiv.com/api-top-bar-template-introduction/">top bar template API</a>
+                The top bar is the black top menu. It is very useful when you want to add a <i>login option, social
+                    icons</i> and pages like <i>About us, Contact us etc..</i>.
+                If you are an advanced user and want to customize it or register new top bar layouts, have a look at our
+                <a target="_blank" href="http://forum.tagdiv.com/api-top-bar-template-introduction/">top bar template
+                    API</a>
             </p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
@@ -152,8 +156,7 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
 
-
-    <?php if (count(td_api_top_bar_template::get_all()) >  0 ) { ?>
+    <?php if (count(td_api_top_bar_template::get_all()) > 0) { ?>
         <!-- Top bar template -->
         <div class="td-box-row">
             <div class="td-box-description">
@@ -173,9 +176,7 @@ if ( td_global::is_tdb_registered() ) {
     <?php } ?>
 
 
-
-<div class="td-box-section-separator"></div>
-
+    <div class="td-box-section-separator"></div>
 
 
     <!-- Top menu: enable disable -->
@@ -215,9 +216,7 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
 
-
-<div class="td-box-section-separator"></div>
-
+    <div class="td-box-section-separator"></div>
 
 
     <!-- Social networks: enable disable -->
@@ -239,8 +238,7 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
 
-
-<div class="td-box-section-separator"></div>
+    <div class="td-box-section-separator"></div>
 
 
     <!-- Date: enable disable -->
@@ -262,12 +260,12 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
 
-
     <!-- Date: format -->
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">DATE FORMAT</span>
-            <p>Default value: l, F j, Y. <a href="http://php.net/manual/en/function.date.php">Read more</a> about the date format (it's the same with the php date function)</p>
+            <p>Default value: l, F j, Y. <a href="http://php.net/manual/en/function.date.php">Read more</a> about the
+                date format (it's the same with the php date function)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -298,82 +296,82 @@ if ( td_global::is_tdb_registered() ) {
     </div>
 
 
-<div class="td-box-section-separator td-box-weather"></div>
-	<!-- Weather: enable disable -->
-	<div class="td-box-row td-box-weather">
-		<div class="td-box-description">
-			<span class="td-box-title">SHOW WEATHER</span>
-			<p>Hide or show the weather info in the top menu</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::checkbox(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_weather_top_menu',
-				'true_value' => 'show',
-				'false_value' => ''
-			));
-			?>
-		</div>
-	</div>
-
-<!-- Weather: api key -->
-<div class="td-box-row td-box-weather">
-    <div class="td-box-description">
-        <span class="td-box-title">Api key</span>
-        <p><a href="https://forum.tagdiv.com/weather-widget/" target="_blank">How to get an api key</a></p>
+    <div class="td-box-section-separator td-box-weather"></div>
+    <!-- Weather: enable disable -->
+    <div class="td-box-row td-box-weather">
+        <div class="td-box-description">
+            <span class="td-box-title">SHOW WEATHER</span>
+            <p>Hide or show the weather info in the top menu</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_weather_top_menu',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::input(array(
-            'ds' => 'td_option',
-            'option_id' => 'tds_weather_key_top_menu'
-        ));
-        ?>
+
+    <!-- Weather: api key -->
+    <div class="td-box-row td-box-weather">
+        <div class="td-box-description">
+            <span class="td-box-title">Api key</span>
+            <p><a href="https://forum.tagdiv.com/weather-widget/" target="_blank">How to get an api key</a></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_weather_key_top_menu'
+            ));
+            ?>
+        </div>
     </div>
-</div>
 
-	<!-- Weather: location -->
-	<div class="td-box-row td-box-weather">
-		<div class="td-box-description">
-			<span class="td-box-title">Location</span>
-			<p><a href="http://openweathermap.org/find" target="_blank">Find your location</a> - You can use "city name" or "city id" (check weather widget tutorial).</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::input(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_weather_location_top_menu'
-			));
-			?>
-		</div>
-	</div>
-
-
-	<!-- Weather: Units -->
-	<div class="td-box-row td-box-weather">
-		<div class="td-box-description">
-			<span class="td-box-title">Units</span>
-			<p>Choose what units to use when showing the temperature</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::radio_button_control(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_weather_units_top_menu',
-				'values' => array(
-					array('text' => 'Celsius', 'val' => ''),
-					array('text' => 'Fahrenheit', 'val' => 'imperial')
-				)
-			));
-			?>
-		</div>
-	</div>
+    <!-- Weather: location -->
+    <div class="td-box-row td-box-weather">
+        <div class="td-box-description">
+            <span class="td-box-title">Location</span>
+            <p><a href="http://openweathermap.org/find" target="_blank">Find your location</a> - You can use "city name"
+                or "city id" (check weather widget tutorial).</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_weather_location_top_menu'
+            ));
+            ?>
+        </div>
+    </div>
 
 
+    <!-- Weather: Units -->
+    <div class="td-box-row td-box-weather">
+        <div class="td-box-description">
+            <span class="td-box-title">Units</span>
+            <p>Choose what units to use when showing the temperature</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::radio_button_control(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_weather_units_top_menu',
+                'values' => array(
+                    array('text' => 'Celsius', 'val' => ''),
+                    array('text' => 'Fahrenheit', 'val' => 'imperial')
+                )
+            ));
+            ?>
+        </div>
+    </div>
 
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end();
+} ?>
 
 
 <!-- MAIN MENU -->
@@ -396,94 +394,98 @@ if ( td_global::is_tdb_registered() ) {
         </div>
     </div>
 
-    <!-- Mega menu preload -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">Mega menu preloader</span>
-            <p>Preload content for all mega menus. This provides a better user experience but with a performance hit - <a href="http://forum.tagdiv.com/what-is-ajax-preloading/" target="_blank">read more</a></p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::radio_button_control(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_mega_menu_ajax_preloading',
-                'values' => array (
-                    array('text' => '<strong>No preloading</strong> - default', 'val' => ''),
-                    array('text' => '<strong>Optimized preloading</strong>', 'val' => 'preload'),
-                    array('text' => '<strong>Preload all </strong>', 'val' => 'preload_all')
-                )
-            ));
-            ?>
-        </div>
-    </div>
-
-    <div class="td-box-section-separator"></div>
-
-    <!-- STICKY MENU -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">STICKY MENU</span>
-            <p>How to display the header menu on scroll</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::radio_button_control(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_snap_menu',
-                'values' => array (
-                    array('text' => '<strong>Normal menu</strong> - (not sticky)', 'val' => ''),
-                    array('text' => '<strong>Always sticky</strong> - stays at the top of the page', 'val' => 'snap'),
-                    array('text' => '<strong>Smart snap </strong> - (mobile)', 'val' => 'smart_snap_mobile'),
-                    array('text' => '<strong>Smart snap </strong> - (always)', 'val' => 'smart_snap_always'),
-                )
-            ));
-            ?>
-        </div>
-    </div>
-
-	<!-- SHOW THE MOBILE LOGO ON THE STICKY MENU -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">LOGO ON STICKY MENU</span>
-			<p>Show / Hide the Logo on sticky menu</p>
-			<p><strong>Notice: </strong>If you choose <strong>Mobile logo</strong>, upload a logo in <strong>Logo for Mobile</strong> section</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::radio_button_control(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_logo_on_sticky',
-				'values' => array (
-					array('text' => '<strong>Disabled</strong>', 'val' => ''),
-					array('text' => '<strong>Header logo </strong> - show the header logo', 'val' => 'show_header_logo'),
-					array('text' => '<strong>Mobile logo </strong> - show the mobile logo', 'val' => 'show'),
-				)
-			));
-			?>
-		</div>
-	</div>
-
-    <div class="td-box-section-separator"></div>
-
-    <?php if ( 'Newspaper' == TD_THEME_NAME ) { ?>
-        <!-- Social networks: enable disable -->
+    <?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+        <!-- Mega menu preload -->
         <div class="td-box-row">
             <div class="td-box-description">
-                <span class="td-box-title">Show social icons</span>
-                <p>Enable / Disable social networks in main menu</p>
+                <span class="td-box-title">Mega menu preloader</span>
+                <p>Preload content for all mega menus. This provides a better user experience but with a performance hit
+                    - <a href="http://forum.tagdiv.com/what-is-ajax-preloading/" target="_blank">read more</a></p>
             </div>
             <div class="td-box-control-full">
                 <?php
-                echo td_panel_generator::checkbox(array(
+                echo td_panel_generator::radio_button_control(array(
                     'ds' => 'td_option',
-                    'option_id' => 'td_social_networks_menu_show',
-                    'true_value' => 'show',
-                    'false_value' => ''
+                    'option_id' => 'tds_mega_menu_ajax_preloading',
+                    'values' => array(
+                        array('text' => '<strong>No preloading</strong> - default', 'val' => ''),
+                        array('text' => '<strong>Optimized preloading</strong>', 'val' => 'preload'),
+                        array('text' => '<strong>Preload all </strong>', 'val' => 'preload_all')
+                    )
                 ));
                 ?>
             </div>
         </div>
-    <?php } ?>
+
+        <div class="td-box-section-separator"></div>
+
+        <!-- STICKY MENU -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">STICKY MENU</span>
+                <p>How to display the header menu on scroll</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_snap_menu',
+                    'values' => array(
+                        array('text' => '<strong>Normal menu</strong> - (not sticky)', 'val' => ''),
+                        array('text' => '<strong>Always sticky</strong> - stays at the top of the page', 'val' => 'snap'),
+                        array('text' => '<strong>Smart snap </strong> - (mobile)', 'val' => 'smart_snap_mobile'),
+                        array('text' => '<strong>Smart snap </strong> - (always)', 'val' => 'smart_snap_always'),
+                    )
+                ));
+                ?>
+            </div>
+        </div>
+
+        <!-- SHOW THE MOBILE LOGO ON THE STICKY MENU -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">LOGO ON STICKY MENU</span>
+                <p>Show / Hide the Logo on sticky menu</p>
+                <p><strong>Notice: </strong>If you choose <strong>Mobile logo</strong>, upload a logo in <strong>Logo
+                        for Mobile</strong> section</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_logo_on_sticky',
+                    'values' => array(
+                        array('text' => '<strong>Disabled</strong>', 'val' => ''),
+                        array('text' => '<strong>Header logo </strong> - show the header logo', 'val' => 'show_header_logo'),
+                        array('text' => '<strong>Mobile logo </strong> - show the mobile logo', 'val' => 'show'),
+                    )
+                ));
+                ?>
+            </div>
+        </div>
+
+        <div class="td-box-section-separator"></div>
+
+        <?php if ('Newspaper' == TD_THEME_NAME) { ?>
+            <!-- Social networks: enable disable -->
+            <div class="td-box-row">
+                <div class="td-box-description">
+                    <span class="td-box-title">Show social icons</span>
+                    <p>Enable / Disable social networks in main menu</p>
+                </div>
+                <div class="td-box-control-full">
+                    <?php
+                    echo td_panel_generator::checkbox(array(
+                        'ds' => 'td_option',
+                        'option_id' => 'td_social_networks_menu_show',
+                        'true_value' => 'show',
+                        'false_value' => ''
+                    ));
+                    ?>
+                </div>
+            </div>
+        <?php }
+    }?>
 
 <?php echo td_panel_generator::box_end();?>
 
@@ -631,52 +633,60 @@ if ( td_global::is_tdb_registered() ) {
 
 
 <!-- LOGO for MOBILE-->
-<?php echo td_panel_generator::box_start('Logo for Mobile', false); ?>
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    echo td_panel_generator::box_start('Logo for Mobile', false); ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>You can optionally load a different logo on mobile phones and small screens. Usually the logo is smaller so that it can fit in the smart affix menu. iPhone, iPad, Samsung and a lot of phones use the retina logo.</p>
-            <p>If you don't upload any Logo Mobile by default will be used the Logo that you uploaded in the section above. This Option is recommended when your logo will not scale perfect on mobile devices.</p>
-	        <p><strong>Notice: </strong>Don't upload a logo for Mobile if you use <strong>Header Style: </strong> <?php echo td_api_text::get('text_header_logo_mobile') ?>, It's not necessary.</p>
+            <p>You can optionally load a different logo on mobile phones and small screens. Usually the logo is smaller
+                so that it can fit in the smart affix menu. iPhone, iPad, Samsung and a lot of phones use the retina
+                logo.</p>
+            <p>If you don't upload any Logo Mobile by default will be used the Logo that you uploaded in the section
+                above. This Option is recommended when your logo will not scale perfect on mobile devices.</p>
+            <p><strong>Notice: </strong>Don't upload a logo for Mobile if you use <strong>Header
+                    Style: </strong> <?php echo td_api_text::get('text_header_logo_mobile') ?>, It's not necessary.</p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
 
-	<!-- LOGO MOBILE -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">LOGO MOBILE</span>
-			<p>Upload your logo</p>
-            <p><strong>Note: </strong>For best results logo mobile size: <?php echo td_api_text::get('text_header_logo_mobile_image') ?></p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::upload_image(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_logo_menu_upload'
-			));
-			?>
-		</div>
-	</div>
+    <!-- LOGO MOBILE -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">LOGO MOBILE</span>
+            <p>Upload your logo</p>
+            <p><strong>Note: </strong>For best results logo mobile
+                size: <?php echo td_api_text::get('text_header_logo_mobile_image') ?></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::upload_image(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_logo_menu_upload'
+            ));
+            ?>
+        </div>
+    </div>
 
-	<!-- RETINA LOGO MOBILE IN MENU UPLOAD -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">RETINA LOGO MOBILE</span>
-			<p>Upload your retina logo (double size)</p>
-            <p><strong>Note: </strong>For best results retina logo mobile size: <?php echo td_api_text::get('text_header_logo_mobile_image_retina') ?></p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::upload_image(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_logo_menu_upload_r'
-			));
-			?>
-		</div>
-	</div>
+    <!-- RETINA LOGO MOBILE IN MENU UPLOAD -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">RETINA LOGO MOBILE</span>
+            <p>Upload your retina logo (double size)</p>
+            <p><strong>Note: </strong>For best results retina logo mobile
+                size: <?php echo td_api_text::get('text_header_logo_mobile_image_retina') ?></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::upload_image(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_logo_menu_upload_r'
+            ));
+            ?>
+        </div>
+    </div>
 
-<?php echo td_panel_generator::box_end();?>
+    <?php echo td_panel_generator::box_end();
+} ?>
 
 
 <!-- SIGNIN/JOIN-->
@@ -712,111 +722,113 @@ if ( td_global::is_tdb_registered() ) {
 
 
 <?php
-if ( 'Newspaper' == TD_THEME_NAME ) { ?>
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    if ('Newspaper' == TD_THEME_NAME) { ?>
 
-    <!-- HEADER BACKGROUND -->
-    <?php echo td_panel_generator::box_start('Header background', false, 'tdb-hide'); ?>
+        <!-- HEADER BACKGROUND -->
+        <?php echo td_panel_generator::box_start('Header background', false, 'tdb-hide'); ?>
 
-    <!-- BACKGROUND UPLOAD -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">HEADER BACKGROUND</span>
-            <p>Upload a header background image</p>
+        <!-- BACKGROUND UPLOAD -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">HEADER BACKGROUND</span>
+                <p>Upload a header background image</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::upload_image(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_header_background_image'
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::upload_image(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_header_background_image'
-            ));
-            ?>
-        </div>
-    </div>
 
-    <!-- Background Repeat -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">REPEAT</span>
-            <p>How the background image will be displayed</p>
+        <!-- Background Repeat -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">REPEAT</span>
+                <p>How the background image will be displayed</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_header_background_repeat',
+                    'values' => array(
+                        array('text' => 'No Repeat', 'val' => ''),
+                        array('text' => 'Tile', 'val' => 'repeat'),
+                        array('text' => 'Tile Horizontally', 'val' => 'repeat-x'),
+                        array('text' => 'Tile Vertically', 'val' => 'repeat-y')
+                    )
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::radio_button_control(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_header_background_repeat',
-                'values' => array(
-                    array('text' => 'No Repeat', 'val' => ''),
-                    array('text' => 'Tile', 'val' => 'repeat'),
-                    array('text' => 'Tile Horizontally', 'val' => 'repeat-x'),
-                    array('text' => 'Tile Vertically', 'val' => 'repeat-y')
-                )
-            ));
-            ?>
-        </div>
-    </div>
 
-    <!-- Background Size -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">SIZE</span>
-            <p>Set the background image size</p>
+        <!-- Background Size -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">SIZE</span>
+                <p>Set the background image size</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_header_background_size',
+                    'values' => array(
+                        array('text' => 'Auto', 'val' => 'auto'),
+                        array('text' => 'Full Width', 'val' => '100% auto'),
+                        array('text' => 'Full Height', 'val' => 'auto 100%'),
+                        array('text' => 'Cover', 'val' => ''),
+                        array('text' => 'Contain', 'val' => 'contain')
+                    )
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::radio_button_control(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_header_background_size',
-                'values' => array(
-                    array('text' => 'Auto', 'val' => 'auto'),
-                    array('text' => 'Full Width', 'val' => '100% auto'),
-                    array('text' => 'Full Height', 'val' => 'auto 100%'),
-                    array('text' => 'Cover', 'val' => ''),
-                    array('text' => 'Contain', 'val' => 'contain')
-                )
-            ));
-            ?>
-        </div>
-    </div>
 
-    <!-- Background position -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">POSITION</span>
-            <p>Position your background image</p>
+        <!-- Background position -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">POSITION</span>
+                <p>Position your background image</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_header_background_position',
+                    'values' => array(
+                        array('text' => 'Bottom', 'val' => ''),
+                        array('text' => 'Center', 'val' => 'center center'),
+                        array('text' => 'Top', 'val' => 'center top')
+                    )
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::radio_button_control(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_header_background_position',
-                'values' => array(
-                    array('text' => 'Bottom', 'val' => ''),
-                    array('text' => 'Center', 'val' => 'center center'),
-                    array('text' => 'Top', 'val' => 'center top')
-                )
-            ));
-            ?>
-        </div>
-    </div>
 
-    <!-- Background opacity -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">BACKGROUND OPACITY</span>
-            <p>Set the background image transparency (Example: 0.3)</p>
+        <!-- Background opacity -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">BACKGROUND OPACITY</span>
+                <p>Set the background image transparency (Example: 0.3)</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::input(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_header_background_opacity'
+                ));
+                ?>
+            </div>
         </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::input(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_header_background_opacity'
-            ));
-            ?>
-        </div>
-    </div>
 
-    <?php echo td_panel_generator::box_end();?>
-<?php } ?>
+        <?php echo td_panel_generator::box_end(); ?>
+    <?php }
+} ?>
 
 
 <!-- iOS Bookmarklet -->

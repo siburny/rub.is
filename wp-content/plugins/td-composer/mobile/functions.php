@@ -215,7 +215,7 @@ function load_front_js() {
  */
 add_action('after_setup_theme', 'td_load_text_domains');
 function td_load_text_domains() {
-	load_theme_textdomain( TD_THEME_NAME, td_global_mob::$get_parent_template_directory . '/translation' );
+	load_theme_textdomain( strtolower( TD_THEME_NAME ), td_global_mob::$get_parent_template_directory . '/translation' );
 
 	// theme specific config values
 	require_once( TDC_PATH_LEGACY_COMMON . '/wp_booster/td_translate.php' );
@@ -413,6 +413,69 @@ function td_add_js_variable() {
 	$tds_login_mobile = td_util::get_option( 'tds_login_mobile' );
 	if ( empty( $tds_login_mobile ) ) {
 		td_js_buffer::add_variable('tds_login_mobile', $tds_login_mobile );
+	}
+}
+
+/* ----------------------------------------------------------------------------
+ * canonical links on pages with pagination.
+ * used also on AMP
+ */
+add_action('wp_head', 'td_on_wp_head_canonical',  1);
+function td_on_wp_head_canonical(){
+
+	global $post;
+
+	if (is_page() && 'page-pagebuilder-latest.php' === get_post_meta($post->ID, '_wp_page_template', true)) {
+
+		$td_page = get_query_var('page') ? get_query_var('page') : 1; //rewrite the global var
+		$td_paged = get_query_var('paged') ? get_query_var('paged') : 1; //rewrite the global var
+
+		$td_page = intval($td_page);
+		$td_paged = intval($td_paged);
+
+		//paged works on single pages, page - works on homepage
+		if ($td_paged > $td_page) {
+			$paged = $td_paged;
+		} else {
+			$paged = $td_page;
+		}
+
+		global $wp_query;
+
+		$td_homepage_loop = td_util::get_post_meta_array($post->ID, 'td_homepage_loop');
+		query_posts(td_data_source::metabox_to_args($td_homepage_loop, $paged));
+
+		$max_page = $wp_query->max_num_pages;
+
+		// Remove the wp action links
+		remove_action('wp_head', 'rel_canonical');
+		remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
+
+		if (class_exists('WPSEO_Frontend')) {
+			// Remove the canonical action of the Yoast SEO plugin
+			remove_action( 'wpseo_head', array( WPSEO_Frontend::get_instance(), 'canonical' ), 20 );
+		}
+
+		$td_current_page = '<link rel="canonical" href="' . get_pagenum_link($paged) . '"/>';
+		$td_prev_page = '<link rel="prev" href="' . get_pagenum_link($paged - 1) . '"/>';
+		$td_next_page = '<link rel="next" href="' . get_pagenum_link($paged + 1) . '"/>';
+
+		if ( td_util::is_amp() ){
+			$td_current_page = str_replace( '?amp', "", $td_current_page);
+			$td_prev_page = str_replace( '?amp', "", $td_prev_page);
+			$td_next_page = str_replace( '?amp', "", $td_next_page);
+		}
+
+		echo $td_current_page;
+
+		if ($paged > 1) {
+			echo $td_prev_page;
+		}
+		if ($paged < $max_page) {
+			echo $td_next_page;
+		}
+
+		wp_reset_query();
 	}
 }
 

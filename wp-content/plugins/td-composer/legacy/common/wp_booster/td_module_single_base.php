@@ -616,14 +616,16 @@ class td_module_single_base extends td_module {
         //show the review meta only on single posts that are reviews, the rest have to be article (in article lists)
         if ($this->is_review && is_single()) {
             return 'itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Review"';
-        } else {
+        } elseif( td_util::get_option('tds_disable_article_schema') == '' ){
             return 'itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Article"';
+        } else {
+            return '';
         }
     }
 
 
     function show_item_scope() {
-    	echo printf( '%1$s', $this->get_item_scope());
+            echo printf('%1$s', $this->get_item_scope());
     }
 
 
@@ -641,7 +643,7 @@ class td_module_single_base extends td_module {
     function get_item_scope_meta() {
 
         // don't display meta on pages
-        if (!is_single()) {
+        if (!is_single() || ( td_util::get_option('tds_disable_article_schema') == 'yes' && !$this->is_review )) {
             return '';
         }
 
@@ -669,8 +671,9 @@ class td_module_single_base extends td_module {
         $td_article_date_unix = get_the_time('U', $this->post->ID);
         $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
 
-        // dateModified
-        $buffy .= '<meta itemprop="dateModified" content="' . the_modified_date('c', '', '', false) . '">';
+        // dateModified - local time
+        $td_article_modified_date_unix = get_the_modified_date('U', $this->post->ID);
+        $buffy .= '<meta itemprop="dateModified" content="' . date(DATE_W3C, $td_article_modified_date_unix) . '">';
 
         // mainEntityOfPage
         $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) .'"/>';
@@ -717,13 +720,33 @@ class td_module_single_base extends td_module {
         // if we have a review, we must add additional stuff
         if ($this->is_review) {
 
+            // take rating count for aggregateRating meta
+            $td_review = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+            if (!empty($td_review['has_review'])) {
+                switch ($td_review['has_review']) {
+                    case 'rate_stars' :
+
+                        $rating_count = count($td_review["p_review_stars"]);
+                        break;
+                    case 'rate_percent':
+                        $rating_count = count($td_review["p_review_percents"]);
+                        break;
+                    case 'rate_point' :
+                        $rating_count = count($td_review["p_review_points"]);
+                        break;
+                }
+            }
+
             // the item that is reviewd
-            $buffy .= '<span class="td-page-meta" itemprop="itemReviewed" itemscope itemtype="https://schema.org/Thing">';
+            $buffy .= '<span class="td-page-meta" itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">';
             $buffy .= '<meta itemprop="name " content = "' . $this->title_attribute . '">';
+
+            $buffy .= '<span class="td-page-meta" itemprop="brand" itemscope itemtype="https://schema.org/Organization">';
+            $buffy .= '<meta itemprop="name " content = "' . $td_publisher_name . '">';
             $buffy .= '</span>';
 
             if (!empty($this->td_review['review'])) {
-                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($this->td_review['review']) . '">';
+                $buffy .= '<meta itemprop="description" content = "' . esc_attr($this->td_review['review']) . '">';
             } else {
                 //we have no review text :| get a excerpt for the about meta thing
                 if ($this->post->post_excerpt != '') {
@@ -731,8 +754,31 @@ class td_module_single_base extends td_module {
                 } else {
                     $td_post_excerpt = td_util::excerpt($this->post->post_content, 45);
                 }
-                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($td_post_excerpt) . '">';
+                $buffy .= '<meta itemprop="description" content = "' . esc_attr($td_post_excerpt) . '">';
             }
+
+            $buffy .= '<meta itemprop="image " content = "' . $td_image[0] . '">';
+            $buffy .= '<meta itemprop="sku " content = "' . $this->post->post_name . '">';
+            $buffy .= '<meta itemprop="mpn " content = "' . $this->post->ID . '">';
+
+                $buffy .= '<span itemprop="aggregateRating" itemscope itemtype="https://schema.org/aggregateRating">';
+                $buffy .= '<meta itemprop="ratingValue" content = "' . td_review::calculate_total_stars($this->td_review) . '">';
+                $buffy .= '<meta itemprop="ratingCount" content = "' . $rating_count  . '">';
+                $buffy .= '</span>';
+
+            $buffy .= '</span>';
+
+//            if (!empty($this->td_review['review'])) {
+//                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($this->td_review['review']) . '">';
+//            } else {
+//                //we have no review text :| get a excerpt for the about meta thing
+//                if ($this->post->post_excerpt != '') {
+//                    $td_post_excerpt = $this->post->post_excerpt;
+//                } else {
+//                    $td_post_excerpt = td_util::excerpt($this->post->post_content, 45);
+//                }
+//                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($td_post_excerpt) . '">';
+//            }
 
             // review rating
             $buffy .= '<span class="td-page-meta" itemprop="reviewRating" itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Rating">';

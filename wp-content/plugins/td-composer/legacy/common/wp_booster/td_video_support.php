@@ -143,6 +143,14 @@ class td_video_support{
 
 							//add the html to the buffer
 							$buffy = '<div class="wpb_video_wrapper">' . $twitter_api->html . '</div>';
+							//embed twitter featured video on AMP
+							if(td_util::is_amp()) {
+								$buffy = '<amp-twitter width="375"
+											  height="472"
+											  layout="responsive"
+											  data-tweetid="' . $cache_key . '">
+										</amp-twitter>';
+							}
 
 							//set the cache
 							td_remote_cache::set($group, $cache_key, $twitter_api->html, self::$caching_time);
@@ -156,6 +164,14 @@ class td_video_support{
 					// cache is valid
 					$api_html_embed_data = td_remote_cache::get($group, $cache_key);
 					$buffy = '<div class="wpb_video_wrapper">' . $api_html_embed_data . '</div>';
+					//embed twitter featured video on AMP
+					if(td_util::is_amp()) {
+						$buffy = '<amp-twitter width="375"
+											  height="472"
+											  layout="responsive"
+											  data-tweetid="' . $cache_key . '">
+										</amp-twitter>';
+					}
 				}
 
 				break;

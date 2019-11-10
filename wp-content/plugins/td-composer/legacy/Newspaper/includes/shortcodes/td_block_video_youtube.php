@@ -15,7 +15,7 @@ class td_block_video_youtube extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -257,7 +257,7 @@ class td_block_video_youtube extends td_block {
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
         // get the playlist
-        return td_video_playlist_render::render_generic( $atts, 'youtube', $this->block_uid . '_rand', $this->get_block_css() );
+        return td_video_playlist_render::render_generic( $atts, 'youtube', $this->block_uid, $this->get_block_css() );
 
     }
 }

@@ -368,7 +368,41 @@ class tdc_ajax {
 				delete_post_meta( $post_id, 'tdb_installed_images' );
 				delete_post_meta( $post_id, 'tdb_install_uid' );
 
-				if ( ! empty( $single_post_content_width )) {
+
+				$val_for_single_post_content = false;
+
+				preg_match_all( '/\[\s*tdb_single_content(\X*)\]\s*\[/miU', $post_content, $content_matches );
+                if ( is_array( $content_matches ) && count( $content_matches ) && ! empty( $content_matches[ 1 ] ) && is_array( $content_matches[ 1 ] ) ) {
+
+                    foreach ( $content_matches[ 1 ] as $str_atts ) {
+
+                        $arr_atts = shortcode_parse_atts( $str_atts );
+
+                        foreach ($arr_atts as $arr_att ) {
+                            if ( 0 === strpos( $arr_att, 'content_width' ) ) {
+                                $arr_att_val = str_replace( array('content_width="', '"'), '', $arr_att );
+
+                                $final_val = $arr_att_val;
+                                if ( base64_decode( $arr_att_val, true ) && base64_encode( base64_decode( $arr_att_val, true ) ) === $arr_att_val ) {
+                                    $arr_att_val = json_decode( base64_decode( $arr_att_val ), true );
+
+                                    if ( !empty($arr_att_val['all'])) {
+                                        $final_val = $arr_att_val['all'];
+
+                                        update_post_meta( $post_id, 'tdc_single_post_content_width', $final_val );
+                                        $val_for_single_post_content = true;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+
+                        // Do it just for the first tdb_single_content shortcode
+                        break;
+                    }
+                }
+
+				if ( ! $val_for_single_post_content && ! empty( $single_post_content_width )) {
 				    update_post_meta( $post_id, 'tdc_single_post_content_width', $single_post_content_width );
                 }
 
@@ -630,6 +664,7 @@ class tdc_ajax {
 
                     // Set header template as header template for header template itself!
                     update_post_meta( $template_id, 'tdc_header_template_id', $template_id );
+			        update_post_meta( $template_id, 'tdc_dirty_content', 0 );
 			    }
 		    }
 		}

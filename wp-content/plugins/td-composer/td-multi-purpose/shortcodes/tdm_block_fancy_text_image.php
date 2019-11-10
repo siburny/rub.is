@@ -23,11 +23,7 @@ class tdm_block_fancy_text_image extends td_block {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_block_class .tdm-fancy-title1 {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_block_class .tdm-fancy-title1,
-				.td-md-is-ios .$unique_block_class .tdm-fancy-title1 {
+				html[class*='ie'] .$unique_block_class .tdm-fancy-title1 {
 				    background: none;
 					color: @text1_color_gradient_1;
 				}
@@ -41,11 +37,7 @@ class tdm_block_fancy_text_image extends td_block {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_block_class .tdm-fancy-title2 {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_block_class .tdm-fancy-title2,
-				.td-md-is-ios .$unique_block_class .tdm-fancy-title2 {
+				html[class*='ie'] .$unique_block_class .tdm-fancy-title2 {
 				    background: none;
 					color: @text2_color_gradient_1;
 				}
@@ -126,7 +118,7 @@ class tdm_block_fancy_text_image extends td_block {
 		parent::render($atts);
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $this->unique_block_class = $this->block_uid . '_rand';
+        $this->unique_block_class = $this->block_uid;
 
 		$this->shortcode_atts = shortcode_atts(
 			array_merge(

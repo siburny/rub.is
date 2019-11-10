@@ -14,10 +14,8 @@ class td_menu {
 
     function __construct() {
         add_action( 'td_wp_booster_loaded', function() {
-	        if (is_admin() && td_util::tdc_is_installed() ) {
-	            add_action('wp_update_nav_menu_item', array( $this, 'hook_wp_update_nav_menu_item'), 10, 3);
-	            add_filter('wp_edit_nav_menu_walker', array($this, 'hook_wp_edit_nav_menu_walker'));
-	        }
+            add_action('wp_update_nav_menu_item', array( $this, 'hook_wp_update_nav_menu_item'), 10, 3);
+            add_filter('wp_edit_nav_menu_walker', array($this, 'hook_wp_edit_nav_menu_walker'));
         });
 
         add_filter('wp_nav_menu_objects', array($this, 'hook_wp_nav_menu_objects'),  10, 2);
@@ -68,9 +66,7 @@ class td_menu {
          * detect menus added by the cloud library menu shortcode and do nothing
          * we use a diffrent walker for those menus
          **/
-        $exclude_block_ids = array('tdb-block-menu', 'tdb-horiz-menu');
-
-        if ( !empty($args->menu_id) && in_array( $args->menu_id, $exclude_block_ids ) )
+        if ( strpos($args->menu_class, 'tdb-block-menu') !== FALSE || strpos($args->menu_class, 'tdb-horiz-menu') !== FALSE  )
             return $items;
 
 
@@ -120,13 +116,14 @@ class td_menu {
             $td_mega_menu_cat = '';
             $td_mega_menu_page_id = '';
 
-            if ( td_util::tdc_is_installed() ) {
+            if ( td_util::tdc_is_installed() && ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) ) {
 	            //read mega menu and mega page menu settings
 	            $td_mega_menu_cat     = get_post_meta( $item->ID, 'td_mega_menu_cat', true );
 	            $td_mega_menu_page_id = get_post_meta( $item->ID, 'td_mega_menu_page_id', true );
             }
 
-            if ($this->is_header_menu_mobile === true) {
+
+            if ( $this->is_header_menu_mobile === true ) {
                 // a item in the mobile menu
 
                 /**
@@ -185,8 +182,7 @@ class td_menu {
             }
 
 
-
-            elseif ($td_mega_menu_page_id != '' && td_api_features::is_enabled('page_mega_menu') === true) {
+            elseif ( $td_mega_menu_page_id != '' && td_api_features::is_enabled('page_mega_menu') === true ) {
                 // a item with a page - pege mega menu
 
                 // the parent item (the one that appears in the main menu)
@@ -222,8 +218,7 @@ class td_menu {
             }
 
 
-
-            elseif ($td_mega_menu_cat != '') {
+            elseif ( $td_mega_menu_cat != '' ) {
                 // a item with a category mega menu
 
                 // the parent item (the one that appears in the main menu)
@@ -260,7 +255,6 @@ class td_menu {
                 $new_item->title .= '</div></div>';
                 $items_buffy[] = $new_item;
             }
-
 
 
             else {

@@ -283,12 +283,12 @@ td_demo_menus::add_mega_menu(array(
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_1_id,
 ));
-td_demo_menus::add_category(array(
+td_demo_menus::add_mega_menu(array(
     'title' => 'Series',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_7_id,
 ));
-td_demo_menus::add_category(array(
+td_demo_menus::add_mega_menu(array(
     'title' => 'Game reviews',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_8_id,
@@ -301,27 +301,27 @@ td_demo_menus::add_category(array(
 
 // add categories to the homepage menu
 td_demo_menus::add_category(array(
-    'title' => 'Animations',
+    'title' => '<i class="tdc-font-tdmp tdc-font-tdmp-magic-wand" style="position: relative; top: -2px; font-size: 32px; vertical-align: middle; margin-right: 9px;"></i> Animations',
     'add_to_menu_id' => $td_demo_homepage_menu_id,
     'category_id' => $demo_cat_2_id,
 ));
 td_demo_menus::add_category(array(
-    'title' => 'Gameplay',
+    'title' => '<i class="tdc-font-tdmp tdc-font-tdmp-mouse" style="position: relative; top: -2px; font-size: 32px; vertical-align: middle; margin-right: 9px;"></i> Gameplay',
     'add_to_menu_id' => $td_demo_homepage_menu_id,
     'category_id' => $demo_cat_3_id,
 ));
 td_demo_menus::add_category(array(
-    'title' => 'Movie Trailers',
+    'title' => '<i class="tdc-font-tdmp tdc-font-tdmp-apperture" style="position: relative; top: -2px; font-size: 32px; vertical-align: middle; margin-right: 9px;"></i> Movie Trailers',
     'add_to_menu_id' => $td_demo_homepage_menu_id,
     'category_id' => $demo_cat_4_id,
 ));
 td_demo_menus::add_category(array(
-    'title' => 'Music',
+    'title' => '<i class="tdc-font-tdmp tdc-font-tdmp-headphones" style="position: relative; top: -2px; font-size: 32px; vertical-align: middle; margin-right: 9px;"></i> Music',
     'add_to_menu_id' => $td_demo_homepage_menu_id,
     'category_id' => $demo_cat_5_id,
 ));
 td_demo_menus::add_category(array(
-    'title' => 'Tutorials',
+    'title' => '<i class="tdc-font-tdmp tdc-font-tdmp-vector-line" style="position: relative; top: -2px; font-size: 32px; vertical-align: middle; margin-right: 9px;"></i> Tutorials',
     'add_to_menu_id' => $td_demo_homepage_menu_id,
     'category_id' => $demo_cat_6_id,
 ));

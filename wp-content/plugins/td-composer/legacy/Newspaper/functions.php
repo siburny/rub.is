@@ -21,6 +21,9 @@ add_action('td_global_after', array('td_config', 'on_td_global_after_config'), 9
 // load the theme wp booster
 require_once( TDC_PATH . '/legacy/common/wp_booster/td_wp_booster_functions.php');
 
+// load guten blocks editor assets
+require_once('includes/td_guten_blocks_editor_assets.php');
+
 require_once('includes/widgets/td_page_builder_widgets.php'); // widgets
 if ( ! td_util::is_mobile_theme() ) {
     require_once('includes/shortcodes/td_misc_shortcodes.php');
@@ -86,4 +89,4 @@ if (TD_DEBUG_LIVE_THEME_STYLE) {
 
 }
 
-//td_demo_state::update_state("podcasts", 'full');
+//td_demo_state::update_state("classic_pro", 'full');

@@ -5,7 +5,7 @@ class td_block_ad_box extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -371,7 +371,7 @@ class td_block_ad_box extends td_block {
                 } else {
                     $spot_id_class = $spot_id;
                 }
-                $ad_classes = $block_template_id . ' td-spot-id-' . $spot_id_class . ' ' . $this->block_uid . '_rand '. $this->get_wrapper_class();
+                $ad_classes = $block_template_id . ' td-spot-id-' . $spot_id_class . ' ' . $this->block_uid . ' '. $this->get_wrapper_class();
 
                 return  '<div class="' . $ad_classes . '">' . $this->get_block_css() . $rec_title . '<div class="tdc-placeholder-title"></div></div>';
             }
@@ -407,8 +407,8 @@ class td_block_ad_box extends td_block {
             }
 
             foreach ($spot_imgs as $key => $spot_img) {
-                $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  'class="td_' . $key . '">';
-                $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" />';
+                $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
+                $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" alt="" />';
                 $buffy .= '</a>';
             }
             $buffy .= '</div>';
@@ -1025,7 +1025,7 @@ class td_block_ad_box extends td_block {
             );
         }
 
-        $block_classes[] = $this->block_uid . '_rand';
+        $block_classes[] = $this->block_uid;
 
         $block_template_id = $this->get_att('block_template_id');
 

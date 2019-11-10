@@ -71,7 +71,6 @@
   text-align: center;
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 .td-craft-ideas [class*="ico-craft-"] {
   line-height: 1;

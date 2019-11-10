@@ -16,6 +16,7 @@ class td_module_flex_3 extends td_module {
         $title_length = $this->get_shortcode_att('mc3_tl');
         $author_photo = $this->get_shortcode_att('author_photo2');
         $modified_date = $this->get_shortcode_att('show_modified_date');
+        $hide_audio = $this->get_shortcode_att('hide_audio2');
 
         if (empty($image_size)) {
             $image_size = 'td_218x150';
@@ -48,7 +49,9 @@ class td_module_flex_3 extends td_module {
                         </span>
                     </div>
 
-                    <?php echo $this->get_audio_embed() ?>
+                    <?php if( $hide_audio == '' ) {
+                        echo $this->get_audio_embed();
+                    } ?>
                 </div>
             </div>
         </div>

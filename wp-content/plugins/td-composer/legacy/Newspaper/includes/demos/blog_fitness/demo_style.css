@@ -70,7 +70,6 @@ Blog Fitness demo
 .td-blog-fitness .td_block_big_grid_fl_4.td-grid-style-4 .td_module_mx21 .td-meta-info-container {
   max-width: 100%;
   text-align: center;
-  text-align: -moz-center;
   text-align: -webkit-center;
   bottom: -1px;
 }
@@ -198,7 +197,6 @@ Blog Fitness demo
   max-width: 100% !important;
   width: 100%;
   text-align: center;
-  text-align: -moz-center;
   text-align: -webkit-center;
 }
 .td-blog-fitness .td_block_big_grid_fl_3.td-grid-style-4 .td_module_mx20 .td-meta-info-container .td-post-category {

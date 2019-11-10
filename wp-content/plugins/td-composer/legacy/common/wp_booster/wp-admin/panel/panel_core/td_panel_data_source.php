@@ -330,8 +330,14 @@ class td_panel_data_source {
             }
         }
 
+        $generated_css = td_css_generator();
+
+        if (function_exists('tdsp_css_generator')) {
+        	$generated_css .= tdsp_css_generator();
+        }
+
         //compile user css if any
-	    td_options::update('tds_user_compile_css', td_css_generator());
+	    td_options::update('tds_user_compile_css', $generated_css);
 
         //save all the themes settings (td_options + td_category)
 	    td_options::schedule_save();
@@ -711,6 +717,7 @@ class td_panel_data_source {
                                     @font-face {
                                       font-family: "' . $font_file_family . '";
                                       src: local("' . $font_file_family . '"), url("' . $font_file_link . '") format("woff");
+                                      font-display: swap;
                                     }
                                 ';
             }

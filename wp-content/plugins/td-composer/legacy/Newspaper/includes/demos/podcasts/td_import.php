@@ -86,73 +86,73 @@ $td_cloud_parent_cat_template_id = td_demo_content::add_cloud_template(array(
 //cloud template - type sub category (Art Of Manliness)
 $td_cloud_sub_cat_template_1_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Art Of Manliness - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_1.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_1.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Art Talk)
 $td_cloud_sub_cat_template_2_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Art Talk - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_2.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_2.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Cultural Frontline)
 $td_cloud_sub_cat_template_3_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Cultural Frontline - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_3.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_3.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Unexplained Mysteries)
 $td_cloud_sub_cat_template_4_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Unexplained Mysteries - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_4.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_4.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Best Car Talk)
 $td_cloud_sub_cat_template_5_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Best Car Talk - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_5.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_5.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Small Town Murder)
 $td_cloud_sub_cat_template_6_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Small Town Murder - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_6.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_6.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (The Bugle)
 $td_cloud_sub_cat_template_7_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - The Bugle - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_7.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_7.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (This Past Weekend)
 $td_cloud_sub_cat_template_8_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - This Past Weekend - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_8.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_8.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (A Way With Words)
 $td_cloud_sub_cat_template_9_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - A Way With Words - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_9.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_9.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (On The Media)
 $td_cloud_sub_cat_template_10_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - On The Media - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_10.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_10.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Code Switch)
 $td_cloud_sub_cat_template_11_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Code Switch - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_11.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_11.txt',
     'template_type' => 'category',
 ));
 //cloud template - type sub category (Studio 360)
 $td_cloud_sub_cat_template_12_id = td_demo_content::add_cloud_template(array(
     'title' => 'Sub Category Cloud Template - Studio 360 - Podcasts',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_templates/sub_cat_cloud_template_12.txt',
+    'file' => TDC_PATH_LEGACY . '/includes/demos/podcasts/pages/sub_cat_cloud_template_12.txt',
     'template_type' => 'category',
 ));
 

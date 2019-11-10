@@ -26,7 +26,7 @@ class tdc_composer_block extends td_block {
 			$atts
 		);
 
-		$unique_block_class = td_global::td_generate_unique_id() . '_rand';
+		$unique_block_class = td_global::td_generate_unique_id();
 		$this->add_class($unique_block_class);
 		$this->atts['tdc_css_class'] = $unique_block_class;
 

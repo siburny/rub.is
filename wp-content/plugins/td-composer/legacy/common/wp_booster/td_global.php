@@ -61,6 +61,9 @@ class td_global {
     private static $demo_installing = false;
 
 
+    public static $td_demo_installer;
+
+
 	/**
 	 * Set the $in_zone
 	 * Used in tdc_zone template
@@ -403,7 +406,14 @@ class td_global {
 
 	static $td_animation_stack_effects = array();
 
-
+	/**
+	 * theme js files for the wp blocks editor(guten)
+	 * @see td_guten_blocks_editor_assets.php
+	 * @var array
+	 */
+	static $js_files_for_guten_blocks_editor = array (
+		'td-guten-blocks-js' => '/legacy/' . TD_THEME_NAME . '/includes/js_files/tdGutenBlocksEditor.js'
+	);
 
 
     /**
@@ -423,7 +433,7 @@ class td_global {
         'td_page_options' => '/legacy/common/wp_booster/wp-admin/js/td_page_options.js',
         'td_tooltip' => '/legacy/common/wp_booster/wp-admin/js/tooltip.js',
 	    'td_confirm' => '/legacy/common/wp_booster/wp-admin/js/tdConfirm.js',
-	    'td_detect' => '/legacy/common/wp_booster/js_dev/tdDetect.js'
+	    'td_detect' => '/legacy/common/wp_booster/js_dev/tdDetect.js',
     );
 
 
@@ -650,7 +660,13 @@ class td_global {
 
     static function td_generate_unique_id() {
         self::$td_unique_counter++;
-        return 'td_uid_' . self::$td_unique_counter . '_' . uniqid();
+
+        $uniquid = uniqid();
+	    $newuniquid = '';
+	    while ( strlen( $newuniquid ) < 3 ) {
+	    	$newuniquid .= $uniquid[ rand(0, 12)];
+	    }
+        return 'tdi_' . self::$td_unique_counter . '_' . $newuniquid;
     }
 
 

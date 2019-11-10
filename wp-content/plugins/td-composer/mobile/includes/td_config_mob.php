@@ -36,10 +36,6 @@ class td_config_mob {
             'tdSocialSharing'=>         '/legacy/common/wp_booster/js_dev/tdSocialSharing.js'
         );
 
-		static $js_mob_files_for_admin = array (
-			'tdBlocksEditorAssets' => 	'/mobile/includes/js_dev/tdBlocksEditorAssets.js'
-		);
-
 		/**
 		 * modules list
 		 */
@@ -472,6 +468,10 @@ class td_config_mob {
                 )
 			),
             'mt_Footer' => array (
+                'mt_footer_text_about' => array(
+                    'text' => 'Text under logo',
+                    'type' => 'default',
+                ),
                 'mt_footer_copyright' => array(
                     'text' => 'Copyright text',
                     'type' => 'default',
@@ -487,5 +487,215 @@ class td_config_mob {
 			td_global::$typography_settings_list,
 			td_global_mob::$typography_settings_list
 		);
+
+		add_action('after_setup_theme', function() {
+			global $td_translation_map;
+
+			$td_translation_map = array(
+				//top bar
+				'Tel:' => __('Tel:', 'newspaper'),
+				'Email:' => __('Email:', 'newspaper'),
+
+				//header search
+				'View all results' => __('View all results', 'newspaper'),
+				'No results' => __('No results', 'newspaper'),
+
+				'Home' => __('Home', 'newspaper'),
+
+				//mobile menu
+				'CLOSE' => __('CLOSE', 'newspaper'),
+
+				//title tag
+				'Page' => __('Page', 'newspaper'),
+
+
+				//blocks
+				'All' => __('All', 'newspaper'),
+				'By' => __('By', 'newspaper'),
+				'Load more' => __('Load more', 'newspaper'),
+				'Modified date:' => __('Modified date:', 'newspaper'),
+
+				//breadcrumbs
+				'View all posts in' => __('View all posts in', 'newspaper'),
+				'Tags' => __('Tags', 'newspaper'),
+
+				//article / page
+				'Previous article' => __('Previous article', 'newspaper'),
+				'Next article' => __('Next article', 'newspaper'),
+				'Authors' => __('Authors', 'newspaper'),
+				'Author' => __('Author', 'newspaper'),
+				'RELATED ARTICLES' => __('RELATED ARTICLES', 'newspaper'),   //on newspaper 4 it was: SIMILAR ARTICLES
+				'MORE FROM AUTHOR' => __('MORE FROM AUTHOR', 'newspaper'),
+				'VIA' => __('VIA', 'newspaper'),   //on newspaper4 it was lowercase
+				'SOURCE' => __('SOURCE', 'newspaper'), //on newspaper4 it was lowercase
+				'TAGS' => __('TAGS', 'newspaper'),
+				'Share' => __('Share', 'newspaper'),
+				'SHARE' => __('SHARE', 'newspaper'),
+				'Continue' => __('Continue', 'newspaper'),
+				'Read more' => __('Read more', 'newspaper'),
+				'views' => __('views', 'newspaper'),
+
+
+				//comments
+				'Name:' => __('Name:', 'newspaper'),
+				'Website:' => __('Website:', 'newspaper'),
+				'Comment:' => __('Comment:', 'newspaper'),
+				'LEAVE A REPLY' => __('LEAVE A REPLY', 'newspaper'),  //on newspaper4 it was lowercase
+				'Post Comment' => __('Post Comment', 'newspaper'),
+				'Cancel reply' => __('Cancel reply', 'newspaper'),
+				'Reply' => __('Reply', 'newspaper'),
+				'Log in to leave a comment' => __('Log in to leave a comment', 'newspaper'),
+				'NO COMMENTS' => __('NO COMMENTS', 'newspaper'),
+				'1 COMMENT' => __('1 COMMENT', 'newspaper'),
+				'COMMENTS' => __('COMMENTS', 'newspaper'),
+				'Your comment is awaiting moderation' => __('Your comment is awaiting moderation', 'newspaper'),
+				'Please enter your name here' => __('Please enter your name here', 'newspaper'),
+				'Please enter your email address here' => __('Please enter your email address here', 'newspaper'),
+				'You have entered an incorrect email address!' => __('You have entered an incorrect email address!', 'newspaper'),
+				'Please enter your comment!' => __('Please enter your comment!', 'newspaper'),
+				'Logged in as'                        => __('Logged in as', 'newspaper'),
+				'Log out?'                            => __('Log out?', 'newspaper'),
+				'Logged in as %s. Edit your profile.' => __('Logged in as %s. Edit your profile.', 'newspaper'),
+				'Edit' => __('Edit', 'newspaper'),
+                'At' => __('At', 'newspaper'),
+
+
+				//review
+				'REVIEW OVERVIEW' => __('REVIEW OVERVIEW', 'newspaper'),  //on newspaper4 it was lowercase
+				'SUMMARY' => __('SUMMARY', 'newspaper'),  //on newspaper4 it was lowercase
+				'OVERALL SCORE' => __('OVERALL SCORE', 'newspaper'),
+
+				//404
+				'Ooops... Error 404' => __('Ooops... Error 404', 'newspaper'),
+				"Sorry, but the page you are looking for doesn_t exist." => __("Sorry, but the page you are looking for doesn't exist.", 'newspaper'),
+				'You can go to the' => __('You can go to the', 'newspaper'),
+				'HOMEPAGE' => __('HOMEPAGE', 'newspaper'),
+
+
+				'OUR LATEST POSTS' => __('OUR LATEST POSTS', 'newspaper'),
+
+				//author page title atribute
+				'Posts by' => __('Posts by', 'newspaper'),
+				'POSTS' => __('POSTS', 'newspaper'),
+
+
+				'Posts tagged with' => __('Posts tagged with', 'newspaper'),
+				'Tag' => __('Tag', 'newspaper'),
+
+				//archives
+				'Daily Archives:' => __('Daily Archives:', 'newspaper'),
+				'Monthly Archives:' => __('Monthly Archives:', 'newspaper'),
+				'Yearly Archives:' => __('Yearly Archives:', 'newspaper'),
+				'Archives' => __('Archives', 'newspaper'),
+
+
+				//homepage
+				'LATEST ARTICLES' => __('LATEST ARTICLES', 'newspaper'),
+
+				//search page
+				'search results' => __('search results', 'newspaper'),
+				'Search' => __('Search', 'newspaper'),
+				"If you_re not happy with the results, please do another search" => __("If you're not happy with the results, please do another search", 'newspaper'),
+
+				//footer widget
+				'Contact us' => __('Contact us', 'newspaper'),
+
+				//footer instagram
+				'Follow us on Instagram' => __('Follow us on Instagram', 'newspaper'),
+
+				//pagination
+				'Page %CURRENT_PAGE% of %TOTAL_PAGES%' => __('Page %CURRENT_PAGE% of %TOTAL_PAGES%', 'newspaper'),
+				'Next' => __('Next', 'newspaper'),
+				'Prev' => __('Prev', 'newspaper'),
+				'Back' => __('Back', 'newspaper'),
+
+
+				'No results for your search' => __('No results for your search', 'newspaper'),
+				'No posts to display' => __('No posts to display', 'newspaper'),
+
+				//modal window
+				'LOG IN'  => __('LOG IN', 'newspaper'),
+				'Sign in / Join'  => __('Sign in / Join', 'newspaper'),
+				'Sign in' => __('Sign in', 'newspaper'),
+				'Sign up' => __('Sign up', 'newspaper'),
+				'Join' => __('Join', 'newspaper'),
+				'Log In'  => __('Log In', 'newspaper'),
+				'Login'  => __('Login', 'newspaper'),
+				'REGISTER'  => __('REGISTER', 'newspaper'),
+				'Welcome!' => __('Welcome!', 'newspaper'),
+				'Log into your account' => __('Log into your account', 'newspaper'),
+				'Password recovery' => __('Password recovery', 'newspaper'),
+				'Send My Pass'  => __('Send My Pass', 'newspaper'),
+				'Send My Password'  => __('Send My Password', 'newspaper'),
+				'Forgot your password?'  => __('Forgot your password?', 'newspaper'),
+				'Forgot your password? Get help'  => __('Forgot your password? Get help', 'newspaper'),
+				'Create an account'  => __('Create an account', 'newspaper'),
+				'Please wait...'  => __('Please wait...', 'newspaper'),
+				'User or password incorrect!'  => __('User or password incorrect!', 'newspaper'),
+				'Email or username incorrect!'  => __('Email or username incorrect!', 'newspaper'),
+				'Email incorrect!'  => __('Email incorrect!', 'newspaper'),
+				'User or email already exists!'  => __('User or email already exists!', 'newspaper'),
+				'Please check your email (inbox or spam folder), the password was sent there.'  => __('Please check your email (inbox or spam folder), the password was sent there.', 'newspaper'),
+				'Email address not found!'  => __('Email address not found!', 'newspaper'),
+				'Your password is reset, check your email.'  => __('Your password is reset, check your email.', 'newspaper'),
+				'Welcome! Log into your account' => __('Welcome! Log into your account', 'newspaper'),
+				'Welcome! Register for an account' => __('Welcome! Register for an account', 'newspaper'),
+				'Register for an account' => __('Register for an account', 'newspaper'),
+				'Recover your password' => __('Recover your password', 'newspaper'),
+				'your username' => __('your username', 'newspaper'),
+				'your password' => __('your password', 'newspaper'),
+				'your email' => __('your email', 'newspaper'),
+				'A password will be e-mailed to you.' => __('A password will be e-mailed to you.', 'newspaper'),
+				'Logout' => __('Logout', 'newspaper'),
+
+				//more article box
+				'MORE STORIES' => __('MORE STORIES', 'newspaper'),
+
+				//filter drop down options on category page
+				'Latest' => __('Latest', 'newspaper'),
+				'Featured posts' => __('Featured posts', 'newspaper'),
+				'Most popular' => __('Most popular', 'newspaper'),
+				'7 days popular' => __('7 days popular', 'newspaper'),
+				'By review score' => __('By review score', 'newspaper'),
+				'Random' => __('Random', 'newspaper'),
+
+				'Trending Now' => __('Trending Now', 'newspaper'),
+
+				//used in Popular Category widget (td_block_popular_categories.php file)
+				'POPULAR CATEGORY' => __('POPULAR CATEGORY', 'newspaper'),
+				'POPULAR POSTS' => __('POPULAR POSTS', 'newspaper'),
+				'EDITOR PICKS' => __('EDITOR PICKS', 'newspaper'),
+				'ABOUT US' => __('ABOUT US', 'newspaper'),
+				'About me' => __('About me', 'newspaper'),
+				'FOLLOW US' => __('FOLLOW US', 'newspaper'),
+				'EVEN MORE NEWS' => __('EVEN MORE NEWS', 'newspaper'),
+
+
+				//magnific popup
+				'Previous (Left arrow key)' => __('Previous (Left arrow key)', 'newspaper'),
+				'Next (Right arrow key)' => __('Next (Right arrow key)', 'newspaper'),
+				'%curr% of %total%' => __('%curr% of %total%', 'newspaper'),
+				'The content from %url% could not be loaded.' => __('The content from %url% could not be loaded.', 'newspaper'),
+				'The image #%curr% could not be loaded.' => __('The image #%curr% could not be loaded.', 'newspaper'),
+
+				//blog
+				'Blog' => __('Blog', 'newspaper'),
+				'Share on Facebook' => __('Share on Facebook', 'newspaper'),
+				'Tweet on Twitter' => __('Tweet on Twitter', 'newspaper'),
+
+				'Featured' => __('Featured', 'newspaper'),
+				'All time popular' => __('All time popular', 'newspaper'),
+
+				'More' => __('More', 'newspaper'),
+				'Register' => __('Register', 'newspaper'),
+
+				'of' => __('of', 'newspaper'),
+
+				'Save my name, email, and website in this browser for the next time I comment.' => __('Save my name, email, and website in this browser for the next time I comment.', 'newspaper'),
+				'Privacy Policy' => 'Privacy Policy',
+
+			);
+		}, 11);
+
 	}
 }

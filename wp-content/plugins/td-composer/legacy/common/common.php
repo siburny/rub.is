@@ -94,13 +94,29 @@ function td_include_user_compiled_css() {
 add_action('wp_head', 'td_include_user_compiled_css', 10);
 
 
-/* ----------------------------------------------------------------------------
- * more articles box
- */
-if ( ! td_util::is_mobile_theme() ) {
-    td_api_autoload::add('td_more_article_box', TDC_PATH . '/legacy/common/wp_booster/td_more_article_box.php');
-    add_action('wp_footer', array('td_more_article_box', 'on_wp_footer_render_box'));
+
+if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && defined('TD_STANDARD_PACK') ) ) {
+    /*
+     * Register 'top-menu' header
+     */
+    add_action( 'init', function() {
+        register_nav_menus(
+            array(
+                'top-menu' => 'Top Header Menu',
+            )
+        );
+    }, 9);
+
+
+    /* ----------------------------------------------------------------------------
+     * more articles box
+     */
+    if (!td_util::is_mobile_theme()) {
+        td_api_autoload::add('td_more_article_box', TDC_PATH . '/legacy/common/wp_booster/td_more_article_box.php');
+        add_action('wp_footer', array('td_more_article_box', 'on_wp_footer_render_box'));
+    }
 }
+
 
 
 /**
@@ -224,7 +240,7 @@ function tdc_load_google_fonts( &$compiled_css, $fonts_to_load, $td_options ) {
     foreach ( $fonts_to_load as $font_id => $font_family_name ) {
 
         if ( is_numeric( $font_id ) ) {
-            $compiled_css .= '@import url("https://fonts.googleapis.com/css?family=' . $font_family_name . '");' . PHP_EOL;
+            $compiled_css .= '@import url("https://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names( array( $font_id ))  . '&display=swap' . '");' . PHP_EOL;
 
         } else if ( 0 === strpos( $font_id, 'file_' ) ) {
 
@@ -232,7 +248,9 @@ function tdc_load_google_fonts( &$compiled_css, $fonts_to_load, $td_options ) {
 
             $compiled_css .= ' @font-face {' .
                 'font-family:"' . $font_family_name . '";' .
-                'src:local("' . $font_family_name . '"), url(' . $font_file_link . ') format("woff");}' . PHP_EOL;
+                'src:local("' . $font_family_name . '"), url(' . $font_file_link . ') format("woff");
+                  font-display: swap;
+            }' . PHP_EOL;
 
         }
     }
@@ -244,18 +262,6 @@ if (TD_THEME_NAME === 'Newspaper' ) {
 } else {
     add_theme_support('post-formats', array('video'));
 }
-
-
-/*
- * Register 'top-menu' header
- */
-add_action( 'init', function() {
-    register_nav_menus(
-        array(
-            'top-menu' => 'Top Header Menu',
-        )
-    );
-}, 9);
 
 
 
@@ -318,7 +324,9 @@ add_action('admin_head', function() {
                 }
 
                 if ( ! empty( $content_width )) {
-                	echo '<style>/* custom css */ .td-gutenberg-editor .editor-styles-wrapper .wp-block {max-width: ' . $content_width .'px} </style>';
+                	echo '<style>/* custom css */ .td-gutenberg-editor .editor-styles-wrapper .wp-block {max-width: ' . $content_width . 'px}</style>';
+                	// for now it's only needed in Guttenberg
+                    td_js_buffer::add_variable('tdContentWidth', $content_width);
                 }
             }
         }
@@ -348,7 +356,7 @@ function td_get_template_style( $template = null, &$style = '', &$content_width 
 				if ( count( $style_matches ) && is_array( $style_matches[ 0 ] ) ) {
 					foreach ( $style_matches[ 0 ] as $style_match ) {
 						// find inline css
-						$result_style .= preg_replace( '/.td_uid_(\X*)_rand/miU', '.td-gutenberg-editor .editor-styles-wrapper .wp-block', $style_match );
+						$result_style .= preg_replace( '/.tdi_(\X*)/miU', '.td-gutenberg-editor .editor-styles-wrapper .wp-block', $style_match );
 					}
 				}
 			}

@@ -13,6 +13,7 @@
 */
 // main menu
 $td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu', 'header-menu');
+$td_demo_custom_menu_id = td_demo_menus::create_menu('td-demo-custom-menu', 'custom-menu');
 
 
 
@@ -286,6 +287,23 @@ td_demo_menus::add_category(array(
     'title' => 'Reviews',
     'add_to_menu_id' => $td_demo_header_menu_id,
     'category_id' => $demo_cat_8_id,
+));
+
+// add links to the custom menu
+td_demo_menus::add_link(array(
+    'title' => 'About',
+    'url' => '#',
+    'add_to_menu_id' => $td_demo_custom_menu_id,
+));
+td_demo_menus::add_link(array(
+    'title' => 'Contact',
+    'url' => '#',
+    'add_to_menu_id' => $td_demo_custom_menu_id,
+));
+td_demo_menus::add_link(array(
+    'title' => 'Privacy Policy',
+    'url' => '#',
+    'add_to_menu_id' => $td_demo_custom_menu_id,
 ));
 
 

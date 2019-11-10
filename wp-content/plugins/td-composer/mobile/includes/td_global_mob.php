@@ -6,6 +6,9 @@ class td_global_mob {
 
 	static $js_files = array();
 	static $js_files_main = array();
+	static $js_mob_files_for_admin = array (
+		'tdBlocksEditorAssets' => 	'/mobile/includes/js_dev/tdBlocksEditorAssets.js'
+	);
 	static $typography_settings_list = array();
 }
 

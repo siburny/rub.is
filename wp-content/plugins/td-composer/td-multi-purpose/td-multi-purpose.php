@@ -86,11 +86,6 @@ class td_api_multi_purpose {
 			"<style>
 
                 /* @theme_color */
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .sfHover > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > li > a:hover,
                 .tdm_block_column_content:hover .tdm-col-content-title-url .tdm-title,
                 .tds-button2 .tdm-btn-text,
                 .tds-button2 i,
@@ -101,13 +96,8 @@ class td_api_multi_purpose {
                 .tdm_block_list .tdm-list-item i,
                 .tdm_block_pricing .tdm-pricing-feature i,
                 .tdm-social-item i {
-                  color: @theme_color;
+                    color: @theme_color;
                 }
-                .tdm-menu-active-style5 .td-header-menu-wrap .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style5 .td-header-menu-wrap .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style5 .td-header-menu-wrap .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style5 .td-header-menu-wrap .sf-menu > li > a:hover,
-                .tdm-menu-active-style5 .td-header-menu-wrap .sf-menu > .sfHover > a,
                 .tds-button1,
                 .tds-button6:after,
                 .tds-title2 .tdm-title-line:after,
@@ -117,13 +107,8 @@ class td_api_multi_purpose {
                 .tds-progress-bar1 .tdm-progress-bar:after,
                 .tds-progress-bar2 .tdm-progress-bar:after,
                 .tds-social3 .tdm-social-item {
-                  background-color: @theme_color;
+                    background-color: @theme_color;
                 }
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > li > a:hover,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .sfHover > a,
                 .tds-button2:before,
                 .tds-button6:before,
                 .tds-progress-bar3 .tdm-progress-bar:after {
@@ -149,258 +134,7 @@ class td_api_multi_purpose {
                     box-shadow: 0 4px 26px @theme_color;
 				}
 				
-				/* @top_menu_color */
-                .tdm-header-style-1.td-header-wrap .td-header-top-menu-full,
-                .tdm-header-style-1.td-header-wrap .top-header-menu .sub-menu,
-                .tdm-header-style-2.td-header-wrap .td-header-top-menu-full,
-                .tdm-header-style-2.td-header-wrap .top-header-menu .sub-menu,
-                .tdm-header-style-3.td-header-wrap .td-header-top-menu-full,
-                .tdm-header-style-3.td-header-wrap .top-header-menu .sub-menu{
-                    background-color: @top_menu_color;
-                }
-				
-				/* @submenu_hover_color */
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > li > a:hover,
-                .tdm-menu-active-style3 .tdm-header.td-header-wrap .sf-menu > .sfHover > a {
-                  color: @submenu_hover_color;
-                }
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > li > a:hover,
-                .tdm-menu-active-style4 .tdm-header .sf-menu > .sfHover > a {
-                  border-color: @submenu_hover_color;
-                }
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap .sf-menu > li > a:hover,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap .sf-menu > .sfHover > a {
-                  background-color: @submenu_hover_color;
-                }
-				
-				/* @sticky_submenu_hover_color */
-                .tdm-menu-active-style3 .tdm-header .td-affix .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style3 .tdm-header .td-affix .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header .td-affix .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style3 .tdm-header .td-affix .sf-menu > li > a:hover,
-                .tdm-menu-active-style3 .tdm-header .td-affix .sf-menu > .sfHover > a {
-                  color: @sticky_submenu_hover_color;
-                }
-                .tdm-menu-active-style4 .tdm-header .td-affix .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style4 .tdm-header .td-affix .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .td-affix .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style4 .tdm-header .td-affix .sf-menu > li > a:hover,
-                .tdm-menu-active-style4 .tdm-header .td-affix .sf-menu > .sfHover > a {
-                  border-color: @sticky_submenu_hover_color;
-                }
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap.td-affix .sf-menu > .current-menu-item > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap.td-affix .sf-menu > .current-menu-ancestor > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap.td-affix .sf-menu > .current-category-ancestor > a,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap.td-affix .sf-menu > li > a:hover,
-                .tdm-menu-active-style5 .tdm-header .td-header-menu-wrap.td-affix .sf-menu > .sfHover > a {
-                  background-color: @sticky_submenu_hover_color;
-                }
-
-
-                /* @tdm_menu_btn1_base_color */
-				.tdm-menu-btn1 .tds-button1,
-				.tdm-menu-btn1 .tds-button6:after {
-					background-color: @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button2:before,
-				.tdm-menu-btn1 .tds-button6:before {
-				    border-color: @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button2,
-				.tdm-menu-btn1 .tds-button2 i {
-				    color: @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button3 {
-				    -webkit-box-shadow: 0 2px 16px @tdm_menu_btn1_base_color;
-                    -moz-box-shadow: 0 2px 16px @tdm_menu_btn1_base_color;
-                    box-shadow: 0 2px 16px @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button3:hover {
-				    -webkit-box-shadow: 0 4px 26px @tdm_menu_btn1_base_color;
-                    -moz-box-shadow: 0 4px 26px @tdm_menu_btn1_base_color;
-                    box-shadow: 0 4px 26px @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button7 .tdm-btn-border-top,
-				.tdm-menu-btn1 .tds-button7 .tdm-btn-border-bottom {
-				    background-color: @tdm_menu_btn1_base_color;
-				}
-				.tdm-menu-btn1 .tds-button8 {
-				    background: @tdm_menu_btn1_base_color;
-				}
-				
-				/* @tdm_menu_btn1_text_color */
-				.tdm-menu-btn1 .tds-button1 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button1 i,
-				.tdm-menu-btn1 .tds-button2 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button2 i,
-				.tdm-menu-btn1 .tds-button3 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button3 i,
-				.tdm-menu-btn1 .tds-button4 .tdm-btn .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button4 .tdm-btn i,
-				.tdm-menu-btn1 .tds-button5 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button5 i,
-				.tdm-menu-btn1 .tds-button6 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button6 i,
-				.tdm-menu-btn1 .tds-button7 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button7 i,
-				.tdm-menu-btn1 .tds-button8 .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button8 i {
-					color: @tdm_menu_btn1_text_color;
-				}
-				
-				/* @tdm_menu_btn1_base_hover_color */
-				.tdm-menu-btn1 .tds-button1:before,
-				.tdm-menu-btn1 .tds-button4 .tdm-button-b {
-					background-color: @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn1 .tds-button2:hover:before,
-                .tdm-menu-btn1 .tds-button6:hover:before{
-				    border-color: @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn1 .tdm-btn-style:hover {
-				    color: @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn1 .tds-button3:hover {
-				    -webkit-box-shadow: 0 4px 26px @tdm_menu_btn1_base_hover_color;
-                    -moz-box-shadow: 0 4px 26px @tdm_menu_btn1_base_hover_color;
-                    box-shadow: 0 4px 26px @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn1 .tds-button7:hover .tdm-btn-border-top,
-				.tdm-menu-btn1 .tds-button7:hover .tdm-btn-border-bottom {
-				    background-color: @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn1 .tds-button8:before {
-				    background-color: @tdm_menu_btn1_base_hover_color;
-				}
-				
-				/* @tdm_menu_btn1_text_hover_color */
-				.tdm-menu-btn1 .tds-button1:hover .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button1:hover i,
-                .tdm-menu-btn1 .tds-button2:hover .tdm-btn-text,
-                .tdm-menu-btn1 .tds-button2:hover i,
-                .tdm-menu-btn1 .tds-button3:hover .tdm-btn-text,
-                .tdm-menu-btn1 .tds-button3:hover i,
-				.tdm-menu-btn1 .tds-button4 .tdm-button-b .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button4 .tdm-button-b i,
-				.tdm-menu-btn1 .tds-button5:hover .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button5:hover i,
-				.tdm-menu-btn1 .tds-button6:hover .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button6:hover i,
-				.tdm-menu-btn1 .tds-button7:hover .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button7:hover i,
-				.tdm-menu-btn1 .tds-button8:hover .tdm-btn-text,
-				.tdm-menu-btn1 .tds-button8:hover i  {
-					color: @tdm_menu_btn1_text_hover_color;
-				}
-
-                
-                /* @tdm_menu_btn2_base_color */
-				.tdm-menu-btn2 .tds-button1,
-				.tdm-menu-btn2 .tds-button6:after {
-					background-color: @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button2:before,
-				.tdm-menu-btn2 .tds-button6:before {
-				    border-color: @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button2,
-				.tdm-menu-btn2 .tds-button2 i {
-				    color: @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button3 {
-				    -webkit-box-shadow: 0 2px 16px @tdm_menu_btn2_base_color;
-                    -moz-box-shadow: 0 2px 16px @tdm_menu_btn2_base_color;
-                    box-shadow: 0 2px 16px @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button3:hover {
-				    -webkit-box-shadow: 0 4px 26px @tdm_menu_btn2_base_color;
-                    -moz-box-shadow: 0 4px 26px @tdm_menu_btn2_base_color;
-                    box-shadow: 0 4px 26px @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button7 .tdm-btn-border-top,
-				.tdm-menu-btn2 .tds-button7 .tdm-btn-border-bottom {
-				    background-color: @tdm_menu_btn2_base_color;
-				}
-				.tdm-menu-btn2 .tds-button8 {
-				    background: @tdm_menu_btn2_base_color;
-				}
-				
-				/* @tdm_menu_btn2_text_color */
-				.tdm-menu-btn2 .tds-button1 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button1 i,
-				.tdm-menu-btn2 .tds-button2 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button2 i,
-				.tdm-menu-btn2 .tds-button3 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button3 i,
-				.tdm-menu-btn2 .tds-button4 .tdm-btn .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button4 .tdm-btn i,
-				.tdm-menu-btn2 .tds-button5 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button5 i,
-				.tdm-menu-btn2 .tds-button6 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button6 i,
-				.tdm-menu-btn2 .tds-button7 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button7 i,
-				.tdm-menu-btn2 .tds-button8 .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button8 i {
-					color: @tdm_menu_btn2_text_color;
-				}
-				
-				/* @tdm_menu_btn2_base_hover_color */
-				.tdm-menu-btn2 .tds-button1:before,
-				.tdm-menu-btn2 .tds-button4 .tdm-button-b {
-					background-color: @tdm_menu_btn2_base_hover_color;
-				}
-				.tdm-menu-btn2 .tds-button2:hover:before,
-                .tdm-menu-btn2 .tds-button6:hover:before{
-				    border-color: @tdm_menu_btn2_base_hover_color;
-				}
-				.tdm-menu-btn2 .tdm-btn-style:hover {
-				    color: @tdm_menu_btn1_base_hover_color;
-				}
-				.tdm-menu-btn2 .tds-button3:hover {
-				    -webkit-box-shadow: 0 4px 26px @tdm_menu_btn2_base_hover_color;
-                    -moz-box-shadow: 0 4px 26px @tdm_menu_btn2_base_hover_color;
-                    box-shadow: 0 4px 26px @tdm_menu_btn2_base_hover_color;
-				}
-				.tdm-menu-btn2 .tds-button7:hover .tdm-btn-border-top,
-				.tdm-menu-btn2 .tds-button7:hover .tdm-btn-border-bottom {
-				    background-color: @tdm_menu_btn2_base_hover_color;
-				}
-				.tdm-menu-btn2 .tds-button8:before {
-				    background-color: @tdm_menu_btn2_base_hover_color;
-				}
-				
-				/* @tdm_menu_btn2_text_hover_color */
-				.tdm-menu-btn2 .tds-button1:hover .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button1:hover i,
-                .tdm-menu-btn2 .tds-button2:hover .tdm-btn-text,
-                .tdm-menu-btn2 .tds-button2:hover i,
-                .tdm-menu-btn2 .tds-button3:hover .tdm-btn-text,
-                .tdm-menu-btn2 .tds-button3:hover i,
-				.tdm-menu-btn2 .tds-button4 .tdm-button-b .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button4 .tdm-button-b i,
-				.tdm-menu-btn2 .tds-button5:hover .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button5:hover i,
-				.tdm-menu-btn2 .tds-button6:hover .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button6:hover i,
-				.tdm-menu-btn2 .tds-button7:hover .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button7:hover i,
-				.tdm-menu-btn2 .tds-button8:hover .tdm-btn-text,
-				.tdm-menu-btn2 .tds-button8:hover i  {
-					color: @tdm_menu_btn2_text_hover_color;
-				}
-				
-				
-				
+			
 				/* @title_xxsmall_font */
 				.tdm-title-xxsm {
 				    @title_xxsmall_font
@@ -525,33 +259,11 @@ class td_api_multi_purpose {
 				    @button_xlarge_font
 				}
 				
-
 				
-				/* @main-menu-height */
-                .tdm-menu-active-style2 .tdm-header ul.sf-menu > .td-menu-item,
-                .tdm-menu-active-style4 .tdm-header ul.sf-menu > .td-menu-item,
-                .tdm-header .tdm-header-menu-btns,
-                .tdm-header-style-1 .td-main-menu-logo a,
-                .tdm-header-style-2 .td-main-menu-logo a,
-                .tdm-header-style-3 .td-main-menu-logo a {
-                    line-height: @main-menu-height;
-                }
-                .tdm-header-style-1 .td-main-menu-logo,
-                .tdm-header-style-2 .td-main-menu-logo,
-                .tdm-header-style-3 .td-main-menu-logo {
-                    height: @main-menu-height;
-                }
-                @media (min-width: 767px) {
-                    .tdm-header-style-1 .td-main-menu-logo img, 
-                    .tdm-header-style-2 .td-main-menu-logo img, 
-                    .tdm-header-style-3 .td-main-menu-logo img {
-                        max-height: @main-menu-height;
-                    }
-                }
                 
                 /* @tdm_btn_radius */
 				.tdm-btn,
-				 .tdm-btn:before {
+				.tdm-btn:before {
 				    border-radius:  @tdm_btn_radius;
 				}              
                 
@@ -577,21 +289,7 @@ class td_api_multi_purpose {
         $td_css_compiler->load_setting('submenu_hover_color');
         $td_css_compiler->load_setting('sticky_submenu_hover_color');
         $td_css_compiler->load_setting_raw( 'tdm_bordered_website', td_util::get_option('tdm_bordered_website') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn1_base_color', td_util::get_option('tdm_menu_btn1_base_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn1_text_color', td_util::get_option('tdm_menu_btn1_text_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn1_base_hover_color', td_util::get_option('tdm_menu_btn1_base_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn1_text_hover_color', td_util::get_option('tdm_menu_btn1_text_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn2_base_color', td_util::get_option('tdm_menu_btn2_base_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn2_text_color', td_util::get_option('tdm_menu_btn2_text_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn2_base_hover_color', td_util::get_option('tdm_menu_btn2_base_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_menu_btn2_text_hover_color', td_util::get_option('tdm_menu_btn2_text_hover_color') );
-		$td_css_compiler->load_setting_raw( 'tdm_btn_base_color', td_util::get_option('tdm_btn_base_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_text_color', td_util::get_option('tdm_btn_text_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_icon_color', td_util::get_option('tdm_btn_icon_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_base_hover_color', td_util::get_option('tdm_btn_base_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_text_hover_color', td_util::get_option('tdm_btn_text_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_icon_hover_color', td_util::get_option('tdm_btn_icon_hover_color') );
-        $td_css_compiler->load_setting_raw( 'tdm_btn_radius', td_util::get_option('tdm_btn_radius') );
+
 
         // button radius
         $tdm_bordered_website = td_util::get_option('tdm_bordered_website');
@@ -616,12 +314,6 @@ class td_api_multi_purpose {
             foreach ($td_typography_array as $section_id => $section_css_array) {
                 $td_css_compiler->load_setting_array(array($section_id => $section_css_array));
             }
-        }
-
-        // read line-height for the main-menu to align the logo in menu
-        $td_menu_height = td_options::get_array('td_fonts');
-        if (!empty($td_menu_height['main_menu']['line_height'])) {
-            $td_css_compiler->load_setting_raw('main-menu-height', $td_menu_height['main_menu']['line_height']);
         }
 
 		$compiled_css    = $td_css_compiler->compile_css();
@@ -1223,55 +915,6 @@ class td_api_multi_purpose {
 			}
 		}
 
-	    /**
-         * top bars
-         */
-        td_api_top_bar_template::add('tdm_top_bar_template_1',
-            array(
-                'img' => $this->plugin_url . '/images/panel/top_bar_templates/icon-top-bar-mp1.png',
-                'file' => $this->plugin_path . '/header/tdm_top_bar_template_1.php',
-                'text' => 'Style 1 - Multipurpose'
-            )
-        );
-
-
-        /**
-         * headers
-         */
-        td_api_header_style::add('tdm_header_style_1',
-            array(
-                'text' => '<strong>Style 1 - Multipurpose</strong>',
-                'file' => $this->plugin_path . '/header/tdm-header-style-1.php',
-                'img' => $this->plugin_url . '/images/panel/menu/icon-menu-mp1.png'
-            )
-        );
-        td_api_header_style::add('tdm_header_style_2',
-            array(
-                'text' => '<strong>Style 2 - Multipurpose</strong>',
-                'file' => $this->plugin_path . '/header/tdm-header-style-2.php',
-                'img' => $this->plugin_url . '/images/panel/menu/icon-menu-mp2.png'
-            )
-        );
-        td_api_header_style::add('tdm_header_style_3',
-            array(
-                'text' => '<strong>Style 3 - Multipurpose</strong>',
-                'file' => $this->plugin_path . '/header/tdm-header-style-3.php',
-                'img' => $this->plugin_url . '/images/panel/menu/icon-menu-mp3.png'
-            )
-        );
-
-
-        /**
-         * the td_api_sub_footer
-         */
-        td_api_sub_footer_template::add('tdm_sub_footer_template_1',
-            array(
-                'img' => $this->plugin_url . '/images/panel/sub_footer_templates/icon-sub-footer-1.png',
-                'file' => $this->plugin_path . '/footer/tdm_sub_footer_template_1.php',
-                'text' => 'Style 1 - Multipurpose'
-
-            )
-        );
 
 	    $image_params = array(
             array(
@@ -1797,8 +1440,24 @@ class td_api_multi_purpose {
                             'description' => '',
                             'class' => 'tdc-textfield-small',
                         ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Button 1',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                        ),
                     ),
                     $this->get_group_params('button'),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Button 2',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                        ),
+                    ),
                     $this->get_group_params('button', 1),
                     array(
                         array(
@@ -2726,99 +2385,9 @@ class td_api_multi_purpose {
                         ),
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0 ),
-                    array(
-	                    array(
-		                    'param_name' => 'fe_brightness',
-		                    'type' => 'range',
-		                    'value' => '1',
-		                    'heading' => 'Brightness',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '3',
-		                    'range_step' => '0.1',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_contrast',
-		                    'type' => 'range',
-		                    'value' => '1',
-		                    'heading' => 'Contrast',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '3',
-		                    'range_step' => '0.1',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_grayscale',
-		                    'type' => 'range',
-		                    'value' => '0',
-		                    'heading' => 'Grayscale',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '1',
-		                    'range_step' => '0.1',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_hue_rotate',
-		                    'type' => 'range',
-		                    'value' => '0',
-		                    'heading' => 'Hue rotate',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '-360',
-		                    'range_max' => '360',
-		                    'range_step' => '10',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_saturate',
-		                    'type' => 'range',
-		                    'value' => '1',
-		                    'heading' => 'Saturate',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '3',
-		                    'range_step' => '0.1',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_sepia',
-		                    'type' => 'range',
-		                    'value' => '0',
-		                    'heading' => 'Sepia',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '1',
-		                    'range_step' => '0.1',
-		                    'group' => 'Effects',
-	                    ),
-	                    array(
-		                    'param_name' => 'fe_blur',
-		                    'type' => 'range',
-		                    'value' => '0',
-		                    'heading' => 'Blur',
-		                    'description' => '',
-		                    'class' => 'tdc-textfield-small',
-		                    'range_min' => '0',
-		                    'range_max' => '30',
-		                    'range_step' => '1',
-		                    'group' => 'Effects',
-	                    ),
-                        array(
-                            "param_name" => "separator",
-                            "type" => "horizontal_separator",
-                            "value" => "",
-                            "class" => ""
-                        ),
-                    ),
                     td_config_helper::get_map_block_font_array( 'f_caption', true, 'Caption text' ),
+                    td_config_helper::mix_blend('Effects'),
+                    td_config_helper::image_filters('Effects'),
                     $css_tabs_params
                 )
             )
@@ -3415,7 +2984,6 @@ class td_api_multi_purpose {
                             "class" => "tdc-visual-selector tdc-add-class"
                         ),
                     ),
-                    $css_tabs_params,
                     array(
                         array(
                             "param_name" => "separator",
@@ -3483,7 +3051,8 @@ class td_api_multi_purpose {
                             'class' => 'tdc-textfield-big',
                             'group' => 'Tracking',
                         ),
-                    )
+                    ),
+                    $css_tabs_params
                 )
             )
         );
@@ -3500,6 +3069,10 @@ class td_api_multi_purpose {
                 'tdc_category' => 'Multipurpose',
                 'icon' => 'icon-pagebuilder-title',
                 'file' => $this->plugin_path . '/shortcodes/tdm_block_column_title.php',
+                'tdc_style_params' => array(
+                    'title_text',
+                    'title_tag'
+                ),
                 'tdc_start_values' => base64_encode(
                     json_encode(
                         array(
@@ -3878,6 +3451,8 @@ class td_api_multi_purpose {
                             'range_step' => '1',
                         ),
                     ),
+                    td_config_helper::mix_blend(),
+                    td_config_helper::image_filters(),
                     $this->get_group_params('social_icons'),
                     array(
                         array(
@@ -4492,12 +4067,6 @@ class td_api_multi_purpose {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
-                        ),
-                        array(
-                            "param_name" => "separator",
-                            "type" => "horizontal_separator",
-                            "value" => "",
-                            "class" => ""
                         ),
                     ),
                     array(
@@ -5782,7 +5351,6 @@ class td_api_multi_purpose {
                             "class" => "tdc-visual-selector tdc-add-class",
                         ),
                     ),
-                    $css_tabs_params,
                     array(
                         array(
                             "param_name" => "separator",
@@ -5850,7 +5418,8 @@ class td_api_multi_purpose {
                             'class' => 'tdc-textfield-big',
                             'group' => 'Tracking',
                         ),
-                    )
+                    ),
+                    $css_tabs_params
                 )
             )
         );

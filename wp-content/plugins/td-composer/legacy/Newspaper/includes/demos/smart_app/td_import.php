@@ -32,6 +32,38 @@ td_demo_misc::add_social_buttons(array(
     'vk' => '#'
 ));
 
+/*  ----------------------------------------------------------------------------
+    sidebars
+ */
+
+//default sidebar
+td_demo_widgets::remove_widgets_from_sidebar('default');
+td_demo_widgets::add_widget_to_sidebar('default', 'recent-posts',
+    array (
+        'custom_title' => 'Recent Posts',
+    )
+);
+td_demo_widgets::add_widget_to_sidebar('default', 'recent-comments',
+    array (
+        'custom_title' => 'Recent Comments',
+    )
+);
+td_demo_widgets::add_widget_to_sidebar('default', 'archives',
+    array (
+        'custom_title' => 'Archives',
+    )
+);
+td_demo_widgets::add_widget_to_sidebar('default', 'categories',
+    array (
+        'custom_title' => 'Categories',
+    )
+);
+td_demo_widgets::add_widget_to_sidebar('default', 'meta',
+    array (
+        'custom_title' => 'Meta',
+    )
+);
+
 /*  ---------------------------------------------------------------------------
     categories
 */

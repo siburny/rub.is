@@ -1,8 +1,8 @@
 <?php if (td_util::get_option('tds_top_bar') != 'hide_top_bar') { ?>
 
     <div class="top-bar-style-mp-1">
-        <?php require_once( TDC_PATH_LEGACY . '/parts/header/top-widget.php'); ?>
-        <?php require_once( TDC_PATH_LEGACY . '/parts/header/top-menu.php'); ?>
+        <?php require_once( TDSP_THEME_PATH . '/parts/header/top-widget.php'); ?>
+        <?php require_once( TDSP_THEME_PATH . '/parts/header/top-menu.php'); ?>
 
 
 

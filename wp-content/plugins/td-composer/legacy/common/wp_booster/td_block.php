@@ -104,7 +104,7 @@ class td_block {
         $this->block_uid = td_global::td_generate_unique_id();
 
 	    /** add the unique class to the block. The _rand class is used by the blocks js. @see tdBlocks.js  */
-	    $unique_block_class = $this->block_uid . '_rand';
+	    $unique_block_class = $this->block_uid;
 	    $this->add_class($unique_block_class);
 
 	    // Set the 'tdc_css_class' parameter
@@ -1554,7 +1554,7 @@ class td_block {
 			<script>
 
                 // block subcategory ajax filters!
-				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>_rand');
+				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>');
 				if ( jquery_object_container.length) {
 					var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
 
@@ -1585,7 +1585,7 @@ class td_block {
 			<script>
 
                 // single cloud lib share block pulldown
-				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>_rand');
+				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>');
 				if ( jquery_object_container.length) {
 
                     var horizontal_jquery_obj = jquery_object_container.find( '.td-post-sharing-visible:first' );
@@ -1616,7 +1616,7 @@ class td_block {
 			<script>
 
                 // block subcategory ajax filters!
-				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>_rand');
+				var jquery_object_container = jQuery('.<?php printf( '%1$s', $this->block_uid ) ?>');
 				if ( jquery_object_container.length) {
 
 				    if( jquery_object_container.hasClass('tdb-category-siblings-inline') ) {

@@ -238,6 +238,9 @@ body.tdc-active-helper .tdc-element:after {
 .tdc-element-column.tdc-element-empty:before {
   content: 'EMPTY COLUMN' !important;
 }
+.tdc-header-custom-class .tdc-element-column.tdc-element-empty:before {
+  content: 'You can drag and drop a content block here to see how your header fits with the context, but it won\'t be saved. Enjoy your header editing!' !important;
+}
 .tdc-element-inner-column.tdc-element-empty:before {
   content: 'EMPTY INNER COLUMN' !important;
 }
@@ -565,6 +568,9 @@ body.tdc-active-helper .tdc-element:after {
 .td-adspot-title {
   display: none;
 }
+.tdb_single_content .td-adspot-title {
+  display: block;
+}
 .td-spot-id-header {
   position: relative !important;
   margin-bottom: 0;
@@ -643,9 +649,6 @@ body.tdc-active-helper .tdc-element:after {
   top: 50%;
   transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
   margin: auto;
   display: table;
   width: 100%;
@@ -676,9 +679,6 @@ body.tdc-active-helper .tdc-element:after {
   top: 50%;
   transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
   margin: auto;
   display: table;
   width: 100%;

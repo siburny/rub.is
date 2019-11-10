@@ -86,31 +86,33 @@
     <!-- Posts loop settings -->
     <div class="td-page-option-panel td-page-option-post-list">
         <!-- Layout -->
-        <div class="td-meta-box-row">
-            <span class="td-page-o-custom-label">
-                Layout:
-                <?php
-                td_util::tooltip_html('
-                        <h3>Layout select:</h3>
-                        <p>Select a custom module to be used in the loop of this page.</p>
-                        <ul>
-                            <li>If you want to make you own modules, please go to our <a href="http://forum.tagdiv.com/api-modules-introduction/" target="_blank">API section</a> of the documentation</li>
-                        </ul>
-                    ', 'right')
-                ?>
-            </span>
-                <div class="td-page-o-visual-select-modules">
+        <?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+            <div class="td-meta-box-row">
+                <span class="td-page-o-custom-label">
+                    Layout:
                     <?php
-                    echo td_panel_generator::visual_select_o(array(
-                        'ds' => 'td_homepage_loop',
-                        'item_id' => '',
-                        'option_id' => 'td_layout',
-                        'values' => td_panel_generator::helper_display_modules('default+enabled_on_loops'),
-                        'selected_value' => $mb->get_the_value('td_layout')
-                    ));
+                    td_util::tooltip_html('
+                            <h3>Layout select:</h3>
+                            <p>Select a custom module to be used in the loop of this page.</p>
+                            <ul>
+                                <li>If you want to make you own modules, please go to our <a href="http://forum.tagdiv.com/api-modules-introduction/" target="_blank">API section</a> of the documentation</li>
+                            </ul>
+                        ', 'right')
                     ?>
-                </div>
-        </div>
+                </span>
+                    <div class="td-page-o-visual-select-modules">
+                        <?php
+                        echo td_panel_generator::visual_select_o(array(
+                            'ds' => 'td_homepage_loop',
+                            'item_id' => '',
+                            'option_id' => 'td_layout',
+                            'values' => td_panel_generator::helper_display_modules('default+enabled_on_loops'),
+                            'selected_value' => $mb->get_the_value('td_layout')
+                        ));
+                        ?>
+                    </div>
+            </div>
+        <?php } ?>
 
         <!-- show or hide the title -->
         <div class="td-meta-box-row">
@@ -173,12 +175,12 @@
                     if ($field_array['param_name'] == "hide_title") {
                         array_splice($generic_filter_array, $offset, 1);
                     } else if ($field_array['param_name'] == 'limit') {
-	                    $field_array['value'] = 10;
+                        $field_array['value'] = 10;
                     }
                     $offset++;
                 }
 
-	            //change the default limit
+                //change the default limit
                 //$generic_filter_array[6]['value'] = 10;
 
                 //add the show featured posts in the loop setting
@@ -216,6 +218,7 @@
 
         ?>
     </div> <!-- end post loop filter -->
+
 
 
 

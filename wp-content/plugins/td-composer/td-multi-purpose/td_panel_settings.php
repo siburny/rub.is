@@ -58,91 +58,93 @@ if (defined('TD_DEPLOY_MODE') && TD_DEPLOY_MODE === 'dev') {
     </div>
 </div>
 
-<div class="td-box-section-separator"></div>
+<?php if( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) { ?>
+    <div class="td-box-section-separator"></div>
 
-<!-- PHONE NUMBER -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">Phone number</span>
-        <p></p>
+    <!-- PHONE NUMBER -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Phone number</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tdm_phone_number'
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::input(array(
-            'ds' => 'td_option',
-            'option_id' => 'tdm_phone_number'
-        ));
-        ?>
-    </div>
-</div>
 
-<!-- EMAIL -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">Email address</span>
-        <p></p>
+    <!-- EMAIL -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Email address</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tdm_email'
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::input(array(
-            'ds' => 'td_option',
-            'option_id' => 'tdm_email'
-        ));
-        ?>
-    </div>
-</div>
 
-<!-- EXTRA INFO -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">Extra information</span>
-        <p></p>
+    <!-- EXTRA INFO -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Extra information</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tdm_extra_info'
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::input(array(
-            'ds' => 'td_option',
-            'option_id' => 'tdm_extra_info'
-        ));
-        ?>
-    </div>
-</div>
 
-<!-- SHOW IN TOP BAR -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">Show in top bar</span>
-        <p></p>
+    <!-- SHOW IN TOP BAR -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Show in top bar</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tdm_info_show_top_bar',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_option',
-            'option_id' => 'tdm_info_show_top_bar',
-            'true_value' => 'show',
-            'false_value' => ''
-        ));
-        ?>
-    </div>
-</div>
 
-<!-- SHOW IN SUB FOOTER -->
-<div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">Show in sub footer</span>
-        <p></p>
+    <!-- SHOW IN SUB FOOTER -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Show in sub footer</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tdm_info_show_sub_footer',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_option',
-            'option_id' => 'tdm_info_show_sub_footer',
-            'true_value' => 'show',
-            'false_value' => ''
-        ));
-        ?>
-    </div>
-</div>
+<?php } ?>
 
 <div class="td-box-section-separator"></div>
 
@@ -168,11 +170,13 @@ if (defined('TD_DEPLOY_MODE') && TD_DEPLOY_MODE === 'dev') {
 
 <?php
 
-// HEADER
-require_once( 'panel/td_panel_header.php' );
+if( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) {
+    // HEADER
+    require_once('panel/td_panel_header.php');
 
-// COLORS
-require_once( 'panel/td_panel_colors.php' );
+    // COLORS
+    require_once( 'panel/td_panel_colors.php' );
+}
 
 // FONTS
 require_once( 'panel/td_panel_fonts.php' );

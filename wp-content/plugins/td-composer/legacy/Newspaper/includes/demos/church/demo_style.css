@@ -121,9 +121,6 @@ usage:
     left: 50%;
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
   }
 }
 .td-church .td-banner .td_block_image_box .entry-title {
@@ -213,8 +210,6 @@ usage:
   border-radius: 100px;
   border-width: 2px;
   opacity: 1;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 100 ")";
-  filter: alpha(opacity=100);
 }
 .td-church .footer-social-wrap .td-icon-font:hover:after {
   border-color: #4db2ec;
@@ -230,8 +225,6 @@ usage:
   height: 1px;
   background-color: #000;
   opacity: 0.08;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 8 ")";
-  filter: alpha(opacity=8);
 }
 .td-church .td-donation-btn {
   display: inline-block;

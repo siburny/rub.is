@@ -223,9 +223,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
 	<div id="tdc-sidebar" class="tdc-sidebar-inline">
 		<div class="tdc-top-buttons">
-			<div class="tdc-add-element" title="Add new element in the viewport">
-				Add element
-				<span class="tdc-icon-add"></span>
+			<div class="tdc-add-element" title="Add a new element in the viewport">
+                <span class="tdc-sidebar-icon tdc-icon-add"></span>
+                <span class="tdc-header-label tdc-text-add">Add</span>
 			</div>
 			<?php
             // load the preview for the current content if we're editing a template with content
@@ -269,22 +269,37 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                 $preview_url = get_permalink($post->ID);
             }
             ?>
-            <a class="tdc-view-page" href="<?php echo $preview_url ?>" target="_blank" title="View the page. Save the content before it">
-				<span class="tdc-icon-view"></span>
-			</a>
-			<a class="tdc-save-page" href="#" title="Save the page content CTRL + S">
-				<span class="tdc-icon-save"></span>
-				</a>
-			<a class="tdc-close-page" href="#" title="Close the composer and switch to backend">
-				<span class="tdc-icon-close"></span>
-			</a>
+            <a class="tdc-sidebar-w-button tdb-load-template tdc-header-link tdc-load-cloud" href="#" title="Add an element from the cloud library">
+                <span class="tdc-sidebar-icon tdc-icon-cloud"></span>
+                <span class="tdc-header-label tdc-text-cloud">Cloud</span>
+            </a>
+            <a class="tdc-sidebar-w-button tdc-zone-button tdc-header-link tdc-header-manager" href="#" title="Open the header manager">
+                <span class="tdc-sidebar-icon tdc-icon-header"></span>
+                <span class="tdc-header-label tdc-text-header">Header</span>
+            </a>
+
+            <a class="tdc-header-link tdc-close-page" href="#" title="Close the composer and switch to backend">
+                <span class="tdc-sidebar-icon tdc-icon-close"></span>
+                <span class="tdc-header-label tdc-text-close">Close</span>
+            </a>
+
+            <a class="tdc-header-link tdc-save-page" href="#" title="Save the page content CTRL + S">
+                <span class="tdc-sidebar-icon tdc-icon-save"></span>
+                <span class="tdc-header-label tdc-text-save">Save</span>
+            </a>
+            <a class="tdc-header-link tdc-view-page" href="<?php echo $preview_url ?>" target="_blank" title="View the page. Save the content before it">
+                <span class="tdc-sidebar-icon tdc-icon-view"></span>
+                <span class="tdc-header-label tdc-text-view">View</span>
+            </a>
+
+
 		</div>
 
         <div class="tdc-empty-sidebar">
 			<div class="tdc-start-tips tdc-intro">
                 <img src="<?php echo TDC_URL ?>/assets/images/sidebar/tagdiv-composer.png">
 				<span>Welcome to <br>tagDiv Composer!</span>
-				<p>Get started by adding elements, go to <span>Add Element</span> and begin dragging your items. You can edit by clicking on any element in the preview area.</p>
+				<p>Get started by adding elements, go to <span>Add</span> and begin dragging your items. You can edit by clicking on any element in the preview area.</p>
 			</div>
 			<div class="tdc-sidebar-w-button tdc-add-element" title="Add new element in the viewport">Add Element</div>
 
@@ -295,7 +310,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                     box-sizing: border-box;
                     margin-left: 12px;
                     color: #fff;
-                    font-size: 12px;
+                    font-size: 10px;
                 }
                 .tdb-template-meta span {
                     opacity: 0.7;
@@ -643,6 +658,22 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
                         // Here will be displayed the extended shortcodes
                         foreach ( $category_page_mapped_shortcodes as $mapped_shortcode ) {
+
+//                            if ( in_array( $mapped_shortcode['base'], array(
+//                                    'tdb_category_grid_1',
+//                                    'tdb_category_grid_2',
+//                                    'tdb_category_grid_3',
+//                                    'tdb_category_grid_4',
+//                                    'tdb_category_grid_5',
+//                                    'tdb_category_grid_6',
+//                                    'tdb_category_grid_7',
+//                                    'tdb_category_grid_8',
+//                                    'tdb_category_grid_9',
+//                                    'tdb_category_grid_10',
+//                                ))
+//                            ) {
+//                                continue;
+//                            }
 
                             $data_row_start_values = '';
 
@@ -1105,10 +1136,10 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 			<li class="tdc-copy-shortcode">Copy<span>CTRL + C</span></li>
 			<li class="tdc-paste-shortcode-before">Paste Before<span>CTRL + SHIFT + V</span></li>
 			<li class="tdc-paste-shortcode-after separator space">Paste After<span>CTRL + V</span></li>
-			<li class="tdc-copy-style active">Copy Style</li>
-			<li class="tdc-paste-style separator space">Paste Style</li>
-			<li class="tdc-reset-style separator space">Reset Style</li>
-			<li class="tdc-save-shortcode">Save as Element<span>SHIFT + S</span></li>
+			<li class="tdc-copy-style active">Copy Style<ul class="tdc-copy-list-attrs"></ul></li>
+			<li class="tdc-paste-style separator space">Paste Style<ul class="tdc-paste-list-attrs"></ul></li>
+            <li class="tdc-reset-style separator space">Reset Style</li>
+            <li class="tdc-save-shortcode">Save as Element<span>SHIFT + S</span></li>
 			<li class="tdc-delete-shortcode">Delete<span>DEL</span></li>
 			<li class="tdc-clone-shortcode">Duplicate<span>CTRL + D</span></li>
 			<li class="tdc-clear-shortcode">Clear</li>

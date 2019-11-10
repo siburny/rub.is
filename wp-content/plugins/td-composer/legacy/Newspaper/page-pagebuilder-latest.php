@@ -138,7 +138,12 @@ if(!empty($post->post_content)) { //show this only when we have content
 
                             //query_posts(td_data_source::metabox_to_args($td_homepage_loop_filter, $paged));
                             query_posts(td_data_source::metabox_to_args($td_homepage_loop, $paged));
-                            load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                            if( !defined('TD_STANDARD_PACK') ) {
+                                load_template( TDC_PATH_LEGACY . '/loop.php', true );
+                            } else {
+                                load_template( TDSP_THEME_PATH . '/loop.php', true);
+                            }
+
                             td_page_generator::get_pagination();
                             wp_reset_query();
                             ?>
@@ -162,7 +167,11 @@ if(!empty($post->post_content)) { //show this only when we have content
 
                         //query_posts(td_data_source::metabox_to_args($td_homepage_loop_filter, $paged));
                         query_posts(td_data_source::metabox_to_args($td_homepage_loop, $paged));
-                        load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                        if( !defined('TD_STANDARD_PACK') ) {
+                            load_template( TDC_PATH_LEGACY . '/loop.php', true );
+                        } else {
+                            load_template( TDSP_THEME_PATH . '/loop.php', true);
+                        }
                         td_page_generator::get_pagination();
                         wp_reset_query();
                         ?>
@@ -188,7 +197,11 @@ if(!empty($post->post_content)) { //show this only when we have content
 
                         //query_posts(td_data_source::metabox_to_args($td_homepage_loop_filter, $paged));
                         query_posts(td_data_source::metabox_to_args($td_homepage_loop, $paged));
-                        load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                        if( !defined('TD_STANDARD_PACK') ) {
+                            load_template( TDC_PATH_LEGACY . '/loop.php', true );
+                        } else {
+                            load_template( TDSP_THEME_PATH . '/loop.php', true);
+                        }
                         td_page_generator::get_pagination();
                         wp_reset_query();
                         ?>

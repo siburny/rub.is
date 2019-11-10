@@ -41,11 +41,7 @@ class tds_counter1 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class .tdm-counter-number {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_style_class .tdm-counter-number,
-				.td-md-is-ios .$unique_style_class .tdm-counter-number {
+				html[class*='ie'] .$unique_style_class .tdm-counter-number {
 				    background: none;
 					color: @counter_color_gradient_1;
 				}

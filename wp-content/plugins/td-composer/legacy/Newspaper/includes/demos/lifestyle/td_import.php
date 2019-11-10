@@ -123,16 +123,6 @@ td_demo_widgets::remove_widgets_from_sidebar('footer-1');
 td_demo_widgets::remove_widgets_from_sidebar('footer-2');
 td_demo_widgets::remove_widgets_from_sidebar('footer-3');
 
-td_demo_widgets::add_widget_to_sidebar('default', 'td_block_social_counter_widget',
-    array (
-        'custom_title'  => "",
-        'facebook'      => "tagdiv",
-        'instagram'     => "tagDiv",
-        'youtube'       => "tagDiv",
-        'style'         => "style3 td-social-colored"
-    )
-);
-
 td_demo_widgets::add_widget_to_sidebar('default', 'td_block_ad_box_widget',
     array (
         'spot_title' => '- Advertisement -',
@@ -140,12 +130,13 @@ td_demo_widgets::add_widget_to_sidebar('default', 'td_block_ad_box_widget',
     )
 );
 
-td_demo_widgets::add_widget_to_sidebar('default', 'td_block_9_widget',
+td_demo_widgets::add_widget_to_sidebar('default', 'search',
+    array ( )
+);
+
+td_demo_widgets::add_widget_to_sidebar('default', 'recent-posts',
     array (
-        'sort' => 'random_posts',
-        'custom_title' => 'Recent Posts',
-        'limit' => '5',
-        'header_color' => ''
+        'spot_title' => 'MOST RECENT',
     )
 );
 

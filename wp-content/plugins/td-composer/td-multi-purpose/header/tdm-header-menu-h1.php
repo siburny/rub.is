@@ -8,7 +8,7 @@
                 <a id="td-header-search-button-mob" href="#" role="button" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
             </div>
 
-            <div class="td-drop-down-search" aria-labelledby="td-header-search-button">
+            <div class="td-drop-down-search">
                 <form method="get" class="td-search-form" action="<?php echo esc_url(home_url( '/' )); ?>">
                     <div role="search" class="td-head-form-search-wrap">
                         <input id="td-header-search" type="text" value="<?php echo get_search_query(); ?>" name="s" autocomplete="off" /><input class="wpb_button wpb_btn-inverse btn" type="submit" id="td-header-search-top" value="<?php _etd('Search', TD_THEME_NAME)?>" />
@@ -77,9 +77,9 @@
     <div class="td-main-menu-logo td-logo-in-menu">
         <?php
         if (td_util::get_option('tds_logo_menu_upload') == '') {
-            require_once( TDC_PATH_LEGACY . '/parts/header/logo-h1.php' );
+            require_once( TDSP_THEME_PATH . '/parts/header/logo-h1.php' );
         } else {
-            require_once( TDC_PATH_LEGACY . '/parts/header/logo-mobile-h1.php' );
+            require_once( TDSP_THEME_PATH . '/parts/header/logo-mobile-h1.php' );
         }?>
     </div>
     <?php

@@ -57,11 +57,7 @@ class tds_icon1 extends td_style {
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				.td-md-is-ios .$unique_style_class:before {
-					-webkit-text-fill-color: initial;
-				}
-				html[class*='ie'] .$unique_style_class:before,
-				.td-md-is-ios .$unique_style_class:before {
+				html[class*='ie'] .$unique_style_class:before {
 				    background: none;
 					color: @text_color_gradient_1;
 				}

@@ -57,7 +57,7 @@ if($loop_sidebar_position == 'sidebar_left') {
                                         <span><?php printf( '%1$s', $current_term_obj->name ) ?></span>
                                     </h1>
                                 </div>
-                                <?php load_template( TDC_PATH_LEGACY . '/loop.php', true);?>
+                                <?php load_template( TDSP_THEME_PATH . '/loop.php', true);?>
                                 <?php echo td_page_generator::get_pagination(); ?>
                             </div>
                         </div>
@@ -80,7 +80,7 @@ if($loop_sidebar_position == 'sidebar_left') {
                                         <span><?php printf( '%1$s', $current_term_obj->name ) ?></span>
                                     </h1>
                                 </div>
-                                <?php load_template( TDC_PATH_LEGACY . '/loop.php', true);?>
+                                <?php load_template( TDSP_THEME_PATH . '/loop.php', true);?>
                                 <?php echo td_page_generator::get_pagination(); ?>
                             </div>
                         </div>
@@ -103,7 +103,7 @@ if($loop_sidebar_position == 'sidebar_left') {
                                         <span><?php printf( '%1$s', $current_term_obj->name ) ?></span>
                                     </h1>
                                 </div>
-                                <?php load_template( TDC_PATH_LEGACY . '/loop.php', true);?>
+                                <?php load_template( TDSP_THEME_PATH . '/loop.php', true);?>
                                 <?php echo td_page_generator::get_pagination(); ?>
                             </div>
                         </div>

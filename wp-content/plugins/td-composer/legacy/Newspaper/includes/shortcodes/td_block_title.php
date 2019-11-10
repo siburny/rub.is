@@ -10,7 +10,7 @@ class td_block_title extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -119,17 +119,10 @@ class td_block_title extends td_block {
 
 
 		$buffy = '';
-        $buffy .= '<div class="' . $this->get_block_classes() . '" ' . $this->get_block_html_atts() . '>';
-
+        $buffy .= '<div class="' . $this->get_block_classes() . ' td-fix-index" ' . $this->get_block_html_atts() . '>';
 		    //get the block js
 		    $buffy .= $this->get_block_css();
-
             $buffy .= $this->get_block_title();
-	        $buffy .= $this->get_pull_down_filter(); //get the sub category filter for this block
-
-            $buffy .= '<div class="td_mod_wrap">';
-
-	        $buffy .= '</div>';
         $buffy .= '</div>';
 
         return $buffy;

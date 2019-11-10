@@ -64,51 +64,55 @@ class td_panel_core {
 
                                     foreach ($all_theme_panels_list[$panel_spot_id]['panels'] as $panel_id => $panel_array) {
 
-                                        switch ($panel_array['type']) {
-                                            case 'separator':
-                                                //it's a group
-                                                ?>
-                                                <li class="td-panel-menu-sep"><?php printf( '%1$s', $panel_array['text'] ) ?></li>
-                                                <?php
-                                                break;
+                                        if( !( $panel_id == 'td-panel-categories' && 'Newspaper' == TD_THEME_NAME && !defined('TD_STANDARD_PACK') && !td_global::is_tdb_registered() ) ) {
+
+                                            switch ($panel_array['type']) {
+                                                case 'separator':
+                                                    //it's a group
+                                                    ?>
+                                                    <li class="td-panel-menu-sep"><?php printf( '%1$s', $panel_array['text'] ) ?></li>
+                                                    <?php
+                                                    break;
 
 
-                                            case 'link':
-                                                ?>
-                                                <li>
-                                                    <a href="<?php echo esc_url( $panel_array['url'] ) ?>" onclick="tdConfirm.modal({
-	                                                        caption: 'You are about to leave the Theme Panel area!',
-                                                            callbackYes: function( href ) {
-											                    window.location.replace(href);
-											                    tb_remove();
-											                },
-	                                                        argsYes: ['<?php echo esc_url( $panel_array['url'] ) ?>'],
-                                                            textYes: ['Yes'],
-	                                                        htmlInfoContent: 'If you have made any changes hit `No` and Save Settings </br> Do you wish to continue?'
-	                                                    });
-	                                                    return false">
+                                                case 'link':
+                                                    ?>
+                                                    <li>
+                                                        <a href="<?php echo esc_url( $panel_array['url'] ) ?>" onclick="tdConfirm.modal({
+                                                                caption: 'You are about to leave the Theme Panel area!',
+                                                                callbackYes: function( href ) {
+                                                                    window.location.replace(href);
+                                                                    tb_remove();
+                                                                },
+                                                                argsYes: ['<?php echo esc_url( $panel_array['url'] ) ?>'],
+                                                                textYes: ['Yes'],
+                                                                htmlInfoContent: 'If you have made any changes hit `No` and Save Settings </br> Do you wish to continue?'
+                                                            });
+                                                            return false">
 
-                                                        <span class="td-sp-nav-icon td-ico-export"></span>
-                                                        <?php printf( '%1$s', $panel_array['text'] ) ?>
-                                                        <span class="td-arrow"></span>
-                                                    </a>
-                                                </li>
-                                                <?php
-                                                break;
+                                                            <span class="td-sp-nav-icon td-ico-export"></span>
+                                                            <?php printf( '%1$s', $panel_array['text'] ) ?>
+                                                            <span class="td-arrow"></span>
+                                                        </a>
+                                                    </li>
+                                                    <?php
+                                                    break;
 
 
-                                            default:
-                                                ?>
-                                                <li class="<?php echo esc_attr( $td_first_menu_welcome_menu ) ?>">
-                                                    <a data-panel="<?php echo esc_attr( $panel_id ) ?>" data-bg="<?php echo esc_url( get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/bg/1.jpg')?>" class="<?php echo esc_attr( $td_first_menu_item_class ) ?>" href="#">
-                                                        <span class="td-sp-nav-icon <?php echo esc_attr( $panel_array['ico_class'] ) ?>"></span>
-                                                        <?php printf( '%1$s', $panel_array['text'] ) ?>
-                                                        <span class="td-arrow"></span>
-                                                    </a>
-                                                </li>
+                                                default:
+                                                    ?>
+                                                    <li class="<?php echo esc_attr( $td_first_menu_welcome_menu ) ?>">
+                                                        <a data-panel="<?php echo esc_attr( $panel_id ) ?>" data-bg="<?php echo esc_url( get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/bg/1.jpg')?>" class="<?php echo esc_attr( $td_first_menu_item_class ) ?>" href="#">
+                                                            <span class="td-sp-nav-icon <?php echo esc_attr( $panel_array['ico_class'] ) ?>"></span>
+                                                            <?php printf( '%1$s', $panel_array['text'] ) ?>
+                                                            <span class="td-arrow"></span>
+                                                        </a>
+                                                    </li>
 
-                                                <?php
-                                                break;
+                                                    <?php
+                                                    break;
+                                            }
+
                                         }
 
 

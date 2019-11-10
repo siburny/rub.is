@@ -34,11 +34,10 @@ do_action('td_global_after');
 require_once('td_first_install.php');
 
 require_once('td_global_blocks.php');   // no autoload -
-//require_once('td_menu.php');            // theme menu support
-
 
 require_once('td_menu.php');   // theme menu support
 td_api_autoload::add('td_nav_menu_edit_walker', td_global::$get_template_directory . '/legacy/common/wp_booster/td_menu_back.php');
+
 
 
 require_once('td_social_icons.php');    // no autoload (almost always needed) - The social icons
@@ -160,6 +159,12 @@ add_action('wp_ajax_td_ajax_system_status_toggle_td_log', array('td_ajax', 'on_a
 add_action('wp_ajax_nopriv_td_ajax_get_template_style', array('td_ajax', 'on_ajax_get_template_style'));
 add_action('wp_ajax_td_ajax_get_template_style',        array('td_ajax', 'on_ajax_get_template_style'));
 
+add_action('wp_ajax_nopriv_td_render_content', array('td_ajax', 'on_ajax_render_content'));
+add_action('wp_ajax_td_render_content',        array('td_ajax', 'on_ajax_render_content'));
+
+//ajax: instagram feeds with access token implementation
+require_once( 'td_instagram_access_tk.php' );
+
 
 /**
  * Fix for page templates ( after the wp booster was moved to td composer the page templates select metabox stoped showing to pages admin editor )
@@ -178,14 +183,6 @@ add_filter( 'theme_page_templates', function( $page_templates ){
 	return $page_templates;
 });
 
-// This points to the post format archive template( like video post format )
-add_filter( 'archive_template', function( $taxonomy_post_format ){
-	if ( is_tax( 'post_format' ) ) {
-		$taxonomy_post_format = TDC_PATH_LEGACY . '/taxonomy-post_format.php';
-	}
-
-	return $taxonomy_post_format;
-});
 
 
 /**
@@ -229,7 +226,6 @@ add_theme_support('woocommerce');
 add_theme_support('bbpress');
 
 //Gutenberg
-
 if ('Newspaper' === TD_THEME_NAME) {
 	add_theme_support('align-wide');
 	add_theme_support('align-full');
@@ -296,6 +292,45 @@ add_action('wp_enqueue_scripts',  'load_js_composer_front', 1000);
 function load_js_composer_front() {
 	wp_enqueue_style('js_composer_front');
 }
+
+/*
+ * required for woocommerce shortcode when live editor is used
+ */
+if (td_global::$is_woocommerce_installed === true ) {
+	if (tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe()) {
+
+		remove_action('woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10);
+		remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5);
+		remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+		remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10);
+		remove_action('woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10);
+		remove_action('woocommerce_before_subcategory', 'woocommerce_template_loop_category_link_open', 10);
+		remove_action('woocommerce_shop_loop_subcategory_title', 'woocommerce_template_loop_category_title', 10);
+		remove_action('woocommerce_after_subcategory', 'woocommerce_template_loop_category_link_close', 10);
+		remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
+		remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
+		remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
+		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
+		remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
+
+
+		add_action('woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10);
+		add_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5);
+		add_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+		add_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10);
+		add_action('woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10);
+		add_action('woocommerce_before_subcategory', 'woocommerce_template_loop_category_link_open', 10);
+		add_action('woocommerce_shop_loop_subcategory_title', 'woocommerce_template_loop_category_title', 10);
+		add_action('woocommerce_after_subcategory', 'woocommerce_template_loop_category_link_close', 10);
+		add_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
+		add_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
+		add_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
+		add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
+		add_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
+
+	}
+}
+
 
 /* ----------------------------------------------------------------------------
  * front end css files
@@ -434,7 +469,7 @@ function td_load_css_fonts() {
 
 
 	//used to pull fonts from google
-	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query();
+	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query() . '&display=swap';
 
 	/*
 	 * add the google link for fonts used by user
@@ -546,8 +581,8 @@ function load_wp_admin_js() {
             $last_js_file_id = $js_file_id;
         }
     } else {
-        wp_enqueue_script('td-wp-admin-js', TDC_URL_LEGACY . '/js/td_wp_admin.min.js', array('jquery', 'wp-color-picker'), TD_THEME_VERSION, false);
-    }
+		wp_enqueue_script('td-wp-admin-js', TDC_URL_LEGACY . '/js/td_wp_admin.min.js', array('jquery', 'wp-color-picker'), TD_THEME_VERSION, false);
+	}
 
 
 
@@ -593,79 +628,7 @@ add_action('wp_head', 'td_on_wp_head_canonical',  1);
 function td_on_wp_head_canonical(){
 
 	global $post;
-//	$td_smart_list = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
 
-	/** ----------------------------------------------------------------------------
-	 * Smart list support. class_exists and new object WORK VIA AUTOLOAD
-	 * @see td_autoload_classes::loading_classes
-	 */
-//	if (!empty($td_smart_list['smart_list_template'])) {
-//
-//		$td_smart_list_class = $td_smart_list['smart_list_template'];
-//		if (class_exists($td_smart_list_class)) {
-//
-//			global $paged, $page;
-//			$td_page = max($paged, $page);
-//
-//			$content = $post->post_content;
-//			$content = apply_filters('the_content', $content);
-//			$content = str_replace(']]>', ']]&gt;', $content);
-//
-//			// Remove the wp action links
-//			remove_action('wp_head', 'rel_canonical');
-//			remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
-//
-//			if (class_exists('WPSEO_Frontend')) {
-//				// Remove the canonical action of the Yoast SEO plugin
-//				remove_action( 'wpseo_head', array( WPSEO_Frontend::get_instance(), 'canonical' ), 20 );
-//			}
-//
-//			// For the first page, there is no page setting, so we use 1
-//			if ($td_page === 0) {
-//				$td_page = 1;
-//			}
-//
-//			/**
-//			 * @var $td_smart_list_obj td_smart_list
-//			 */
-//			$td_smart_list_obj = new $td_smart_list_class();  // make the class from string * magic :)
-//
-//			// prepare the settings for the smart list
-//			$smart_list_settings = array(
-//				'post_content' => $content,
-//				'counting_order_asc' => false,
-//				'td_smart_list_h' => 'h3',
-//				'extract_first_image' => td_api_smart_list::get_key($td_smart_list_class, 'extract_first_image')
-//			);
-//
-//			if (!empty($td_smart_list['td_smart_list_order'])) {
-//				$smart_list_settings['counting_order_asc'] = true;
-//			}
-//
-//			if (!empty($td_smart_list['td_smart_list_h'])) {
-//				$smart_list_settings['td_smart_list_h'] = $td_smart_list['td_smart_list_h'];
-//			}
-//
-//			$list_items = $td_smart_list_obj->get_formatted_list_items($smart_list_settings);
-//
-//			if (array_key_exists('list_items', $list_items) && !empty($list_items['list_items'])) {
-//				$count_items = count($list_items['list_items']);
-//				foreach ($list_items['list_items'] as $list_item) {
-//					if ($td_page == $list_item['current_item_number']) {
-//						echo '<link rel="canonical" href="' . $td_smart_list_obj->_wp_link_page($td_page) . '"/>';
-//						if ($td_page > 1) {
-//							echo '<link rel="prev" href="' . $td_smart_list_obj->_wp_link_page($td_page - 1) . '"/>';
-//						}
-//						if ($td_page < $count_items) {
-//							echo '<link rel="next" href="' . $td_smart_list_obj->_wp_link_page($td_page + 1) . '"/>';
-//						}
-//						break;
-//					}
-//				}
-//			}
-//		}
-//
-//	} else 
 		if (is_page() && 'page-pagebuilder-latest.php' === get_post_meta($post->ID, '_wp_page_template', true)) {
 
 		$td_page = get_query_var('page') ? get_query_var('page') : 1; //rewrite the global var
@@ -716,27 +679,18 @@ function td_on_wp_head_canonical(){
  */
 add_action('wp_head', 'hook_wp_head', 1);  //hook on wp_head -> 1 priority, we are first
 function hook_wp_head() {
-	if (is_single()) {
-		global $post;
-
+//	if (is_single()) {
+//		global $post;
+//
 		// facebook sharing fix for videos, we add the custom meta data
-		if (has_post_thumbnail($post->ID)) {
-			$td_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
-			if (!empty($td_image[0])) {
-				echo '<meta property="og:image" content="' .  $td_image[0] . '" />';
-			}
-		}
-
-		// show author meta tag on single pages if it's not disabled from theme's panel
-		// this is not used by facebook anymore and it generates error in facebook's sharing debugger
-		// removed the comment if needed
-//		if (td_util::get_option('tds_p_show_author_name') != 'hide') {
-//			$td_post_author = get_the_author_meta('display_name', $post->post_author);
-//			if ($td_post_author) {
-//				echo '<meta name="author" content="' . $td_post_author . '">' . "\n";
+		// this is not used anymore, the meta are add by Yoast
+//		if (has_post_thumbnail($post->ID)) {
+//			$td_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
+//			if (!empty($td_image[0])) {
+//				echo '<meta property="og:image" content="' .  $td_image[0] . '" />';
 //			}
 //		}
-	}
+//	}
 
 	// fav icon support
 	$tds_favicon_upload = td_util::get_option('tds_favicon_upload');
@@ -791,7 +745,7 @@ function hook_wp_head() {
 	$tds_animation_stack = td_util::get_option('tds_animation_stack');
 
 	// the body css supplementary classes and the global js animation effects variables are set only if the option 'tds_animation_stack' is set
-	if (empty($tds_animation_stack)) {
+	if (empty($tds_animation_stack) && ! tdc_state::is_live_editor_iframe() ) {
 
 		// js variable td_animation_stack_effect added to the window object
 		$td_animation_stack_effect_type = 'type0';
@@ -932,7 +886,18 @@ function td_wpseo_title($seo_title) {
 	return $seo_title;
 }
 
-
+/**  ----------------------------------------------------------------------------
+ * remove yoast json schema for post with reviews
+ */
+add_filter('wpseo_json_ld_output', 'td_remove_yoast_json', 10, 1);
+function td_remove_yoast_json($data){
+	global $post;
+	$td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+	if (isset($td_post_theme_settings['has_review'])) {
+		$data = array();
+	}
+	return $data;
+}
 
 
 /**  ----------------------------------------------------------------------------
@@ -1171,7 +1136,7 @@ function add_slug_to_post_class($classes) {
 	global $post;
 
 	// on custom post types, we add the .post class for better css compatibility
-	if (is_single() and $post->post_type != 'post') {
+	if ( (is_single() and $post->post_type != 'post') || (wp_doing_ajax() && td_global::$is_wordpress_loop) ) {
 		$classes[]= 'post';
 	}
 
@@ -1676,9 +1641,9 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
 
 				switch (TD_THEME_NAME) {
 					case 'Newspaper' :
-						$td_temp_image_url = wp_get_attachment_image_src($image_id, 'td_1068x580');       //1021x580 images - for big slide
+						$td_temp_image_url = wp_get_attachment_image_src($image_id, 'td_1068x0');       //1021x580 images - for big slide
 						//change image type and width - used to retrieve retina image
-						$thumbnail_type = 'td_1068x580';
+						$thumbnail_type = 'td_1068x0';
 						$thumbnail_width = '1068';
 						break;
 
@@ -1929,7 +1894,7 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
                         * Resize the iosSlider when the page is resided (fixes bug on Android devices)
                         */
                         function td_gallery_resize_update_vars_' . $gallery_slider_unique_id . '(args) {
-                            if(tdDetect.isAndroid) {
+                            if(tdDetect.isAndroid || tdDetect.isIos) {
                                 setTimeout(function(){
                                     jQuery("#' . $gallery_slider_unique_id . ' .td-doubleSlider-1").iosSlider("update");
                                 }, 1500);
@@ -1948,6 +1913,7 @@ function td_gallery_shortcode($output = '', $atts, $content = false) {
 	//$return has to be != empty to overwride the default output
 	return $buffy;
 }
+
 
 
 /* ----------------------------------------------------------------------------
@@ -2002,125 +1968,176 @@ function td_add_single_template_class($classes) {
 
 
 
-/* ----------------------------------------------------------------------------
- * add custom classes to the single templates, also mix fixes for white menu and white grid
- */
-add_filter('body_class', 'td_add_category_template_class');
-function td_add_category_template_class($classes) {
-	if(!is_admin() and is_category()) {
+if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && defined('TD_STANDARD_PACK') ) ) {
+    /* ----------------------------------------------------------------------------
+    * add custom classes to the category templates, also mix fixes for white menu and white grid
+    */
+    add_filter('body_class', 'td_add_category_template_class');
+    function td_add_category_template_class($classes) {
+        if(!is_admin() and is_category()) {
 
-        if ( td_global::is_tdb_registered() ) {
+            if ( td_global::is_tdb_registered() ) {
 
-            $current_category = get_queried_object();
+                $current_category = get_queried_object();
 
-            $tdb_category_template_global = td_options::get( 'tdb_category_template' );
-            $tdb_category_template = td_util::get_category_option( $current_category->cat_ID, 'tdb_category_template');
+                $tdb_category_template_global = td_options::get( 'tdb_category_template' );
+                $tdb_category_template = td_util::get_category_option( $current_category->cat_ID, 'tdb_category_template');
 
-            if ( empty( $tdb_category_template ) ) {
-                $tdb_category_template = $tdb_category_template_global;
+                if ( empty( $tdb_category_template ) ) {
+                    $tdb_category_template = $tdb_category_template_global;
+                }
+
+                if ( ! empty( $tdb_category_template ) && ( 'theme_templates' !== $tdb_category_template ) && td_global::is_tdb_template( $tdb_category_template, true ) ) {
+                    return $classes;
+                }
             }
 
-            if ( ! empty( $tdb_category_template ) && ( 'theme_templates' !== $tdb_category_template ) && td_global::is_tdb_template( $tdb_category_template, true ) ) {
-                return $classes;
-		    }
+            $classes [] = sanitize_html_class(td_api_category_template::_helper_get_active_id());
+            $classes [] = sanitize_html_class(td_api_category_top_posts_style::_helper_get_active_id());
+        }
+        return $classes;
+    }
+
+
+    /* ----------------------------------------------------------------------------
+     * modify the main query for category pages
+     */
+    add_action('pre_get_posts', 'td_modify_main_query_for_category_page');
+    function td_modify_main_query_for_category_page($query) {
+
+        //checking for category page and main query
+        if(!is_admin() and is_category() and $query->is_main_query()) {
+            // get the category object - with or without permalinks
+            if (empty($query->query_vars['cat'])) {
+                td_global::$current_category_obj = get_category_by_path(get_query_var('category_name'), false);  // when we have permalinks, we have to get the category object like this.
+            } else {
+                td_global::$current_category_obj = get_category($query->query_vars['cat']);
+            }
+
+
+            // we are on a category page with an ID that doesn't exists - wp will show a 404 and we do nothing
+            if (is_null(td_global::$current_category_obj)) {
+                return;
+            }
+
+            // run our filter and check it's returned value. If tdb plugin did it's query modifications this will return 'true' and we do nothing here.
+            $tdb_template_overwrite = apply_filters( 'tdb_category_template_query_overwrite', false );
+
+            // if the was overwritten return here
+            if ( $tdb_template_overwrite === true ) {
+                return;
+            }
+
+            //get the number of page where on
+            $paged = get_query_var('paged');
+
+            //get the `filter_by` URL($_GET) variable
+            $filter_by = '';
+            if (isset($_GET['filter_by'])) {
+                $filter_by = $_GET['filter_by'];
+            }
+
+            //get the limit of posts on the category page
+            $limit = get_option('posts_per_page');
+
+
+            switch ($filter_by) {
+                case 'featured':
+                    //get the category object
+                    $query->set('category_name',  td_global::$current_category_obj->slug);
+                    $query->set('cat', get_cat_ID(TD_FEATURED_CAT)); //add the fetured cat
+                    break;
+
+                case 'popular':
+                    $query->set('meta_key', td_page_views::$post_view_counter_key);
+                    $query->set('orderby', 'meta_value_num');
+                    $query->set('order', 'DESC');
+                    break;
+
+                case 'popular7':
+                    $query->set('meta_key', td_page_views::$post_view_counter_7_day_total);
+                    $query->set('orderby', 'meta_value_num');
+                    $query->set('order', 'DESC');
+                    break;
+
+                case 'review_high':
+                    $query->set('meta_key', 'td_review_key');
+                    $query->set('orderby', 'meta_value_num');
+                    $query->set('order', 'DESC');
+                    break;
+
+                case 'random_posts':
+                    $query->set('orderby', 'rand');
+                    break;
+            }//end switch
+
+
+            // how many posts are we showing in the big grid for this category
+            $offset = td_api_category_top_posts_style::_helper_get_posts_shown_in_the_loop();
+
+
+            // offset + custom pagination - if we have offset, WordPress overwrites the pagination and works with offset + limit
+            if(empty($query->is_feed)) {
+                if ( $paged > 1 ) {
+                    $query->set( 'offset', intval($offset) + ( ( $paged - 1 ) * $limit ) );
+                } else {
+                    $query->set( 'offset', intval($offset) );
+                }
+            }
+            //print_r($query);
+        }//end if main query
+    }
+
+
+    /* ----------------------------------------------------------------------------
+    * register the default footer sidebars
+    */
+    add_action( 'widgets_init', function (){
+
+        register_sidebar(
+            array(
+                'name'=>'Footer 1',
+                'id' => 'td-footer-1',
+                'before_widget' => '<aside class="widget %2$s">',
+                'after_widget' => '</aside>',
+                'before_title' => '<div class="block-title"><span>',
+                'after_title' => '</span></div>'
+            )
+        );
+
+        register_sidebar(
+            array(
+                'name'=>'Footer 2',
+                'id' => 'td-footer-2',
+                'before_widget' => '<aside class="widget %2$s">',
+                'after_widget' => '</aside>',
+                'before_title' => '<div class="block-title"><span>',
+                'after_title' => '</span></div>'
+            )
+        );
+
+        register_sidebar(
+            array(
+                'name'=>'Footer 3',
+                'id' => 'td-footer-3',
+                'before_widget' => '<aside class="widget %2$s">',
+                'after_widget' => '</aside>',
+                'before_title' => '<div class="block-title"><span>',
+                'after_title' => '</span></div>'
+            )
+        );
+
+    }, 11);
+
+
+    // This points to the post format archive template( like video post format )
+    add_filter( 'archive_template', function( $taxonomy_post_format ){
+        if ( is_tax( 'post_format' ) ) {
+            $taxonomy_post_format = TDC_PATH_LEGACY . '/taxonomy-post_format.php';
         }
 
-		$classes [] = sanitize_html_class(td_api_category_template::_helper_get_active_id());
-		$classes [] = sanitize_html_class(td_api_category_top_posts_style::_helper_get_active_id());
-	}
-	return $classes;
-}
-
-
-
-
-/* ----------------------------------------------------------------------------
- * modify the main query for category pages
- */
-add_action('pre_get_posts', 'td_modify_main_query_for_category_page');
-function td_modify_main_query_for_category_page($query) {
-
-	//checking for category page and main query
-	if(!is_admin() and is_category() and $query->is_main_query()) {
-		// get the category object - with or without permalinks
-		if (empty($query->query_vars['cat'])) {
-			td_global::$current_category_obj = get_category_by_path(get_query_var('category_name'), false);  // when we have permalinks, we have to get the category object like this.
-		} else {
-			td_global::$current_category_obj = get_category($query->query_vars['cat']);
-		}
-
-
-		// we are on a category page with an ID that doesn't exists - wp will show a 404 and we do nothing
-		if (is_null(td_global::$current_category_obj)) {
-			return;
-		}
-
-        // run our filter and check it's returned value. If tdb plugin did it's query modifications this will return 'true' and we do nothing here.
-        $tdb_template_overwrite = apply_filters( 'tdb_category_template_query_overwrite', false );
-
-		// if the was overwritten return here
-        if ( $tdb_template_overwrite === true ) {
-            return;
-        }
-
-		//get the number of page where on
-		$paged = get_query_var('paged');
-
-		//get the `filter_by` URL($_GET) variable
-		$filter_by = '';
-		if (isset($_GET['filter_by'])) {
-			$filter_by = $_GET['filter_by'];
-		}
-
-		//get the limit of posts on the category page
-		$limit = get_option('posts_per_page');
-
-
-		switch ($filter_by) {
-			case 'featured':
-				//get the category object
-				$query->set('category_name',  td_global::$current_category_obj->slug);
-				$query->set('cat', get_cat_ID(TD_FEATURED_CAT)); //add the fetured cat
-				break;
-
-			case 'popular':
-				$query->set('meta_key', td_page_views::$post_view_counter_key);
-				$query->set('orderby', 'meta_value_num');
-				$query->set('order', 'DESC');
-				break;
-
-			case 'popular7':
-				$query->set('meta_key', td_page_views::$post_view_counter_7_day_total);
-				$query->set('orderby', 'meta_value_num');
-				$query->set('order', 'DESC');
-				break;
-
-			case 'review_high':
-				$query->set('meta_key', 'td_review_key');
-				$query->set('orderby', 'meta_value_num');
-				$query->set('order', 'DESC');
-				break;
-
-			case 'random_posts':
-				$query->set('orderby', 'rand');
-				break;
-		}//end switch
-
-
-		// how many posts are we showing in the big grid for this category
-		$offset = td_api_category_top_posts_style::_helper_get_posts_shown_in_the_loop();
-
-
-		// offset + custom pagination - if we have offset, WordPress overwrites the pagination and works with offset + limit
-		if(empty($query->is_feed)) {
-			if ( $paged > 1 ) {
-				$query->set( 'offset', intval($offset) + ( ( $paged - 1 ) * $limit ) );
-			} else {
-				$query->set( 'offset', intval($offset) );
-			}
-		}
-		//print_r($query);
-	}//end if main query
+        return $taxonomy_post_format;
+    });
 }
 
 
@@ -2249,39 +2266,6 @@ function td_init_booster() {
 			)
 		);
 
-		register_sidebar(
-			array(
-				'name'=>'Footer 1',
-				'id' => 'td-footer-1',
-				'before_widget' => '<aside class="widget %2$s">',
-				'after_widget' => '</aside>',
-				'before_title' => '<div class="block-title"><span>',
-				'after_title' => '</span></div>'
-			)
-		);
-
-		register_sidebar(
-			array(
-				'name'=>'Footer 2',
-				'id' => 'td-footer-2',
-				'before_widget' => '<aside class="widget %2$s">',
-				'after_widget' => '</aside>',
-				'before_title' => '<div class="block-title"><span>',
-				'after_title' => '</span></div>'
-			)
-		);
-
-		register_sidebar(
-			array(
-				'name'=>'Footer 3',
-				'id' => 'td-footer-3',
-				'before_widget' => '<aside class="widget %2$s">',
-				'after_widget' => '</aside>',
-				'before_title' => '<div class="block-title"><span>',
-				'after_title' => '</span></div>'
-			)
-		);
-
 		// get our custom dynamic sidebars
 		$currentSidebars = td_options::get_array('sidebars');
 
@@ -2334,10 +2318,18 @@ if (is_admin()) {
 		WP_Filesystem();
 	}
 
+	add_action('admin_enqueue_scripts', function ($hook_suffix){
 
-
-
-
+	    if ( 'newspaper_page_td_theme_panel' === $hook_suffix ) {
+			wp_enqueue_script(
+				'td-instagram-access',
+				TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdInstagramAccess.js',
+				false,
+				TD_THEME_VERSION,
+				'all'
+			);
+        }
+	});
 
 	/**
 	 * the wp-admin TinyMCE editor buttons
@@ -2388,127 +2380,6 @@ if (is_admin()) {
 	}
 }
 
-
-/**
- * - intercept the single template
- * - @since 26.2.2018 - this method of verifying the template is very odd. There is no reason why it's done this way instead of is_singular('post')
- * - RUNS AFTER the hook from the template builder
- * - we do nothing here where a template builder id is detected
- */
-add_filter( 'template_include', 'td_template_include_filter');
-function td_template_include_filter( $wordpress_template_path ) {
-
-	$td_is_td_template_include_filter = false;
-
-	// check if child theme is active - fix for changing post template, when the template file doesn't exist in child theme
-	if (is_child_theme()) {
-
-		if (
-			is_single() &&
-			(
-				$wordpress_template_path == TEMPLATEPATH . '/single.php'  ||
-				$wordpress_template_path == STYLESHEETPATH . '/single.php'
-			)
-		) {
-			// remove the filter to allow Child theme overwrite
-			remove_filter( 'template_include', 'tdc_template_include', 99);
-			remove_filter( 'comments_template', 'tdc_template_include', 99);
-			$td_is_td_template_include_filter = true;
-		}
-	}
-
-	if (
-		is_single() &&
-		(
-			$wordpress_template_path == td_global::$get_template_directory . '/single.php' ||
-			$wordpress_template_path == get_stylesheet_directory() . '/single.php'
-		)
-	) {
-		$td_is_td_template_include_filter = true;
-	}
-
-	if ($td_is_td_template_include_filter) {
-		global $post;
-
-		// if we are on a custom post type, leave the defaul loaded wordpress template
-		if ( $post->post_type != 'post' ) {
-			return $wordpress_template_path;
-		}
-
-		// check if we have a specific template set on the current post
-		$td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
-
-		if ( !empty( $td_post_theme_settings['td_post_template'] ) ) {
-			$single_template_id = $td_post_theme_settings['td_post_template'];
-
-			if ( td_global::is_tdb_template($single_template_id)) {
-
-				// make sure the template exists, maybe it was deleted or something
-				if ( td_global::is_tdb_template( $single_template_id, true ) ) {
-
-					$tdb_template_id = td_global::tdb_get_template_id($single_template_id);
-
-					// run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
-					$td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
-
-					if ( $td_single_override != $tdb_template_id ) {
-						return $td_single_override;
-					}
-
-				} else {
-					// just reset the post template here, the panel default post template will kick in and load, if available
-					$td_post_theme_settings['td_post_template'] = '';
-					update_post_meta( $post->ID, 'td_post_theme_settings', $td_post_theme_settings );
-				}
-
-			} else {
-				// it's a theme template, load that one
-				return td_api_single_template::_get_theme_template( $single_template_id, $wordpress_template_path );
-			}
-		}
-
-		// read the global setting
-		$default_template_id = td_util::get_option('td_default_site_post_template');
-
-		// STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
-		if ( td_global::is_tdb_template( $default_template_id ) ) {
-
-			// make sure the template exists, maybe it was deleted or something
-			if ( td_global::is_tdb_template( $default_template_id, true ) ) {
-
-				// load the default tdb template
-				$tdb_template_id = td_global::tdb_get_template_id($default_template_id);
-
-				// run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
-				$td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
-
-				if ( $td_single_override != $tdb_template_id ) {
-					return $td_single_override;
-				}
-
-			} else {
-
-				// if we have an non-existent cloud template update the default site wide post template
-				td_util::update_option('td_default_site_post_template', '' );
-
-				// and load the default theme template
-				return $wordpress_template_path;
-			}
-
-		} else {
-			// this was added for child theme, when default post template is set globally
-			// _get_theme_template cannot locate the default post template id (is empty)
-			if ( $default_template_id == '' && is_child_theme() ) {
-				$default_template_id = 'single_template';
-			}
-			
-			// load the default theme template
-			return td_api_single_template::_get_theme_template( $default_template_id, $wordpress_template_path );
-		}
-
-	}
-	return $wordpress_template_path;
-}
 
 
 
@@ -2662,6 +2533,130 @@ function td_add_amp_plugin_action_link_filters_on_init() {
             }, 10, 3 );
         }
     }
+}
+
+
+
+
+
+/**
+ * - intercept the single template
+ * - @since 26.2.2018 - this method of verifying the template is very odd. There is no reason why it's done this way instead of is_singular('post')
+ * - RUNS AFTER the hook from the template builder
+ * - we do nothing here where a template builder id is detected
+ */
+add_filter( 'template_include', 'td_template_include_filter');
+function td_template_include_filter( $wordpress_template_path ) {
+
+    $td_is_td_template_include_filter = false;
+
+    // check if child theme is active - fix for changing post template, when the template file doesn't exist in child theme
+    if (is_child_theme()) {
+
+        if (
+            is_single() &&
+            (
+                $wordpress_template_path == TEMPLATEPATH . '/single.php'  ||
+                $wordpress_template_path == STYLESHEETPATH . '/single.php'
+            )
+        ) {
+            // remove the filter to allow Child theme overwrite
+            remove_filter( 'template_include', 'tdc_template_include', 99);
+            $td_is_td_template_include_filter = true;
+        }
+    }
+
+    if (
+        is_single() && (
+            $wordpress_template_path == td_global::$get_template_directory . '/single.php' ||
+            $wordpress_template_path == get_stylesheet_directory() . '/single.php'
+        )
+    ) {
+        $td_is_td_template_include_filter = true;
+    }
+
+    if ($td_is_td_template_include_filter) {
+        global $post;
+
+        // if we are on a custom post type, leave the defaul loaded wordpress template
+        if ( $post->post_type != 'post' ) {
+            return $wordpress_template_path;
+        }
+
+        // check if we have a specific template set on the current post
+        $td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+
+        if ( !empty( $td_post_theme_settings['td_post_template'] ) ) {
+            $single_template_id = $td_post_theme_settings['td_post_template'];
+
+            if ( td_global::is_tdb_template($single_template_id)) {
+
+                // make sure the template exists, maybe it was deleted or something
+                if ( td_global::is_tdb_template( $single_template_id, true ) ) {
+
+                    $tdb_template_id = td_global::tdb_get_template_id($single_template_id);
+
+                    // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                    $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                    if ( $td_single_override != $tdb_template_id ) {
+                        return $td_single_override;
+                    }
+
+                } else {
+                    // just reset the post template here, the panel default post template will kick in and load, if available
+                    $td_post_theme_settings['td_post_template'] = '';
+                    update_post_meta( $post->ID, 'td_post_theme_settings', $td_post_theme_settings );
+                }
+
+            } else {
+                // it's a theme template, load that one
+                return td_api_single_template::_get_theme_template( $single_template_id, $wordpress_template_path );
+            }
+        }
+
+        // read the global setting
+        $default_template_id = td_util::get_option('td_default_site_post_template');
+
+        // STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
+        if ( td_global::is_tdb_template( $default_template_id ) ) {
+
+            // make sure the template exists, maybe it was deleted or something
+            if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+
+                // load the default tdb template
+                $tdb_template_id = td_global::tdb_get_template_id($default_template_id);
+
+                // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                if ( $td_single_override != $tdb_template_id ) {
+                    return $td_single_override;
+                }
+
+            } else {
+
+                // if we have an non-existent cloud template update the default site wide post template
+                td_util::update_option('td_default_site_post_template', '' );
+
+                // and load the default theme template
+                return $wordpress_template_path;
+            }
+
+        } else {
+
+            // this was added for child theme, when default post template is set globally
+            // _get_theme_template cannot locate the default post template id (is empty)
+            if ( $default_template_id == '' ) {
+                $default_template_id = 'single_template';
+            }
+
+            // load the default theme template
+            return td_api_single_template::_get_theme_template( $default_template_id, $wordpress_template_path );
+        }
+
+    }
+    return $wordpress_template_path;
 }
 
 

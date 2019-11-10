@@ -118,11 +118,76 @@ class td_block_slide extends td_block {
         $res_ctx->load_font_settings( 'msf_cat' );
         $res_ctx->load_font_settings( 'msf_meta' );
 
+        // mix blend
+        $mix_type = $res_ctx->get_shortcode_att('mix_type');
+        if ( $mix_type != '' ) {
+            $res_ctx->load_settings_raw('mix_type', $res_ctx->get_shortcode_att('mix_type'));
+        }
+        $res_ctx->load_color_settings( 'mix_color', 'color', 'mix_gradient', '', '' );
+
+        $mix_type_h = $res_ctx->get_shortcode_att('mix_type_h');
+        if ( $mix_type_h != '' ) {
+            $res_ctx->load_settings_raw('mix_type_h', $res_ctx->get_shortcode_att('mix_type_h'));
+        } else {
+            $res_ctx->load_settings_raw('mix_type_off', 1);
+        }
+        $res_ctx->load_color_settings( 'mix_color_h', 'color_h', 'mix_gradient_h', '', '' );
+
+        // effects
+        $res_ctx->load_settings_raw('fe_brightness', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate', 'saturate(1)');
+
+        $fe_brightness = $res_ctx->get_shortcode_att('fe_brightness');
+        if ($fe_brightness != '1') {
+            $res_ctx->load_settings_raw('fe_brightness', 'brightness(' . $fe_brightness . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_contrast = $res_ctx->get_shortcode_att('fe_contrast');
+        if ($fe_contrast != '1') {
+            $res_ctx->load_settings_raw('fe_contrast', 'contrast(' . $fe_contrast . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        $fe_saturate = $res_ctx->get_shortcode_att('fe_saturate');
+        if ($fe_saturate != '1') {
+            $res_ctx->load_settings_raw('fe_saturate', 'saturate(' . $fe_saturate . ')');
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+
+        // effects hover
+        $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(1)');
+        $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(1)');
+        $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(1)');
+
+        $fe_brightness_h = $res_ctx->get_shortcode_att('fe_brightness_h');
+        $fe_contrast_h = $res_ctx->get_shortcode_att('fe_contrast_h');
+        $fe_saturate_h = $res_ctx->get_shortcode_att('fe_saturate_h');
+
+        if ($fe_brightness_h != '1') {
+            $res_ctx->load_settings_raw('fe_brightness_h', 'brightness(' . $fe_brightness_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_contrast_h != '1') {
+            $res_ctx->load_settings_raw('fe_contrast_h', 'contrast(' . $fe_contrast_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        if ($fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('fe_saturate_h', 'saturate(' . $fe_saturate_h . ')');
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+        // make hover to work
+        if ($fe_brightness_h != '1' || $fe_contrast_h != '1' || $fe_saturate_h != '1') {
+            $res_ctx->load_settings_raw('effect_on', 1);
+        }
+        if ($fe_brightness != '1' || $fe_contrast != '1' || $fe_saturate != '1') {
+            $res_ctx->load_settings_raw('effect_on_h', 1);
+        }
+
     }
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid . '_rand';
+        $unique_block_class = $this->block_uid;
 
         $compiled_css = '';
 
@@ -326,6 +391,70 @@ class td_block_slide extends td_block {
 				.$unique_block_class .td_module_slide .td-module-comments a {
 					@msf_meta
 				}
+				
+				/* @mix_type */
+                .$unique_block_class .entry-thumb:before {
+                    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    opacity: 1;
+                    transition: opacity 1s ease;
+                    -webkit-transition: opacity 1s ease;
+                    mix-blend-mode: @mix_type;
+                }
+                /* @color */
+                .$unique_block_class .entry-thumb:before {
+                    background: @color;
+                }
+                /* @mix_gradient */
+                .$unique_block_class .entry-thumb:before {
+                    @mix_gradient;
+                }
+                
+                
+                /* @mix_type_h */
+                @media (min-width: 1141px) {
+                    .$unique_block_class .entry-thumb:after {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        opacity: 0;
+                        transition: opacity 1s ease;
+                        -webkit-transition: opacity 1s ease;
+                        mix-blend-mode: @mix_type_h;
+                    }
+                    .$unique_block_class .td-theme-slider:hover .entry-thumb:after {
+                        opacity: 1;
+                    }
+                }
+                
+                /* @color_h */
+                .$unique_block_class .entry-thumb:after {
+                    background: @color_h;
+                }
+                /* @mix_gradient_h */
+                .$unique_block_class .entry-thumb:after {
+                    @mix_gradient_h;
+                }
+                /* @mix_type_off */
+                .$unique_block_class .td-theme-slider:hover .entry-thumb:before {
+                    opacity: 0;
+                }
+                    
+                /* @effect_on */
+                .$unique_block_class .entry-thumb {
+                    filter: @fe_brightness @fe_contrast @fe_saturate;
+                    transition: all 1s ease;
+                    -webkit-transition: all 1s ease;
+                }
+                /* @effect_on_h */
+                @media (min-width: 1141px) {
+                    .$unique_block_class .td-theme-slider:hover .entry-thumb {
+                        filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
+                    }
+                }
 			</style>";
 
 

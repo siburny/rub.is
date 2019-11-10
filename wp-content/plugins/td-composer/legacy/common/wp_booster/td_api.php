@@ -107,7 +107,6 @@ class td_api_base {
 	 */
     protected static function get_default_component_id($class_name) {
         foreach (self::$components_list as $component_id => $component_value) {
-
             if (isset($component_value[self::TYPE])
                 and $component_value[self::TYPE] == $class_name) {
 
@@ -367,7 +366,11 @@ class td_api_base {
             
             // the api was moved in legacy (so we check for tdc_path)
             $child_path = STYLESHEETPATH . str_replace(TDC_PATH_LEGACY, '', $the_component['file']);
-
+            
+            if( defined('TD_STANDARD_PACK') and strpos($the_component['file'], TDSP_THEME_PATH) !== false ) {
+                $child_path = STYLESHEETPATH . str_replace(TDSP_THEME_PATH, '', $the_component['file']);
+            }
+            
 			if (file_exists($child_path)) {
 				$the_component['file'] = $child_path;
 			}

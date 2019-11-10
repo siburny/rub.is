@@ -21,6 +21,7 @@ class td_social_icons {
         'mail-1' => 'Mail',
         'stumbleupon' => 'Mix',
         'myspace' => 'Myspace',
+        'naver' => 'Naver',
         'path' => 'Path',
         'paypal' => 'Paypal',
         'pinterest' => 'Pinterest',

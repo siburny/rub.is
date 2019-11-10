@@ -251,10 +251,12 @@ class td_css_res_compiler  {
 				}
 
 				if ( 'all' === $media ) {
-					$compiled_css .= $css_compiler->compile_css();
+					$raw_css = $css_compiler->compile_css();
+					$compiled_css .= $css_compiler->compress_sections( $raw_css );
 				} else {
 					$compiled_css .= PHP_EOL . PHP_EOL . '/* ' . $media . ' */'. PHP_EOL . td_global::$viewport_settings[ $media ]['media_query'] . '{' . PHP_EOL;
-					$compiled_css .= $css_compiler->compile_css() .  PHP_EOL;
+					$raw_css = $css_compiler->compile_css();
+					$compiled_css .= $css_compiler->compress_sections( $raw_css ) .  PHP_EOL;
 					$compiled_css .= '}';
 				}
 			}

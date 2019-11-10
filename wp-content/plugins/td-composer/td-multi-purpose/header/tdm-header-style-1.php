@@ -34,7 +34,10 @@ if ( !td_util::get_option('tds_header_background_image') == '' ) {
         <div class="td-banner-wrap-full td-container-wrap <?php echo td_util::get_option('td_full_header'); ?>">
             <div class="td-container-header td-header-row td-header-header">
                 <div class="td-header-sp-recs">
-                    <?php require_once( TDC_PATH_LEGACY . '/parts/header/ads.php'); ?>
+                    <?php
+                    if( defined( TD_STANDARD_PACK ) ) {
+                        require_once( TDSP_THEME_PATH . '/parts/header/ads.php');
+                    } ?>
                 </div>
             </div>
         </div>

@@ -9,7 +9,11 @@
  * @version     1.6.4
  */
 
-get_header();
+if ( td_util::is_amp() ) {
+    get_header('amp');
+} else {
+    get_header();
+}
 ?>
 
 <div class="td-main-content-wrap td-main-page-wrap">
@@ -24,5 +28,9 @@ get_header();
 </div> <!-- /.td-main-content-wrap -->
 
 <?php
-get_footer();
+if ( td_util::is_amp() ) {
+    get_footer('amp');
+} else {
+    get_footer();
+}
 ?>

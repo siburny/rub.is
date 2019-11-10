@@ -18,6 +18,7 @@ class td_module_flex_4 extends td_module {
         $excerpt_length = $this->get_shortcode_att('mc4_el');
         $excerpt_position = $this->get_shortcode_att('excerpt_middle3');
         $modified_date = $this->get_shortcode_att('show_modified_date');
+        $hide_audio = $this->get_shortcode_att('hide_audio3');
 
         if (empty($image_size)) {
             $image_size = 'td_218x150';
@@ -58,7 +59,9 @@ class td_module_flex_4 extends td_module {
 
                     <?php if ($excerpt_position == '') { echo $excerpt; } ?>
 
-                    <?php echo $this->get_audio_embed() ?>
+                    <?php if( $hide_audio == '' ) {
+                        echo $this->get_audio_embed();
+                    } ?>
                 </div>
             </div>
         </div>

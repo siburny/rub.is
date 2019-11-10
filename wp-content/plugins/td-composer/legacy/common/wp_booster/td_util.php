@@ -1666,6 +1666,7 @@ class td_util {
 		foreach ( td_fonts::$font_stack_list as $font_id => $font_name ) {
 			$list[$font_id] = $font_name;
 		}
+		asort(td_fonts::$font_names_google_list);
 		foreach ( td_fonts::$font_names_google_list as $font_id => $font_name ) {
 			$list[$font_id] = $font_name;
 		}
@@ -1768,6 +1769,18 @@ class td_util {
 			return false;
 		}
 		return false;
+	}
+
+	/**
+	 * Check whether the string is a unix timestamp
+	 *
+	 * @param $timestamp - the timestamp
+	 * @return bool - true if valid, false otherwise
+	 */
+	static function is_valid_timeStamp($timestamp) {
+		return ((string) (int) $timestamp === $timestamp)
+		       && ($timestamp <= PHP_INT_MAX)
+		       && ($timestamp >= ~PHP_INT_MAX);
 	}
 
 }//end class td_util

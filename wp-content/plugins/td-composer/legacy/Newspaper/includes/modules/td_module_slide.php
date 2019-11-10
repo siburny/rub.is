@@ -38,10 +38,10 @@ class td_module_slide extends td_module {
                         $buffy .= $this->get_image('td_696x385', true);
                         break;
                     case '3': //three column layout
-                        $buffy .= $this->get_image('td_1068x580', true);
+                        $buffy .= $this->get_image('td_1068x0', true);
                         break;
                     default:
-                        $buffy .= $this->get_image('td_1068x580', true);
+                        $buffy .= $this->get_image('td_1068x0', true);
                         break;
                 }
             } else {
