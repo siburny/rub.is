@@ -34,7 +34,11 @@ if($loop_sidebar_position == 'sidebar_left') {
                         <div class="td-pb-span8 td-main-content">
                             <div class="td-ss-main-content">
                                 <?php
-                                    load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                                    if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                        require_once('loop.php');
+                                    } else {
+                                        require_once(TDSP_THEME_PATH . '/loop.php');
+                                    }
                                     echo td_page_generator::get_pagination();
                                 ?>
                             </div>
@@ -52,7 +56,11 @@ if($loop_sidebar_position == 'sidebar_left') {
                     <div class="td-pb-span8 td-main-content <?php echo esc_attr($td_sidebar_position) ?>-content">
                         <div class="td-ss-main-content">
                             <?php
-                                load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                    require_once('loop.php');
+                                } else {
+                                    require_once(TDSP_THEME_PATH . '/loop.php');
+                                }
                                 echo td_page_generator::get_pagination();
                             ?>
                         </div>
@@ -72,7 +80,11 @@ if($loop_sidebar_position == 'sidebar_left') {
                     <div class="td-pb-span12 td-main-content">
                         <div class="td-ss-main-content">
                             <?php
-                                load_template( TDC_PATH_LEGACY . '/loop.php', true);
+                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
+                                    require_once('loop.php');
+                                } else {
+                                    require_once(TDSP_THEME_PATH . '/loop.php');
+                                }
                                 echo td_page_generator::get_pagination();
                             ?>
                         </div>

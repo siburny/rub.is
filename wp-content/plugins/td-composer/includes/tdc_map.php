@@ -613,20 +613,6 @@ $zoneParams = array_merge(
             'class' => 'tdc-textfield-big',
         ),
         array(
-            "param_name" => "content_align_vertical",
-            "type" => "dropdown",
-            "value" => array(
-                'Top' => 'content-vert-top',
-                'Center' => 'content-vert-center',
-                'Bottom' => 'content-vert-bottom'
-            ),
-            "heading" => 'Vertical align',
-            "description" => "",
-            "holder" => "div",
-            'tdc_dropdown_images' => true,
-            "class" => "tdc-visual-selector tdc-add-class",
-        ),
-        array(
             "param_name" => "row_full_height",
             "type" => "checkbox-responsive",
             "value" => '',

@@ -41,32 +41,6 @@ class tdc_zone extends tdc_composer_block {
 	                    transform: none !important;
 	                }
                 }
-
-                /* @content_align_vertical */
-                .$unique_block_class.tdc-row-content-vert-center,
-                .$unique_block_class.tdc-row-content-vert-center .tdc-columns {
-                    display: flex;
-                    align-items: center;
-                    min-width: 100%;
-                }
-                .$unique_block_class.tdc-row-content-vert-bottom,
-                .$unique_block_class.tdc-row-content-vert-bottom .tdc-columns {
-                    display: flex;
-                    align-items: flex-end;
-                    min-width: 100%;
-                }
-                @media (max-width: 767px) {
-	                .$unique_block_class,
-	                .$unique_block_class .tdc-columns {
-	                	flex-direction: column;
-	                }
-                }
-                .$unique_block_class.tdc-row-content-vert-center .td_block_wrap {
-                	vertical-align: middle;
-                }
-                .$unique_block_class.tdc-row-content-vert-bottom .td_block_wrap {
-                	vertical-align: bottom;
-                }
                 
                 /* @row_bg_solid */
                  .$unique_block_class > .td-element-style:after {
@@ -214,12 +188,6 @@ class tdc_zone extends tdc_composer_block {
 
     static function cssMedia( $res_ctx ) {
 
-        // content align vertical
-        $content_align_vertical = $res_ctx->get_shortcode_att('content_align_vertical');
-        if ( !empty($content_align_vertical) && 'content-vert-top' !== $res_ctx->get_shortcode_att('content_align_vertical') ) {
-            $res_ctx->load_settings_raw('content_align_vertical', $content_align_vertical);
-        }
-
         // full height
         $full_height = $res_ctx->get_shortcode_att('row_full_height');
         if( $full_height != '' ) {
@@ -321,7 +289,6 @@ class tdc_zone extends tdc_composer_block {
             'zone_shadow_shadow_offset_vertical' => '',
             'zone_shadow_shadow_spread' => '',
             'zone_shadow_shadow_color' => '',
-			'content_align_vertical' => '',
 			'video_background' => '',
 			'video_scale' => '',
 			'video_opacity' => '',
@@ -369,10 +336,6 @@ class tdc_zone extends tdc_composer_block {
 
 		if ( $addElementStyle ) {
 			$block_classes[] = 'tdc-element-style';
-		}
-
-		if ( !empty($this->atts['content_align_vertical']) && 'content-vert-top' !== $this->atts['content_align_vertical'] ) {
-			$block_classes[] = 'tdc-row-' . $this->atts['content_align_vertical'];
 		}
 
 		$type = $this->atts['type'];

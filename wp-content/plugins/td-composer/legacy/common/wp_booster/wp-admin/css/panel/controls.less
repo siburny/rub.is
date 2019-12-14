@@ -23,7 +23,8 @@
   width: @td_width_input;
   height: 32px;
   border: 1px solid @td_color_border_controls !important;
-  margin: 0px 0px 32px 0px;
+  border-radius: 0;
+  margin: 0 0 32px 0;
   font-family: @font_open_sans;
   color: @td_color_text;
   font-size: 12px;
@@ -47,18 +48,23 @@
   width: 219px;
   overflow: hidden;
   background: #ffffff url("../images/panel/select_box_arrow.png") repeat-y 188px 0px;
-  margin: 0px 0px 32px 0px;
-}
-
-.td-select-style-overwrite select:focus {
-  outline: none;
+  margin: 0 0 32px 0;
 }
 
 .td-select-style-overwrite select {
   padding: 5px 58px 5px 5px;
   height: 28px;
-  line-height:17px;
+  font-size: 12px;
+  line-height: 17px;
   max-width: 130%;
+  background: none;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    color: inherit;
+    .box-shadow(none);
+  }
 }
 
 .td-panel-dropdown {
@@ -535,7 +541,8 @@
 .td_upload_field_link_font {
   width: 471px;
   height: 32px;
-  border: 1px solid @td_color_border_controls;
+  border: 1px solid @td_color_border_controls !important;
+  border-radius: 0 !important;
   margin-bottom: 14px;
   font-family: @font_open_sans;
   font-size: 12px;
@@ -663,6 +670,7 @@
   height: 103px;
   min-height: 103px;
   border: 1px solid @td_color_border_controls;
+  border-radius: 0;
   box-shadow: none;
   font-size: 12px;
   color: @td_color_text;

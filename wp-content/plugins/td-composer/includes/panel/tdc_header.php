@@ -61,9 +61,9 @@
 
 
 	<!-- PAGE SETTINGS -->
-	<?php echo td_panel_generator::box_start('Page Settings', false); ?>
-		<a href="#" class="tdc-page-settings"> </a>
-	<?php echo td_panel_generator::box_end();?>
+<!--	--><?php //echo td_panel_generator::box_start('Page Settings', false); ?>
+<!--		<a href="#" class="tdc-page-settings"> </a>-->
+<!--	--><?php //echo td_panel_generator::box_end();?>
 
     <?php } ?>
 

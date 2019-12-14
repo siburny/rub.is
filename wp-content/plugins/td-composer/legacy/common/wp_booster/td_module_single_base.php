@@ -668,12 +668,12 @@ class td_module_single_base extends td_module {
         $buffy .= '</span>' ;
 
         // datePublished
-        $td_article_date_unix = get_the_time('U', $this->post->ID);
-        $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
+        $td_article_date_unix = get_post_datetime( $this->post, 'date', 'gmt' );
+        $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format( DATE_W3C ) . '">';
 
         // dateModified - local time
-        $td_article_modified_date_unix = get_the_modified_date('U', $this->post->ID);
-        $buffy .= '<meta itemprop="dateModified" content="' . date(DATE_W3C, $td_article_modified_date_unix) . '">';
+        $td_article_modified_date_unix = get_post_datetime( $this->post, 'modified', 'gmt' );
+        $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format( DATE_W3C ) . '">';
 
         // mainEntityOfPage
         $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) .'"/>';

@@ -153,6 +153,7 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
             $installed_demo = td_demo_state::get_installed_demo();
             $td_demo_names = array();
             $td_demo_names_with_req_plugins = array();
+            $td_demo_with_plugins_list = array();
 
             $plugin_list = array();
 
@@ -176,13 +177,14 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
                     foreach ( $stack_params['required_plugins'] as $demo_req_plugin ) {
 
                         if ( isset( $plugin_list[ $demo_req_plugin ] ) && ! class_exists( $plugin_list[ $demo_req_plugin ], false) ) {
-                            $demo_required_plugins_array[]= $demo_req_plugin;
+                            $demo_required_plugins_array[] = $demo_req_plugin;
                         }
                     }
 
                     if ( !empty ($demo_required_plugins_array) ) {
                         $demo_req_plugin_class = 'td-demo-req-plugins-disabled';
                         $td_demo_names_with_req_plugins[] = $stack_params['text'];
+                        $td_demo_with_plugins_list[$demo_id] =  $demo_required_plugins_array;
                     }
                 }
 
@@ -211,7 +213,7 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
 	                            <?php
                             } else {
 	                            $plugins_list_html = '';
-	                            $plugins_list_html .= '<h3>Demo Info:</h3>';
+	                            $plugins_list_html .= '<h3>' . $stack_params['text'] . ' demo info:</h3>';
 	                            $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
 	                            $plugins_list_html .= '<ul>';
 
@@ -268,6 +270,8 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
                 foreach ($td_demo_names as $td_name => $demo_id) {
 
 	                $tmp_class = '';
+                    $plugins_list_html= '';
+
 	                if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
 		                $tmp_class = 'td-demo-installed';
 	                }
@@ -276,7 +280,19 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
                         $tmp_class = $tmp_class . ' td-req-demo-disabled';
                     }
 
-                    echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . '" data-demo-id="'. $demo_id . '" href="#">' . $td_name . '</a></li>';
+                    if ( array_key_exists($demo_id, $td_demo_with_plugins_list)) {
+                        $plugins_list_html = '';
+                        $plugins_list_html .= '<h3>' . $td_name . ' demo info:</h3>';
+                        $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
+                        $plugins_list_html .= '<ul>';
+
+                        foreach ( $td_demo_with_plugins_list[$demo_id] as $plugin_name ) {
+                            $plugins_list_html .= '<li><span>' . $plugin_name . '</span></li>';
+                        }
+                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . ' td-tooltip" data-demo-id="'. $demo_id . '" href="#" title="' . $plugins_list_html . '" data-position="right" data-content-as-html="true">' . $td_name . '</a></li>';
+                    } else {
+                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . '" data-demo-id="'. $demo_id . '" href="#">' . $td_name . '</a></li>';
+                    }
                 }?>
             </ul>
         </div>

@@ -186,6 +186,7 @@
 }
 .tdc-top-buttons .tdc-load-cloud {
   margin-right: -4px;
+  background-color: #29595d;
 }
 .tdc-top-buttons .tdc-view-page,
 .tdc-top-buttons .tdc-save-page,
@@ -551,6 +552,71 @@
 }
 .tdc-current-element-head.tdc-block-selection span:before {
   display: block !important;
+}
+.tdc-param-name-switch {
+  display: none;
+  float: right;
+  margin: 2px 10px 0 0;
+  position: relative;
+  width: 34px;
+  height: 15px;
+  background-color: #ff7c7c;
+  border-radius: 30px;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+  cursor: pointer;
+}
+.tdc-param-name-switch:before,
+.tdc-param-name-switch:after,
+.tdc-param-name-switch .tdc-param-name-switch-ball {
+  content: '';
+  position: absolute;
+  top: 3px;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.tdc-param-name-switch:before,
+.tdc-param-name-switch:after {
+  text-transform: uppercase;
+  top: 3px;
+  line-height: 1;
+  font-size: 9px;
+  color: #fff;
+}
+.tdc-param-name-switch:before {
+  content: 'on';
+  left: 4px;
+  opacity: 0;
+}
+.tdc-param-name-switch:after {
+  content: 'off';
+  right: 4px;
+}
+.tdc-param-name-switch .tdc-param-name-switch-ball {
+  left: 3px;
+  height: 9px;
+  width: 9px;
+  background-color: white;
+  border-radius: 30px;
+}
+.tdc-param-name-switch-active {
+  background-color: #008000;
+}
+.tdc-param-name-switch-active:before {
+  opacity: 1;
+}
+.tdc-param-name-switch-active:after {
+  opacity: 0;
+}
+.tdc-param-name-switch-active .tdc-param-name-switch-ball {
+  left: 22px;
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 35, 11, 0.3) !important;
+  -moz-box-shadow: 0 2px 5px 0 rgba(0, 35, 11, 0.3) !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 35, 11, 0.3) !important;
 }
 .tdc-current-element-siblings {
   font-size: 12px;
@@ -2042,19 +2108,15 @@ body.tdc #wpbody-content {
 #tdc-context-menu li.space:after {
   bottom: -6px;
 }
-#tdc-context-menu .tdc-copy-list-attrs {
+#tdc-context-menu .tdc-list-atts {
   display: none;
   position: absolute;
-  top: 0;
+  top: -4px;
   left: 100%;
+  padding-top: 4px;
   background-color: #fff;
   width: 200px;
-}
-#tdc-context-menu .tdc-paste-list-attrs {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  background-color: #fff;
-  width: 200px;
+  -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  -moz-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
 }

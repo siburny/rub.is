@@ -12,13 +12,13 @@ class tagdiv_global {
 	 * @var array
 	 */
 	private static $td_plugins = array(
-		'TD_COMPOSER'       => array( 'version' => 'c4e3da18d11732bf68ab9e3cf0d701cc',         'class' => 'tdc_version_check' ),
-		'TD_CLOUD_LIBRARY'  => array( 'version' => '315dfeb33c98e6d36cfd457b4f4f891d',    'class' => 'tdb_version_check' ),
+		'TD_COMPOSER'       => array( 'version' => '819b7f9b02b0195f80e3eab970f44973x',         'class' => 'tdc_version_check' ),
+		'TD_CLOUD_LIBRARY'  => array( 'version' => 'c8cba5620a72d5b299fa8f62aeca6adfx',    'class' => 'tdb_version_check' ),
 		'TD_SOCIAL_COUNTER' => array( 'version' => 'ddfcdab87986f11a58920bbc29e0e1fc',   'class' => 'td_social_counter_plugin' ),
 		'TD_NEWSLETTER'     => array( 'version' => '48241bbc0aac80b2e0dc8b3d466a6b86',       'class' => 'td_newsletter_version_check' ),
-		'TD_MOBILE_PLUGIN'  => array( 'version' => 'abd0ff88846fca08146daa534b42cd3a',    'class' => 'td_mobile_theme' ),
+		'TD_MOBILE_PLUGIN'  => array( 'version' => '1838ac1726d2b14cc8055e6dd55bf86f',    'class' => 'td_mobile_theme' ),
 		'AMP'               => array( 'version' => '___amp___',                 'class' => 'AMP_Autoloader' ),
-		'TD_STANDARD_PACK'  => array( 'version' => '861e55e5d2d462979b5020cb50e682ce',    'class' => 'tdsp_version_check' ),
+		'TD_STANDARD_PACK'  => array( 'version' => 'f3d6322e6f953bf07f46586e1d97917d',    'class' => 'tdsp_version_check' ),
 
 	);
 

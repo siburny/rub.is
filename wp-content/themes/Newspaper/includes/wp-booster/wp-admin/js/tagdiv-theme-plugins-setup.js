@@ -278,7 +278,7 @@ jQuery(window).load(function () {
             });
         };
 
-        tdYoastSEOUpdateContent();
+       // tdYoastSEOUpdateContent();
 
 
 

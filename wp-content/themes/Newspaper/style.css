@@ -2,7 +2,7 @@
 Theme Name: 	Newspaper
 Theme URI: 		http://tagdiv.com
 Description: 	Premium WordPress template, clean and easy to use.
-Version: 		10
+Version: 		10.2
 Author: 		tagDiv
 Author URI: 	http://themeforest.net/user/tagDiv/portfolio
 License:
@@ -2527,13 +2527,13 @@ input[type=password] {
 .tagdiv-type ol {
   margin-bottom: 26px;
 }
-.tagdiv-type ul li,
-.tagdiv-type ol li {
+.tagdiv-type ul li:not(.blocks-gallery-item),
+.tagdiv-type ol li:not(.blocks-gallery-item) {
   line-height: inherit;
   margin-bottom: 10px;
 }
-.tagdiv-type ul li:last-child,
-.tagdiv-type ol li:last-child {
+.tagdiv-type ul li:not(.blocks-gallery-item):last-child,
+.tagdiv-type ol li:not(.blocks-gallery-item):last-child {
   margin-bottom: 0;
 }
 .tagdiv-type li ul,
@@ -5551,8 +5551,8 @@ header .td-icon-comments {
 }
 @font-face {
   font-family: 'newspaper';
-  src: url('images/icons/newspaper.eot?16');
-  src: url('images/icons/newspaper.eot?16#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?16') format('woff'), url('images/icons/newspaper.ttf?16') format('truetype'), url('images/icons/newspaper.svg?16#newspaper') format('svg');
+  src: url('images/icons/newspaper.eot?17');
+  src: url('images/icons/newspaper.eot?17#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?17') format('woff'), url('images/icons/newspaper.ttf?17') format('truetype'), url('images/icons/newspaper.svg?17#newspaper') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

@@ -4764,42 +4764,46 @@ class td_config {
 		                    "class"      => "tdc-separator-small",
 		                    "group"      => "Style",
 		                ),
-		                array(
-		                    "param_name" => "nextprev_icon",
-		                    "holder"     => "div",
-		                    "type"       => "gradient",
-		                    'heading'    => "Next Prev arrows color",
-		                    "value"      => "",
-		                    "class"      => "td-colorpicker-double-a",
-		                    "group"      => "Style",
-		                ),
-		                array(
-		                    "param_name" => "nextprev_icon_h",
-		                    "holder"     => "div",
-		                    "type"       => "gradient",
-		                    'heading'    => "Next Prev hover arrows color",
-		                    "value"      => "",
-		                    "class"      => "td-colorpicker-double-b",
-		                    "group"      => "Style",
-		                ),
-		                array(
-		                    "param_name" => "nextprev_bg",
-		                    "holder"     => "div",
-		                    "type"       => "gradient",
-		                    'heading'    => "Next Prev background",
-		                    "value"      => "",
-		                    "class"      => "td-colorpicker-double-a",
-		                    "group"      => "Style",
-		                ),
-		                array(
-		                    "param_name" => "nextprev_bg_h",
-		                    "holder"     => "div",
-		                    "type"       => "gradient",
-		                    'heading'    => "Next Prev hover background",
-		                    "value"      => "",
-		                    "class"      => "td-colorpicker-double-b",
-		                    "group"      => "Style",
-		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Next Prev arrows color',
+                            "param_name"  => "nextprev_icon",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Next Prev hover arrows color',
+                            "param_name"  => "nextprev_icon_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Next Prev background',
+                            "param_name"  => "nextprev_bg",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Next Prev hover background',
+                            "param_name"  => "nextprev_bg_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "horizontal_separator",
@@ -30123,6 +30127,19 @@ class td_config {
                     'tagDiv Cloud Library',
                 ),
             ),
+//            'gadgets_pro' => array(
+//                'text' => 'Gadgets PRO',
+//                'folder' => TDC_PATH_LEGACY . '/includes/demos/gadgets_pro/',
+//                'img' => TDC_URL_DEMO . '/gadgets_pro/screenshot.png',
+//                'demo_url' => 'https://demo.tagdiv.com/newspaper_gadgets_pro/',
+//                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+//                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+//                'required_plugins' => array(                     // required plugins for the demo to work properly
+//                    'tagDiv Composer',
+//                    'tagDiv Cloud Library',
+//                    'tagDiv Newsletter',
+//                ),
+//            ),
 //            'classic_pro' => array(
 //                'text' => 'Classic Blog PRO',
 //                'folder' => TDC_PATH_LEGACY . '/includes/demos/classic_pro/',
@@ -31816,12 +31833,21 @@ class td_config {
                 'td_flex_block_1' => array(
                     'art_title',
                     'f_title_font_family',
-                    'f_title_font_size',
-                    'f_title_font_line_height',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
                     'f_title_font_style',
                     'f_title_font_weight',
                     'f_title_font_transform',
-                    'f_title_font_spacing',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
                     'title_txt',
                     'title_txt_hover',
                     'all_underline_color',
@@ -31830,12 +31856,21 @@ class td_config {
                 'td_flex_block_2' => array(
                     'art_title',
                     'f_title_font_family',
-                    'f_title_font_size',
-                    'f_title_font_line_height',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
                     'f_title_font_style',
                     'f_title_font_weight',
                     'f_title_font_transform',
-                    'f_title_font_spacing',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
                     'title_txt',
                     'title_txt_hover',
                     'all_underline_color',
@@ -31852,11 +31887,11 @@ class td_config {
                     ),
                     array(
                         'f_title1_font_size',
-                        ''
+                        'f_title2_font_size',
                     ),
                     array(
                         'f_title1_font_line_height',
-                        ''
+                        'f_title2_font_line_height',
                     ),
                     array(
                         'f_title1_font_style',
@@ -31893,11 +31928,11 @@ class td_config {
                     ),
                     array(
                         'f_title1_font_size',
-                        ''
+                        'f_title2_font_size',
                     ),
                     array(
                         'f_title1_font_line_height',
-                        ''
+                        'f_title2_font_line_height',
                     ),
                     array(
                         'f_title1_font_style',
@@ -31935,44 +31970,413 @@ class td_config {
                 'td_flex_block_5' => array(
                     'art_title',
                     'f_title_font_family',
-                    'f_title_font_size',
-                    'f_title_font_line_height',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
                     'f_title_font_style',
                     'f_title_font_weight',
                     'f_title_font_transform',
-                    'f_title_font_spacing',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
                     'title_txt',
                     'title_txt_hover',
                     'all_underline_color',
                     'all_underline_height'
+                ),
+                'tdb_header_menu' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    'all_underline_color',
+                    'all_underline_height'
+                ),
+                'tdb_header_search' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    'all_underline_color',
+                    'all_underline_height'
+                ),
+                'tdb_loop' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    'all_underline_color',
+                    'all_underline_height'
+                ),
+                'tdb_loop_2' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    'all_underline_color',
+                    'all_underline_height'
+                ),
+                'tdb_single_related' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    'all_underline_color',
+                    'all_underline_height'
+                ),
+                'tdb_single_related_author' => array(
+                    'art_title',
+                    'f_title_font_family',
+                    array(
+                        'f_title_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_title_font_line_height',
+                        ''
+                    ),
+                    'f_title_font_style',
+                    'f_title_font_weight',
+                    'f_title_font_transform',
+                    array(
+                        'f_title_font_spacing',
+                        ''
+                    ),
+                    'title_txt',
+                    'title_txt_hover',
+                    '',
+                    ''
                 )
             ),
-    		'Category tag' => array(
-    			'td_flex_block_1' => array(
-    				'modules_category',
-				    'modules_category_margin',
-				    'modules_category_padding',
-				    'modules_cat_border',
-				    'modules_category_radius',
-				    'show_cat',
-				    'f_cat_font_family',
-				    'f_cat_font_size',
-				    'f_cat_font_line_height',
-				    'f_cat_font_style',
-				    'f_cat_font_weight',
-				    'f_cat_font_transform',
-				    'f_cat_font_spacing',
-				    'cat_bg',
-				    'cat_txt',
-				    'cat_border'
-			    ),
-			    'td_flex_block_2' => array(
-			    	'modules_category',
-			    	'modules_category_margin',
-			    	'modules_category_padding',
-			    	'modules_cat_border',
-			    	'modules_category_radius',
-			    	'show_cat',
+            'Image' => array(
+                'td_flex_block_1' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'td_flex_block_2' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    '',
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    'video_icon_pos',
+                    'image_margin',
+                    'image_margin_right',
+                    'image_margin_forced'
+                ),
+                'td_flex_block_3' => array(
+                    array(
+                        'image_alignment1',
+                        'image_alignment2',
+                    ),
+                    array(
+                        'image_height1',
+                        'image_height2',
+                    ),
+                    array(
+                        'image_radius1',
+                        'image_radius2',
+                    ),
+                    array(
+                        'video_icon1',
+                        'video_icon2',
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'td_flex_block_4' => array(
+                    array(
+                        'image_alignment1',
+                        'image_alignment2',
+                    ),
+                    array(
+                        'image_height1',
+                        'image_height2',
+                    ),
+                    array(
+                        'image_radius1',
+                        'image_radius2',
+                    ),
+                    array(
+                        'video_icon1',
+                        'video_icon2',
+                    ),
+                    array(
+                        'video_icon_pos1',
+                        ''
+                    ),
+                    '',
+                    '',
+                    ''
+                ),
+                'td_flex_block_5' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_header_menu' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_header_search' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_loop' => array(
+                    '',
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_loop_2' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_single_related' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                ),
+                'tdb_single_related_author' => array(
+                    array(
+                        'image_alignment',
+                        ''
+                    ),
+                    array(
+                        'image_height',
+                        ''
+                    ),
+                    array(
+                        'image_radius',
+                        ''
+                    ),
+                    array(
+                        'video_icon',
+                        ''
+                    ),
+                    '',
+                    '',
+                    '',
+                    ''
+                )
+            ),
+            'Category tag' => array(
+                'td_flex_block_1' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
                     'f_cat_font_family',
                     'f_cat_font_size',
                     'f_cat_font_line_height',
@@ -31980,17 +32384,19 @@ class td_config {
                     'f_cat_font_weight',
                     'f_cat_font_transform',
                     'f_cat_font_spacing',
-			    	'cat_bg',
-			    	'cat_txt',
-			    	'cat_border'
-			    ),
-			    'tdb_header_menu' => array(
-			    	'modules_category',
-			    	'modules_category_margin',
-			    	'modules_category_padding',
-			    	'modules_cat_border',
-			    	'modules_category_radius',
-			    	'show_cat',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'td_flex_block_2' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
                     'f_cat_font_family',
                     'f_cat_font_size',
                     'f_cat_font_line_height',
@@ -31998,22 +32404,897 @@ class td_config {
                     'f_cat_font_weight',
                     'f_cat_font_transform',
                     'f_cat_font_spacing',
-			    	'cat_bg',
-			    	'cat_txt',
-			    	'cat_border'
-			    ),
-		    ),
-//		    'list2' => array(
-//		    	'td_flex_block_2' => array(
-//    				'custom_url'
-//			    ),
-//		    	'td_flex_block_3' => array(
-//    				'custom_url'
-//			    ),
-//			    'td_flex_block_4' => array(
-//    				'custom_url'
-//			    ),
-//		    )
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'td_flex_block_3' => array(
+                    array(
+                        'modules_category',
+                        'modules_category2'
+                    ),
+                    array(
+                        'modules_category_margin1',
+                        'modules_category_margin2'
+                    ),
+                    array(
+                        'modules_category_padding1',
+                        'modules_category_padding2'
+                    ),
+                    array(
+                        'modules_cat_border1',
+                        'modules_cat_border2'
+                    ),
+                    array(
+                        'modules_category_radius1',
+                        'modules_category_radius2'
+                    ),
+                    array(
+                        'f_cat1_font_family',
+                        'f_cat2_font_family',
+                    ),
+                    array(
+                        'f_cat1_font_size',
+                        'f_cat2_font_size',
+                    ),
+                    array(
+                        'f_cat1_font_line_height',
+                        'f_cat2_font_line_height',
+                    ),
+                    array(
+                        'f_cat1_font_style',
+                        'f_cat2_font_style',
+                    ),
+                    array(
+                        'f_cat1_font_weight',
+                        'f_cat2_font_weight',
+                    ),
+                    array(
+                        'f_cat1_font_transform',
+                        'f_cat2_font_transform',
+                    ),
+                    array(
+                        'f_cat1_font_spacing',
+                        'f_cat2_font_spacing',
+                    ),
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'td_flex_block_4' => array(
+                    array(
+                        'modules_category',
+                        'modules_category3'
+                    ),
+                    array(
+                        'modules_category_margin1',
+                        'modules_category_margin2'
+                    ),
+                    array(
+                        'modules_category_padding1',
+                        'modules_category_padding2'
+                    ),
+                    array(
+                        'modules_cat_border1',
+                        'modules_cat_border2'
+                    ),
+                    array(
+                        'modules_category_radius1',
+                        'modules_category_radius2'
+                    ),
+                    array(
+                        'f_cat1_font_family',
+                        'f_cat2_font_family',
+                    ),
+                    array(
+                        'f_cat1_font_size',
+                        'f_cat2_font_size',
+                    ),
+                    array(
+                        'f_cat1_font_line_height',
+                        'f_cat2_font_line_height',
+                    ),
+                    array(
+                        'f_cat1_font_style',
+                        'f_cat2_font_style',
+                    ),
+                    array(
+                        'f_cat1_font_weight',
+                        'f_cat2_font_weight',
+                    ),
+                    array(
+                        'f_cat1_font_transform',
+                        'f_cat2_font_transform',
+                    ),
+                    array(
+                        'f_cat1_font_spacing',
+                        'f_cat2_font_spacing',
+                    ),
+                    array(
+                        'cat_bg',
+                        'cat_bg2',
+                    ),
+                    array(
+                        'cat_bg_hover',
+                        'cat_bg_hover2',
+                    ),
+                    array(
+                        'cat_txt',
+                        'cat_txt2',
+                    ),
+                    array(
+                        'cat_txt_hover',
+                        'cat_txt_hover2',
+                    ),
+                    array(
+                        'cat_border1',
+                        'cat_border2',
+                    ),
+                    array(
+                        'cat_border_hover1',
+                        'cat_border_hover2'
+                    )
+                ),
+                'td_flex_block_5' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_header_menu' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_header_search' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_loop' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_loop_2' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_single_related' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                ),
+                'tdb_single_related_author' => array(
+                    'modules_category',
+                    'modules_category_margin',
+                    'modules_category_padding',
+                    'modules_cat_border',
+                    'modules_category_radius',
+                    'f_cat_font_family',
+                    'f_cat_font_size',
+                    'f_cat_font_line_height',
+                    'f_cat_font_style',
+                    'f_cat_font_weight',
+                    'f_cat_font_transform',
+                    'f_cat_font_spacing',
+                    'cat_bg',
+                    'cat_bg_hover',
+                    'cat_txt',
+                    'cat_txt_hover',
+                    'cat_border',
+                    'cat_border_hover'
+                )
+            ),
+            'Meta info' => array(
+                'td_flex_block_1' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    'rev_txt'
+                ),
+                'td_flex_block_2' => array(
+                    '',
+                    '',
+                    '',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                ),
+                'td_flex_block_3' => array(
+                    array(
+                        'author_photo_size1',
+                        'author_photo_size2'
+                    ),
+                    array(
+                        'author_photo_space1',
+                        'author_photo_space2'
+                    ),
+                    array(
+                        'author_photo_radius1',
+                        'author_photo_radius2'
+                    ),
+                    array(
+                        'review_size1',
+                        'review_size2'
+                    ),
+                    array(
+                        'f_meta1_font_family',
+                        'f_meta2_font_family',
+                    ),
+                    array(
+                        'f_meta1_font_size',
+                        'f_meta2_font_size',
+                    ),
+                    array(
+                        'f_meta1_font_line_height',
+                        'f_meta2_font_line_height',
+                    ),
+                    array(
+                        'f_meta1_font_style',
+                        'f_meta2_font_style',
+                    ),
+                    array(
+                        'f_meta1_font_weight',
+                        'f_meta2_font_weight',
+                    ),
+                    array(
+                        'f_meta1_font_transform',
+                        'f_meta2_font_transform',
+                    ),
+                    array(
+                        'f_meta1_font_spacing',
+                        'f_meta2_font_spacing',
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                ),
+                'td_flex_block_4' => array(
+                    array(
+                        'author_photo_size1',
+                        'author_photo_size2'
+                    ),
+                    array(
+                        'author_photo_space1',
+                        'author_photo_space2'
+                    ),
+                    array(
+                        'author_photo_radius1',
+                        'author_photo_radius2'
+                    ),
+                    array(
+                        'review_size1',
+                        'review_size2'
+                    ),
+                    array(
+                        'f_meta1_font_family',
+                        'f_meta2_font_family',
+                    ),
+                    array(
+                        'f_meta1_font_size',
+                        'f_meta2_font_size',
+                    ),
+                    array(
+                        'f_meta1_font_line_height',
+                        'f_meta2_font_line_height',
+                    ),
+                    array(
+                        'f_meta1_font_style',
+                        'f_meta2_font_style',
+                    ),
+                    array(
+                        'f_meta1_font_weight',
+                        'f_meta2_font_weight',
+                    ),
+                    array(
+                        'f_meta1_font_transform',
+                        'f_meta2_font_transform',
+                    ),
+                    array(
+                        'f_meta1_font_spacing',
+                        'f_meta2_font_spacing',
+                    ),
+                    array(
+                        'author_txt',
+                        'author_txt2',
+                    ),
+                    array(
+                        'author_txt_hover',
+                        'author_txt_hover2',
+                    ),
+                    array(
+                        'date_txt',
+                        'date_txt2',
+                    ),
+                    array(
+                        'com_bg',
+                        'com_bg2',
+                    ),
+                    array(
+                        'com_txt',
+                        'com_txt2'
+                    ),
+                    ''
+                ),
+                'td_flex_block_5' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    'rev_txt'
+                ),
+                'tdb_header_menu' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    'rev_txt'
+                ),
+                'tdb_header_search' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    'rev_txt'
+                ),
+                'tdb_loop' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                ),
+                'tdb_loop_2' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    'review_size',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                ),
+                'tdb_single_related' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    '',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                ),
+                'tdb_single_related_author' => array(
+                    'author_photo_size',
+                    'author_photo_space',
+                    'author_photo_radius',
+                    '',
+                    'f_meta_font_family',
+                    array(
+                        'f_meta_font_size',
+                        ''
+                    ),
+                    array(
+                        'f_meta_font_line_height',
+                        ''
+                    ),
+                    'f_meta_font_style',
+                    'f_meta_font_weight',
+                    'f_meta_font_transform',
+                    array(
+                        'f_meta_font_spacing',
+                        ''
+                    ),
+                    'author_txt',
+                    'author_txt_hover',
+                    'date_txt',
+                    'com_bg',
+                    'com_txt',
+                    ''
+                )
+            ),
+            'Excerpt' => array(
+                'td_flex_block_1' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'td_flex_block_2' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'td_flex_block_3' => array(
+                    'art_excerpt1',
+                    'f_ex1_font_family',
+                    array(
+                        'f_ex1_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex1_font_line_height',
+                        '',
+                    ),
+                    'f_ex1_font_style',
+                    'f_ex1_font_weight',
+                    'f_ex1_font_transform',
+                    array(
+                        'f_ex1_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'td_flex_block_4' => array(
+                    array(
+                        'art_excerpt1',
+                        'art_excerpt2',
+                    ),
+                    array(
+                        'f_ex1_font_family',
+                        'f_ex2_font_family',
+                    ),
+                    array(
+                        'f_ex1_font_size',
+                        'f_ex2_font_size',
+                    ),
+                    array(
+                        'f_ex1_font_line_height',
+                        'f_ex2_font_line_height',
+                    ),
+                    array(
+                        'f_ex1_font_style',
+                        'f_ex2_font_style'
+                    ),
+                    array(
+                        'f_ex1_font_weight',
+                        'f_ex2_font_weight'
+                    ),
+                    array(
+                        'f_ex1_font_transform',
+                        'f_ex2_font_transform'
+                    ),
+                    array(
+                        'f_ex1_font_spacing',
+                        'f_ex2_font_spacing'
+                    ),
+                    array(
+                        'ex_txt',
+                        'ex_txt2'
+                    )
+                ),
+                'td_flex_block_5' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_header_menu' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_header_search' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_loop' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_loop_2' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_single_related' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                ),
+                'tdb_single_related_author' => array(
+                    'art_excerpt',
+                    'f_ex_font_family',
+                    array(
+                        'f_ex_font_size',
+                        '',
+                    ),
+                    array(
+                        'f_ex_font_line_height',
+                        '',
+                    ),
+                    'f_ex_font_style',
+                    'f_ex_font_weight',
+                    'f_ex_font_transform',
+                    array(
+                        'f_ex_font_spacing',
+                        ''
+                    ),
+                    'ex_txt'
+                )
+            )
 	    );
     }
 

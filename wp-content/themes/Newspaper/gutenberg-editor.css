@@ -1248,8 +1248,8 @@
 }
 @font-face {
   font-family: 'newspaper';
-  src: url('images/icons/newspaper.eot?16');
-  src: url('images/icons/newspaper.eot?16#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?16') format('woff'), url('images/icons/newspaper.ttf?16') format('truetype'), url('images/icons/newspaper.svg?16#newspaper') format('svg');
+  src: url('images/icons/newspaper.eot?17');
+  src: url('images/icons/newspaper.eot?17#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?17') format('woff'), url('images/icons/newspaper.ttf?17') format('truetype'), url('images/icons/newspaper.svg?17#newspaper') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -2287,7 +2287,7 @@ usage:
 .editor-styles-wrapper .wp-block .wp-block[data-type="core/pullquote"][data-align="right"] .editor-block-list__block-edit {
   width: 50%;
 }
-.editor-styles-wrapper .wp-block:not([data-type="core/separator"]) .block-editor-block-list__block-edit {
+.editor-styles-wrapper .wp-block:not([data-type="core/separator"]):not([data-type="core/list"]) .block-editor-block-list__block-edit {
   margin-top: 0;
   margin-bottom: 0;
 }

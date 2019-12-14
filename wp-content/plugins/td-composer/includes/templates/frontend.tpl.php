@@ -385,6 +385,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 				</div>
 				<div class="tdc-current-element-head" title="This is the type (shortcode) of the current selected element">
 				</div>
+                <?php  if (TD_DEPLOY_MODE == 'dev') { ?>
+                    <div class="tdc-param-name-switch" title="Show param names next to block attributes."><div class="tdc-param-name-switch-ball"></div></div>
+                <?php } ?>
 				<div class="tdc-current-element-siblings">
 				</div>
 				<div class="tdc-tabs-wrapper">
@@ -1136,8 +1139,8 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 			<li class="tdc-copy-shortcode">Copy<span>CTRL + C</span></li>
 			<li class="tdc-paste-shortcode-before">Paste Before<span>CTRL + SHIFT + V</span></li>
 			<li class="tdc-paste-shortcode-after separator space">Paste After<span>CTRL + V</span></li>
-			<li class="tdc-copy-style active">Copy Style<ul class="tdc-copy-list-attrs"></ul></li>
-			<li class="tdc-paste-style separator space">Paste Style<ul class="tdc-paste-list-attrs"></ul></li>
+			<li class="tdc-copy-style active">Copy Style<ul class="tdc-copy-list-attrs tdc-list-atts"></ul></li>
+			<li class="tdc-paste-style separator space">Paste Style<ul class="tdc-paste-list-attrs tdc-list-atts"></ul></li>
             <li class="tdc-reset-style separator space">Reset Style</li>
             <li class="tdc-save-shortcode">Save as Element<span>SHIFT + S</span></li>
 			<li class="tdc-delete-shortcode">Delete<span>DEL</span></li>

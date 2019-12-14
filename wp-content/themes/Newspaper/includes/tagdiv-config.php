@@ -6,7 +6,7 @@
  */
 
 define("TD_THEME_NAME", "Newspaper");
-define("TD_THEME_VERSION", "10");
+define("TD_THEME_VERSION", "10.2");
 define("TD_THEME_OPTIONS_NAME", "td_011");
 
 //if no deploy mode is selected, we use the final deploy built
@@ -70,7 +70,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Composer', // The plugin name
 				'slug' => 'td-composer', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-composer/c4e3da18d11732bf68ab9e3cf0d701cc/td-composer.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-composer/819b7f9b02b0195f80e3eab970f44973x/td-composer.zip', // The plugin source
 				'required' => true, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -87,7 +87,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Cloud Library', // The plugin name
 				'slug' => 'td-cloud-library', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-cloud-library/315dfeb33c98e6d36cfd457b4f4f891d/td-cloud-library.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-cloud-library/c8cba5620a72d5b299fa8f62aeca6adfx/td-cloud-library.zip', // The plugin source
 				'required' => true, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -138,7 +138,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Mobile Theme', // The plugin name
 				'slug' => 'td-mobile-plugin', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-mobile-plugin/abd0ff88846fca08146daa534b42cd3a/td-mobile-plugin.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-mobile-plugin/1838ac1726d2b14cc8055e6dd55bf86f/td-mobile-plugin.zip', // The plugin source
 				'required' => false, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -166,7 +166,7 @@ class tagdiv_config {
             array(
                 'name' => 'tagDiv Standard Pack', // The plugin name
                 'slug' => 'td-standard-pack', // The plugin slug (typically the folder name)
-                'source' => 'https://cloud.tagdiv.com/td_plugins/td-standard-pack/861e55e5d2d462979b5020cb50e682ce/td-standard-pack.zip', // The plugin source
+                'source' => 'https://cloud.tagdiv.com/td_plugins/td-standard-pack/f3d6322e6f953bf07f46586e1d97917d/td-standard-pack.zip', // The plugin source
                 'required' => true, // If false, the plugin is only 'recommended' instead of required
                 'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
                 'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch

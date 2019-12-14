@@ -35,7 +35,7 @@ if ( !td_util::get_option('tds_header_background_image') == '' ) {
             <div class="td-container-header td-header-row td-header-header">
                 <div class="td-header-sp-recs">
                     <?php
-                    if( defined( TD_STANDARD_PACK ) ) {
+                    if( defined( 'TD_STANDARD_PACK' ) ) {
                         require_once( TDSP_THEME_PATH . '/parts/header/ads.php');
                     } ?>
                 </div>

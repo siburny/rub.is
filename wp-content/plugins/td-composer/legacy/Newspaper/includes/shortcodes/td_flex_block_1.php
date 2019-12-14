@@ -552,7 +552,7 @@ class td_flex_block_1 extends td_block {
 
 				/* @container_width */
 				.$unique_block_class .td_block_inner {
-					width: @container_width; float: left;
+					width: @container_width;
 				}
 				.$unique_block_class:after {
 				    content: '';
@@ -986,30 +986,6 @@ class td_flex_block_1 extends td_block {
                 .$unique_block_class .td-audio-player .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-current {
                     background: @audio_bar_curr_color;
                 }
-				/* @btn_bg */
-				.$unique_block_class .td-read-more a {
-					background-color: @btn_bg !important;
-				}
-				/* @btn_bg_hover */
-				.$unique_block_class .td-read-more:hover a {
-					background-color: @btn_bg_hover !important;
-				}
-				/* @btn_txt */
-				.$unique_block_class .td-read-more a {
-					color: @btn_txt;
-				}
-				/* @btn_txt_hover */
-				.$unique_block_class .td-read-more:hover a {
-					color: @btn_txt_hover;
-				}
-				/* @btn_border */
-				.$unique_block_class .td-read-more a {
-					border-color: @btn_border;
-				}
-				/* @btn_border_hover */
-				.$unique_block_class .td-read-more:hover a {
-					border-color: @btn_border_hover;
-				}
 				/* @pag_text */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a,
 				.$unique_block_class .td-load-more-wrap a {
@@ -1142,6 +1118,30 @@ class td_flex_block_1 extends td_block {
 				/* @btn_radius */
 				.$unique_block_class .td-read-more a {
 					border-radius: @btn_radius;
+				}
+				/* @btn_bg */
+				.$unique_block_class .td-read-more a {
+					background-color: @btn_bg !important;
+				}
+				/* @btn_bg_hover */
+				.$unique_block_class .td-read-more:hover a {
+					background-color: @btn_bg_hover !important;
+				}
+				/* @btn_txt */
+				.$unique_block_class .td-read-more a {
+					color: @btn_txt;
+				}
+				/* @btn_txt_hover */
+				.$unique_block_class .td-read-more:hover a {
+					color: @btn_txt_hover;
+				}
+				/* @btn_border */
+				.$unique_block_class .td-read-more a {
+					border-color: @btn_border !important;
+				}
+				/* @btn_border_hover */
+				.$unique_block_class .td-read-more:hover a {
+					border-color: @btn_border_hover;
 				}
 				
 				/* @pag_space */
