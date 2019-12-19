@@ -58,18 +58,25 @@ function fetch_func($atts)
     }
     $show--;
 
+    $ret = '';
     switch ($atts['display']) {
         case 'followers':
-            //print "<pre>"; print_r($data);return;
-            return $data->entry_data->ProfilePage[0]->graphql->user->edge_followed_by->count;
+            $ret = $data->entry_data->ProfilePage[0]->graphql->user->edge_followed_by->count;
+            break;
         case 'posts':
             if ($data->entry_data->ProfilePage[0]->graphql->user->edge_owner_to_timeline_media->edges[$show]->node->shortcode) {
-                return 'https://www.instagram.com/p/' . $data->entry_data->ProfilePage[0]->graphql->user->edge_owner_to_timeline_media->edges[$show]->node->shortcode . '/';
+                $ret = 'https://www.instagram.com/p/' . $data->entry_data->ProfilePage[0]->graphql->user->edge_owner_to_timeline_media->edges[$show]->node->shortcode . '/';
             } else if ($data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges[$show]->node->shortcode) {
-                return 'https://www.instagram.com/p/' . $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges[$show]->node->shortcode . '/';
+                $ret = 'https://www.instagram.com/p/' . $data->entry_data->TagPage[0]->graphql->hashtag->edge_hashtag_to_top_posts->edges[$show]->node->shortcode . '/';
             }
+            break;
         default:
             return '';
+    }
+
+    if ($ret) {
+        global $wp_embed;
+        return $wp_embed->autoembed($ret);
     }
 
     return '';
