@@ -112,6 +112,9 @@ function morph_func($atts, $content = '')
         if (empty($ret)) {
             return 'N/A';
         }
+        if (!is_numeric($ret)) {
+            return $ret;
+        }
         switch ($atts['display']) {
             case 'meter':
                 $ret = number_format(2.54 * $ret / 100, 2);
@@ -123,7 +126,7 @@ function morph_func($atts, $content = '')
                 $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet ' : ' foot ') : '') . ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es');
                 break;
             case 'feet':
-                $ret = floor($ret / 12) . '\' ' . ($ret % 12) . ' "';
+                $ret = floor($ret / 12) . '\' ' . ($ret % 12) . '"';
                 break;
             case 'ft':
                 $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . ' ft, ' : '') . ($ret % 12) . ' in';
