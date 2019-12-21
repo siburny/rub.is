@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Social Media Fetch
  * Description: Fetch social media metadata
- * Version: 0.1
+ * Version: 0.2
  */
 
 const FETCH_CACHE_PREFIX = 'plugin_fetch_';
