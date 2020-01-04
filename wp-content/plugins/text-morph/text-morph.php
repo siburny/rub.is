@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Plugin Name: Text Formater and Morpher
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.4.0
+ * Version: 0.4.2
  */
 
 require_once 'Numword.php';
@@ -86,14 +87,15 @@ function morph_func($atts, $content = '')
     }
 
     if (is_numeric($ret)) {
-        if (array_key_exists('math', $atts) && is_numeric(substr($atts['math'], 1)) &&
-            (substr($atts['math'], 0, 1) == '+' || substr($atts['math'], 0, 1) == '-')) {
+        if (
+            array_key_exists('math', $atts) && is_numeric(substr($atts['math'], 1)) &&
+            (substr($atts['math'], 0, 1) == '+' || substr($atts['math'], 0, 1) == '-')
+        ) {
             if (substr($atts['math'], 0, 1) == '+') {
                 $ret += substr($atts['math'], 1);
             } else if (substr($atts['math'], 0, 1) == '-') {
                 $ret -= substr($atts['math'], 1);
             }
-
         }
         if (array_key_exists('display', $atts) && $atts['display'] == 'percent' && is_numeric($atts['math'])) {
             $ret = number_format(100 * $atts['math'] / $ret, 0) . '%';
@@ -108,7 +110,7 @@ function morph_func($atts, $content = '')
         }
     }
 
-    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone'))) {
+    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr'))) {
         if (empty($ret)) {
             return 'N/A';
         }
@@ -137,12 +139,25 @@ function morph_func($atts, $content = '')
             case 'stone':
                 $ret = number_format($ret / 14, 1);
                 break;
+            case 'abbr':
+                if ($ret > 1000000000) {
+                    $ret = round($ret / 1000000000, 2) . ' billion';
+                } else if ($ret > 1000000) {
+                    $ret = round($ret / 1000000, 2) . ' million';
+                } else if ($ret > 1000) {
+                    $ret = round($ret / 1000, 2) . ' thousand';
+                }
+
+                break;
         }
     }
 
     if (array_key_exists('clean', $atts) && !empty($atts['clean'])) {
-        $ret = str_replace(array('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '\'', '"', ',', '.', '/', '?', '\\', '|', '{', '}', '[', ']', '`', '~', ':', ';'),
-            '', $ret);
+        $ret = str_replace(
+            array('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '\'', '"', ',', '.', '/', '?', '\\', '|', '{', '}', '[', ']', '`', '~', ':', ';'),
+            '',
+            $ret
+        );
     }
 
     if (array_key_exists('random', $atts) && !empty($atts['random'])) {
@@ -183,33 +198,33 @@ function morph_func($atts, $content = '')
 
 function text_morph_settings_page()
 {
-    ?>
-<div class="wrap">
-     <form action="options.php" method="post">
-     <h2>Text Substitutions</h2>
-       <?php
-settings_fields('text-morph-settings');
-    ?>
-        <table class="form-table">
-            <tr>
-                <td><?php submit_button();?></td>
-            </tr>
-            <tr>
-                <td><b>Match</b></td>
-                <td><b>Replace</b></td>
-            </tr>
-<?php for ($z = 0; $z < 100; $z++) {?>
-            <tr>
-                <td><textarea placeholder="" name="text-morph-settings-find-<?php echo $z; ?>" rows="4" cols="30"><?php echo esc_attr(get_option('text-morph-settings-find-' . $z)); ?></textarea></td>
-                <td><textarea placeholder="" name="text-morph-settings-replace-<?php echo $z; ?>" rows="4" cols="100"><?php echo esc_attr(get_option('text-morph-settings-replace-' . $z)); ?></textarea></td>
-            </tr>
-<?php }?>
-            <tr>
-                <td><?php submit_button();?></td>
-            </tr>
-        </table>
-    </form>
-</div>
+?>
+    <div class="wrap">
+        <form action="options.php" method="post">
+            <h2>Text Substitutions</h2>
+            <?php
+            settings_fields('text-morph-settings');
+            ?>
+            <table class="form-table">
+                <tr>
+                    <td><?php submit_button(); ?></td>
+                </tr>
+                <tr>
+                    <td><b>Match</b></td>
+                    <td><b>Replace</b></td>
+                </tr>
+                <?php for ($z = 0; $z < 100; $z++) { ?>
+                    <tr>
+                        <td><textarea placeholder="" name="text-morph-settings-find-<?php echo $z; ?>" rows="4" cols="30"><?php echo esc_attr(get_option('text-morph-settings-find-' . $z)); ?></textarea></td>
+                        <td><textarea placeholder="" name="text-morph-settings-replace-<?php echo $z; ?>" rows="4" cols="100"><?php echo esc_attr(get_option('text-morph-settings-replace-' . $z)); ?></textarea></td>
+                    </tr>
+                <?php } ?>
+                <tr>
+                    <td><?php submit_button(); ?></td>
+                </tr>
+            </table>
+        </form>
+    </div>
 <?php
 
 }
