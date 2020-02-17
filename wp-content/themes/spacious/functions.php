@@ -92,8 +92,8 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 		// Adds the support for the Custom Logo introduced in WordPress 4.5
 		add_theme_support( 'custom-logo',
 			array(
-				'height'      => '100',
-				'width'       => '100',
+				'height'      => 100,
+				'width'       => 100,
 				'flex-width'  => true,
 				'flex-height' => true,
 			)
@@ -452,3 +452,9 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 if ( ! defined( 'ELEMENTOR_PARTNER_ID' ) ) {
 	define( 'ELEMENTOR_PARTNER_ID', 2125 );
 }
+
+/** Add the Elementor compatibility file */
+if ( defined( 'ELEMENTOR_VERSION' ) ) {
+	require_once( SPACIOUS_INCLUDES_DIR . '/elementor/elementor.php' );
+}
+

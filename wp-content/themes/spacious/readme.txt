@@ -46,6 +46,16 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+= Version 1.6.9 - 2020-02-10 =
+* Feature - Added Retina Logo Option.
+* Fix     - Input type CSS for comments
+
+= Version 1.6.8 - 2020-01-27 =
+* Added   - New Demo (Spacious Gym)- Start creating your fitness website with this Spacious Gym demo.
+* Added   - New Demo (Spacious Interior)- Use this Spacious demo to start building your online interior designing services.
+* Added   - New Demo (Spacious Company)- Use this Spacious demo to build and grow your company website.
+* Fix     - Design issues of widgets when used in elementor.
+
 = Version 1.6.7 - 2019-10-16 =
 * Added   - New Demo (Spacious Food)- Use this Spacious demo to create a fantastic website for your food enthusiasts.
 * Fix - Empty ID for header display type

@@ -4,7 +4,7 @@ Theme URI: https://themegrill.com/themes/spacious
 Author: ThemeGrill
 Author URI: https://themegrill.com
 Description: Spacious is an incredibly spacious multipurpose responsive theme coded & designed with a lot of care and love. You can use it for your business, portfolio, blogging or any type of site. It has 4 page layouts, 2 page templates, 4 blog display types, 13 widgets areas, 5 custom widgets focusing on business template, awesome slider, primary color option to match your logo & website, boxed & wide layout, light & dark color skin, translation ready and many more. You can get free support in https://themegrill.com/support-forum/ and check the demo at https://demo.themegrill.com/spacious/.
-Version: 1.6.7
+Version: 1.6.9
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, two-columns, right-sidebar, left-sidebar, flexible-header, custom-header, custom-background, custom-menu, custom-colors, sticky-post, threaded-comments, translation-ready, featured-images, theme-options, footer-widgets, blog, e-commerce, rtl-language-support
@@ -336,7 +336,7 @@ textarea {
 	appearance: none !important;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"], input[type="email"], input[type="password"], input[type="url"] {
 	padding: 1%;
 	border: 1px solid #EAEAEA;
 	line-height: 20px;
@@ -1540,6 +1540,14 @@ body {
 	margin: 2.4rem 0;
 }
 
+#respond form .comment-form-cookies-consent #wp-comment-cookies-consent {
+	margin-right: 5px;
+}
+
+#respond form .comment-form-cookies-consent label {
+	display: inline-block;
+}
+
 #respond form p {
 	margin: 11px 0;
 	margin: 1.1rem 0;
@@ -1729,6 +1737,12 @@ body {
 .widget-title span {
 	border-bottom: 2px solid #0FBE7C;
 	padding-bottom: 5px;
+}
+
+.elementor .widget_service_block .widget-title span,
+.elementor .widget_testimonial .widget-title span,
+.elementor .widget_featured_single_post .widget-title span {
+	border: none;
 }
 
 #colophon #wp-calendar th,
@@ -2527,7 +2541,6 @@ li.default-menu {
 
 .cart-wrapper .spacious-woocommerce-cart-views {
 	padding: 5px 0;
-	line-height: 1.875;
 }
 
 .spacious-woocommerce-cart-views .wcmenucart-contents {
@@ -2574,10 +2587,16 @@ li.default-menu {
 	transform: translateX(-100%);
 }
 
+#header-right-section .cart-wrapper .widget_shopping_cart .widgettitle,
+.bottom-menu .cart-wrapper .widget_shopping_cart .widgettitle {
+	font-size: 20px;
+	padding-bottom: 0;
+}
+
 #header-right-section .cart-wrapper .widget_shopping_cart .woocommerce-mini-cart__empty-message,
 .bottom-menu .cart-wrapper .widget_shopping_cart .woocommerce-mini-cart__empty-message {
 	margin-bottom: 0;
-	padding: 15px;
+	padding: 15px 0;
 }
 
 #header-right-section .cart-wrapper:hover .widget_shopping_cart,
@@ -2795,7 +2814,6 @@ li.default-menu {
 
 .header-action .search-wrapper .search {
 	padding: 5px 0;
-	line-height: 1.875;
 }
 
 .bottom-menu .header-action .search-wrapper {
@@ -2814,8 +2832,8 @@ li.default-menu {
 	right: -15px;
 	width: 180px;
 	top: 170%;
-	-webkit-transition: 0.9s ease-in-out;
-	transition: 0.9s ease-in-out;
+	-webkit-transition: 0.4s ease-in-out;
+	transition: 0.4s ease-in-out;
 	background: #ffffff;
 	padding-top: 10px;
 	padding-bottom: 10px;

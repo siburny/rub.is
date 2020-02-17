@@ -485,7 +485,6 @@ li.default-menu {
 
 	.spacious-woocommerce-cart-views {
 		padding: 5px 0;
-		line-height: 1.875;
 	}
 }
 
@@ -538,9 +537,14 @@ li.default-menu {
 		-o-transform: translateX(-100%);
 		transform: translateX(-100%);
 
+		.widgettitle {
+			font-size: 20px;
+			padding-bottom: 0;
+		}
+
 		.woocommerce-mini-cart__empty-message {
 			margin-bottom: 0;
-			padding: 15px;
+			padding: 15px 0;
 		}
 	}
 
@@ -784,7 +788,6 @@ li.default-menu {
 
 		.search {
 			padding: 5px 0;
-			line-height: 1.875;
 		}
 
 		.bottom-menu & {
@@ -805,7 +808,7 @@ li.default-menu {
 			right: -15px;
 			width: 180px;
 			top: 170%;
-			transition: 0.9s ease-in-out;
+			transition: 0.4s ease-in-out;
 			background: #ffffff;
 			padding-top: 10px;
 			padding-bottom: 10px;
