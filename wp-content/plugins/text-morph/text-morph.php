@@ -140,11 +140,11 @@ function morph_func($atts, $content = '')
                 $ret = number_format($ret / 14, 1);
                 break;
             case 'abbr':
-                if ($ret > 1000000000) {
+                if ($ret >= 1000000000) {
                     $ret = round($ret / 1000000000, 2) . ' billion';
-                } else if ($ret > 1000000) {
+                } else if ($ret >= 1000000) {
                     $ret = round($ret / 1000000, 2) . ' million';
-                } else if ($ret > 1000) {
+                } else if ($ret >= 1000) {
                     $ret = round($ret / 1000, 2) . ' thousand';
                 }
 

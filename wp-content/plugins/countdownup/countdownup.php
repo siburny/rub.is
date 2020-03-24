@@ -37,6 +37,7 @@ function countdownup_func( $atts )
 
 			$date = new DateTime($atts['since'], new DateTimeZone(get_option('timezone_string')));
 			$increment = 1;
+			$expire = 1;
 		}
 		else
 		{

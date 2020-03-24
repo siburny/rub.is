@@ -177,6 +177,10 @@ function datecalc_func($atts)
             }
         }
     }
+	
+	if(empty($date)) {
+		return '';
+	}
 
     $display = 'yyyy';
     if (array_key_exists('display', $atts)) {
