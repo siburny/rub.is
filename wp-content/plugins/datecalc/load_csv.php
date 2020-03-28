@@ -104,14 +104,3 @@ array_walk($input, function ($a) use (&$games, $input) {
         $skip = false;
     }
 });
-
-$skip = true;
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/holidays.csv'));
-array_walk($input, function ($a) use (&$holidays, $input) {
-    global $skip;
-    if (!$skip) {
-        $holidays[$a[0]] = array_combine($input[0], $a);
-    } else {
-        $skip = false;
-    }
-});

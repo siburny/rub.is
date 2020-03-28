@@ -8,6 +8,7 @@
 
 require_once 'Numword.php';
 require_once 'load_csv.php';
+require_once 'vendor/autoload.php';
 
 function number_format_nozero($nbr, $precision = 0)
 {
@@ -184,12 +185,53 @@ function datecalc_func($atts)
         }
     }
 
+    // TODO: delete eventually
     if (array_key_exists('add', $atts)) {
         if (is_numeric($atts['add'])) {
             if ($atts['add'] > 0) {
-                $date->add(new DateInterval('P' . $atts['add'] . 'Y'));
+                $date->add(new DateInterval('P' . abs($atts['add']) . 'Y'));
             } else {
                 $date->sub(new DateInterval('P' . abs($atts['add']) . 'Y'));
+            }
+        }
+    }
+
+    if (array_key_exists('hour', $atts)) {
+        if (is_numeric($atts['hour'])) {
+            if ($atts['hour'] > 0) {
+                $date->add(new DateInterval('PT' . abs($atts['hour']) . 'H'));
+            } else {
+                $date->sub(new DateInterval('PT' . abs($atts['hour']) . 'H'));
+            }
+        }
+    }
+
+    if (array_key_exists('day', $atts)) {
+        if (is_numeric($atts['day'])) {
+            if ($atts['day'] > 0) {
+                $date->add(new DateInterval('P' . abs($atts['day']) . 'D'));
+            } else {
+                $date->sub(new DateInterval('P' . abs($atts['day']) . 'D'));
+            }
+        }
+    }
+
+    if (array_key_exists('month', $atts)) {
+        if (is_numeric($atts['month'])) {
+            if ($atts['month'] > 0) {
+                $date->add(new DateInterval('P' . abs($atts['month']) . 'M'));
+            } else {
+                $date->sub(new DateInterval('P' . abs($atts['month']) . 'M'));
+            }
+        }
+    }
+
+    if (array_key_exists('year', $atts)) {
+        if (is_numeric($atts['year'])) {
+            if ($atts['year'] > 0) {
+                $date->add(new DateInterval('P' . abs($atts['year']) . 'Y'));
+            } else {
+                $date->sub(new DateInterval('P' . abs($atts['year']) . 'Y'));
             }
         }
     }
@@ -463,13 +505,18 @@ function datecalc_func($atts)
 
         return $ret['name'] . ' developed by ' . $ret['developer'] . '.';
     } else if (array_key_exists('holidays', $atts)) {
-        global $holidays;
+        $holidays = Yasumi\Yasumi::createByISO3166_2('US', $date->format('Y'));
+        $h = $holidays->on($date);
 
-        if (!array_key_exists($date->format('n/j/Y'), $holidays)) {
+        if ($h->count() > 0) {
+            $holiday = array_pop(iterator_to_array($h));
+
+            return $description ?
+                nl2br_str(get_option('date-calc-holidays-' .  strtolower($holiday->shortName))) :
+                $holiday->getName();
+        } else {
             return '';
         }
-
-        $ret = $description ? nl2br_str(get_option('date-calc-holidays-' . str_replace(array('/', ' ', ','), '-', str_replace(array('\'', '.'), '', strtolower($holidays[$date->format('n/j/Y')]['holiday']))))) : $holidays[$date->format('n/j/Y')]['holiday'];
     } else if (array_key_exists('difference', $atts) && $atts['difference'] != 'true') {
         $doPlural = function ($nb, $str) {
             return $nb > 1 ? $str . 's' : $str;
@@ -590,7 +637,21 @@ function datecalc_func($atts)
         $population = array('2019' => '7714576923', '2018' => '7632819325', '2017' => '7550262101', '2016' => '7466964280', '2015' => '7383008820', '2014' => '7298453033', '2013' => '7213426452', '2012' => '7128176935', '2011' => '7043008586', '2010' => '6958169159', '2009' => '6873741054', '2008' => '6789771253', '2007' => '6706418593', '2006' => '6623847913', '2005' => '6542159383', '2004' => '6461370865', '2003' => '6381408987', '2002' => '6302149639', '2001' => '6223412158', '2000' => '6145006989', '1999' => '6066867391', '1998' => '5988846103', '1997' => '5910566295', '1996' => '5831565020', '1995' => '5751474416', '1994' => '5670319703', '1993' => '5588094837', '1992' => '5504401149', '1991' => '5418758803', '1990' => '5330943460', '1989' => '5240735117', '1988' => '5148556956', '1987' => '5055636132', '1986' => '4963633228', '1985' => '4873781796', '1984' => '4786483862', '1983' => '4701530843', '1982' => '4618776168', '1981' => '4537845777', '1980' => '4458411534', '1979' => '4380585755', '1978' => '4304377112', '1977' => '4229201257', '1976' => '4154287594', '1975' => '4079087198', '1974' => '4003448151', '1973' => '3927538695', '1972' => '3851545181', '1971' => '3775790900', '1970' => '3700577650', '1969' => '3625905514', '1968' => '3551880700', '1967' => '3479053821', '1966' => '3408121405', '1965' => '3339592688', '1964' => '3273670772', '1963' => '3210271352', '1962' => '3149244245', '1961' => '3090305279', '1960' => '3033212527', '1959' => '2977824686', '1958' => '2924081243', '1957' => '2871952278', '1956' => '2821383444', '1955' => '2772242535', '1954' => '2724302468', '1953' => '2677230358', '1952' => '2630584384', '1951' => '2583816786');
 
         if (array_key_exists($date->format('Y'), $population)) {
-            return number_format_nozero($population[$date->format('Y')]);
+            if(array_key_exists('display', $atts) && $atts['display'] == 'abbr') {
+                $ret = $population[$date->format('Y')];
+                
+                if ($ret >= 1000000000) {
+                    $ret = round($ret / 1000000000, 2) . ' billion';
+                } else if ($ret >= 1000000) {
+                    $ret = round($ret / 1000000, 2) . ' million';
+                } else if ($ret >= 1000) {
+                    $ret = round($ret / 1000, 2) . ' thousand';
+                }
+                
+                return $ret;
+            } else {
+                return number_format_nozero($population[$date->format('Y')]);
+            }
         }
 
         return '';
@@ -746,8 +807,29 @@ function datecalc_func($atts)
     return $ret;
 }
 
+$all_holidays = array();
+function get_all_holidays()
+{
+    global $all_holidays;
+
+    for ($i = date("Y"); $i > date("Y") - 20; $i--) {
+        $holidays = Yasumi\Yasumi::createByISO3166_2('US', $i);
+        $h = $holidays->between(new DateTime('01/01/' . $i), new DateTime('12/31/' . $i));
+
+        foreach ($h as $holiday) {
+            $all_holidays[str_replace(':', '-', $holiday->shortName)] = $holiday->getName();
+        }
+    }
+
+    $all_holidays = array_unique($all_holidays);
+    sort($all_holidays);
+}
+get_all_holidays();
+
 function date_calc_settings_page()
 {
+    global $all_holidays;
+
     if (isset($_GET['tab'])) {
         $active_tab = $_GET['tab'];
     } else {
@@ -806,7 +888,7 @@ function date_calc_settings_page()
 
             print_options('Life Path Number', 'lifepath', array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22'), $active_tab);
 
-            print_options('Holidays', 'holidays', array('new-years-day', 'martin-luther-king-jr-day', 'washingtons-birthday', 'presidents-day', 'decoration-day', 'memorial-day', 'independence-day', 'labor-day', 'columbus-day', 'veterans-day', 'thanksgiving-day', 'christmas-day', 'valentines-day', 'international-womens-day', 'st-patricks-day', 'april-fools-day', 'cinco-de-mayo', 'halloween', 'christmas-eve', 'new-years-eve', 'fathers-day', 'mothers-day', 'first-day-of-spring', 'first-day-of-summer', 'first-day-of-fall', 'first-day-of-winter', 'ash-wednesday', 'easter-sunday', 'good-friday'), $active_tab, array('New Year\'s Day', 'Martin Luther King Jr. Day', 'Washington\'s Birthday', 'Presidents\' Day', 'Decoration Day', 'Memorial Day', 'Independence Day', 'Labor Day', 'Columbus Day', 'Veterans Day', 'Thanksgiving Day', 'Christmas Day', 'Valentine\'s Day', 'International Women\'s Day', 'St. Patrick\'s Day', 'April Fool\'s Day', 'Cinco De Mayo', 'Halloween', 'Christmas Eve', 'New Year\'s Eve', 'Father\'s Day', 'Mother\'s Day', 'First day of Spring', 'First day of Summer', 'First day of Fall', 'First day of Winter', 'Ash Wednesday', 'Easter Sunday', 'Good Friday'));
+            print_options('Holidays', 'holidays', array_keys($all_holidays), $active_tab, array_values($all_holidays));
 
             submit_button();
             ?>
@@ -850,6 +932,8 @@ add_action('admin_menu', function () {
 });
 
 add_action('admin_init', function () {
+    global $all_holidays;
+
     $zodiac = array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn');
     foreach ($zodiac as $z) {
         register_setting('date-calc-settings', 'date-calc-zodiac-' . $z);
@@ -905,8 +989,8 @@ add_action('admin_init', function () {
         register_setting('date-calc-settings', 'date-calc-lifepath-' . str_replace(array('/', ' ', ','), '-', strtolower($z)));
     }
 
-    $holidays = array('new-years-day', 'martin-luther-king-jr-day', 'washingtons-birthday', 'presidents-day', 'decoration-day', 'memorial-day', 'independence-day', 'labor-day', 'columbus-day', 'veterans-day', 'thanksgiving-day', 'christmas-day', 'valentines-day', 'international-womens-day', 'st-patricks-day', 'april-fools-day', 'cinco-de-mayo', 'halloween', 'christmas-eve', 'new-years-eve', 'fathers-day', 'mothers-day', 'first-day-of-spring', 'first-day-of-summer', 'first-day-of-fall', 'first-day-of-winter', 'ash-wednesday', 'easter-sunday', 'good-friday');
+    $holidays = array_keys($all_holidays);
     foreach ($holidays as $z) {
-        register_setting('date-calc-settings', 'date-calc-holidays-' . $z);
+        register_setting('date-calc-settings', 'date-calc-holidays-' . strtolower($z));
     }
 });

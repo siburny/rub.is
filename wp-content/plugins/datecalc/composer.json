@@ -1,5 +1,12 @@
 {
+    "repositories": [
+        {
+            "url": "https://github.com/siburny/yasumi.git",
+            "type": "git"
+        }
+    ],
     "require": {
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "azuyalabs/yasumi": "dev-develop"
     }
 }

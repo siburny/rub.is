@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3a514856bc0a0fadc349333094c42c8d
+class ComposerStaticInitf6a4a70e5ba0ccb2e952b0ee1fa7c044
 {
     public static $files = array (
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -16,6 +16,10 @@ class ComposerStaticInit3a514856bc0a0fadc349333094c42c8d
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'Y' => 
+        array (
+            'Yasumi\\' => 7,
         ),
         'W' => 
         array (
@@ -42,6 +46,10 @@ class ComposerStaticInit3a514856bc0a0fadc349333094c42c8d
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'Yasumi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -717,9 +725,9 @@ class ComposerStaticInit3a514856bc0a0fadc349333094c42c8d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3a514856bc0a0fadc349333094c42c8d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3a514856bc0a0fadc349333094c42c8d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3a514856bc0a0fadc349333094c42c8d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf6a4a70e5ba0ccb2e952b0ee1fa7c044::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf6a4a70e5ba0ccb2e952b0ee1fa7c044::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitf6a4a70e5ba0ccb2e952b0ee1fa7c044::$classMap;
 
         }, null, ClassLoader::class);
     }
