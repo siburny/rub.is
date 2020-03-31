@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Date Calculator and Formatter
  * Description: Flexible date and time formatter
- * Version: 3.2
+ * Version: 3.4
  */
 
 require_once 'Numword.php';
@@ -331,7 +331,11 @@ function datecalc_func($atts)
     } else if (array_key_exists('song', $atts) && ($atts['song'] == 'yes' || $atts['song'] == '1' || $atts['song'] == 'true')) {
         $key = $date->format('n/j/Y');
         if (array_key_exists($key, $billboard)) {
-            return '&quot;' . $billboard[$key]['Song'] . '&quot; by ' . $billboard[$key]['Artist'];
+            if (array_key_exists('youtube', $atts)) {
+                return '<iframe src="https://www.youtube.com/embed?listType=search&amp;list=' . urlencode($billboard[$key]['Artist'] . ' - ' . $billboard[$key]['Song']) . '" frameborder="0"></iframe>';
+            } else {
+                return '&quot;' . $billboard[$key]['Song'] . '&quot; by ' . $billboard[$key]['Artist'];
+            }
         }
         return '[Not available]. No song matches found.';
     } else if (array_key_exists('planet', $atts) && ($atts['planet'] == 'yes' || $atts['planet'] == '1' || $atts['planet'] == 'true')) {
@@ -504,17 +508,26 @@ function datecalc_func($atts)
         $ret = $games[$date->format('Y')];
 
         return $ret['name'] . ' developed by ' . $ret['developer'] . '.';
-    } else if (array_key_exists('holidays', $atts)) {
-        $holidays = Yasumi\Yasumi::createByISO3166_2('US', $date->format('Y'));
-        $h = $holidays->on($date);
+    } else if (array_key_exists('holiday', $atts) || array_key_exists('holidays', $atts)) {
+        $type = 'US';
+        if (array_key_exists('type', $atts) && strlen($atts['type']) == 2) {
+            $type = strtoupper($atts['type']);
+        }
 
-        if ($h->count() > 0) {
-            $holiday = array_pop(iterator_to_array($h));
+        try {
+            $holidays = Yasumi\Yasumi::createByISO3166_2($type, $date->format('Y'));
+            $h = $holidays->on($date);
 
-            return $description ?
-                nl2br_str(get_option('date-calc-holidays-' .  strtolower($holiday->shortName))) :
-                $holiday->getName();
-        } else {
+            if ($h->count() > 0) {
+                $holiday = array_pop(iterator_to_array($h));
+
+                return $description ?
+                    nl2br_str(get_option('date-calc-holidays-' .  strtolower($holiday->shortName))) :
+                    $holiday->getName();
+            } else {
+                return '';
+            }
+        } catch (Exception $e) {
             return '';
         }
     } else if (array_key_exists('difference', $atts) && $atts['difference'] != 'true') {
@@ -637,9 +650,9 @@ function datecalc_func($atts)
         $population = array('2019' => '7714576923', '2018' => '7632819325', '2017' => '7550262101', '2016' => '7466964280', '2015' => '7383008820', '2014' => '7298453033', '2013' => '7213426452', '2012' => '7128176935', '2011' => '7043008586', '2010' => '6958169159', '2009' => '6873741054', '2008' => '6789771253', '2007' => '6706418593', '2006' => '6623847913', '2005' => '6542159383', '2004' => '6461370865', '2003' => '6381408987', '2002' => '6302149639', '2001' => '6223412158', '2000' => '6145006989', '1999' => '6066867391', '1998' => '5988846103', '1997' => '5910566295', '1996' => '5831565020', '1995' => '5751474416', '1994' => '5670319703', '1993' => '5588094837', '1992' => '5504401149', '1991' => '5418758803', '1990' => '5330943460', '1989' => '5240735117', '1988' => '5148556956', '1987' => '5055636132', '1986' => '4963633228', '1985' => '4873781796', '1984' => '4786483862', '1983' => '4701530843', '1982' => '4618776168', '1981' => '4537845777', '1980' => '4458411534', '1979' => '4380585755', '1978' => '4304377112', '1977' => '4229201257', '1976' => '4154287594', '1975' => '4079087198', '1974' => '4003448151', '1973' => '3927538695', '1972' => '3851545181', '1971' => '3775790900', '1970' => '3700577650', '1969' => '3625905514', '1968' => '3551880700', '1967' => '3479053821', '1966' => '3408121405', '1965' => '3339592688', '1964' => '3273670772', '1963' => '3210271352', '1962' => '3149244245', '1961' => '3090305279', '1960' => '3033212527', '1959' => '2977824686', '1958' => '2924081243', '1957' => '2871952278', '1956' => '2821383444', '1955' => '2772242535', '1954' => '2724302468', '1953' => '2677230358', '1952' => '2630584384', '1951' => '2583816786');
 
         if (array_key_exists($date->format('Y'), $population)) {
-            if(array_key_exists('display', $atts) && $atts['display'] == 'abbr') {
+            if (array_key_exists('display', $atts) && $atts['display'] == 'abbr') {
                 $ret = $population[$date->format('Y')];
-                
+
                 if ($ret >= 1000000000) {
                     $ret = round($ret / 1000000000, 2) . ' billion';
                 } else if ($ret >= 1000000) {
@@ -647,7 +660,7 @@ function datecalc_func($atts)
                 } else if ($ret >= 1000) {
                     $ret = round($ret / 1000, 2) . ' thousand';
                 }
-                
+
                 return $ret;
             } else {
                 return number_format_nozero($population[$date->format('Y')]);
@@ -700,6 +713,7 @@ function datecalc_func($atts)
             'hh:mm' => 'h:i',
             'AM/PM' => 'A',
             'AMPM' => 'A',
+            'w' => 'z'
         );
 
         $ret = '';

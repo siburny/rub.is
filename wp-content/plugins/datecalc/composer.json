@@ -6,7 +6,9 @@
         }
     ],
     "require": {
-        "phpunit/phpunit": "^9.0",
         "azuyalabs/yasumi": "dev-develop"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
     }
 }

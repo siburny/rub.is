@@ -165,12 +165,63 @@ final class datecalctest extends TestCase
         ];
     }
 
+    public function shortcode_date_week_provider()
+    {
+        return [
+            [
+                '[datecalc date="12/25/1994" display="w"]',
+                '52'
+            ],
+            [
+                '[datecalc date="12/25/1994" display="w" ordinalize="true"]',
+                '52nd'
+            ],
+        ];
+    }
+
+    public function shortcode_date_holiday_provider()
+    {
+        return [
+            [
+                '[datecalc date="12/25/2020" holiday="true"]',
+                'Christmas'
+            ],
+            [
+                '[datecalc date="12/25/2020" holiday="true" type="US"]',
+                'Christmas'
+            ],
+            [
+                '[datecalc date="12/25/2020" holiday="true" type="RU"]',
+                ''
+            ],
+            [
+                '[datecalc date="01/07/2020" holiday="true"]',
+                ''
+            ],
+            [
+                '[datecalc date="01/07/2020" holiday="true" type="US"]',
+                ''
+            ],
+            [
+                '[datecalc date="01/07/2020" holiday="true" type="RU"]',
+                'Orthodox Christmas Day'
+            ],
+            [
+                '[datecalc date="01/07/2020" holiday="true" type="XX"]',
+                ''
+            ],
+        ];
+    }
+    
+
     /**
      * @dataProvider shortcode_seasons_should_output_provider
      * @dataProvider shortcode_elements_should_output_provider
      * @dataProvider shortcode_elements_should_output_description_provider
      * @dataProvider shortcode_quality_should_output_provider
      * @dataProvider shortcode_quality_should_output_description_provider
+     * @dataProvider shortcode_date_week_provider
+     * @dataProvider shortcode_date_holiday_provider
      */
     public function test_shortcode_should_output($shortcode, $output_expected)
     {
