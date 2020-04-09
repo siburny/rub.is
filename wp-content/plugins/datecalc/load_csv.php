@@ -12,6 +12,15 @@ $birthdays = array();
 $presidents = array();
 $movies = array();
 $games = array();
+$worldcup = array();
+$australianopen = array();
+$cricket = array();
+$frenchopen = array();
+$marchmadness = array();
+$usopen = array();
+$wimbledon = array();
+$markets = array();
+
 
 $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/billboard-top100.csv'));
 array_walk($input, function ($a) use (&$billboard, $input) {
@@ -103,4 +112,44 @@ array_walk($input, function ($a) use (&$games, $input) {
     } else {
         $skip = false;
     }
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/worldcup.csv'));
+array_walk($input, function ($a) use (&$worldcup, $input) {
+    $worldcup[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/australianopen.csv'));
+array_walk($input, function ($a) use (&$australianopen, $input) {
+    $australianopen[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/cricket.csv'));
+array_walk($input, function ($a) use (&$cricket, $input) {
+    $cricket[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/frenchopen.csv'));
+array_walk($input, function ($a) use (&$frenchopen, $input) {
+    $frenchopen[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/marchmadness.csv'));
+array_walk($input, function ($a) use (&$marchmadness, $input) {
+    $marchmadness[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/usopen.csv'));
+array_walk($input, function ($a) use (&$usopen, $input) {
+    $usopen[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/wimbledon.csv'));
+array_walk($input, function ($a) use (&$wimbledon, $input) {
+    $wimbledon[$a[0]] = array_combine($input[0], $a);
+});
+
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/markets.csv'));
+array_walk($input, function ($a) use (&$markets, $input) {
+    $markets[$a[0]] = array_combine($input[0], $a);
 });

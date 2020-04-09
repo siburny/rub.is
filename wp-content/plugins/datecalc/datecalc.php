@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Date Calculator and Formatter
  * Description: Flexible date and time formatter
- * Version: 3.4
+ * Version: 3.5
  */
 
 require_once 'Numword.php';
@@ -399,6 +399,78 @@ function datecalc_func($atts)
         $ret = $nfl[$date->format('Y')];
 
         return $ret['Output'];
+    } else if (array_key_exists('markets', $atts)) {
+        global $markets;
+
+        if (!array_key_exists($date->format('n/j/Y'), $markets)) {
+            return '';
+        }
+        $ret = $markets[$date->format('n/j/Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('worldcup', $atts)) {
+        global $worldcup;
+
+        if (!array_key_exists($date->format('Y'), $worldcup)) {
+            return '';
+        }
+        $ret = $worldcup[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('marchmadness', $atts)) {
+        global $marchmadness;
+
+        if (!array_key_exists($date->format('Y'), $marchmadness)) {
+            return '';
+        }
+        $ret = $marchmadness[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('cricket', $atts)) {
+        global $cricket;
+
+        if (!array_key_exists($date->format('Y'), $cricket)) {
+            return '';
+        }
+        $ret = $cricket[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('wimbledon', $atts)) {
+        global $wimbledon;
+
+        if (!array_key_exists($date->format('Y'), $wimbledon)) {
+            return '';
+        }
+        $ret = $wimbledon[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('usopen', $atts)) {
+        global $usopen;
+
+        if (!array_key_exists($date->format('Y'), $usopen)) {
+            return '';
+        }
+        $ret = $usopen[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('frenchopen', $atts)) {
+        global $frenchopen;
+
+        if (!array_key_exists($date->format('Y'), $frenchopen)) {
+            return '';
+        }
+        $ret = $frenchopen[$date->format('Y')];
+
+        return $ret['output'];
+    } else if (array_key_exists('australianopen', $atts)) {
+        global $australianopen;
+
+        if (!array_key_exists($date->format('Y'), $australianopen)) {
+            return '';
+        }
+        $ret = $australianopen[$date->format('Y')];
+
+        return $ret['output'];
     } else if (array_key_exists('mlb', $atts)) {
         global $mlb;
 
@@ -542,7 +614,26 @@ function datecalc_func($atts)
             $diff = new DateInterval('PT0S');
         }
 
-        if ($display == 'year') {
+        $ago = '';
+        if ($diff->invert) {
+            $ago = ' ago';
+        }
+
+        if (!array_key_exists('display', $atts)) {
+            if ($diff->y > 1) { // YEAR
+                return $diff->y . ' ' . $doPlural($diff->y, 'year') . $ago;
+            } else if ($diff->y > 0) {
+                return $diff->y . ' ' . $doPlural($diff->y, 'year') . ' and ' . $diff->m . ' ' . $doPlural($diff->m, 'month') . $ago;
+            } else if ($diff->m > 1) { // MONTH
+                return $diff->m . ' ' . $doPlural($diff->m, 'month') . $ago;
+            } else if ($diff->m > 0) {
+                return $diff->m . ' ' . $doPlural($diff->y, 'month') . ' and ' . $diff->d . ' ' . $doPlural($diff->d, 'day') . $ago;
+            } else if ($diff->d > 1) { // DAY
+                return $diff->d . ' ' . $doPlural($diff->d, 'day') . $ago;
+            } else if ($diff->d > 0) {
+                return $diff->d . ' ' . $doPlural($diff->d, 'month') . ' and ' . $diff->h . ' ' . $doPlural($diff->h, 'day') . $ago;
+            }
+        } else if ($display == 'year') {
             $ret = number_format_nozero($diff->format('%y'));
             return $ret . ' ' . $doPlural($ret, 'year');
         } else if ($display == 'month') {
