@@ -21,6 +21,7 @@ $usopen = array();
 $wimbledon = array();
 $markets = array();
 
+$all_data = array();
 
 $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/billboard-top100.csv'));
 array_walk($input, function ($a) use (&$billboard, $input) {
@@ -35,26 +36,6 @@ array_walk($input, function ($a) use (&$babynames, $input) {
 $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/babybirths.csv'));
 array_walk($input, function ($a) use (&$babybirths, $input) {
     $babybirths[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/nhl.csv'));
-array_walk($input, function ($a) use (&$nhl, $input) {
-    $nhl[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/nfl.csv'));
-array_walk($input, function ($a) use (&$nfl, $input) {
-    $nfl[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/mlb.csv'));
-array_walk($input, function ($a) use (&$mlb, $input) {
-    $mlb[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/nba.csv'));
-array_walk($input, function ($a) use (&$nba, $input) {
-    $nba[$a[0]] = array_combine($input[0], $a);
 });
 
 $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/events.csv'));
@@ -114,42 +95,25 @@ array_walk($input, function ($a) use (&$games, $input) {
     }
 });
 
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/worldcup.csv'));
-array_walk($input, function ($a) use (&$worldcup, $input) {
-    $worldcup[$a[0]] = array_combine($input[0], $a);
-});
+// LOAD DYNAMIC CSVs
+$csvs = scandir(plugin_dir_path(__FILE__) . 'data/');
+$csvs = array_values(array_filter($csvs, function ($el) {
+    return substr($el, -4) == '.csv';
+}));
 
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/australianopen.csv'));
-array_walk($input, function ($a) use (&$australianopen, $input) {
-    $australianopen[$a[0]] = array_combine($input[0], $a);
-});
+foreach ($csvs as $file) {
+    $name = substr($file, 0, -4);
+    $all_data[$name] = array();
 
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/cricket.csv'));
-array_walk($input, function ($a) use (&$cricket, $input) {
-    $cricket[$a[0]] = array_combine($input[0], $a);
-});
+    // read
+    $input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'data/' . $file));
+    // process columns
+    array_walk($input[0], function (&$c) {
+        $c = strtolower($c);
+    });
+    // load
+    array_walk($input, function ($a) use (&$all_data, $name, $input) {
+        $all_data[$name][$a[0]] = array_combine($input[0], $a);
+    });
 
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/frenchopen.csv'));
-array_walk($input, function ($a) use (&$frenchopen, $input) {
-    $frenchopen[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/marchmadness.csv'));
-array_walk($input, function ($a) use (&$marchmadness, $input) {
-    $marchmadness[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/usopen.csv'));
-array_walk($input, function ($a) use (&$usopen, $input) {
-    $usopen[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/wimbledon.csv'));
-array_walk($input, function ($a) use (&$wimbledon, $input) {
-    $wimbledon[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/markets.csv'));
-array_walk($input, function ($a) use (&$markets, $input) {
-    $markets[$a[0]] = array_combine($input[0], $a);
-});
+}
