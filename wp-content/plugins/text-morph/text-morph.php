@@ -5,13 +5,15 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.4.2
+ * Version: 4.3
  */
 
 require_once 'Numword.php';
 
 function morph_func($atts, $content = '')
 {
+    $unit = '';
+
     if (empty($content)) {
         if (array_key_exists('text', $atts)) {
             $content = $atts['text'];
@@ -35,6 +37,48 @@ function morph_func($atts, $content = '')
 
     if (array_key_exists('add', $atts)) {
         $ret .= $atts['add'];
+    }
+
+    if (array_key_exists('money', $atts) && is_numeric($atts['money'])) {
+        define('USD_TO_EUR', 0.93);
+        define('USD_TO_GBP', 0.81);
+
+        $ret = $atts['money'];
+
+        if (array_key_exists('display', $atts) && in_array($atts['display'], array('gbp', 'eur', 'gbp abbr', 'eur abbr', 'usd abbr'))) {
+
+            $symbol = '$';
+            switch ($atts['display']) {
+                case 'gbp':
+                case 'gbp abbr':
+                    $ret *= USD_TO_GBP;
+                    $symbol = '£';
+                    break;
+                case  'eur':
+                case 'eur abbr':
+                    $ret *= USD_TO_EUR;
+                    $symbol = '€';
+                    break;
+            }
+
+            $abbr = '';
+            if (in_array($atts['display'], array('gbp abbr', 'eur abbr', 'usd abbr'))) {
+                if ($ret >= 1000000000) {
+                    $ret = round($ret / 1000000000, 0);
+                    $abbr = ' billion';
+                } else if ($ret >= 1000000) {
+                    $ret = round($ret / 1000000, 0);
+                    $abbr = ' million';
+                } else if ($ret >= 1000) {
+                    $ret = round($ret / 1000, 0);
+                    $abbr = ' thousand';
+                }
+            }
+
+            return $symbol . number_format($ret, 0) . $abbr;
+        } else {
+            return '$' . number_format($ret, 0);
+        }
     }
 
     if (array_key_exists('time', $atts)) {
@@ -117,12 +161,21 @@ function morph_func($atts, $content = '')
         if (!is_numeric($ret)) {
             return $ret;
         }
+
         switch ($atts['display']) {
+            case 'lb':
+                $unit = 'lb';
+                break;
+            case 'inch':
+                $unit = 'inch' . ($ret > 1 ? 'es' : '');
+                break;
             case 'meter':
                 $ret = number_format(2.54 * $ret / 100, 2);
+                $unit = 'm';
                 break;
             case 'cm':
                 $ret = number_format(2.54 * $ret, 0);
+                $unit = 'cm';
                 break;
             case 'foot':
                 $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet ' : ' foot ') : '') . ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es');
@@ -135,6 +188,7 @@ function morph_func($atts, $content = '')
                 break;
             case 'kg':
                 $ret = number_format($ret * 0.45359237, 0);
+                $unit = 'kg';
                 break;
             case 'stone':
                 $ret = number_format($ret / 14, 1);
@@ -147,7 +201,6 @@ function morph_func($atts, $content = '')
                 } else if ($ret >= 1000) {
                     $ret = round($ret / 1000, 2) . ' thousand';
                 }
-
                 break;
         }
     }
@@ -193,7 +246,7 @@ function morph_func($atts, $content = '')
         $ret = str_replace(' ', $atts['space'], $ret);
     }
 
-    return $ret;
+    return $ret . ($unit ? ' ' . $unit : '');
 }
 
 function text_morph_settings_page()
