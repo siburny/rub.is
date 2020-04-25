@@ -51,6 +51,12 @@ class tds_icon1 extends td_style {
 				.$unique_style_class:before {
 					color: @text_color_solid;
 				}
+				.$unique_style_class svg {
+				    fill: @text_color_solid;
+				}
+				.$unique_style_class svg * {
+				    fill: inherit;
+				}
 				/* @text_color_gradient */
 				.$unique_style_class:before {
 					@text_color_gradient
@@ -61,6 +67,12 @@ class tds_icon1 extends td_style {
 				    background: none;
 					color: @text_color_gradient_1;
 				}
+				.$unique_style_class svg {
+				    fill: @text_color_gradient_1;
+				}
+				.$unique_style_class svg * {
+				    fill: inherit;
+				}
 				/* @text_hover_color */
 				body $unique_block_class_hover:before {
 					color: @text_hover_color;
@@ -70,6 +82,12 @@ class tds_icon1 extends td_style {
 					-webkit-text-fill-color: unset;
 					background: transparent;
 					transition: none;
+				}
+				body $unique_block_class_hover svg {
+				    fill: @text_hover_color;
+				}
+				body $unique_block_class_hover svg * {
+				    fill: inherit;
 				}
 
 				/* @background_solid */
@@ -104,6 +122,12 @@ class tds_icon1 extends td_style {
 				/* @hover_color */
 				$unique_block_class_hover:before {
 				    color: @hover_color;
+				}
+				$unique_block_class_hover svg {
+				    fill: @hover_color;
+				}
+				$unique_block_class_hover svg * {
+				    fill: inherit;
 				}
 
 				
@@ -238,8 +262,14 @@ class tds_icon1 extends td_style {
         }
 	    $this->unique_style_class = td_global::td_generate_unique_id();
 
+        $svg_code = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('svg_code') ) ) );
+
 	    $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
-        $buffy .= '<i class="' . self::get_group_style( __CLASS__ ) . ' ' . $this->get_shortcode_att('tdicon_id') . ' ' . $this->unique_style_class . ' td-fix-index"></i>';
+	    if( $svg_code == '' ) {
+            $buffy .= '<i class="' . self::get_group_style( __CLASS__ ) . ' ' . $this->get_shortcode_att('tdicon_id') . ' ' . $this->unique_style_class . ' td-fix-index"></i>';
+        } else {
+	        $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' tds-icon-svg-wrap ' . $this->unique_style_class . ' td-fix-index"><div class="tds-icon-svg">' . $svg_code . '</div></div>';
+        }
 
 	    return $buffy;
 	}

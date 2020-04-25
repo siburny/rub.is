@@ -1,6 +1,6 @@
 <?php
 //for sidebar
-td_global::$current_template = 'bbpress';
+td_global::set_current_template('bbpress' );
 
 
 get_header();

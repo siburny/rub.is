@@ -20,7 +20,7 @@
 
   p {
     font-size: 15px;
-    line-height: 25px;
+    line-height: 24px;
   }
 
   .td-plugin-required {
@@ -175,18 +175,18 @@
 
 .td-admin-box-text {
   float: left;
-  padding: 6px 26px;
+  padding: 10px 26px;
   background-color: #FFF;
   margin-bottom: 30px;
   margin-top: 15px;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
 
   p {
-    font-size: 15px;
-    line-height: 25px;
+    font-size: 14px;
+    line-height: 23px;
     display: inline-block;
-    margin-right: 10px;
+    margin: 12px 0 15px;
   }
 
   .button {
@@ -194,12 +194,12 @@
     vertical-align: middle !important;
   }
 
-  h2 {
-    margin: 1em 0 0.5em;
+  h3 {
+    margin: 0;
     color: #111;
-    font-size: 1.8em;
-    font-weight: bold;
-    line-height: 1.1em;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
     text-align: left;
   }
 }
@@ -237,7 +237,13 @@
 
 
 .td-admin-wrap .about-text {
-  width: 100%;
+  width: 80%;
+  font-size: 15px;
+  line-height: 24px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 }
 
 
@@ -354,8 +360,9 @@
 .icon-tagdiv-naver:before { content: "\e900"; }
 
 #toplevel_page_td_cake_panel,
-#toplevel_page_td_theme_welcome {
-  .dashicons-admin-generic:before {
+#toplevel_page_td_theme_welcome,
+#menu-posts-tdb_templates {
+  .dashicons-before:before {
     font-family: 'tagDiv';
     content: "\e800";
     font-size: 14px;
@@ -364,8 +371,8 @@
   }
 }
 @-moz-document url-prefix() {
-  #toplevel_page_td_cake_panel .dashicons-admin-generic:before,
-  #toplevel_page_td_theme_welcome .dashicons-admin-generic:before {
+  #toplevel_page_td_cake_panel .dashicons-before:before,
+  #toplevel_page_td_theme_welcome .dashicons-before:before {
     top: 2px;
   }
 }

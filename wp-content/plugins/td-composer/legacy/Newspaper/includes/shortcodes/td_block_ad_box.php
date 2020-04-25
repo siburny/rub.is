@@ -134,14 +134,16 @@ class td_block_ad_box extends td_block {
 				}
 				
 				/* @spot_img_horiz_left */
-				.$unique_block_class.td-a-rec-img {
+				.$unique_block_class.td-a-rec-img,
+				.$unique_block_class .td-adspot-title {
 				    text-align: left;
 				}
 				.$unique_block_class.td-a-rec-img img {
                     margin: 0 auto 0 0;
                 }
 				/* @spot_img_horiz_right */
-				.$unique_block_class.td-a-rec-img {
+				.$unique_block_class.td-a-rec-img,
+				.$unique_block_class .td-adspot-title {
 				    text-align: right;
 				}
 				.$unique_block_class.td-a-rec-img img {
@@ -159,6 +161,11 @@ class td_block_ad_box extends td_block {
 				/* @f_title */
 				.$unique_block_class .td-adspot-title {
 					@f_title
+				}
+
+				/* @ad_general_css */
+				.$unique_block_class .td-element-style {
+					z-index: -1;
 				}
 				
 			</style>";
@@ -254,6 +261,9 @@ class td_block_ad_box extends td_block {
 
         /*-- FONTS -- */
         $res_ctx->load_font_settings( 'f_title' );
+
+        // general style
+        $res_ctx->load_settings_raw( 'ad_general_css', 1 );
 
     }
 

@@ -59,6 +59,7 @@ class td_config {
             'tdLoginMobile' =>          '/legacy/common/wp_booster/js_dev/tdLoginMobile.js',
             'tdStyleCustomizer' =>      '/legacy/common/wp_booster/js_dev/tdStyleCustomizer.js',
             'tdTrendingNow' =>          '/legacy/common/wp_booster/js_dev/tdTrendingNow.js',
+            //'tdTrendingNowCustom' =>    '/legacy/common/wp_booster/js_dev/tdTrendingNowCustom.js',
             'td_history' =>             '/legacy/common/wp_booster/js_dev/td_history.js',
             'tdSmartSidebar' =>         '/legacy/common/wp_booster/js_dev/tdSmartSidebar.js',
             'tdInfiniteLoader' =>       '/legacy/common/wp_booster/js_dev/tdInfiniteLoader.js',
@@ -79,6 +80,7 @@ class td_config {
 	        'tdAnimationScroll' =>      '/legacy/common/wp_booster/js_dev/tdAnimationScroll.js',
 	        'tdHomepageFull' =>         '/legacy/common/wp_booster/js_dev/tdHomepageFull.js',
 	        'tdBackstr' =>              '/legacy/common/wp_booster/js_dev/tdBackstr.js',
+	        'tdShowVideo' =>            '/legacy/common/wp_booster/js_dev/tdShowVideo.js',
 
             //'td_scroll_effects.js' => '/includes/js_files/td_scroll_effects.js',
 
@@ -94,6 +96,8 @@ class td_config {
             'tdSocialSharing'=>         '/legacy/common/wp_booster/js_dev/tdSocialSharing.js',
 
             'tdModalPostImages' =>      '/legacy/common/wp_booster/js_dev/tdModalPostImages.js',
+
+            'tdAjaxVideoModal' =>       '/legacy/common/wp_booster/js_dev/tdAjaxVideoModal.js',
 
         );
 
@@ -2513,17 +2517,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "40",
-		                    "group"       => "Layout",
-		                ),
-		                array(
 		                    "param_name"  => "hide_image",
 		                    "type"        => "checkbox",
 		                    "value"       => '',
@@ -2533,6 +2526,204 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Video pop-up article title color',
+                            "param_name"  => "video_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Video pop-up article title hover color',
+                            "param_name"  => "video_title_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "vid_t_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration text color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "vid_t_bg_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -4277,30 +4468,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "40",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            "param_name"  => "video_icon_pos",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Center'  => 'center',
-                                'Corner' => 'corner',
-                            ),
-                            "heading"     => 'Video icon position',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "horizontal_separator",
 		                    "value"      => "",
@@ -4338,6 +4505,217 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon_pos",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Center'  => 'center',
+                                'Corner' => 'corner',
+                            ),
+                            "heading"     => 'Video icon position',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0 5px 0 0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Video pop-up article title color',
+                            "param_name"  => "video_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Video pop-up article title hover color',
+                            "param_name"  => "video_title_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "vid_t_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration text color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "vid_t_bg_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -5946,17 +6324,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon1",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "40",
-		                    "group"       => "Layout",
-		                ),
-		                array(
 		                    "param_name"  => "hide_image",
 		                    "type"        => "checkbox",
 		                    "value"       => '',
@@ -5966,6 +6333,204 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Video pop-up article title color',
+                            "param_name"  => "video_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Video pop-up article title hover color',
+                            "param_name"  => "video_title_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "vid_t_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration text color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "vid_t_bg_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -6503,17 +7068,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon2",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "20",
-		                    "group"       => "Layout",
-		                ),
-		                array(
 		                    "param_name"  => "hide_image2",
 		                    "type"        => "checkbox",
 		                    "value"       => '',
@@ -6523,6 +7077,122 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "20",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_popup2",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec2",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title2",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color2",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -6531,6 +7201,20 @@ class td_config {
 		                    "class"      => "tdc-separator-small",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name"  => "meta_info_align2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Top'     => 'initial',
+                                'Center'  => 'center',
+                                'Bottom'  => 'flex-end',
+                            ),
+                            "heading"     => 'Meta info alignment',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name" => "meta_info_horiz2",
 		                    "type" => "dropdown",
@@ -8293,16 +8977,34 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon1",
-		                    "type"        => "textfield-responsive",
+		                    "param_name"  => "hide_image",
+		                    "type"        => "checkbox",
 		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
+		                    "heading"     => "Hide image",
 		                    "description" => "",
 		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "40",
-		                    "group"       => "Layout",
+		                    "class"       => "",
+		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "td-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
                         array(
                             "param_name"  => "video_icon_pos1",
                             "type"        => "dropdown-responsive",
@@ -8316,16 +9018,185 @@ class td_config {
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
                         ),
-		                array(
-		                    "param_name"  => "hide_image",
-		                    "type"        => "checkbox",
-		                    "value"       => '',
-		                    "heading"     => "Hide image",
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "group"       => 'Layout'
-		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Video pop-up article title color',
+                            "param_name"  => "video_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Video pop-up article title hover color',
+                            "param_name"  => "video_title_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "vid_t_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration text color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "vid_t_bg_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -8875,17 +9746,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon2",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "20",
-		                    "group"       => "Layout",
-		                ),
-		                array(
 		                    "param_name"  => "hide_image3",
 		                    "type"        => "checkbox",
 		                    "value"       => '',
@@ -8895,6 +9755,115 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "td-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "20",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_popup3",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec3",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title3",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color3",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t3",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -10899,17 +11868,6 @@ class td_config {
 		                    "group"       => "Layout",
 		                ),
 		                array(
-		                    "param_name"  => "video_icon",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Video icon size',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "40",
-		                    "group"       => "Layout",
-		                ),
-		                array(
 		                    "param_name"  => "hide_image",
 		                    "type"        => "checkbox",
 		                    "value"       => '',
@@ -10919,6 +11877,204 @@ class td_config {
 		                    "class"       => "",
 		                    "group"       => 'Layout'
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article video',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_icon",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Enable video pop-up",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Video pop-up ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '- Advertisement -',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => 'Layout',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "show_vid_t",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show video duration',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "vid_t_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video duration padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Video pop-up article title color',
+                            "param_name"  => "video_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Video pop-up article title hover color',
+                            "param_name"  => "video_title_color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video pop-up overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                        array(
+                            "param_name" => "vid_t_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration text color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "vid_t_bg_color",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Video duration background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -25224,6 +26380,35 @@ class td_config {
                             "holder" => "div",
                             "class" => "tdc-textfield-big",
                         ),
+
+
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name" => "playlist_source",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Video ids' => 'video_ids',
+                                'Channel ID' => 'channel_id',
+                                'Username' => 'username',
+                                'Playlist id' => 'playlist_id'
+                            ),
+                            "heading" => "Source",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small"
+                        ),
                         array(
                             "param_name" => "playlist_yt",
                             "type" => "textfield",
@@ -25232,6 +26417,49 @@ class td_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
+                        ),
+                        array(
+                            "param_name" => "channel_id",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Channel ID",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name" => "username",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Username",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name" => "playlist_id",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Playlist id",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small"
+                        ),
+                        array(
+                            "param_name" => "limit",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Videos limit (maximum 50)",
+                            "description" => "",
+                            "holder" => "div",
+                            "placeholder" => "10",
+                            "class" => "tdc-textfield-small",
                         ),
                         array(
                             "param_name" => "playlist_auto_play",
@@ -25243,10 +26471,37 @@ class td_config {
                             "class" => "tdc-dropdown-small",
                         ),
                         array(
+                            "param_name" => "cache",
+                            "type" => "dropdown",
+                            "value" => array('ON' => '1', 'OFF' => '0'),
+                            "heading" => "Cache ON / OFF:",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-small",
+                        ),
+                        array(
+                            "param_name" => "cache_timeout",
+                            "type" => "dropdown",
+                            "value" => array(
+                                '1 hour' => 1 * HOUR_IN_SECONDS,
+                                '3 hours' => '',
+                                '6 hours' => 6 * HOUR_IN_SECONDS,
+                                '9 hours' => 9 * HOUR_IN_SECONDS,
+                                '12 hours' => 12 * HOUR_IN_SECONDS,
+                                '1 day' => 1 * DAY_IN_SECONDS,
+                                '3 days' => 3 * DAY_IN_SECONDS
+                            ),
+                            "heading" => "Cache refresh",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                        ),
+                        array(
                             "param_name" => "separator",
-                            "type" => "horizontal_separator",
-                            "value" => "",
-                            "class" => ""
+                            "type"       => "text_separator",
+                            'heading'    => 'Layout',
+                            "value"      => "",
+                            "class"      => "",
                         ),
                         array(
                             "param_name" => "display",
@@ -26496,7 +27751,7 @@ class td_config {
                         ),
                         array(
                             "param_name"  => "inline",
-                            "type"        => "checkbox",
+                            "type"        => "checkbox-responsive",
                             "value"       => '',
                             "heading"     => "Display list elements inline",
                             "description" => "",
@@ -26532,7 +27787,7 @@ class td_config {
                             "heading"     => 'Space',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
+                            "class"       => "tdc-textfield-small",
                             "placeholder" => '0',
                         ),
                         array(
@@ -26751,6 +28006,296 @@ class td_config {
                     td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
                     td_config_helper::get_map_block_font_array( 'f_name', false, 'Item name text', 'Style' ),
                     td_config_helper::get_map_block_font_array( 'f_posts', false, 'Item posts count text', 'Style' ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
+                )
+            )
+        );
+
+
+        td_api_block::add('td_block_archives',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Archives list',
+                "base" => "td_block_archives",
+                "class" => "td_block_archives",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-categories',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_archives.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'el_class'
+                ),
+                "params" => array_merge(
+                    self::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Layout',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name" => "limit",
+                            "type" => "textfield",
+                            "value" => "6",
+                            "heading" => 'Limit the shown items',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-small",
+                        ),
+                        array(
+                            "param_name"  => "inline",
+                            "type"        => "checkbox-responsive",
+                            "value"       => '',
+                            "heading"     => "Display list elements inline",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+                        array(
+                            "param_name" => "item_horiz_align",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Left' => 'content-horiz-left',
+                                'Center' => 'content-horiz-center',
+                                'Right' => 'content-horiz-right'
+                            ),
+                            "heading" => 'Menu list horiz align',
+                            "description" => "",
+                            "holder" => "div",
+                            'tdc_dropdown_images' => true,
+                            "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Elements',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "",
+                        ),
+                        array(
+                            "param_name"  => "item_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '0',
+                        ),
+                        array(
+                            "param_name"  => "items_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0 10px 0 12px",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name"  => "items_border",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Border size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '0',
+                        ),
+                        array(
+                            'param_name' => 'items_radius',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Border radius',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '0',
+                            'range_max' => '100',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'items_skew',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Skew',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '-40',
+                            'range_max' => '40',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Separator',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "",
+                        ),
+                        array(
+                            'param_name' => 'tdicon',
+                            'type' => 'icon',
+                            'heading' => 'Icon separator',
+                            'class' => 'tdc-textfield-small',
+                            'value' => '',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_size',
+                            'type' => 'range-responsive',
+                            'value' => '14',
+                            'heading' => 'Icon size',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '1',
+                            'range_max' => '30',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_space',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Icon space',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '0',
+                            'range_max' => '30',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+                        array(
+                            'param_name' => 'icon_align',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Icon align',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '-10',
+                            'range_max' => '10',
+                            'range_step' => '1',
+                            "group"       => "",
+                        ),
+
+                        array(
+                            "param_name" => "bg_color",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "td-colorpicker-double-a",
+                            "heading" => 'Background color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "bg_color_h",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "td-colorpicker-double-b",
+                            "heading" => 'Background hover color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Name color',
+                            "param_name"  => "color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Name hover color',
+                            "param_name"  => "color_h",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "border_color",
+                            "type" => "gradient",
+                            "holder" => "div",
+                            "class" => "td-colorpicker-double-a",
+                            "heading" => 'Border color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "border_hover_color",
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "td-colorpicker-double-b",
+                            "heading" => 'Border hover color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "i_color",
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "td-colorpicker-double-a",
+                            "heading" => 'Icon color',
+                            "value" => '',
+                            "description" => '',
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Style',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_name', false, 'Item name text', 'Style' ),
                     array(
                         array(
                             "param_name" => "separator",
@@ -27541,6 +29086,13 @@ class td_config {
                     self::get_map_block_general_array(),
                     array(
                         array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Weather settings',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
                             "param_name" => "w_key",
                             "type" => "textfield",
                             "value" => '',
@@ -27548,7 +29100,6 @@ class td_config {
                             "description" => '<a href="https://forum.tagdiv.com/weather-widget/" target="_blank">How to get an api key</a>',
                             "holder" => "div",
                             "class" => "",
-                            'group' => 'Weather'
                         ),
                         array(
                             "param_name" => "w_location",
@@ -27558,7 +29109,6 @@ class td_config {
                             "description" => '<a href="http://openweathermap.org/find" target="_blank">Find your location</a> - You can use "city name" or "city id" (check weather wiget tutorial). Note that the widget will autotranslate itself to the language from the theme panel only if a translation is available. <a href="http://bugs.openweathermap.org/projects/api/wiki/Api_2_5_weather" target="_blank">The available languages</a> (section 4.2)',
                             "holder" => "div",
                             "class" => "",
-                            'group' => 'Weather'
                         ),
                         array(
                             "param_name" => "w_units",
@@ -27571,7 +29121,12 @@ class td_config {
                             "description" => '',
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
-                            'group' => 'Weather',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
                         ),
                         array(
                             'param_name' => 'el_class',
@@ -27580,6 +29135,210 @@ class td_config {
                             'heading' => 'Extra class',
                             'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
                             'class' => 'tdc-textfield-extrabig',
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Heading',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "city_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'City color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "condition_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Weather condition color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "loc_icon_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Localization icon color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Current weather',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "temp_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "temp_min_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature min color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style"
+                        ),
+                        array(
+                            "param_name"  => "temp_min_i_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature min icon color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "temp_max_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature max color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "temp_max_i_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature max icon color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "sep_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Separator color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "humid_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Humidity color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "wind_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Winds speed color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "clouds_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Clouds color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Forecast',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "frcst_bg_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Background color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "frcst_day_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Day name color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name"  => "frcst_temp_color",
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Temperature color',
+                            "value"       => '',
+                            "description" => '',
+                            "group"      => "Style"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Fonts',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Style"
                         ),
                         array (
                             'param_name' => 'css',
@@ -28321,7 +30080,7 @@ class td_config {
                         ),
                         array(
                             "param_name" => "item_horiz_align",
-                            "type" => "dropdown",
+                            "type" => "dropdown-responsive",
                             "value" => array(
                                 'Left' => 'content-horiz-left',
                                 'Center' => 'content-horiz-center',
@@ -28330,8 +30089,7 @@ class td_config {
                             "heading" => 'Menu list horiz align',
                             "description" => "",
                             "holder" => "div",
-                            'tdc_dropdown_images' => true,
-                            "class" => "tdc-visual-selector tdc-add-class",
+                            "class" => "tdc-dropdown-big",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28363,6 +30121,732 @@ class td_config {
                     ),
                     td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
                     td_config_helper::get_map_block_font_array( 'f_list', false, 'Menu text' ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
+                )
+            )
+        );
+
+        td_api_block::add('td_block_video_embed',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Video Embed',
+                "base" => "td_block_video_embed",
+                "class" => "",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-td_block_video_embed',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_video_embed.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'el_class'
+                ),
+                'params' => array_merge(
+                    td_config::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Video settings',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name" => "video_url",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Video link (YouTube, Vimeo, DailyMotion or self-hosted)",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                        ),
+                        array(
+                            "param_name"  => "controls",
+                            "type"        => "checkbox",
+                            "value"       => 'yes',
+                            "heading"     => "Show controls",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+                        array(
+                            "param_name"  => "autoplay",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Autoplay",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+                        array(
+                            "param_name"  => "loop",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Loop",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Fonts',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_list', false, 'Menu text' )
+                )
+            )
+        );
+
+        td_api_block::add('td_block_covid_19_stats',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Covid-19 Statistics Table',
+                "base" => "td_block_covid_19_stats",
+                "class" => "",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-td_block_covid_19_stats',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_covid_19_stats.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'sort',
+                    'order',
+                    'el_class'
+                ),
+                'tdc_start_values' => base64_encode(
+                    json_encode(
+                        array(
+                            array(
+                                'sort' => 'c',
+                                'order' => 'descending'
+                            ),
+                        )
+                    )
+                ),
+                'params' => array_merge(
+                    td_config::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Layout',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name"  => "covid-format",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Format',
+                            "description" => "In any order, separated by space:<br>C - Country/Regions; &nbsp;&nbsp;&nbsp;c - Confirmed; &nbsp;&nbsp;&nbsp;d - Deaths<br/>r - Recovered &nbsp;&nbsp;&nbsp;a - Active cases",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'C c d r a',
+                        ),
+                        array(
+                            "param_name"  => "sort",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Country name'  => 'C',
+                                'Confirmed cases'  => 'c',
+                                'Deaths' => 'd',
+                                'Recovered' => 'r',
+                                'Active cases' => 'a',
+                            ),
+                            "heading"     => 'Sort by',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name"  => "order",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Descending'  => 'descending',
+                                'Ascending'  => 'ascending',
+                            ),
+                            "heading"     => 'Sort order',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
+                        array(
+                            "param_name"  => "table_height",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Table height',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => 'auto',
+                        ),
+                        array(
+                            "param_name"  => "col_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Collumns padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '12px 16px',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
+                        array(
+                            "param_name"  => "country_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Country/Region text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Country/Region',
+                        ),
+                        array(
+                            "param_name"  => "confirmed_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Confirmed cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Confirmed cases',
+                        ),
+                        array(
+                            "param_name"  => "deaths_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Deaths text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Deaths',
+                        ),
+                        array(
+                            "param_name"  => "recovered_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Recovered text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Recovered',
+                        ),
+                        array(
+                            "param_name"  => "active_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Active cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Active cases',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
+                        array(
+                            "param_name" => "col_align_horizontal",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Left' => 'content-horiz-left',
+                                'Center' => 'content-horiz-center',
+                                'Right' => 'content-horiz-right'
+                            ),
+                            "heading" => 'Column horiz. align',
+                            "description" => "",
+                            "holder" => "div",
+                            'tdc_dropdown_images' => true,
+                            "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Last updated text color',
+                            "param_name" => "date_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Table',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "table_border",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Border size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '1',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "table_border_style",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Solid'  => '',
+                                'Dotted' => 'dotted',
+                                'Dashed' => 'dashed',
+                            ),
+                            "heading"     => 'Border style',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border color',
+                            "param_name" => "table_border_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Header row',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Text color',
+                            "param_name" => "row_h_text_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Background color',
+                            "param_name" => "row_h_bg",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Rows',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Text color',
+                            "param_name" => "row_text_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Background color',
+                            "param_name" => "row_bg",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "row_border",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Border size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '1',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "row_border_style",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Solid'  => '',
+                                'Dotted' => 'dotted',
+                                'Dashed' => 'dashed',
+                            ),
+                            "heading"     => 'Border style',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border color',
+                            "param_name" => "row_border_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Columns',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "col_border",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Border size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '1',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name"  => "col_border_style",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Solid'  => '',
+                                'Dotted' => 'dotted',
+                                'Dashed' => 'dashed',
+                            ),
+                            "heading"     => 'Border style',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Style",
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border color',
+                            "param_name" => "col_border_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => 'Style'
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Fonts',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => 'Style'
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_row_h', false, 'Row header text', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_row', false, 'Row text', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_date', false, 'Last updated text', 'Style' ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
+                )
+            )
+        );
+
+        td_api_block::add('td_block_covid_19_counter',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Covid-19 Statistic Counter',
+                "base" => "td_block_covid_19_counter",
+                "class" => "",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-td_block_covid_19_counter',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_covid_19_counter.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'country',
+                    'statistic',
+                    'el_class'
+                ),
+                'tdc_start_values' => base64_encode(
+                    json_encode(
+                        array(
+                            array(
+                                'content_align_horizontal' => 'content-horiz-center',
+                            ),
+                        )
+                    )
+                ),
+                'params' => array_merge(
+                    td_config::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Layout',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name"  => "country",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Country',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'All',
+                        ),
+                        array(
+                            "param_name"  => "statistic",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Confirmed cases'  => '',
+                                'Deaths' => 'deaths',
+                                'Recovered' => 'recovered',
+                                'Active' => 'active',
+                            ),
+                            "heading"     => 'Statistic to display',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
+                        array(
+                            "param_name"  => "all_countries_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'All countries text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'All countries',
+                        ),
+                        array(
+                            "param_name"  => "confirmed_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Confirmed cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Total confirmed cases',
+                        ),
+                        array(
+                            "param_name"  => "deaths_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Death cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Total deaths',
+                        ),
+                        array(
+                            "param_name"  => "recovered_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Recovered cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Total recovered',
+                        ),
+                        array(
+                            "param_name"  => "active_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Active cases text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => 'Total active cases',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
+                        array(
+                            "param_name" => "content_align_horizontal",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Left' => 'content-horiz-left',
+                                'Center' => 'content-horiz-center',
+                                'Right' => 'content-horiz-right'
+                            ),
+                            "heading" => 'Horizontal align',
+                            "description" => "",
+                            "holder" => "div",
+                            'tdc_dropdown_images' => true,
+                            "class" => "tdc-visual-selector tdc-add-class",
+                        ),
+                        array(
+                            "param_name"  => "counter_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Counter spacing',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "15px 0 11px 0",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Country name color',
+                            "param_name" => "country_name_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => ''
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Counter color',
+                            "param_name" => "counter_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => ''
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Statistic name color',
+                            "param_name" => "statistic_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => ''
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Fonts',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_country', false, 'Country name text' ),
+                    td_config_helper::get_map_block_font_array( 'f_count', false, 'Counter text' ),
+                    td_config_helper::get_map_block_font_array( 'f_stat', false, 'Statistic name text' ),
                     array(
                         array(
                             "param_name" => "separator",
@@ -29931,28 +32415,27 @@ class td_config {
         );
 
 
-        /**
-         * the default fonts used by the theme. For a list of fonts ids @see td_fonts::$font_names_google_list
-         */
-        td_global::$default_google_fonts_list = array (
-            '438' => array(
-                '300italic',
-                '400',
-                '400italic',
-                '600',
-                '600italic',
-                '700'
-            ),
-            '521' => array(
-                '300',
-                '400',
-                '400italic',
-                '500',
-                '500italic',
-                '700',
-                '900',
-            ),
-        );
+	    td_global::$default_google_fonts_list = array ();
+        $td_fonts_default = td_options::get( 'td_fonts_default' );
+        if ( empty( $td_fonts_default['default_fonts'] ) || ( ! empty( $td_fonts_default['default_fonts'] ) && '' === $td_fonts_default['default_fonts'] ) ) {
+	        /**
+	         * the default fonts used by the theme. For a list of fonts ids @see td_fonts::$font_names_google_list
+	         */
+	        td_global::$default_google_fonts_list = array (
+	            '438' => array(
+	                '400',
+	                '600',
+	                '700'
+	            ),
+	            '521' => array(
+	                '400',
+	                '500',
+	                '700',
+	            ),
+	        );
+	    }
+
+
 
 
 	    /**
@@ -29972,6 +32455,123 @@ class td_config {
                     'tagDiv Cloud Library',
                 ),
             ),
+            'black_pro' => array(
+                'text' => 'Black Version PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/black_pro/',
+                'img' => TDC_URL_DEMO  . '/black_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_black_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'cov19_italy_report_pro' => array(
+                'text' => 'COV-19 Italy Report PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/cov19_italy_report_pro/',
+                'img' => TDC_URL_DEMO . '/cov19_italy_report_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid19_news_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'covid_stats_pro' => array(
+                'text' => 'Covid Stats PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_stats_pro/',
+                'img' => TDC_URL_DEMO  . '/covid_stats_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_stats_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'pandemic_pro' => array(
+                'text' => 'Pandemic PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/pandemic_pro/',
+                'img' => TDC_URL_DEMO . '/pandemic_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_pandemic_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'baby_pro' => array(
+                'text' => 'Baby PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/baby_pro/',
+                'img' => TDC_URL_DEMO . '/baby_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_baby_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'estates_pro' => array(
+                'text' => 'Estates PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/estates_pro/',
+                'img' => TDC_URL_DEMO . '/estates_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_estates_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'royal_pub_pro' => array(
+                'text' => 'Royal Pub PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/royal_pub_pro/',
+                'img' => TDC_URL_DEMO  . '/royal_pub_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_royal_pub_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'zodiac_pro' => array(
+                'text' => 'Zodiac PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/zodiac_pro/',
+                'img' => TDC_URL_DEMO . '/zodiac_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_zodiac_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'gourmet_pro' => array(
+                'text' => 'Gourmet PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gourmet_pro/',
+                'img' => TDC_URL_DEMO . '/gourmet_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gourmet_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'gossip_pro' => array(
+                'text' => 'Gossip PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gossip_pro/',
+                'img' => TDC_URL_DEMO . '/gossip_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gossip_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
             'life_news' => array(
                 'text' => 'Life News PRO',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/life_news/',
@@ -29983,11 +32583,11 @@ class td_config {
                     'tagDiv Cloud Library',
                 ),
             ),
-            'podcasts' => array(
-                'text' => 'Podcasts PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/podcasts/',
-                'img' => TDC_URL_DEMO . '/podcasts/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_podcasts/',
+            'pulses_pro' => array(
+                'text' => 'Pulses PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/pulses_pro/',
+                'img' => TDC_URL_DEMO  . '/pulses_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_pulses_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
@@ -29995,15 +32595,28 @@ class td_config {
                     'tagDiv Newsletter',
                 ),
             ),
-            'fashion_pro' => array(
-                'text' => 'La Mode PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/fashion_pro/',
-                'img' => TDC_URL_DEMO . '/fashion_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_la_mode/',
+            'gadgets_pro' => array(
+                'text' => 'Gadgets PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gadgets_pro/',
+                'img' => TDC_URL_DEMO . '/gadgets_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gadgets_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
                     'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'tech_pro' => array(
+                'text' => 'Tech News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/tech_pro/',
+                'img' => TDC_URL_DEMO . '/tech_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_tech_news_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
                 ),
             ),
             'travel_pro' => array(
@@ -30026,18 +32639,6 @@ class td_config {
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'influencer' => array(
-                'text' => 'Influencer PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/influencer/',
-                'img' => TDC_URL_DEMO . '/influencer/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_influencer/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
@@ -30065,6 +32666,87 @@ class td_config {
                     'tagDiv Cloud Library',
                 ),
             ),
+            'style_pro' => array(
+                'text' => 'Style PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/style_pro/',
+                'img' => TDC_URL_DEMO . '/style_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_style_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'classic_pro' => array(
+                'text' => 'Classic Blog PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/classic_pro/',
+                'img' => TDC_URL_DEMO  . '/classic_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_classic_pro/',
+                'td_css_generator_demo' => true,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'influencer' => array(
+                'text' => 'Influencer PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/influencer/',
+                'img' => TDC_URL_DEMO . '/influencer/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_influencer/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'the_critic' => array(
+                'text' => 'The Critic PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/the_critic/',
+                'img' => TDC_URL_DEMO . '/the_critic/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_the_critic/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'podcasts' => array(
+                'text' => 'Podcasts PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/podcasts/',
+                'img' => TDC_URL_DEMO . '/podcasts/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_podcasts/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'fashion_pro' => array(
+                'text' => 'La Mode PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/fashion_pro/',
+                'img' => TDC_URL_DEMO . '/fashion_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_la_mode/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'sports_pro' => array(
+                'text' => 'Sports PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/sports_pro/',
+                'img' => TDC_URL_DEMO  . '/sports_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_sports_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
             'fitness_pro' => array(
                 'text' => 'Fitness Blog PRO',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/fitness_pro/',
@@ -30073,7 +32755,6 @@ class td_config {
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Composer',
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
@@ -30086,19 +32767,6 @@ class td_config {
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Composer',
-                    'tagDiv Cloud Library',
-                ),
-            ),
-            'tech_pro' => array(
-                'text' => 'Tech News PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/tech_pro/',
-                'img' => TDC_URL_DEMO . '/tech_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_tech_news_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Composer',
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
@@ -30110,8 +32778,7 @@ class td_config {
                 'demo_url' => 'https://demo.tagdiv.com/newspaper_art_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Composer',
+                'required_plugins' => array(
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
@@ -30123,34 +32790,11 @@ class td_config {
                 'demo_url' => 'https://demo.tagdiv.com/newspaper_beauty_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
+                'required_plugins' => array(
+                    'tagDiv Newsletter',
                     'tagDiv Cloud Library',
                 ),
             ),
-//            'gadgets_pro' => array(
-//                'text' => 'Gadgets PRO',
-//                'folder' => TDC_PATH_LEGACY . '/includes/demos/gadgets_pro/',
-//                'img' => TDC_URL_DEMO . '/gadgets_pro/screenshot.png',
-//                'demo_url' => 'https://demo.tagdiv.com/newspaper_gadgets_pro/',
-//                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-//                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-//                'required_plugins' => array(                     // required plugins for the demo to work properly
-//                    'tagDiv Composer',
-//                    'tagDiv Cloud Library',
-//                    'tagDiv Newsletter',
-//                ),
-//            ),
-//            'classic_pro' => array(
-//                'text' => 'Classic Blog PRO',
-//                'folder' => TDC_PATH_LEGACY . '/includes/demos/classic_pro/',
-//                'img' => TDC_URL_DEMO  . '/classic_pro/screenshot.png',
-//                'demo_url' => 'https://demo.tagdiv.com/newspaper_classic_pro/',
-//                'td_css_generator_demo' => true,                // must have a td_css_generator_demo.php in demo's folder
-//                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-//                'required_plugins' => array(                    // required plugins for the demo to work properly
-//                    'tagDiv Cloud Library',
-//                ),
-//            ),
             'default' => array(
                 'text' => 'Default',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/default/',
@@ -31479,6 +34123,7 @@ class td_config {
 
 			    'Save my name, email, and website in this browser for the next time I comment.' => __('Save my name, email, and website in this browser for the next time I comment.', 'newspaper'),
 			    'Privacy Policy' => 'Privacy Policy',
+                'Print' => __('Print', 'newspaper'),
 
 			);
 		}, 11);
@@ -31596,7 +34241,7 @@ class td_config {
                 "type" => "dropdown",
                 "value" => td_util::get_category2id_array(),
                 "heading" => 'Category filter:',
-                "description" => "A single category filter. If you want to filter multiple categories, use the 'Multiple categories filter' and leave this to default",
+                "description" => "A single category filter. If you want to filter multiple categories, use the 'Multiple taxonomies filter' and leave this to default",
                 "holder" => "div",
                 "class" => "tdc-dropdown-big",
                 'group' => $group
@@ -31605,8 +34250,8 @@ class td_config {
                 "param_name" => "category_ids",
                 "type" => "textfield",
                 "value" => '',
-                "heading" => 'Multiple categories filter:',
-                "description" => "Filter multiple categories by ID. Enter here the category IDs separated by commas (ex: 13,23,18). To exclude categories from this block add them with '-' (ex: -9, -10)",
+                "heading" => 'Multiple taxonomies filter:',
+                "description" => "Filter multiple taxonomies by ID. Enter here the taxonomy term IDs separated by commas (ex: 13,23,18). Notice that only the categories can be excluded, add them with '-' (ex: -9, -10)",
                 "holder" => "div",
                 "class" => "tdc-textfield-big",
                 'group' => $group
@@ -31729,7 +34374,7 @@ class td_config {
             array(
                 "param_name" => "td_ajax_filter_type", //this is used to build the filter list (for example a list of categories from the id-s bellow)
                 "type" => "dropdown",
-                "value" => array('- No drop down ajax filter -' => '', 'Filter by categories' => 'td_category_ids_filter', 'Filter by authors' => 'td_author_ids_filter', 'Filter by tag IDs' => 'td_tag_slug_filter', 'Filter by popularity (Featured | All time popular)' => 'td_popularity_filter_fa'),
+                "value" => array('- No drop down ajax filter -' => '', 'Filter by categories' => 'td_category_ids_filter', 'Filter by taxonomies' => 'td_taxonomy_ids_filter', 'Filter by authors' => 'td_author_ids_filter', 'Filter by tag IDs' => 'td_tag_slug_filter', 'Filter by popularity (Featured | All time popular)' => 'td_popularity_filter_fa'),
                 "heading" => 'Filter type:',
                 "description" => "Show the ajax drop down filter. The ajax filters (except by popularity) require an additional parameter. If no ids are provided in the input below, the filter will show all the available items (ex: all authors, all categories etc..)",
                 "holder" => "div",
@@ -33370,7 +36015,7 @@ class td_config {
         );
         return $temp_array_merge;
     }
-    
+
     //used to configure instagram on demos
     static function td_instagram_demo_data() {
         $instagram_demo_array = array();

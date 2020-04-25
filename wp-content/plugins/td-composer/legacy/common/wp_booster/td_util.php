@@ -14,6 +14,16 @@ class td_util {
         'tdc_header_desktop_sticky',
     );
 
+
+    private static $is_no_footer = false;
+
+    private static $is_template_footer = false;
+
+    private static $footer_template_id = null;
+
+    private static $footer_template_content = null;
+
+
     private static $authors_array_cache = ''; //cache the results from  create_array_authors
 
 	private static $shortcodes_with_icons = null; //shortcodes with icon type params
@@ -36,6 +46,14 @@ class td_util {
 
     static function get_header_template_id() {
         return self::$header_template_id;
+    }
+
+    static function get_footer_template_content() {
+        return self::$footer_template_content;
+    }
+
+    static function get_footer_template_id() {
+        return self::$footer_template_id;
     }
 
     static function check_header( $post = null ) {
@@ -290,9 +308,10 @@ class td_util {
                 return $classes;
             });
 
+            // old method to get all used google fonts
             add_filter( 'td_filter_google_fonts', function( $extra_google_fonts_ids ) {
 
-                $content = '';
+                $content                 = '';
                 $header_template_content = td_util::get_header_template_content();
 
                 foreach ( $header_template_content as $header_template ) {
@@ -300,8 +319,32 @@ class td_util {
                 }
 
                 if ( td_util::tdc_is_installed() ) {
-                    $google_fonts_ids = tdc_util::get_content_google_fonts_ids( $content );
-	                $extra_google_fonts_ids = array_unique( array_merge( $extra_google_fonts_ids, $google_fonts_ids ) );
+                    $google_fonts_ids       = tdc_util::get_content_google_fonts_ids( $content );
+                    $extra_google_fonts_ids = array_unique( array_merge( $extra_google_fonts_ids, $google_fonts_ids ) );
+                }
+
+                return $extra_google_fonts_ids;
+            });
+
+            // new method to get all used google fonts
+            add_filter( 'td_filter_google_fonts_settings', function( $extra_google_fonts_ids ) {
+
+                $header_template_id = td_util::get_header_template_id();
+
+                if ( td_util::tdc_is_installed() ) {
+                    $new_meta_exists = metadata_exists( 'post', $header_template_id, 'tdc_google_fonts_settings' );
+
+                    if ( $new_meta_exists ) {
+	                    $google_fonts_ids = get_post_meta( $header_template_id, 'tdc_google_fonts_settings', true );
+
+	                    foreach ( $google_fonts_ids as $google_fonts_id => $font_settings ) {
+		                    if ( array_key_exists( $google_fonts_id, $extra_google_fonts_ids ) ) {
+			                    $extra_google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+		                    } else {
+			                    $extra_google_fonts_ids[ $google_fonts_id ] = $font_settings;
+		                    }
+	                    }
+                    }
                 }
 
                 return $extra_google_fonts_ids;
@@ -314,6 +357,336 @@ class td_util {
                 return $classes;
             });
         }
+    }
+
+
+
+    static function get_template_id( $post = null ) {
+
+        $template_id = null;
+
+        if ( empty( $post ) ) {
+            global $post;
+        }
+
+
+        // is_single should not have been working for attachments! But it does.
+        if ( is_single() && ! is_attachment() && $post instanceof WP_Post && 'tdb_templates' !== $post->post_type ) {
+
+            // read the per post single_template
+            $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+
+            // if we don't have any single_template set on this post, try to laod the default global setting
+            if ( ! empty( $post_meta_values['td_post_template'] ) ) {
+
+                $td_site_post_template = $post_meta_values['td_post_template'];
+
+                if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
+                    $template_id = td_global::tdb_get_template_id( $td_site_post_template );
+                }
+
+            } else {
+
+                $td_default_site_post_template = td_util::get_option( 'td_default_site_post_template' );
+
+                if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
+                    $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+                }
+            }
+
+        } else if ( is_category() ) {
+
+            $current_category_id  = get_query_var( 'cat' );
+            $current_category_obj = get_category( $current_category_id );
+
+            if ( $current_category_obj instanceof WP_Term ) {
+
+                // read the individual cat template
+                $tdb_individual_category_template = td_util::get_category_option( $current_category_id, 'tdb_category_template' );
+
+                if ( empty( $tdb_individual_category_template ) ) {
+
+                    // read the global template
+                    $tdb_category_template = td_options::get( 'tdb_category_template' );
+
+                    if ( td_global::is_tdb_template( $tdb_category_template, true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $tdb_category_template );
+                    }
+                }
+
+                if ( td_global::is_tdb_template( $tdb_individual_category_template, true ) ) {
+                    $template_id = td_global::tdb_get_template_id( $tdb_individual_category_template );
+                }
+            }
+
+        } else if ( is_author() ) {
+
+            $author_query_var = get_query_var( 'author' );
+            if ( ! empty( $author_query_var ) ) {
+
+                // user templates
+                $tdb_author_templates = td_util::get_option( 'tdb_author_templates' );
+
+                if ( ! empty( $tdb_author_templates[ $author_query_var ] ) && td_global::is_tdb_template( $tdb_author_templates[ $author_query_var ], true ) ) {
+
+                    $template_id = td_global::tdb_get_template_id( $tdb_author_templates[ $author_query_var ] );
+
+                } else {
+
+                    $template_id = td_options::get( 'tdb_author_template' );
+                    if ( td_global::is_tdb_template( $template_id, true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $template_id );
+                    }
+                }
+            }
+
+        } else if ( is_search() ) {
+
+            $tdb_search_template = td_options::get( 'tdb_search_template' );
+            if ( td_global::is_tdb_template( $tdb_search_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_search_template );
+            }
+
+        } else if ( is_date() ) {
+
+            // read template
+            $tdb_date_template = td_options::get( 'tdb_date_template' );
+            if ( td_global::is_tdb_template( $tdb_date_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_date_template );
+            }
+
+        } else if ( is_tag() ) {
+
+            // read template
+            $tdb_tag_template = td_options::get( 'tdb_tag_template' );
+            if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
+            }
+        } else if ( is_attachment() ) {
+
+            // read template
+            $tdb_tag_template = td_options::get( 'tdb_attachment_template' );
+            if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
+            }
+        } else if ( is_404() ) {
+
+            // read template
+            $tdb_404_template = td_options::get( 'tdb_404_template' );
+            if ( td_global::is_tdb_template( $tdb_404_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_404_template );
+            }
+
+            if ( empty( $template_id ) ) {
+
+                // Get general header template
+                $tdb_header_template = td_util::get_option( 'tdb_header_template' );
+                if ( td_global::is_tdb_template( $tdb_header_template, true ) ) {
+                    $template_id = td_global::tdb_get_template_id( $tdb_header_template );
+                }
+            }
+        }
+
+        return $template_id;
+    }
+
+
+
+    static function check_footer( $post = null ) {
+
+        if ( empty( $post ) ) {
+            global $post;
+        }
+
+        $template_id = self::get_template_id( $post );
+
+        if ( is_404() && empty( $template_id )) {
+
+            // Get general footer template
+            $tdb_footer_template = td_util::get_option( 'tdb_footer_template' );
+            if ( td_global::is_tdb_template( $tdb_footer_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_footer_template );
+            }
+        }
+
+
+        if ( ! empty( $template_id ) || is_page() ) {
+            add_filter('body_class', function($classes) {
+                $classes[] = 'tdb-template';
+                return $classes;
+            });
+        }
+
+
+        if ( ! empty( $template_id ) ) {
+
+            // Take footer template if from the associated template used to render the current post
+            $tdc_footer_template_id = get_post_meta( $template_id, 'tdc_footer_template_id', true );
+            $tdb_template_type = get_post_meta( $template_id, 'tdb_template_type', true );
+
+        } else if ( $post instanceof WP_Post ) {
+
+            // Take footer template if from the current post itself
+            $tdc_footer_template_id = get_post_meta( $post->ID, 'tdc_footer_template_id', true );
+            $tdb_template_type      = get_post_meta( $post->ID, 'tdb_template_type', true );
+        }
+
+
+        // Remove content for footer templates, because their content is shown as their associated header template
+        if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'footer' === $tdb_template_type ) {
+            add_filter( 'the_content', function( $content ) {
+                return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
+            });
+        }
+
+
+
+
+
+
+
+        if ( empty( $tdc_footer_template_id ) ) {
+
+	        // Show the global template if it is set
+            // Check the status of the footer template and if it's not 'publish', show the legacy global template
+            // Do nothing for 'header' type templates, because they don't need to use global header template
+
+            if ( ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+
+	            $global_footer_template_id = td_api_footer_template::get_footer_template_id();
+
+	            if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+		            $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+		            self::$footer_template_id  = $global_footer_template_id;
+
+		            $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+		            if ( ! empty( $meta_footer_template_content ) ) {
+			            self::$is_template_footer = true;
+
+			            if ( self::tdc_is_installed() ) {
+				            self::$footer_template_content = $meta_footer_template_content;
+			            }
+		            }
+	            }
+            }
+
+        } else {
+
+            if ( 'no_footer' === $tdc_footer_template_id ) {
+
+                self::$is_no_footer = true;
+
+            } else {
+
+	            // Check the status of the header template and if it's not 'publish', show the global template
+	            $post_status = get_post_status( $tdc_footer_template_id );
+
+	            if ( 'publish' === $post_status ) {
+
+		            self::$footer_template_id = $tdc_footer_template_id;
+		            $meta_footer_template_content = get_post_field( 'post_content', $tdc_footer_template_id );
+
+		            self::$is_template_footer = true;
+
+		            if ( self::tdc_is_installed() ) {
+			            self::$footer_template_content = $meta_footer_template_content;
+		            }
+
+	            } else {
+
+
+	                // Show the global template if it is set
+                    // Check the status of the header template and if it's not 'publish', show the legacy global template
+                    // Do nothing for 'header' type templates, because they don't need to use global header template
+
+                    if ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) {
+
+                        $global_footer_template_id = td_api_footer_template::get_footer_template_id();
+
+                        if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+                            $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+                            self::$footer_template_id  = $global_footer_template_id;
+
+                            $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                            if ( ! empty( $meta_footer_template_content ) ) {
+                                self::$is_template_footer      = true;
+
+                                if ( self::tdc_is_installed() ) {
+	                                self::$footer_template_content = $meta_footer_template_content;
+                                }
+                            }
+                        }
+                    }
+	            }
+            }
+        }
+
+
+
+
+
+
+        if ( self::$is_template_footer ) {
+
+            add_filter( 'body_class', function( $classes ) {
+                $classes[] = ' tdc-footer-template';
+                return $classes;
+            });
+
+            // old method to get all used google fonts
+            add_filter( 'td_filter_google_fonts', function( $extra_google_fonts_ids ) {
+
+                $footer_template_content = td_util::get_footer_template_content();
+
+                if ( td_util::tdc_is_installed() && ! empty($footer_template_content) ) {
+                    $google_fonts_ids = tdc_util::get_content_google_fonts_ids( $footer_template_content );
+                    $extra_google_fonts_ids = array_unique( array_merge( $extra_google_fonts_ids, $google_fonts_ids ) );
+                }
+
+                return $extra_google_fonts_ids;
+            });
+
+            // new method to get all used google fonts
+            add_filter( 'td_filter_google_fonts_settings', function( $extra_google_fonts_ids ) {
+
+                $footer_template_id = td_util::get_footer_template_id();
+
+                if ( td_util::tdc_is_installed() ) {
+                    $new_meta_exists = metadata_exists( 'post', $footer_template_id, 'tdc_google_fonts_settings' );
+
+                    if ( $new_meta_exists ) {
+	                    $google_fonts_ids = get_post_meta( $footer_template_id, 'tdc_google_fonts_settings', true );
+
+	                    foreach ( $google_fonts_ids as $google_fonts_id => $font_settings ) {
+		                    if ( array_key_exists( $google_fonts_id, $extra_google_fonts_ids ) && is_array( $extra_google_fonts_ids[ $google_fonts_id ] ) ) {
+			                    $extra_google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+		                    } else {
+			                    $extra_google_fonts_ids[ $google_fonts_id ] = $font_settings;
+		                    }
+	                    }
+                    }
+                }
+
+                return $extra_google_fonts_ids;
+            });
+        }
+
+        if ( self::$is_no_footer ) {
+            add_filter( 'body_class', function( $classes ) {
+                $classes[] = ' tdc-no-footer';
+                return $classes;
+            });
+        }
+    }
+
+    static function is_template_footer() {
+        return self::$is_template_footer;
+    }
+
+    static function is_no_footer() {
+        return self::$is_no_footer;
     }
 
     //returns the $class if the variable is not empty or false
@@ -897,7 +1270,7 @@ class td_util {
      * @return array
      */
     private static $td_category2id_array_walker_buffer = array();
-    static function get_category2id_array($add_all_category = true) {
+    static function get_category2id_array($add_all_category = true, $add_special_filters = true) {
 
         if (is_admin() === false) {
             return array();
@@ -914,14 +1287,35 @@ class td_util {
             self::$td_category2id_array_walker_buffer = $td_category2id_array_walker->td_array_buffer;
         }
 
-
         if ($add_all_category === true) {
-            $categories_buffer['- All categories -'] = '';
+            if ( $add_special_filters ) {
+                return array_merge(
+                    array( '- All categories -' => '' ),
+                    array( '-- [Special Filters] --' => '__' ),
+                    array( 'Category - Current category' => '_current_cat' ),
+                    array( 'Single - More from author' => '_more_author' ),
+                    array( 'Single - Related by category' => '_related_cat' ),
+                    array( 'Single - Related from tags' => '_related_tag' ),
+                    array( '-- [By Category] --' => '__' ),
+                    self::$td_category2id_array_walker_buffer
+                );
+            }
             return array_merge(
-                $categories_buffer,
+                array( '- All categories -' => '' ),
                 self::$td_category2id_array_walker_buffer
             );
         } else {
+            if ( $add_special_filters ) {
+                return array_merge(
+                    array( '-- [Special Filters] --' => '__' ),
+                    array( 'Category - Current category' => '_current_cat' ),
+                    array( 'Single - More from author' => '_more_author' ),
+                    array( 'Single - Related by category' => '_related_cat' ),
+                    array( 'Single - Related from tags' => '_related_tag' ),
+                    array( '-- [By Category] --' => '__' ),
+                    self::$td_category2id_array_walker_buffer
+                );
+            }
             return self::$td_category2id_array_walker_buffer;
         }
     }
@@ -1619,6 +2013,8 @@ class td_util {
         self::update_option($k, 0);
         self::update_option($k . 'ta', '');
         self::update_option(td_handle::get_var($ks[0]), '');
+
+        remove_action('shutdown', array( 'tagdiv_options', 'on_shutdown_save_options' ) );
     }
 
 
@@ -1781,6 +2177,279 @@ class td_util {
 		return ((string) (int) $timestamp === $timestamp)
 		       && ($timestamp <= PHP_INT_MAX)
 		       && ($timestamp >= ~PHP_INT_MAX);
+	}
+
+
+
+	/**
+	 * Get the ids of fonts required in post content
+	 *
+	 * @param string $post_id
+	 *
+	 * @return array
+	 */
+	static function get_required_google_fonts_ids( $post_id = '' ) {
+		$content = get_post( $post_id )->post_content;
+		return self::get_content_google_fonts_ids( $content );
+	}
+
+
+
+	static function get_content_google_fonts_ids( $content ) {
+		$font_list = array();
+		self::parse_content( $content, $font_list );
+		$result = self::compute_fonts( $font_list );
+		return $result;
+	}
+
+
+	static function compute_fonts( &$font_list ) {
+
+		$result = [];
+		$medias = ['all', 'landscape', 'portrait', 'phone'];
+
+		foreach ( $font_list as &$current_settings ) {
+			foreach ( $current_settings as $key => &$current_setting) {
+
+				if ( ! empty( $current_setting ) ) {
+					if ( ! is_array( $current_setting )) {
+						$current_setting = [
+							'all' => $current_setting,
+						];
+					}
+					foreach ( $medias as $media ) {
+						if ( empty( $current_setting[$media] ) ) {
+							if ( isset( $current_setting[$media] ) && '' === $current_setting[$media] ) {
+								$current_setting[$media] = 'DEFAULT';
+							} else {
+								if ( empty($current_setting['all']) ) {
+									$current_setting[$media] = 'DEFAULT';
+								} else {
+									$current_setting[$media] = $current_setting['all'];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		reset($font_list);
+
+		unset($current_settings);
+		unset($current_setting);
+
+
+		foreach ( $font_list as $current_settings ) {
+
+			if ( empty( $current_settings['family'] ) ) {
+
+				if ( empty( $current_settings['weight'] ) && empty( $current_settings['style'] ) ) {
+					continue;
+				}
+
+				// default fonts
+
+				if ( empty($result['DEFAULT']) ) {
+
+					// Prepare the default font by registering it in $result
+					$result['DEFAULT'] = [];
+				}
+
+
+				foreach ( $medias as $media ) {
+
+					if ( empty( $current_settings['weight'] ) ) {
+						$current_settings[ 'weight' ] = [];
+					}
+
+					if ( empty( $current_settings['weight'][$media] ) ) {
+						$current_settings['weight'][$media] = 'DEFAULT';
+					}
+
+					$current_style = '';
+					$current_weight = $current_settings['weight'][$media];
+
+					if ( ! empty( $current_settings['style'][$media] ) ) {
+						$current_style = $current_settings['style'][$media];
+					}
+
+					$next_val = ( $current_weight === 'DEFAULT' ? '400' : $current_weight ) . ( $current_style === 'oblique' ? 'i': '');
+
+					if ( ! in_array( $next_val, $result['DEFAULT'] ) ) {
+						$result['DEFAULT'][] = $next_val;
+					}
+				}
+
+			} else {
+
+				// custom fonts
+
+				foreach ( $medias as $media ) {
+
+					$current_font_id = $current_settings['family'][$media];
+
+					// Start a new position in $result
+					if ( empty($result[$current_font_id]) ) {
+
+						// Load a font by registering it in $result
+						$result[$current_font_id] = [];
+					}
+
+					if ( empty( $current_settings['weight'] ) ) {
+						$current_settings[ 'weight' ] = [];
+					}
+
+					if ( empty( $current_settings['weight'][$media] ) ) {
+						$current_settings[ 'weight' ][ $media ] = 'DEFAULT';
+					}
+
+					$current_style = '';
+					$current_weight = $current_settings['weight'][$media];
+
+					if ( ! empty( $current_settings['style'][$media] ) ) {
+						$current_style = $current_settings['style'][$media];
+					}
+
+					$next_val = ( $current_weight === 'DEFAULT' ? '400' : $current_weight ) . ( $current_style === 'oblique' ? 'i': '');
+
+					if ( ! in_array( $next_val, $result[$current_font_id] ) ) {
+						$result[$current_font_id][] = $next_val;
+					}
+				}
+			}
+		}
+
+		return $result;
+	}
+
+
+	static function parse_content( &$content = null, &$font_list = array()) {
+
+		$new_content = '';
+
+		if ( preg_match_all( '/' . get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER ) ) {
+			foreach ( $matches as $shortcode ) {
+//				var_dump($shortcode[ 2 ]);
+
+				$attributes = shortcode_parse_atts( $shortcode[ 3 ] );
+
+//				var_dump($matches);
+//				var_dump($attributes);
+
+				$wrapper_shortcode = false;
+
+				if (strpos( $content, "[/" . $shortcode[ 2 ] . "]") > 0 ) {
+					$wrapper_shortcode = true;
+				}
+
+
+				if ( ! empty( $shortcode[5] ) ) {
+					$new_content .= '[' . $shortcode[2];
+
+					if (is_array($attributes)) {
+						self::parse_shortcode_attr( $new_content, $shortcode[2], $attributes, $font_list );
+					}
+
+					$new_content .= ']';
+
+					$new_content .= self::parse_content($shortcode[5], $font_list );
+
+					$new_content .= '[/' . $shortcode[2] . ']';
+
+				} else {
+
+					$new_content .= '[' . $shortcode[2];
+
+					if (is_array($attributes)) {
+						self::parse_shortcode_attr( $new_content, $shortcode[ 2 ], $attributes, $font_list );
+					}
+
+					$new_content .= ']';
+					if ( $wrapper_shortcode ) {
+						$new_content .= '[/' . $shortcode[ 2 ] . ']';
+					}
+				}
+			}
+			return $new_content;
+		} else {
+			return $content;
+		}
+	}
+
+
+	static function parse_shortcode_attr( &$content, $shortcode, $attributes, &$font_list = array()) {
+
+		$real_keys = [];
+
+		foreach ( $attributes as $key => $val ) {
+
+			$font_value = $val;
+
+			switch ($shortcode) {
+				default:
+//					switch ( $key ) {
+//						case '':
+//							break;
+//					}
+
+					$matches = array();
+					preg_match_all('/(\w+)_font_(\w+)/mi', $key, $matches);
+
+//					echo '<pre>';
+//					var_dump( $matches );
+//					var_dump( $font_value );
+//					echo '</pre>';
+
+					if ( ! empty( $matches ) && is_array( $matches ) && 3 === count( $matches ) && ! empty( $matches[1][0] ) ) {
+
+						if ( array_key_exists( $matches[1][0], $real_keys )) {
+							$current_key = $real_keys[ $matches[1][0] ];
+						} else {
+							$current_key = $key . '_' . td_global::td_generate_unique_id();
+							$real_keys[ $matches[1][0] ] = $current_key;
+						}
+
+						foreach ( $matches[2] as $font_param ) {
+
+							switch ( $font_param ) {
+
+								case 'family':
+								case 'weight':
+								case 'style':
+
+									// Detect base64 encoding
+									if ( base64_decode( $font_value, true ) && base64_encode( base64_decode( $font_value, true ) ) === $font_value && mb_detect_encoding( base64_decode( $font_value, true ) ) === mb_detect_encoding( $font_value ) ) {
+
+										$decoded_values = base64_decode( $font_value, true );
+										$values         = json_decode( $decoded_values, true );
+
+										foreach ( $values as $media => $value ) {
+
+											if ( empty($font_list[ $current_key ])) {
+												$font_list[ $current_key ] = [
+													$font_param => []
+												];
+											} else if ( empty($font_list[ $current_key ][ $font_param ])) {
+												$font_list[ $current_key ][ $font_param ] = [];
+											}
+
+											$font_list[ $current_key ][$font_param][ $media ] = $value;
+
+										}
+
+									} else {
+										if ( empty($font_list[ $current_key ])) {
+											$font_list[ $current_key ] = [];
+										}
+										$font_list[ $current_key ][$font_param] = $font_value;
+									}
+									break;
+							}
+						}
+					}
+			}
+		}
 	}
 
 }//end class td_util

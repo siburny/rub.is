@@ -86,6 +86,10 @@ jQuery().ready(function() {
         tdbHeaderTemplateSelect();
     }
 
+    if ( 'undefined' !== typeof tdbFooterTemplateSelect ) {
+        tdbFooterTemplateSelect();
+    }
+
     // make sure this runs just on theme's panel page
     if ( jQuery('#td_panel_big_form').length ) {
         panel_navigation_hash();
@@ -1021,6 +1025,10 @@ function show_content_panel(jquery_panel_obj, keep_position, callback, trigger) 
                     if ( 'undefined' !== typeof tdbHeaderTemplateSelect ) {
                         tdbHeaderTemplateSelect();
                     }
+
+                    if ( 'undefined' !== typeof tdbFooterTemplateSelect ) {
+                        tdbFooterTemplateSelect();
+                    }
                 }
             });
         }
@@ -1349,12 +1357,13 @@ function td_resize_tiny_mce_for_sidebar() {
             $body.addClass('tagdiv-type');
 
         } else if ($contentGut.length) {
+            $contentGut.addClass("td-gutenberg-editor");
+            $contentGut.addClass("td-gutenberg-editor-small");
+
             if ( 'no_sidebar' === sidebar_position || '' === sidebar_position || 'undefined' === typeof sidebar_position) {
-                $contentGut.addClass("td-gutenberg-editor");
+                $contentGut.removeClass("td-gutenberg-editor-small");
             }
-            else {
-                $contentGut.removeClass("td-gutenberg-editor");
-            }
+
         } else {
             //alert('iframe nu este gasit');
             clearTimeout(tmce);
@@ -1405,7 +1414,7 @@ function isEmailUrlValid(url) {
 
 function td_add_event_to_validate_panel_social_fields() {
 
-    var panel_social_input_fields = jQuery ('#td-panel-social-networks .td-panel-input');
+    var panel_social_input_fields = jQuery ('.td_panel_box_social_networks .td-panel-input');
 
     panel_social_input_fields.each( function() {
         var current_input_filed = jQuery(this);

@@ -874,6 +874,15 @@ class td_api_footer_template extends td_api_base {
         return $template_id;
     }
 
+    static function get_footer_template_id() {
+    	$tdb_footer_template = td_util::get_option('tdb_footer_template');
+
+    	if ( empty( $tdb_footer_template ) ) {
+    		return '';
+	    }
+	    return $tdb_footer_template;
+    }
+
 }
 /**
  * Created by ra on 2/13/2015.

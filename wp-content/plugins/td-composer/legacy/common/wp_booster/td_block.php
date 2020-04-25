@@ -126,6 +126,77 @@ class td_block {
 	    // do the query and make the AJAX filter only on loop blocks
 		if ($this->is_loop_block() === true) {
 
+		    // Adapt _current category id to work with global $tdb_state_category
+		    if ( isset( $atts['category_id'] ) ) {
+
+		        switch ($this->atts['category_id']) {
+                    case '_current_cat':
+                        global $tdb_state_category;
+                        $category_wp_query = $tdb_state_category->get_wp_query();
+
+                        if ( isset( $category_wp_query->query['cat'] ) ) {
+                            $category_obj = get_category( $category_wp_query->query['cat'] );
+                        } elseif( isset( $category_wp_query->query_vars['category_name'] ) ) {
+                            $category_obj = get_category_by_slug( $category_wp_query->query_vars['category_name'] );
+                        }
+
+                        if ( ! empty( $category_obj ) ) {
+                            $this->atts['category_id'] = $category_obj->term_id;
+                        }
+                        break;
+
+                    case '_more_author':
+                    case '_related_cat':
+                    case '_related_tag':
+                        global $tdb_state_single;
+
+                        if ( ! empty( $tdb_state_single ) ) {
+
+                            $single_wp_query = $tdb_state_single->get_wp_query();
+
+                            if ( ! empty ( $single_wp_query ) ) {
+
+                                if ( ! empty ( $single_wp_query->queried_object ) ) {
+
+                                    if ( '_more_author' === $this->atts['category_id'] && ! empty( $single_wp_query->queried_object->post_author )) {
+
+                                        $this->atts['live_filter'] = 'cur_post_same_author';
+                                        $this->atts['live_filter_cur_post_author'] = $single_wp_query->queried_object->post_author;
+
+                                    } else {
+
+                                        if ( '_related_cat' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_categories';
+                                        } else if ( '_related_tag' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_tags';
+                                        }
+
+                                        $this->atts['live_filter_cur_post_id'] = $single_wp_query->queried_object->ID;
+                                    }
+
+                                } else if ( ! empty( $single_wp_query->post ) && $single_wp_query->post instanceof WP_Post ) {
+
+                                    if ( '_more_author' === $this->atts['category_id'] ) {
+                                        $this->atts['live_filter'] = 'cur_post_same_author';
+                                        $this->atts['live_filter_cur_post_author'] = $single_wp_query->post->post_author;
+
+                                    } else {
+
+                                        if ( '_related_cat' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_categories';
+                                        } else if ( '_related_tag' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_tags';
+                                        }
+
+                                        $this->atts['live_filter_cur_post_id'] = $single_wp_query->post->ID;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+
 
 			//by ref do the query
 			$this->td_query = &td_data_source::get_wp_query($this->atts);
@@ -1169,6 +1240,20 @@ class td_block {
 								$td_pull_down_items [] = array(
 									'name' => $td_category->name,
 									'id' => $td_category->cat_ID,
+								);
+							}
+						}
+						break;
+
+					case 'td_taxonomy_ids_filter': // by taxonomy
+
+						if ( !empty($td_ajax_filter_ids) ) {
+							$tax_ids = explode(',', $td_ajax_filter_ids);
+							foreach ( $tax_ids as $tax_id ) {
+								$tax = get_term( $tax_id );
+								$td_pull_down_items [] = array(
+									'name' => $tax->name,
+									'id' => $tax_id,
 								);
 							}
 						}

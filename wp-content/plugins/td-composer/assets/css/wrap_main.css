@@ -94,7 +94,7 @@
   user-select: none;
 }
 .tdc-top-buttons .tdc-add-element {
-  width: 44px;
+  width: 50px;
   height: 43px;
   margin-right: -3px;
   display: inline-block;
@@ -167,7 +167,7 @@
 .tdc-top-buttons .tdc-header-link {
   text-decoration: none;
   display: inline-block;
-  width: 44px;
+  width: 36px;
   height: 43px;
   cursor: pointer;
   text-align: center;
@@ -178,6 +178,9 @@
   background-color: #3c3c3c;
   color: #fff;
 }
+.tdc-top-buttons .tdc-header-manager {
+  width: 50px;
+}
 .tdc-top-buttons .tdc-header-label {
   display: block;
   font-size: 10px;
@@ -185,6 +188,7 @@
   color: #fff;
 }
 .tdc-top-buttons .tdc-load-cloud {
+  width: 50px;
   margin-right: -4px;
   background-color: #29595d;
 }
@@ -1109,31 +1113,59 @@ placeholder when sidebar is empty
 .tdc-sidebar-modal-tree .tdc-tree-level-4 {
   padding-left: 10px;
 }
-.tdc-header-template-title {
+.tdc-template-wrap {
+  margin-top: 10px;
+  margin-bottom: 36px;
+  padding: 22px 20px;
+  background-color: #fff;
+}
+.tdc-template-wrap:last-child {
+  margin-bottom: 0;
+}
+.tdc-template-title {
   position: relative;
   margin-bottom: 6px;
   font-size: 11px;
   line-height: 18px;
   color: #888;
 }
-.tdc-header-template-select {
-  display: flex;
-  margin-bottom: 30px;
+.tdc-template-supertitle {
+  margin-top: -32px;
+  margin-bottom: 15px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
-.tdc-header-template-list {
+.tdc-template-supertitle span {
+  background-color: #000;
+  padding: 2px 8px 3px;
+}
+.tdc-template-select {
+  display: flex;
+}
+.tdc-template-select .tdc-template-list {
   width: 57%;
   overflow: hidden;
   flex: 1;
   margin: 0;
   height: 37px !important;
   padding: 0 45px 0 10px !important;
-  background: #ffffff url(../images/sidebar/icon-header-template-list.png) no-repeat center right;
+  background: #ffffff url(../images/sidebar/icon-header-template-list.png) no-repeat center right !important;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  font-size: 12px;
   box-shadow: none;
+  border-color: #ddd !important;
+  border-radius: 0 !important;
 }
-.tdc-header-template-cloud {
+.tdc-template-select .tdc-template-list:hover,
+.tdc-template-select .tdc-template-list:focus {
+  color: inherit;
+}
+.tdc-template-cloud {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1147,32 +1179,11 @@ placeholder when sidebar is empty
   color: #fff;
   cursor: pointer;
 }
-.tdc-header-template-cloud:hover {
+.tdc-template-cloud:hover {
   background-color: #000;
 }
-.tdc-header-template-zones .tdc-header-template-supertitle {
-  margin-bottom: 17px;
-  font-size: 12px;
-  text-transform: uppercase;
-  text-align: center;
-  color: #8c8c8c;
-}
-.tdc-header-template-zones .tdc-header-template-supertitle:before,
-.tdc-header-template-zones .tdc-header-template-supertitle:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto 0;
-  width: calc(50% - 39px);
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.07);
-}
-.tdc-header-template-zones .tdc-header-template-supertitle:before {
-  left: 0;
-}
-.tdc-header-template-zones .tdc-header-template-supertitle:after {
-  right: 0;
+.tdc-header-template-zones {
+  margin-top: 29px;
 }
 .tdc-header-zone {
   display: flex;
@@ -1181,7 +1192,7 @@ placeholder when sidebar is empty
 .tdc-zone-group {
   position: relative;
   width: 50%;
-  padding: 6px 20px 10px;
+  padding: 0 20px;
 }
 .tdc-zone-group:first-child:after {
   content: '';
@@ -1209,9 +1220,9 @@ placeholder when sidebar is empty
   background-repeat: no-repeat;
   background-position: center center;
   background-size: auto;
-  -webkit-box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.08) !important;
-  -moz-box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.08) !important;
+  -webkit-box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.06) !important;
+  -moz-box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.06) !important;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
@@ -1221,9 +1232,9 @@ placeholder when sidebar is empty
 }
 .tdc-zone-active .tdc-zone-icon,
 .tdc-zone-icon:hover {
-  -webkit-box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.18) !important;
-  -moz-box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.18) !important;
-  box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.18) !important;
+  -webkit-box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.14) !important;
+  -moz-box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.14) !important;
   opacity: 1;
 }
 .tdc-zone-icon-mainm {
@@ -1508,8 +1519,8 @@ placeholder when sidebar is empty
   height: calc(100% - 85px);
 }
 #tdc-zone {
-  min-width: 440px;
-  width: 440px;
+  min-width: 476px;
+  width: 476px;
   background-color: #f1f1f1;
   transform-style: preserve-3d;
   backface-visibility: hidden;
@@ -1518,8 +1529,13 @@ placeholder when sidebar is empty
   transform: translateZ(0);
 }
 #tdc-zone .content {
-  padding: 18px 22px 22px;
+  padding: 22px 20px 21px;
   transform: translateZ(0);
+}
+@-moz-document url-prefix() {
+  #tdc-zone header {
+    transform: none;
+  }
 }
 .tdc-iframe-close-button {
   position: relative;
@@ -2071,6 +2087,15 @@ body.tdc #wpbody-content {
   color: #e2e2e2;
   letter-spacing: -0.3px;
 }
+#tdc-context-menu li i {
+  display: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 7px;
+  color: #888;
+}
 #tdc-context-menu li.active,
 #tdc-context-menu li.tdc-current-type {
   color: #5f5f5f;
@@ -2082,6 +2107,11 @@ body.tdc #wpbody-content {
 #tdc-context-menu li.active:hover,
 #tdc-context-menu li.tdc-save-shortcode:hover {
   background-color: #4db2ec;
+}
+#tdc-context-menu li.active:hover,
+#tdc-context-menu li.tdc-save-shortcode:hover,
+#tdc-context-menu li.active:hover i,
+#tdc-context-menu li.tdc-save-shortcode:hover i {
   color: #fff;
 }
 #tdc-context-menu li.tdc-current-type {

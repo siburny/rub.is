@@ -483,6 +483,22 @@
   width: 40px;
   height: 24px;
 }
+.tdc-ico-td_block_archives {
+  background-position: -505px -209px;
+  width: 40px;
+  height: 24px;
+}
+.tdc-ico-td_block_video_embed {
+  background-position: -505px -243px;
+  width: 40px;
+  height: 24px;
+}
+.tdc-ico-td_block_covid_19_counter,
+.tdc-ico-td_block_covid_19_stats {
+  background-position: -505px -277px;
+  width: 40px;
+  height: 24px;
+}
 .tdc-preset-values-list .tdcp_separator {
   pointer-events: none;
   border-bottom: 1px solid #ebebeb;

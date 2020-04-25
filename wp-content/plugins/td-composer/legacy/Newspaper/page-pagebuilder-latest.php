@@ -3,7 +3,7 @@
 
 get_header();
 
-td_global::$current_template = 'page-homepage-loop';
+td_global::set_current_template( 'page-homepage-loop' );
 
 global $paged, $loop_module_id, $loop_sidebar_position, $post, $more; //$more is a hack to fix the read more loop
 $td_page = (get_query_var('page')) ? get_query_var('page') : 1; //rewrite the global var

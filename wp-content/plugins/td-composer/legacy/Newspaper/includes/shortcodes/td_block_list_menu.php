@@ -23,6 +23,9 @@ class td_block_list_menu extends td_block {
 				.$unique_block_class li {
 					display: inline-block;
 				}
+				.$unique_block_class .menu {
+					display: flex;
+				}
 				.$unique_block_class .sub-menu {
 					display: none;
 				}
@@ -34,6 +37,9 @@ class td_block_list_menu extends td_block {
 				.$unique_block_class ul li {
 					margin-right: @item_space_right;
 				}
+				.$unique_block_class ul li:last-child {
+					margin-right: 0;
+				}
 				/* @item_space_bottom */
 				.$unique_block_class ul li {
 					margin-bottom: @item_space_bottom;
@@ -41,9 +47,20 @@ class td_block_list_menu extends td_block {
 				.$unique_block_class ul li:last-child {
 					margin-bottom: 0;
 				}
-				/* @item_horiz_align */
+				/* @item_horiz_center */
 				.$unique_block_class ul {
-					text-align: @item_horiz_align;
+					text-align: center;
+					justify-content: center;
+				}
+				/* @item_horiz_right */
+				.$unique_block_class ul {
+					text-align: right;
+					justify-content: flex-end;
+				}
+				/* @item_horiz_left */
+				.$unique_block_class ul {
+					text-align: left;
+					justify-content: flex-start;
 				}
 				
 
@@ -109,10 +126,13 @@ class td_block_list_menu extends td_block {
         // menu list horizontal align
         $item_horiz_align = $res_ctx->get_shortcode_att('item_horiz_align');
         if( $item_horiz_align == 'content-horiz-center' ) {
-            $res_ctx->load_settings_raw( 'item_horiz_align', 'center' );
+            $res_ctx->load_settings_raw( 'item_horiz_center', 1 );
         }
         if( $item_horiz_align == 'content-horiz-right' ) {
-            $res_ctx->load_settings_raw( 'item_horiz_align', 'right' );
+            $res_ctx->load_settings_raw( 'item_horiz_right', 1 );
+        }
+        if( $item_horiz_align == 'content-horiz-left' ) {
+            $res_ctx->load_settings_raw( 'item_horiz_left', 1 );
         }
 
 

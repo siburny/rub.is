@@ -2,6 +2,111 @@
 
 class td_block_weather extends td_block {
 
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = $this->block_uid;
+
+        $compiled_css = '';
+
+        $raw_css =
+            "<style>
+
+                /* @city_color */
+				.$unique_block_class .td-weather-city {
+					color: @city_color;
+				}
+                /* @condition_color */
+				.$unique_block_class .td-weather-condition {
+					color: @condition_color;
+				}
+                /* @loc_icon_color */
+				.$unique_block_class .td-location-icon {
+					color: @loc_icon_color;
+				}
+				
+                /* @temp_color */
+				.$unique_block_class .td-weather-now {
+					color: @temp_color;
+				}
+                /* @temp_min_color */
+				.$unique_block_class .td-w-low-temp {
+					color: @temp_min_color;
+				}
+                /* @temp_min_i_color */
+				.$unique_block_class .td-down-icon {
+					color: @temp_min_i_color;
+				}
+                /* @temp_max_color */
+				.$unique_block_class .td-w-high-temp {
+					color: @temp_max_color;
+				}
+                /* @temp_max_i_color */
+				.$unique_block_class .td-up-icon {
+					color: @temp_max_i_color;
+				}
+                /* @sep_color */
+				.$unique_block_class .td-weather-information:before {
+					background-color: @sep_color;
+				}
+                /* @humid_color */
+				.$unique_block_class .td-weather-section-1 {
+					color: @humid_color;
+				}
+                /* @wind_color */
+				.$unique_block_class .td-weather-section-2 {
+					color: @wind_color;
+				}
+                /* @clouds_color */
+				.$unique_block_class .td-weather-section-3 {
+					color: @clouds_color;
+				}
+				
+                /* @frcst_bg_color */
+				.$unique_block_class .td-weather-week:before {
+					background-color: @frcst_bg_color;
+				}
+                /* @frcst_day_color */
+				.$unique_block_class .td-weather-days > div:first-child {
+					color: @frcst_day_color;
+				}
+                /* @frcst_temp_color */
+				.$unique_block_class .td-weather-days .td-day-degrees {
+					color: @frcst_temp_color;
+				}
+				
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
+    }
+
+    static function cssMedia( $res_ctx ) {
+
+        /*-- COLORS -- */
+        $res_ctx->load_settings_raw( 'city_color', $res_ctx->get_shortcode_att('city_color') );
+        $res_ctx->load_settings_raw( 'condition_color', $res_ctx->get_shortcode_att('condition_color') );
+        $res_ctx->load_settings_raw( 'loc_icon_color', $res_ctx->get_shortcode_att('loc_icon_color') );
+
+        $res_ctx->load_settings_raw( 'temp_color', $res_ctx->get_shortcode_att('temp_color') );
+        $res_ctx->load_settings_raw( 'temp_min_color', $res_ctx->get_shortcode_att('temp_min_color') );
+        $res_ctx->load_settings_raw( 'temp_min_i_color', $res_ctx->get_shortcode_att('temp_min_i_color') );
+        $res_ctx->load_settings_raw( 'temp_max_color', $res_ctx->get_shortcode_att('temp_max_color') );
+        $res_ctx->load_settings_raw( 'temp_max_i_color', $res_ctx->get_shortcode_att('temp_max_i_color') );
+        $res_ctx->load_settings_raw( 'sep_color', $res_ctx->get_shortcode_att('sep_color') );
+        $res_ctx->load_settings_raw( 'humid_color', $res_ctx->get_shortcode_att('humid_color') );
+        $res_ctx->load_settings_raw( 'wind_color', $res_ctx->get_shortcode_att('wind_color') );
+        $res_ctx->load_settings_raw( 'clouds_color', $res_ctx->get_shortcode_att('clouds_color') );
+
+        $res_ctx->load_settings_raw( 'frcst_bg_color', $res_ctx->get_shortcode_att('frcst_bg_color') );
+        $res_ctx->load_settings_raw( 'frcst_day_color', $res_ctx->get_shortcode_att('frcst_day_color') );
+        $res_ctx->load_settings_raw( 'frcst_temp_color', $res_ctx->get_shortcode_att('frcst_temp_color') );
+
+    }
+
 
 	/**
 	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.

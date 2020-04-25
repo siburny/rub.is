@@ -79,6 +79,26 @@ function tdc_register_api_routes() {
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_save_header_mobile_menu'),
 	));
+
+	register_rest_route($namespace, '/load_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_load_footer_template'),
+	));
+
+	register_rest_route($namespace, '/update_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_update_footer_template'),
+	));
+
+	register_rest_route($namespace, '/get_footer_templates/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_get_footer_templates'),
+	));
+
+	register_rest_route($namespace, '/get_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_get_footer_template'),
+	));
 }
 
 /**
@@ -97,6 +117,8 @@ function tdc_on_save_post( $post_id, $post, $update) {
 
 	td_util::check_header( $post );
 
+	td_util::check_footer( $post );
+
 	// Set the 'tdc_dirty_content' flag
 	if ($update === false) {
 		update_post_meta( $post_id, 'tdc_dirty_content', 1 );
@@ -112,8 +134,11 @@ function tdc_on_save_post( $post_id, $post, $update) {
 	update_post_meta( $post_id, 'tdc_icon_fonts', $icon_font_list );
 
 	// Set icon fonts used in post
-	$google_font_list = tdc_util::get_required_google_fonts_ids( $post_id );
-	update_post_meta( $post_id, 'tdc_google_fonts', $google_font_list );
+    $post_type = get_post_type( $post_id );
+    if ( in_array( $post_type, array( 'page', 'tdb_templates' ))) {
+        $google_font_list = td_util::get_required_google_fonts_ids( $post_id );
+	    update_post_meta( $post_id, 'tdc_google_fonts_settings', $google_font_list );
+    }
 }
 
 
@@ -377,7 +402,6 @@ class tdc_ajax {
                     foreach ( $content_matches[ 1 ] as $str_atts ) {
 
                         $arr_atts = shortcode_parse_atts( $str_atts );
-
                         foreach ($arr_atts as $arr_att ) {
                             if ( 0 === strpos( $arr_att, 'content_width' ) ) {
                                 $arr_att_val = str_replace( array('content_width="', '"'), '', $arr_att );
@@ -388,11 +412,14 @@ class tdc_ajax {
 
                                     if ( !empty($arr_att_val['all'])) {
                                         $final_val = $arr_att_val['all'];
-
-                                        update_post_meta( $post_id, 'tdc_single_post_content_width', $final_val );
-                                        $val_for_single_post_content = true;
                                     }
                                 }
+
+                                if( !empty($final_val) ) {
+                                    update_post_meta( $post_id, 'tdc_single_post_content_width', $final_val );
+                                    $val_for_single_post_content = true;
+                                }
+
                                 break;
                             }
                         }
@@ -665,6 +692,30 @@ class tdc_ajax {
                     // Set header template as header template for header template itself!
                     update_post_meta( $template_id, 'tdc_header_template_id', $template_id );
 			        update_post_meta( $template_id, 'tdc_dirty_content', 0 );
+
+			        $extra_google_fonts_ids = [];
+
+			        if ( base64_decode( $header_template_content, true ) && base64_encode( base64_decode( $header_template_content, true ) ) === $header_template_content ) {
+                        $header_template_content = json_decode( base64_decode( $header_template_content ), true );
+
+                        foreach ( ['tdc_header_desktop', 'tdc_header_desktop_sticky', 'tdc_header_mobile', 'tdc_header_mobile_sticky'] as $viewport ) {
+                            if ( ! empty( $header_template_content[ $viewport ] ) ) {
+                                $google_fonts_ids = td_util::get_content_google_fonts_ids( $header_template_content[ $viewport ] );
+
+                                foreach ( $google_fonts_ids as $google_fonts_id => $font_settings ) {
+                                    if ( array_key_exists( $google_fonts_id, $extra_google_fonts_ids ) ) {
+                                        $extra_google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+                                    } else {
+                                        $extra_google_fonts_ids[ $google_fonts_id ] = $font_settings;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if ( ! empty( $extra_google_fonts_ids ) ) {
+                        update_post_meta( $template_id, 'tdc_google_fonts_settings', $extra_google_fonts_ids );
+                    }
 			    }
 		    }
 		}
@@ -989,4 +1040,318 @@ class tdc_ajax {
 
         die( json_encode( $parameters ) );
     }
+
+
+    static function on_ajax_get_footer_templates() {
+	    if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+	    $parameters = array();
+
+		$footer_templates = new WP_Query( array(
+                'post_type' => 'tdb_templates',
+                'posts_per_page' => -1,
+                'meta_key' => 'tdb_template_type',
+                'meta_value' => 'footer'
+            )
+        );
+
+		if ( $footer_templates->found_posts ) {
+		    foreach ( $footer_templates->posts as $footer_template ) {
+		        $parameters[ 'tdb_footer_templates' ][] = array(
+                    'id' => $footer_template->ID,
+                    'title' => $footer_template->post_title
+                );
+            }
+        }
+
+        die( json_encode( $parameters ) );
+    }
+
+
+    static function on_ajax_load_footer_template( WP_REST_Request $request ) {
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$action = $_POST['tdc_action'];
+		$footer_template_content = $_POST['tdc_footer_template_content'];
+		$footer_template_title = $_POST['tdc_footer_template_title'];
+
+		if ( ! isset( $action ) || 'load_footer_template' !== $action || ! isset( $footer_template_content ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else if ( empty( $_POST['tdc_footer_template_id'] ) ) {
+
+		    global $wpdb;
+
+		    $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "
+                        SELECT post_title 
+                        FROM {$wpdb->posts} 
+                        WHERE post_title LIKE '%s' 
+                        AND post_type = '%s' 
+                        AND post_status = '%s'",
+                    array( '%' . $wpdb->esc_like( $footer_template_title ) . '%', 'tdb_templates', 'publish' )
+                )
+            );
+
+		    $titles = [];
+
+		    foreach ( $results as $post ) {
+                $title = $post->post_title;
+
+                if ( strpos( $title, $footer_template_title . ' ' ) !== false || $footer_template_title === $title ) {
+                    $titles[] = $title;
+                }
+            }
+
+            natsort($titles);
+            $titles = array_values( $titles );
+            $titles_count = count($titles);
+
+            // if we have more than one post with the same title we need to alter the template title
+            if ( $titles_count >= 1 ) {
+
+                // flag to check whether we set a index template title in the foreach loop
+                $flag = false;
+
+                foreach ( $titles as $index => $title ) {
+
+                    // check if the first post is the original template like 'Single Post Template 1'
+                    if ( $index == 0 ) {
+
+                        // if the first post is not the original template
+                        if ( $footer_template_title !== $title ) {
+                            // just set the flag and bail, we don't need to alter the temp title because the original template title is missing
+
+                            $flag = true;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    // check for missing template titles
+                    if ( ! in_array( $footer_template_title . ' (' . ( $index + 1 ) . ')' , $titles ) ) {
+                        $footer_template_title = $footer_template_title . ' (' . ( $index + 1 ) . ')';
+
+                        // set the flag
+                        $flag = true;
+                        break;
+                    }
+                }
+
+                // if we haven't set the title above set the posts count title
+                if ( !$flag ) {
+                    $footer_template_title = $footer_template_title . ' (' . ( $titles_count + 1 ) . ')';
+                }
+            }
+
+			$data_template = array(
+                'post_title' => $footer_template_title,
+                'post_type' => 'tdb_templates',
+				'post_content' => $footer_template_content,
+                'post_status' => 'publish',
+                'meta_input'   => array(
+                    'tdb_template_type' => 'footer',
+                ),
+			);
+
+
+			$template_id = wp_insert_post( $data_template, true );
+
+			if ( is_wp_error( $template_id ) ) {
+				$errors = $template_id->get_error_messages();
+
+				$parameters['errors'] = array();
+				foreach ( $errors as $error ) {
+					$parameters['errors'][] = $error;
+				}
+			} else {
+			    $parameters['footer_template_id'] = $template_id;
+			}
+
+		} else {
+
+		    $data_template = array(
+                'ID' => $_POST['tdc_footer_template_id'],
+                'post_content' => $footer_template_content,
+                'meta_input' => array(
+                    'tdc_footer_template_id' => $_POST['tdc_footer_template_id']
+                )
+			);
+
+		    $template_id = wp_update_post( $data_template, true );
+
+			if ( is_wp_error( $template_id ) ) {
+				$errors = $template_id->get_error_messages();
+
+				$parameters['errors'] = array();
+				foreach ( $errors as $error ) {
+					$parameters['errors'][] = $error;
+				}
+			} else {
+			    $parameters['footer_template_id'] = $template_id;
+			}
+        }
+
+		die( json_encode( $parameters ) );
+	}
+
+
+    static function on_ajax_get_footer_template() {
+	    $parameters = array();
+
+	    $action = $_POST['tdc_action'];
+	    $footer_template_id = $_POST['tdc_footer_template_id'];
+
+	    if ( ! isset( $action ) || 'get_footer_template' !== $action || ( ! empty( $footer_template_id ) && 'no_footer' !== $footer_template_id && ! ( get_post( $footer_template_id ) instanceof WP_Post ) ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+
+	        $parameters['global_template'] = false;
+	        $parameters['no_header'] = false;
+	        $parameters['template_content'] = '';
+	        $parameters['template_id'] = '';
+
+	        if ( empty( $footer_template_id ) ) {
+
+	            $global_footer_template_id = td_api_footer_template::get_footer_template_id();
+
+                if ( empty( $global_footer_template_id ) ) {
+                    $parameters['global_template'] = true;
+                } else {
+                    $global_footer_template_id = str_replace( 'tdb_template_', '', $global_footer_template_id );
+                    $meta_footer_template_content = get_post_field('post_content', $global_footer_template_id );
+
+                    if ( empty( $meta_footer_template_content ) ) {
+
+                        // $parameters['errors'][] = 'Invalid template';
+
+                        // Use legacy global template (maybe the existing global template was deleted)
+                        $parameters['global_template'] = true;
+
+                    } else {
+                        $parameters['global_template'] = true;
+                        $parameters['template_id'] = $global_footer_template_id;
+                        $parameters['template_content'] = $meta_footer_template_content;
+                    }
+                }
+            } else if ( 'no_footer' === $footer_template_id ) {
+
+	            $parameters['no_footer'] = true;
+
+            } else {
+
+		        $post_template = get_post( $footer_template_id );
+
+		        if ( $post_template instanceof WP_Post ) {
+			        $parameters['template_id'] = $footer_template_id;
+			        $parameters['template_content'] = $post_template->post_content;
+		        } else {
+			        $parameters['errors'][] = 'Invalid template';
+		        }
+	        }
+	    }
+
+        die( json_encode( $parameters ) );
+    }
+
+
+    static function on_ajax_update_footer_template( WP_REST_Request $request ) {
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$action = $_POST['tdc_action'];
+		$post_id = $_POST['tdc_post_id'];
+		$footer_template_id = $_POST['tdc_footer_template_id'];
+		$footer_template_content = $_POST['tdc_footer_template_content'];
+		$assoc_footer_template = $_POST['tdc_assoc_footer_template'];
+
+		if ( ! isset( $action ) || 'update_footer_template' !== $action || ! isset( $footer_template_content ) || ( ! empty( $footer_template_id ) && 'no_footer' !== $footer_template_id && ! get_post( $footer_template_id ) instanceof WP_Post ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+
+		    if ( empty( $footer_template_id ) ) {
+
+			    delete_post_meta( $post_id, 'tdc_footer_template_id' );
+			    $parameters['footer_template_id'] = '';
+
+		    } else if ( 'no_footer' === $footer_template_id ) {
+
+		        $updated = update_post_meta( $post_id, 'tdc_footer_template_id', $footer_template_id );
+
+                if ( $updated ) {
+                    $parameters['footer_template_id'] = $footer_template_id;
+                }
+
+		    } else {
+
+			    $data_template = array(
+				    'ID'           => $footer_template_id,
+				    'post_content' => $footer_template_content,
+			    );
+
+
+			    $template_id = wp_update_post( $data_template, true );
+
+			    if ( is_wp_error( $template_id ) ) {
+				    $errors = $template_id->get_error_messages();
+
+				    $parameters['errors'] = array();
+				    foreach ( $errors as $error ) {
+					    $parameters['errors'][] = $error;
+				    }
+
+			    } else {
+
+			        if ( empty( $assoc_footer_template ) ) {
+
+			            $deleted = delete_post_meta( $post_id, 'tdc_footer_template_id' );
+
+			            if ( $deleted ) {
+			                $parameters['footer_template_id'] = '';
+                        }
+
+			        } else {
+
+			            $updated = update_post_meta( $post_id, 'tdc_footer_template_id', $template_id );
+
+				        if ( $updated ) {
+					        $parameters['footer_template_id'] = $template_id;
+				        }
+                    }
+
+                    // Set header template as header template for header template itself!
+                    update_post_meta( $template_id, 'tdc_footer_template_id', $template_id );
+			        update_post_meta( $template_id, 'tdc_dirty_content', 0 );
+
+			        $footer_template_content = get_post( $template_id )->post_content;
+
+			        $google_font_list = td_util::get_content_google_fonts_ids( $footer_template_content );
+			        update_post_meta( $template_id, 'tdc_google_fonts_settings', $google_font_list );
+			    }
+		    }
+		}
+
+		die( json_encode( $parameters ) );
+	}
 }

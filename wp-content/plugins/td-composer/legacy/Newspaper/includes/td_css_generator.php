@@ -76,7 +76,8 @@ function td_css_generator() {
     .td-pulldown-syle-2 .td-subcat-dropdown ul:after,
     .td_block_template_9 .td-block-title:after,
     .td_block_template_15 .td-block-title:before,
-    div.wpforms-container .wpforms-form div.wpforms-submit-container button[type=submit] {
+    div.wpforms-container .wpforms-form div.wpforms-submit-container button[type=submit],
+    .td-close-video-fixed {
         background-color: @theme_color;
     }
 
@@ -251,6 +252,15 @@ function td_css_generator() {
     {
         background-color: @slider_text;
     }
+
+
+    /* @container_transparent */
+    .td-container-wrap,
+    .post,
+    .tagdiv-type .td_quote_box {
+        background-color: transparent;
+    }
+    
 
     /* @header_color */
     .block-title > span,
@@ -784,6 +794,9 @@ function td_css_generator() {
     //load the user settings
     // general
     $td_css_compiler->load_setting('theme_color');
+    if( td_util::get_option('tds_site_boxed') == 'hide' && 'Newspaper' == TD_THEME_NAME && td_global::is_tdb_registered() ) {
+        $td_css_compiler->load_setting_raw('container_transparent', 1);
+    }
     $td_css_compiler->load_setting('header_color');
     $td_css_compiler->load_setting('text_header_color');
 

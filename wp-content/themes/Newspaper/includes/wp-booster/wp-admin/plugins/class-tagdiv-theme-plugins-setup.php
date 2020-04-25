@@ -99,7 +99,7 @@ class tagdiv_theme_plugins_setup {
 		);
 	}
 
-	private function _get_plugins() {
+	private function _get_plugins( $all_plugins = true ) {
 	    $instance = call_user_func( array( get_class( $GLOBALS['tgmpa'] ), 'get_instance' ) );
 		$plugins = array(
 			'all'      => array(), // Meaning: all plugins which still have open actions.
@@ -124,7 +124,7 @@ class tagdiv_theme_plugins_setup {
             }
 
 			// go further only for plugins set from config to be installed from the welcome panel and if plugin was not deactivated by the theme
-			if ( false === $this->theme_deactivated_plugin( $plugin ) && false === $plugin['td_install_in_welcome'] ) {
+			if ( ! $all_plugins && false === $this->theme_deactivated_plugin( $plugin ) && false === $plugin['td_install_in_welcome'] ) {
 				continue;
 			}
 
@@ -151,7 +151,7 @@ class tagdiv_theme_plugins_setup {
 		return $plugins;
 	}
 
-	public function theme_plugins() {
+	public function theme_plugins( $plugins_for_update = null ) {
 
 		tgmpa_load_bulk_installer();
 
@@ -178,17 +178,39 @@ class tagdiv_theme_plugins_setup {
 		}
 
 		/* If we arrive here, we have the filesystem */
-        $plugins = $this->_get_plugins();
+
+        $all_plugins = true;
+        if ( ! is_array( $plugins_for_update ) ) {
+            $all_plugins = false;
+        }
+
+        $plugins = $this->_get_plugins($all_plugins);
         if ( count( $plugins['all'] ) ) {
 
             ?>
-            <div class="td-admin-wrap about-wrap theme-browser td-admin-plugins feature-section td-admin-setup-plugins">
+            <div class="td-admin-wrap about-wrap theme-browser feature-section td-admin-setup-plugins">
                 <form class="one-col" method="post">
-                    <h2>Start with the <?php echo TD_THEME_NAME ?> Theme</h2>
+                    <?php
+                    if ( empty( $plugins_for_update ) ) {
+                        ?>
+                            <h2>Start with the <?php echo TD_THEME_NAME ?> Theme</h2>
+                            <p class="about-description">Access the premium features and create your awesome website. To start, easily Install and Activate the following tagDiv plugins with a single click.</p>
+                        <?php
+                    } else {
+                        ?>
+                            <p class="about-description">Updating all tagDiv plugins...</p>
+                        <?php
+                    }
+                    ?>
 
-                    <p class="about-description">Access the premium features and create your awesome website. To start, easily Install and Activate the following tagDiv plugins with a single click.</p>
                     <ul class="theme-plugins-setup">
-                        <?php foreach ( $plugins['all'] as $slug => $plugin ) {  ?>
+                        <?php foreach ( $plugins['all'] as $slug => $plugin ) {
+
+                            if ( is_array( $plugins_for_update ) && ! in_array( $slug, $plugins_for_update )) {
+                                continue;
+                            }
+
+                            ?>
                             <li data-slug="<?php echo esc_attr( $slug );?>">
                                 <div class="themes-plugin-txt"><?php echo esc_html( $plugin['name'] );?></div>
                                 <div class="themes-plugin-status">
@@ -207,8 +229,7 @@ class tagdiv_theme_plugins_setup {
                             </li>
                         <?php } ?>
                     </ul>
-
-                    <div class="td-button-install-wrap">
+                    <div class="td-button-install-wrap" <?php echo( empty( $plugins_for_update ) ? '': 'style="visibility: hidden"') ?>>
                         <a class="button button-large button-primary td-button-install-plugins" href="#" data-callback="install_plugins">Install / Activate plugins</a>
                     </div>
                 </form>

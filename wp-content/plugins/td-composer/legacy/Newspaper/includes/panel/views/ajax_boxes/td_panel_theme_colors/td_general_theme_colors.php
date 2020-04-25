@@ -33,6 +33,26 @@
     </div>
 </div>
 
+<?php if( 'Newspaper' == TD_THEME_NAME && td_global::is_tdb_registered() ) { ?>
+<!-- BOXED LAYOUT -->
+<div class="td-box-row tdb-hide">
+    <div class="td-box-description">
+        <span class="td-box-title">BACKGROUND BOXED LAYOUT</span>
+        <p>Make background boxed layout</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox( array(
+            'ds'          => 'td_option',
+            'option_id'   => 'tds_site_boxed',
+            'true_value'  => '',
+            'false_value' => 'hide'
+        ) );
+        ?>
+    </div>
+</div>
+<?php } ?>
+
 
 <!-- HEADERS BACKGROUND COLOR -->
 <div class="td-box-row">

@@ -4,7 +4,7 @@
 	Plugin URI: http://tagdiv.com
 	Description: tagDiv Composer - Create everything on your website right on the frontend with this drag and drop builder. Perfect for articles, pages, headers, and footers. No coding skills required.
 	Author: tagDiv
-	Version: 2.5 | built on 11.11.2019 15:07
+	Version: 2.5 | built on 01.04.2020 8:57
 	Author URI: http://tagdiv.com
 */
 
@@ -17,7 +17,7 @@ if ( is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
 
 
 //hash
-define('TD_COMPOSER',       '819b7f9b02b0195f80e3eab970f44973x');
+define('TD_COMPOSER',       '7f1aa22e75244d72bc50388e10a0733a');
 define('TDC_VERSION',       '__td_aurora_deploy_version__');
 define('TDC_URL',           plugins_url('td-composer'));
 define('TDC_PATH',          dirname(__FILE__));

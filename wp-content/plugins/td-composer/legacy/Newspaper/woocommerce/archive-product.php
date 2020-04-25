@@ -9,18 +9,14 @@
  * @version     3.4.1
  */
 
-td_global::$current_template = 'woo';
-
-
-get_header();
-
 //set the template id, used to get the template specific settings
 $template_id = 'woo';
 
+td_global::set_current_template($template_id );
+
+get_header();
 
 $loop_sidebar_position = td_util::get_option('tds_' . $template_id . '_sidebar_pos'); //sidebar right is default (empty)
-
-
 
 // sidebar position used to align the breadcrumb on sidebar left + sidebar first on mobile issue
 $td_sidebar_position = '';

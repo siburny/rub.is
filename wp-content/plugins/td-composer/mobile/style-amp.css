@@ -28,6 +28,11 @@ amp-sidebar[side] {
     -moz-transition: all 0.5s cubic-bezier(0.79, 0.14, 0.15, 0.86);
     -o-transition: all 0.5s cubic-bezier(0.79, 0.14, 0.15, 0.86);
     transition: all 0.5s cubic-bezier(0.79, 0.14, 0.15, 0.86);
+    /*iOS fix*/
+    -webkit-transform: none;
+    transform: none;
+    -webkit-animation: none;
+    animation: none;
 }
 
 #td-header-menu {

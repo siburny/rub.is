@@ -160,9 +160,7 @@ class td_demo_installer {
         }
         else if ($td_demo_action == 'td_import')  {
 
-        	//$api_url = 'http://demo_content.tagdiv.com/Newspaper_6/romania_news/td_settings.txt';
-
-	        $api_url = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
+        	$api_url = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
 	        $api_index_url = $api_url . 'index';
 
             $api_response = td_remote_http::get_page( $api_index_url, __CLASS__);
@@ -191,6 +189,8 @@ class td_demo_installer {
             }
 
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_import.php');
+
+            $this->register_demo($td_demo_id);
 
         } else if ( file_exists(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php')) {
 
@@ -223,11 +223,22 @@ class td_demo_installer {
 				        }
 			        }
 		        }
+
+		        $this->register_demo($td_demo_id);
 	        }
 
         	require_once(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php');
         }
+    }
 
+
+    private function register_demo( $demo_id ) {
+
+    	$server_addr = "https://cloud.tagdiv.com";
+    	$token = td_remote_http::get_page( $server_addr . "/wp-json/td-register-install-demo/get_token/", __CLASS__);
+        if ( ! empty( $token )) {
+            td_remote_http::get_page( $server_addr . "/wp-json/td-register-install-demo/install_demo/?theme_name=" . TD_THEME_NAME . "&version=" . TD_THEME_VERSION . "&demo_id=$demo_id&_nonce=" . $token . "&host=" . $_SERVER['HTTP_HOST'], __CLASS__);
+        }
     }
 
 
@@ -247,8 +258,18 @@ class td_demo_installer {
             'category_options',
             'td_ads',
             'sidebars'
-            
+
         );
+
+        $not_touchable = array(
+        	'theme_update_versions',
+	        'theme_update_to_version',
+	        'theme_update_latest_version'
+        );
+
+        foreach ( $not_touchable as $item) {
+        	$not_touchable[$item] = td_util::get_option($item);
+        }
 
 
         //read the settings file
@@ -263,7 +284,7 @@ class td_demo_installer {
         $dbk = td_handle::get_var($dbks[1]);
         $dbm = td_handle::get_var($dbks[0]);
         $file_settings[$dbm] = td_options::get($dbm);
-        
+
         $file_settings[$dbk] = td_util::get_option_('td_cake_status');
         $file_settings[$dbk . 'tp'] = td_util::get_option_('td_cake_status_time');
         $file_settings[$dbk . 'ta'] = td_util::get_option_('td_cake_lp_status');
@@ -288,6 +309,10 @@ class td_demo_installer {
 	                $td_options[$setting_id] = $setting_value;
                 }
             }
+        }
+
+        foreach ( $not_touchable as $item) {
+        	$td_options[$item] = $not_touchable[$item];
         }
 
         $generated_css = td_css_generator();

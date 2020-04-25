@@ -94,6 +94,14 @@ $td_cloud_global_search_template_id = td_demo_content::add_cloud_template(array(
 td_demo_misc::update_global_search_template( 'tdb_template_' . $td_cloud_global_search_template_id );
 
 
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Cloud Template - Influencer',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
+
+
 /*  ----------------------------------------------------------------------------
     pages
 */
@@ -107,15 +115,3 @@ $td_homepage_id = td_demo_content::add_page(array(
     'header_template_id' => $td_cloud_header_overlay_template_id,
     'homepage' => true
 ));
-
-//footer page
-$td_footerpage_id = td_demo_content::add_page(array(
-    'title' => 'Footer',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/influencer/pages/footer.txt',
-    'template' => 'default',   // the page template full file name with .php, for default no extension needed
-    'td_layout' => '',
-    'sidebar_position' => 'no_sidebar',
-    'homepage' => false
-));
-
-td_util::update_option( 'tds_footer_page', $td_footerpage_id);

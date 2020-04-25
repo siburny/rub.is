@@ -63,13 +63,17 @@
                 <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
                     <option value="">Auto select a category</option>
                     <?php
-                    $td_current_categories = td_util::get_category2id_array(false);
+                    $td_current_categories = td_util::get_category2id_array(false, false );
 
                     //print_r($td_current_categories);
                     //die;
                     foreach ($td_current_categories as $td_category => $td_category_id) {
+                        $disabled = '';
+                        if ( '__' === $td_category_id && false !== strpos($td_category, '--')) {
+                            $disabled = 'disabled';
+                        }
                         ?>
-                        <option value="<?php echo $td_category_id?>"<?php $mb->the_select_state($td_category_id); ?>><?php echo $td_category?></option>
+                        <option value="<?php echo $td_category_id?>"<?php $mb->the_select_state($td_category_id); ?> <?php echo $disabled ?>><?php echo $td_category?></option>
                     <?php
                     }
                     ?>

@@ -106,6 +106,13 @@ class td_panel_data_source {
                 }
                 break;
 
+            case 'td_fonts_default':
+                $fonts_default = td_options::get_array('td_fonts_default');
+                if(!empty($fonts_default[$read_array['option_id']])) {
+                    return $fonts_default[$read_array['option_id']];
+                }
+                break;
+
 
             case 'td_fonts':
                 $fonts_user_inserted = td_options::get_array('td_fonts');
@@ -279,6 +286,10 @@ class td_panel_data_source {
                     self::update_td_fonts_user_insert($post_value);
                     break;
 
+                case 'td_fonts_default':
+                	self::update_td_fonts_default($post_value);
+	                break;
+
                 case 'td_fonts':
                     self::update_td_fonts($post_value);
                     break;
@@ -318,6 +329,10 @@ class td_panel_data_source {
 	            case 'tdb_tag_template':
 		            self::update_tdb_template($post_value, 'tag');
 		            break;
+
+	            case 'tdb_tag_templates';
+	                self::update_tdb_tag_templates($post_value);
+	                break;
 
 	            case 'tdb_author_template':
 		            self::update_tdb_template($post_value, 'author');
@@ -734,6 +749,22 @@ class td_panel_data_source {
 
     }
 
+
+//	                $fonts_user_inserted = td_options::get_array('td_fonts_default');
+//	                if(!empty($fonts_user_inserted[$read_array['option_id']])) {
+//	                    return $fonts_user_inserted[$read_array['option_id']];
+//	                }
+
+
+	/**
+     * @used to save the default fonts
+     */
+    private static function update_td_fonts_default($td_fonts_default_array ) {
+
+    	// save option
+	    td_options::update_array('td_fonts_default', $td_fonts_default_array );
+    }
+
     /**
      * @used to save the fonts
      */
@@ -860,6 +891,14 @@ class td_panel_data_source {
 
 		foreach ($td_option_array as $author_id => $tdb_template_id) {
 			$td_options['tdb_author_templates'][$author_id] = $tdb_template_id;
+		}
+	}
+
+	private static function update_tdb_tag_templates($td_option_array) {
+		$td_options = &td_options::get_all_by_ref();
+
+		foreach ($td_option_array as $tdb_template_id => $tags) {
+			$td_options['tdb_tag_templates'][$tdb_template_id] = $tags;
 		}
 	}
 

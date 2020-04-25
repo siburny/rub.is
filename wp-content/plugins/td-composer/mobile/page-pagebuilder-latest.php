@@ -6,7 +6,7 @@ if ( td_util::is_amp() ) {
     get_header();
 }
 
-td_global::$current_template = 'page-homepage-loop';
+td_global::set_current_template('page-homepage-loop' );
 
 global $paged, $post;
 

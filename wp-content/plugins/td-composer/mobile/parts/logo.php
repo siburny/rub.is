@@ -1,5 +1,9 @@
 <?php
 
+// Mobile Theme logo + retina logo
+$td_header_logo_mob = td_util::get_option('tds_logo_menu_upload_mob');
+$td_header_logoR_mob = td_util::get_option('tds_logo_menu_upload_r_mob');
+
 // read the mobile logo + retina logo
 $td_mobile_customLogo = td_util::get_option('tds_logo_menu_upload');
 $td_mobile_customLogoR = td_util::get_option('tds_logo_menu_upload_r');
@@ -12,10 +16,36 @@ $td_header_logoR = td_util::get_option('tds_logo_upload_r');
 $td_logo_text = stripslashes(td_util::get_option('tds_logo_text'));
 $td_tagline_text = stripslashes(td_util::get_option('tds_tagline_text'));
 
+// Mobile Theme text logo + tagline
+//$td_logo_text_mob = stripslashes(td_util::get_option('tds_logo_text_mob'));
+//$td_tagline_text_mob = stripslashes(td_util::get_option('tds_tagline_text_mob'));
+
 $td_logo_alt = td_util::get_option('tds_logo_alt');
 $td_logo_title = td_util::get_option('tds_logo_title');
 
-if (!empty($td_logo_title)) {
+// Mobile Theme alt & title
+$td_logo_alt_mob = td_util::get_option('tds_logo_alt_mob');
+$td_logo_title_mob = td_util::get_option('tds_logo_title_mob');
+
+// specific Mobile Theme options
+if(!empty($td_header_logo_mob)) {
+    $td_mobile_customLogo = $td_header_logo_mob;
+}
+if(!empty($td_header_logoR_mob)) {
+    $td_mobile_customLogoR = $td_header_logoR_mob;
+}
+//if(!empty($td_logo_text_mob)) {
+//    $td_logo_text = $td_logo_text_mob;
+//}
+//if(!empty($td_tagline_text_mob)) {
+//    $td_tagline_text = $td_tagline_text_mob;
+//}
+if (!empty($td_logo_alt_mob)) {
+    $td_logo_alt = $td_logo_alt_mob;
+}
+if (!empty($td_logo_title_mob)) {
+    $td_logo_title = ' title="' . $td_logo_title_mob . '"';
+} elseif (!empty($td_logo_title)) {
     $td_logo_title = ' title="' . $td_logo_title . '"';
 }
 

@@ -149,7 +149,7 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
 
             <div id="td-panel-welcome" class="td-panel-active td-panel">
 
-                <?php echo td_panel_generator::box_start('Importing / exporting theme settings'); ?>
+                <?php echo td_panel_generator::box_start('Import / Export the Theme Settings'); ?>
 
                 <!-- Import/Export theme settings -->
                 <form id="td_panel_import_export_settings" name="td_panel_import_export_settings" action="?page=td_theme_panel&td_page=td_view_import_export_settings&action_import=import_theme_settings" method="post" onsubmit="tdConfirm.showModal( 'Are you sure you want to import this settings?',
@@ -172,7 +172,7 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                             <div class="td-box-description td-box-full">
                                 <span class="td-box-title">EXPORT THEME SETTINGS</span>
                                 <p>
-                                    This box contains all the panel options encoded as a string so you can easily copy them and move them to another server.
+                                    This box contains all the theme panel options, encoded as a string so that you can easily copy and move them to another server.
                                 </p>
                             </div>
                             <div class="td-box-control-full">
@@ -192,10 +192,10 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                             <div class="td-box-row-margin-bottom"></div>
                         </div>
 
-                        <div class="td-box-row">
+                        <div class="td-box-row td-import-settings-col-1">
                             <div class="td-box-description td-box-full">
                                 <span class="td-box-title">IMPORT THEME SETTINGS</span>
-                                <p>Paste your theme settings string here and the theme will load them into the database</p>
+                                <p>Paste your encoded settings' string here, and the theme will load the options into the database.</p>
                             </div>
                             <div class="td-box-control-full">
                                 <?php
@@ -205,7 +205,28 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                                 ));
                                 ?>
                             </div>
+
                             <div class="td-box-row-margin-bottom"></div>
+                        </div>
+
+                        <div class="td-box-row td-import-settings-col-2">
+                            <div class="td-box-description td-box-full">
+                                <span class="td-box-title">Theme Panel Settings Backup</span>
+                                <p>Your previously saved backups</p>
+                            </div>
+                            <div class="td-box-control-full">
+                                <ul class="td-theme-settings-list">
+                                    <?php
+
+                                    $option_settings = get_option( TD_THEME_OPTIONS_NAME . '_settings' );
+                                    if ( ! is_null( $option_settings )) {
+                                        foreach ($option_settings as $key => $option_setting) {
+                                            echo '<li class="td-theme-settings" data-value="' . tdc_b64_encode(serialize($option_setting )) . '">' . $key . '</li>';
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
                         </div>
 
                     <div class="td-box-row">

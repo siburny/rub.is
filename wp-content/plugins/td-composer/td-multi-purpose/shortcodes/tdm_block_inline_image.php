@@ -277,7 +277,7 @@ class tdm_block_inline_image extends td_block {
         }
         $image_alt = '';
         if( $image_info['alt'] != '' ) {
-            $image_alt = 'alt="' . $image_info['title'] .  '"';
+            $image_alt = 'alt="' . $image_info['alt'] .  '"';
         }
 
         $additional_classes = array();

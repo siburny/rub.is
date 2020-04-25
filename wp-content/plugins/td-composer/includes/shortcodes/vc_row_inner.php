@@ -64,6 +64,7 @@ class vc_row_inner extends tdc_composer_block {
                     box-shadow: @row_shadow;
                     z-index: 20;
                     pointer-events: none;
+                    top: 0;
                 }
                 
                 /* @row_bg_solid */

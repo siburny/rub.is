@@ -1113,6 +1113,21 @@ blockquote.pull-right:after {
 /*  ----------------------------------------------------------------------------
     dropcaps
 */
+.td-page-content .dropcap,
+.td-post-content .dropcap,
+.comment-content .dropcap {
+  float: left;
+  display: block;
+  font-size: 50px;
+  line-height: 50px;
+  background-color: #4db2ec;
+  color: white;
+  text-align: center;
+  margin: 9px 13px 0 0;
+  padding: 2px 13px 5px 13px;
+  text-transform: uppercase;
+  min-width: 57px;
+}
 .td-page-content .dropcap1,
 .td-post-content .dropcap1,
 .comment-content .dropcap1 {
@@ -1140,6 +1155,69 @@ blockquote.pull-right:after {
   line-height: 69px;
   margin: 0 9px 0 0;
   padding: 0 13px 0 0;
+}
+.td-page-content p.has-drop-cap.dropcapp::first-letter,
+.td-post-content p.has-drop-cap.dropcapp::first-letter,
+.comment-content p.has-drop-cap.dropcapp::first-letter {
+  float: left;
+  display: block;
+  font-size: 50px;
+  font-weight: inherit;
+  line-height: 56px;
+  background-color: #4db2ec;
+  color: white;
+  text-align: center;
+  margin: 9px 13px 0 0;
+  padding: 2px 14px 4px;
+  font-family: 'mobile-theme', sans-serif;
+  text-transform: uppercase;
+}
+.td-page-content p.has-drop-cap.dropcapp1:first-letter,
+.td-post-content p.has-drop-cap.dropcapp1:first-letter,
+.comment-content p.has-drop-cap.dropcapp1:first-letter {
+  padding-left: 18px;
+  padding-right: 17px;
+  font-size: 40px;
+  border-radius: 70px;
+}
+.td-page-content p.has-drop-cap.dropcapp2:first-letter,
+.td-post-content p.has-drop-cap.dropcapp2:first-letter,
+.comment-content p.has-drop-cap.dropcapp2:first-letter,
+.td-page-content p.has-drop-cap.dropcapp3:first-letter,
+.td-post-content p.has-drop-cap.dropcapp3:first-letter,
+.comment-content p.has-drop-cap.dropcapp3:first-letter {
+  background-color: transparent !important;
+  color: #4B4B4B;
+  font-size: 79px;
+  line-height: 69px;
+  margin: 0 9px 0 0;
+  padding: 0 13px 0 0;
+}
+.td-page-content p.has-drop-cap.dropcapp3:first-letter,
+.td-post-content p.has-drop-cap.dropcapp3:first-letter,
+.comment-content p.has-drop-cap.dropcapp3:first-letter {
+  font-weight: bold;
+}
+.td-page-content p.has-drop-cap.dropcapp4,
+.td-post-content p.has-drop-cap.dropcapp4,
+.comment-content p.has-drop-cap.dropcapp4 {
+  margin-top: 40px;
+}
+.td-page-content p.has-drop-cap.dropcapp4:first-letter,
+.td-post-content p.has-drop-cap.dropcapp4:first-letter,
+.comment-content p.has-drop-cap.dropcapp4:first-letter {
+  background-color: #000;
+  font-size: .85em;
+  line-height: 1;
+  color: #fff;
+  border-radius: 100px;
+  margin: -2px 15px 0 0;
+  padding: 9px 11px;
+}
+.td-page-content p.has-drop-cap.dropcapp4:after,
+.td-post-content p.has-drop-cap.dropcapp4:after,
+.comment-content p.has-drop-cap.dropcapp4:after {
+  padding-top: 0;
 }
 /*  ----------------------------------------------------------------------------
     text columns
@@ -2900,8 +2978,9 @@ blockquote.pull-right:after {
 }
 #td-mobile-nav {
   padding: 0;
-  position: absolute;
+  position: fixed;
   width: 100%;
+  height: calc(100% + 1px);
   top: 0;
   z-index: 9999;
   -webkit-transition: transform 0.5s cubic-bezier(0.79, 0.14, 0.15, 0.86);
@@ -2914,7 +2993,6 @@ blockquote.pull-right:after {
   -ms-transform: translate3d(-99%, 0, 0);
   -o-transform: translate3d(-99%, 0, 0);
   left: -1%;
-  height: 1px;
   overflow: hidden;
 }
 .td-menu-socials-wrap {
@@ -3095,7 +3173,7 @@ blockquote.pull-right:after {
   box-shadow: 0 0 46px;
 }
 .td-menu-mob-open-menu #td-mobile-nav {
-  height: auto;
+  height: calc(100% + 1px);
   overflow: auto;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);

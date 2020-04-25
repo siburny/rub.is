@@ -18,6 +18,11 @@ class tdm_block_icon extends td_block {
 				    font-size: @icon_size;
 				    text-align: center;
 				}
+				/* @svg_size */
+                .$unique_block_class svg {
+                    width: @svg_size;
+                    height: auto;
+                }
 				
 				/* @icon_spacing */
 				.$unique_block_class i {
@@ -25,9 +30,18 @@ class tdm_block_icon extends td_block {
 				    height: @icon_spacing;
 				    line-height: @icon_line_height;
 				}
+				/* @svg_spacing */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    width: @svg_spacing;
+				    height: @svg_spacing;
+				    display: flex;
+                    align-items: center;
+                    justify-content: center;
+				}
 				
 				/* @vert_align */
-				.$unique_block_class i {
+				.$unique_block_class i,
+				.$unique_block_class .tds-icon-svg-wrap {
 				    position: relative;
 				    top: @vert_align;
 				}
@@ -35,6 +49,15 @@ class tdm_block_icon extends td_block {
 				/*@icon_display */
 				.$unique_block_class {
 				    display: inline-block;
+				}
+				
+				/* @content_align_horizontal_center */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    margin: 0 auto;
+				}
+				/* @content_align_horizontal_right */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    margin-left: auto;
 				}
           
 
@@ -55,13 +78,25 @@ class tdm_block_icon extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $svg_code = rawurldecode( base64_decode( strip_tags( $res_ctx->get_shortcode_att('svg_code') ) ) );
+
         /*-- ICON -- */
         // icon size
-        $res_ctx->load_settings_raw( 'icon_size', $res_ctx->get_shortcode_att( 'icon_size' ) . 'px' );
+        $icon_size = $res_ctx->get_shortcode_att( 'icon_size' ) . 'px';
+        if( $svg_code == '' ) {
+            $res_ctx->load_settings_raw( 'icon_size', $icon_size );
+        } else {
+            $res_ctx->load_settings_raw( 'svg_size', $icon_size );
+        }
 
         // icon spacing
 	    $tds_icon = td_util::get_option( 'tds_icon', 'tds_icon1' );
-        $res_ctx->load_settings_raw( 'icon_spacing', $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_spacing' ) + intval($res_ctx->get_style_att( 'all_border_size', $tds_icon ) ) * 2 . 'px' );
+        $icon_spacing = $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_spacing' ) + intval($res_ctx->get_style_att( 'all_border_size', $tds_icon ) ) * 2 . 'px';
+        if( $svg_code == '' ) {
+            $res_ctx->load_settings_raw('icon_spacing', $icon_spacing);
+        } else {
+            $res_ctx->load_settings_raw('svg_spacing', $icon_spacing);
+        }
 
         // icon line height
         $res_ctx->load_settings_raw( 'icon_line_height', $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_spacing' ) . 'px' );
@@ -71,6 +106,14 @@ class tdm_block_icon extends td_block {
 
         // icon display
         $res_ctx->load_settings_raw( 'icon_display', $res_ctx->get_shortcode_att( 'icon_display' ) );
+
+        // content horiz align
+        $content_horiz_align = $res_ctx->get_shortcode_att( 'content_align_horizontal' );
+        if( $content_horiz_align == 'content-horiz-center' ) {
+            $res_ctx->load_settings_raw('content_align_horizontal_center', 1);
+        } else if ( $content_horiz_align == 'content-horiz-right' ) {
+            $res_ctx->load_settings_raw('content_align_horizontal_right', 1);
+        }
 
     }
 

@@ -17,6 +17,18 @@ class td_module_flex_2 extends td_module {
         $excerpt_position = $this->get_shortcode_att('excerpt_middle');
         $modified_date = $this->get_shortcode_att('show_modified_date');
 
+        $video_popup = $this->get_shortcode_att('video_popup');
+        $video_ad_code = rawurldecode( base64_decode( strip_tags(  $this->get_shortcode_att('video_rec') ) ) );
+        $video_ad_title = $this->get_shortcode_att('video_rec_title');
+
+        $video_popup_params = array(
+            'visible' => $video_popup != '' ? true : false,
+            'ad' => array(
+                'code' => $video_ad_code,
+                'title' => $video_ad_title
+            )
+        );
+
         if (empty($image_size)) {
             $image_size = 'td_1920x0';
         }
@@ -29,7 +41,7 @@ class td_module_flex_2 extends td_module {
 
         <div class="<?php echo $this->get_module_classes();?>">
             <div class="td-module-container">
-                <?php echo $this->get_image($image_size, true);?>
+                <?php echo $this->get_image($image_size, true, $video_popup_params);?>
 
                 <div class="td-module-meta-info">
                     <?php if ($category_position == 'above') { echo $this->get_category(); }?>
@@ -40,10 +52,12 @@ class td_module_flex_2 extends td_module {
 
                     <div class="td-editor-date">
                         <?php if ($category_position == '') { echo $this->get_category(); }?>
+                        <?php echo $this->get_video_duration(); ?>
 
                         <span class="td-author-date">
-                            <?php echo $this->get_author();?>
-                            <?php echo $this->get_date($modified_date);?>
+                            <?php echo $this->get_author(true);?>
+                            <?php echo $this->get_date($modified_date, true);?>
+                            <?php echo $this->get_review();?>
                             <?php echo $this->get_comments();?>
                         </span>
                     </div>

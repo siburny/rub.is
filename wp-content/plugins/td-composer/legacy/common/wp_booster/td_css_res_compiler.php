@@ -233,7 +233,7 @@ class td_css_res_compiler  {
 
 			$td_options = td_options::get_all();
 
-			if ( function_exists( 'tdc_load_google_fonts' ) ) {
+			if ( function_exists( 'tdc_load_google_fonts' ) && ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax())) {
 				tdc_load_google_fonts( $compiled_css, $fonts_to_load, $td_options);
 			}
 		}
@@ -401,6 +401,9 @@ class td_res_context {
 		);
 
 		$param_value = '';
+		$font_family_loaded = '';
+		$font_weight_loaded = '';
+		$font_style_loaded = '';
 
 		foreach ( $font_settings as $font_param_name => $font_setting ) {
 
@@ -418,12 +421,15 @@ class td_res_context {
 			switch( $font_setting ) {
 				case 'font-family':
 
-					if ( '' !== $font_setting_value ) {
+					$loaded_value = 'DEFAULT';
 
-						if ( ! isset( $this->fonts_to_load[ $font_setting_value ] ) ) {
-							$this->fonts_to_load[ $font_setting_value ] = $font_family_list[ $font_setting_value ];
-						}
-						$font_setting_value = $font_family_list[ $font_setting_value ];
+					if ( empty( $font_setting_value ) ) {
+
+						$font_family_loaded = $loaded_value;
+
+					} else {
+
+						$font_family_loaded = $font_setting_value;
 					}
 					break;
 
@@ -433,11 +439,47 @@ class td_res_context {
 						$font_setting_value .= 'px';
 					}
 					break;
+
+				case 'font-weight':
+					$font_weight_loaded = $font_setting_value;
+					break;
+
+				case 'font-style':
+					$font_style_loaded = $font_setting_value;
+					break;
 			}
 
 			if ( '' !== $font_setting_value ) {
-				//$this->load_settings_raw( $font_setting_name, $font_setting_value );
-				$param_value .= $font_setting . ':' . $font_setting_value . ' !important;';
+				if ( 'font-family' === $font_setting ) {
+					if ( 'DEFAULT' !== $font_setting_value && !empty($font_family_list[ $font_setting_value ])) {
+						$param_value .= $font_setting . ':' . $font_family_list[ $font_setting_value ] . ' !important;';
+					}
+				} else {
+					$param_value .= $font_setting . ':' . $font_setting_value . ' !important;';
+				}
+			}
+		}
+
+		if ( ! empty( $font_family_loaded ) ) {
+			if ( ! isset( $this->fonts_to_load[ $font_family_loaded ] ) ) {
+				$this->fonts_to_load[ $font_family_loaded ] = [];
+			}
+			$loaded_value = '';
+			if ( ! empty( $font_weight_loaded ) ) {
+				$loaded_value = $font_weight_loaded;
+			}
+			if ( ! empty( $font_style_loaded ) ) {
+				if ( empty( $loaded_value )) {
+					$loaded_value = 400;
+				}
+				if ( 'oblique' === $font_style_loaded ) {
+					$loaded_value .= 'i';
+				}
+			}
+			if ( ! empty( $loaded_value ) ) {
+				$this->fonts_to_load[ $font_family_loaded ][] = $loaded_value;
+			} else if ( 'DEFAULT' !== $font_family_loaded ) {
+				$this->fonts_to_load[ $font_family_loaded ][] = 400;
 			}
 		}
 

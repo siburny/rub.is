@@ -17,7 +17,7 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
         $theme_setup->theme_plugins();
     ?>
 
-    <h3><?php echo TD_THEME_NAME?> Theme is the best way to create remarkable content!</h3>
+    <h2><?php echo TD_THEME_NAME?> Theme is the best way to create remarkable content!</h2>
     <p>For more than five years, our primary goal was to make the theme naturally easy to use while giving you the power to create amazing experiences for your visitors. We'll be happy to receive your feedback and suggestions.</p>
 
     <?php include_once TAGDIV_ROOT_DIR . "/includes/tagdiv-panel-docs.php"; ?>

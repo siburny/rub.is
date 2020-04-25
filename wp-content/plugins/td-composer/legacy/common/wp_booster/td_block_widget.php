@@ -128,7 +128,8 @@ class td_block_widget extends WP_Widget {
                            value="<?php echo esc_attr( $instance[$param['param_name']] ) ?>" />
 
                     <div class="td-wpa-info">
-                        <?php echo esc_textarea( $param['description'] ) ?>
+<!--						removed esc_textarea(), it displays html code on some widgets eg. weather -->
+				<?php echo esc_textarea( $param['description'] ) ?>
                     </div>
 
                 </p>

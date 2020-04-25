@@ -69,7 +69,7 @@ class td_module_single_base extends td_module {
     }
 
     //$show_stars_on_review - not used
-    function get_author() {
+    function get_author($show_when_review = false) {
         $buffy = '';
 
         // used to hide the date "." when the post date & comment count are off
@@ -102,7 +102,7 @@ class td_module_single_base extends td_module {
      * @param $thumbType
      * @return string
      */
-    function get_image($thumbType, $css_image = false) {
+    function get_image($thumbType, $css_image = false, $video_popup = array()) {
         global $page;
 
 
@@ -300,7 +300,7 @@ class td_module_single_base extends td_module {
     }
 
 
-    function get_date($show_stars_on_review = true) {
+    function get_date($modified_date = '', $show_stars_on_review = true) {
         $visibility_class = '';
         if (td_util::get_option('tds_p_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -315,9 +315,13 @@ class td_module_single_base extends td_module {
 
         } else {
             if (td_util::get_option('tds_p_show_date') != 'hide') {
-                $td_article_date_unix = get_the_time('U', $this->post->ID);
+//                $td_article_date_unix = get_the_time('U', $this->post->ID);
+
+                // get_post_datetime() used since WP 5.3
+//                $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
+
                 $buffy .= '<span class="td-post-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
             }
         }
@@ -326,8 +330,8 @@ class td_module_single_base extends td_module {
     }
 
 
-    function show_date($modified_date = '') {
-    	echo '<!-- date -->' . $this->get_date( $modified_date );
+    function show_date($modified_date = '', $show_stars_on_review = true) {
+    	echo '<!-- date -->' . $this->get_date( $modified_date, $show_stars_on_review );
     }
 
 
@@ -341,9 +345,13 @@ class td_module_single_base extends td_module {
         $buffy = '';
 
             if (td_util::get_option('tds_p_show_modified_date') == 'yes') {
-                $td_article_date_unix = get_the_time('U', $this->post->ID);
+//                $td_article_date_unix = get_the_time('U', $this->post->ID);
+
+                // get_post_datetime() used since WP 5.3
+                $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
+
                 $buffy .= '<span class="td-post-date td-post-modified-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
             }
         return $buffy;
@@ -643,7 +651,7 @@ class td_module_single_base extends td_module {
     function get_item_scope_meta() {
 
         // don't display meta on pages
-        if (!is_single() || ( td_util::get_option('tds_disable_article_schema') == 'yes' && !$this->is_review )) {
+        if ( is_preview() || !is_single() || ( td_util::get_option('tds_disable_article_schema') == 'yes' && !$this->is_review ) ) {
             return '';
         }
 
@@ -667,14 +675,25 @@ class td_module_single_base extends td_module {
         $buffy .= '<meta itemprop="name" content="' . esc_attr(get_the_author_meta('display_name', $this->post->post_author)) . '">' ;
         $buffy .= '</span>' ;
 
-        // datePublished
-        $td_article_date_unix = get_post_datetime( $this->post, 'date', 'gmt' );
-        $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format( DATE_W3C ) . '">';
-
-        // dateModified - local time
-        $td_article_modified_date_unix = get_post_datetime( $this->post, 'modified', 'gmt' );
-        $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format( DATE_W3C ) . '">';
-
+        global $wp_version;
+        if (version_compare($wp_version, '5.3', '<')) {
+            // datePublished
+            $td_article_date_unix = get_the_time('U', $this->post->ID);
+            $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
+            // dateModified
+            $buffy .= '<meta itemprop="dateModified" content="' . the_modified_date('c', '', '', false) . '">';
+        }else { //get_post_datetime() should be used from WP 5.3
+            // datePublished
+            $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
+            if ($td_article_date_unix !== false) {
+                $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format(DATE_W3C) . '">';
+            }
+            // dateModified - local time
+            $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
+            if ($td_article_modified_date_unix !== false) {
+                $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format(DATE_W3C) . '">';
+            }
+        }
         // mainEntityOfPage
         $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) .'"/>';
 

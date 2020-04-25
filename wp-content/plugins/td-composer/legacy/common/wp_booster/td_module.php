@@ -128,10 +128,10 @@ abstract class td_module {
 		return $buffy;
 	}
 
-    function get_author() {
+    function get_author($show_when_review = false) {
         $buffy = '';
 
-        if ($this->is_review === false or td_util::get_option('tds_m_show_review') == 'hide') {
+        if ($show_when_review or ($this->is_review === false or td_util::get_option('tds_m_show_review') == 'hide')) {
             if (td_util::get_option('tds_m_show_author_name') != 'hide') {
                 $buffy .= '<span class="td-post-author-name">';
                 $buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '">' . get_the_author_meta('display_name', $this->post->post_author) . '</a>' ;
@@ -149,14 +149,14 @@ abstract class td_module {
     }
 
 
-    function get_date($modified_date = '') {
+    function get_date($modified_date = '', $show_when_review = false) {
         $visibility_class = '';
         if (td_util::get_option('tds_m_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
         }
 
         $buffy = '';
-        if ($this->is_review and td_util::get_option('tds_m_show_review') != 'hide') {
+        if (!$show_when_review and ( $this->is_review and td_util::get_option('tds_m_show_review') != 'hide' )) {
             //if review show stars
             $buffy .= '<span class="entry-review-stars">';
                 $buffy .=  td_review::render_stars($this->td_review);
@@ -184,6 +184,18 @@ abstract class td_module {
 
     function show_date($modified_date = '') {
     	echo '<!-- date -->' . $this->get_date( $modified_date );
+    }
+
+    function get_review() {
+        $buffy = '';
+
+        if( $this->is_review and td_util::get_option('tds_m_show_review') != 'hide' ) {
+            $buffy .= '<span class="entry-review-stars">';
+                $buffy .=  td_review::render_stars($this->td_review);
+            $buffy .= '</span>';
+        }
+
+        return $buffy;
     }
 
 
@@ -214,7 +226,7 @@ abstract class td_module {
      * @param $css_image
      * @return string
      */
-    function get_image($thumbType, $css_image = false) {
+    function get_image($thumbType, $css_image = false, $video_popup = array()) {
         $buffy = ''; //the output buffer
         $tds_hide_featured_image_placeholder = td_util::get_option('tds_hide_featured_image_placeholder');
         //retina image
@@ -337,11 +349,30 @@ abstract class td_module {
 
 
             $buffy .= '<div class="td-module-thumb">';
+                $post_type = get_post_format($this->post->ID);
+
                 if ( current_user_can('edit_published_posts') ) {
                     $buffy .= '<a class="td-admin-edit" href="' . get_edit_post_link($this->post->ID) . '">edit</a>';
                 }
 
-                $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap" title="' . $this->title_attribute . '">';
+                $video_popup_class = '';
+                $video_popup_data = '';
+                if ( $post_type == 'video' && !empty($video_popup) && $video_popup['visible'] ) {
+                    $video_url = get_post_meta($this->post->ID, 'td_post_video');
+
+                    if( isset($video_url[0]['td_video']) && $video_url[0]['td_video'] != '' ) {
+                        $video_source = td_video_support::detect_video_service($video_url[0]['td_video']);
+
+                        $video_popup_class = 'td-module-video-modal';
+                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. $video_url[0]['td_video'] . '"';
+
+                        if( $video_popup['ad']['code'] != '' ) {
+                            $video_popup_data .= 'data-video-rec="' . base64_encode( json_encode($video_popup['ad']) ) . '"';
+                        }
+                    }
+                }
+
+                $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap ' . $video_popup_class . '" title="' . $this->title_attribute . '" ' . $video_popup_data . '>';
 
                     $tds_animation_stack = td_util::get_option('tds_animation_stack');
 
@@ -420,8 +451,6 @@ abstract class td_module {
 
 
                     // on video or audio type posts add the specific icon
-                    $post_type = get_post_format($this->post->ID);
-
                     if ($post_type == 'video' || $post_type == 'audio') {
 
                         $use_small_post_format_icon_size = false;
@@ -593,6 +622,36 @@ abstract class td_module {
     }
 
 
+    /**
+     * This method is used by modules to get the featured video duration
+     * @return string
+     */
+    function get_video_duration() {
+
+        $buffy = '';
+
+        if( get_post_format( $this->post->ID ) == 'video' ) {
+            $video_url = get_post_meta($this->post->ID, 'td_post_video');
+
+            if( isset($video_url[0]['td_video']) && $video_url[0]['td_video'] != '' ) {
+                if ( metadata_exists('post', $this->post->ID, 'td_post_video_duration') ) {
+                    $video_duration = get_post_meta( $this->post->ID, 'td_post_video_duration', true );
+                } else {
+                    $video_duration = td_video_support::get_video_duration($video_url[0]['td_video']);
+                    update_post_meta( $this->post->ID, 'td_post_video_duration', $video_duration );
+                }
+
+                if( $video_duration != '' ) {
+                    $buffy .= '<div class="td-post-vid-time">' . $video_duration . '</div>';
+                }
+            }
+        }
+
+        return $buffy;
+
+    }
+
+
 
     function get_category() {
 
@@ -644,42 +703,77 @@ abstract class td_module {
 	    } else {
 
 		    // custom post type
+            $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+            // get primary taxonomy term if is set
+            if (!empty($td_post_theme_settings['td_primary_cat'])) {
+                //we have a custom category selected
+                $selected_tax_id = $td_post_theme_settings['td_primary_cat'];
+                $selected_category_obj = get_term($selected_tax_id);
+                $selected_category_obj_id = $selected_category_obj->term_id;
+                $selected_category_obj_name = $selected_category_obj->name;
+            } else {
 
-		    // Validate that the current queried term is a term
-		    global $wp_query;
-		    $current_queried_term = $wp_query->get_queried_object();
+                // Validate that the current queried term is a term
+                global $wp_query;
+                $current_queried_term = $wp_query->get_queried_object();
 
-		    if ( $current_queried_term instanceof WP_Term ) {
-			    $current_term = term_exists( $current_queried_term->name, $current_queried_term->taxonomy );
+                if ($current_queried_term instanceof WP_Term) {
+                    $current_term = term_exists($current_queried_term->name, $current_queried_term->taxonomy);
 
-			    if ($current_term !== 0 && $current_term !== null) {
-				    $selected_category_obj = $current_queried_term;
-			    }
-		    }
+                    if ($current_term !== 0 && $current_term !== null) {
+                        $selected_category_obj = $current_queried_term;
+                    }
+                } else { //get one auto
 
+                    $td_taxonomy_terms = array();
+                    $post_type = get_post_type($this->post);
+                    $td_taxonomies = get_object_taxonomies($post_type);
 
-		    // Get and validate the custom taxonomy according to the validated queried term
-		    if (!empty($selected_category_obj)) {
+                    foreach ( $td_taxonomies as $td_taxonomy ) {
+                        if ( ! is_taxonomy_hierarchical( $td_taxonomy ) ) {
+                            continue;
+                        }
 
-			    $taxonomy_objects = get_object_taxonomies($this->post, 'objects');
-			    $custom_taxonomy_object = '';
+                        $terms = get_the_terms($this->post, $td_taxonomy);
 
-			    foreach ($taxonomy_objects as $taxonomy_object) {
+                        // needs to be an array
+                        if( is_array($terms) ) {
 
-				    if ($taxonomy_object->_builtin !== 1 && $taxonomy_object->name === $selected_category_obj->taxonomy) {
-					    $custom_taxonomy_object = $taxonomy_object;
-					    break;
-				    }
-			    }
+                            foreach ($terms as $term) {
+                                $td_taxonomy_terms[] = $term;
+                            }
+                        }
+                    }
 
-			    // Invalid taxonomy
-			    if (empty($custom_taxonomy_object)) {
-				    return $buffy;
-			    }
+                    if(current($td_taxonomy_terms) !== false) {
+                        $selected_category_obj = current($td_taxonomy_terms);
+                    }
 
-			    $selected_category_obj_id = $selected_category_obj->term_id;
-			    $selected_category_obj_name = $selected_category_obj->name;
-		    }
+                }
+
+                // Get and validate the custom taxonomy according to the validated queried term
+                if (!empty($selected_category_obj)) {
+
+                    $taxonomy_objects = get_object_taxonomies($this->post, 'objects');
+                    $custom_taxonomy_object = '';
+
+                    foreach ($taxonomy_objects as $taxonomy_object) {
+
+                        if ($taxonomy_object->_builtin !== 1 && $taxonomy_object->name === $selected_category_obj->taxonomy) {
+                            $custom_taxonomy_object = $taxonomy_object;
+                            break;
+                        }
+                    }
+
+                    // Invalid taxonomy
+                    if (empty($custom_taxonomy_object)) {
+                        return $buffy;
+                    }
+
+                    $selected_category_obj_id = $selected_category_obj->term_id;
+                    $selected_category_obj_name = $selected_category_obj->name;
+                }
+            }
 	    }
 
 	    if (!empty($selected_category_obj_id) && !empty($selected_category_obj_name)) { //!!!! catch error here

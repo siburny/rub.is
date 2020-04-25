@@ -4,7 +4,7 @@
 
 get_header();
 
-td_global::$current_template = 'page-overlay';
+td_global::set_current_template('page-overlay' );
 //set the template id, used to get the template specific settings
 $template_id = 'page';
 

@@ -443,6 +443,10 @@ class tdc_util {
 			}
 		}
 
+		if ( td_util::is_template_footer() && ! td_util::is_no_footer() ) {
+			$content .= td_util::get_footer_template_content();
+		}
+
 		$content .= get_post( $post_id )->post_content;
 
 		return self::get_content_icon_fonts_ids( $content );
@@ -528,30 +532,6 @@ class tdc_util {
 
 
 
-	/**
-	 * Get the ids of fonts required in post content
-	 *
-	 * @param string $post_id
-	 *
-	 * @return array
-	 */
-	static function get_required_google_fonts_ids( $post_id = '' ) {
-
-		$content = '';
-
-		if ( td_util::is_template_header() && ! td_util::is_no_header() ) {
-			$header_template_content = td_util::get_header_template_content();
-			foreach ( $header_template_content as $header_template ) {
-				$content .= $header_template;
-			}
-		}
-
-		$content .= get_post( $post_id )->post_content;
-
-		return self::get_content_google_fonts_ids( $content );
-	}
-
-
 
 	static function get_content_google_fonts_ids( $content ) {
 
@@ -593,6 +573,9 @@ class tdc_util {
 
 		return array_unique( $font_list );
 	}
+
+
+
 
 
     /**

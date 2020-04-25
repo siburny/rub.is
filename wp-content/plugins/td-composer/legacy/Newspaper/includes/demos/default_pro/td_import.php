@@ -1237,12 +1237,6 @@ $post_eminem_stronger_than_i_was_id = td_demo_content::add_post(array(
 /*  ---------------------------------------------------------------------------- 
 	PAGES
 */
-$page_footer_id = td_demo_content::add_page(array(
-	'title' => 'Footer',
-	'file' => 'footer.txt',
-	'template' => 'default',
-));
-
 $page_home_id = td_demo_content::add_page(array(
 	'title' => 'Home',
 	'file' => 'home.txt',
@@ -1346,89 +1340,90 @@ $menu_item_0_id = td_demo_menus::add_link(array(
 	CLOUD TEMPLATES
 */
 $template_author_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Author Template 1',
+	'title' => 'Author Template - Default PRO',
 	'file' => 'author_cloud_template.txt',
 	'template_type' => 'author',
 ));
-
 td_demo_misc::update_global_author_template( 'tdb_template_' . $template_author_template_1_id);
 
 
 $template_date_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Date Template 1',
+	'title' => 'Date Template - Default PRO',
 	'file' => 'date_cloud_template.txt',
 	'template_type' => 'date',
 ));
-
 td_demo_misc::update_global_date_template( 'tdb_template_' . $template_date_template_1_id);
 
 
 $template_attachment_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Attachment Template 1',
+	'title' => 'Attachment Template - Default PRO',
 	'file' => 'attachment_cloud_template.txt',
 	'template_type' => 'attachment',
 ));
+td_demo_misc::update_global_attachment_template( 'tdb_template_' . $template_attachment_template_1_id);
 
 $template_tag_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Tag Template 1',
+	'title' => 'Tag Template - Default PRO',
 	'file' => 'tag_cloud_template.txt',
 	'template_type' => 'tag',
 ));
-
 td_demo_misc::update_global_tag_template( 'tdb_template_' . $template_tag_template_1_id);
 
 
 $template_search_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Search Template 1',
+	'title' => 'Search Template - Default PRO',
 	'file' => 'search_cloud_template.txt',
 	'template_type' => 'search',
 ));
-
 td_demo_misc::update_global_search_template( 'tdb_template_' . $template_search_template_1_id);
 
 
 $template_404_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => '404 Template 1',
+	'title' => '404 Template - Default PRO',
 	'file' => '404_cloud_template.txt',
 	'template_type' => '404',
 ));
-
 td_demo_misc::update_global_404_template( 'tdb_template_' . $template_404_template_1_id);
 
 
 $template_category_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Category Template 1',
+	'title' => 'Category Template - Default PRO',
 	'file' => 'cat_cloud_template.txt',
 	'template_type' => 'category',
 ));
-
 td_demo_misc::update_global_category_template( 'tdb_template_' . $template_category_template_1_id);
 
 
 $template_single_post_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Single Post Template 1',
+	'title' => 'Single Post Template - Default PRO',
 	'file' => 'post_cloud_template.txt',
 	'template_type' => 'single',
 ));
-
 td_util::update_option('td_default_site_post_template', 'tdb_template_' . $template_single_post_template_1_id);
 
 
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Template - Default PRO',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
+
+
 $template_header_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Header Template 1',
+	'title' => 'Header Template - Default PRO',
 	'file' => 'header_cloud_template.txt',
 	'template_type' => 'header',
 ));
-
 td_demo_misc::update_global_header_template( 'tdb_template_' . $template_header_template_1_id);
+//update mobile menu id in cloud header template
+update_post_meta( $template_header_template_1_id, 'header_mobile_menu_id', $menu_td_demo_header_menu_id );
 
 
 
 /*  ---------------------------------------------------------------------------- 
 	GENERAL SETTINGS
 */
-td_util::update_option('tds_footer_page', $page_footer_id);
-
 td_demo_misc::update_background('', false);
 
 td_demo_misc::update_background_mobile('tdx_pic_6');

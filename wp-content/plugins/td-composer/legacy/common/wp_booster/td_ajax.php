@@ -71,6 +71,12 @@ class td_ajax {
 					}
 					break;
 
+				case 'td_taxonomy_ids_filter': // by taxonomy
+					if (!empty($ajax_parameters['td_filter_value'])) {
+						$ajax_parameters['td_atts']['category_ids'] = $ajax_parameters['td_filter_value'];
+						unset($ajax_parameters['td_atts']['category_id']);
+					}
+					break;
 
 				case 'td_author_ids_filter': // by author
 					if (!empty($ajax_parameters['td_filter_value'])) {
@@ -219,7 +225,7 @@ class td_ajax {
 				if ($td_module_api['uses_columns'] === false) {
 					$td_template_layout->disable_output();
 				}
-				
+
 				global $wp_query;
 				$wp_query = $td_query;
 
@@ -269,7 +275,7 @@ class td_ajax {
 				}
 				$buffy .= $td_template_layout->close_all_tags();
 			}
-			
+
 		} else {
 			// no posts
 
@@ -296,8 +302,12 @@ class td_ajax {
 		    $td_module = esc_html($_POST['module']);
 		    $td_results_class_prefix = 'tdb';
         } else {
-            $td_module = 'td_module_mx2';
-            $td_results_class_prefix = 'td';
+		    if ( 'Newspaper' === TD_THEME_NAME && !defined('TD_STANDARD_PACK') ) {
+                $td_module = 'td_module_flex_1';
+            } else {
+                $td_module = 'td_module_mx2';
+                $td_results_class_prefix = 'td';
+            }
         }
 
         if (!empty($_POST['atts'])) {
@@ -317,9 +327,9 @@ class td_ajax {
 		//build the results
 		if (!empty($td_query->posts)) {
 			foreach ($td_query->posts as $post) {
-			    if( $td_module == 'td_module_mx2' ) {
-                    $td_module_mx2 = new $td_module($post);
-                    $buffy .= $td_module_mx2->render($post);
+			    if( $td_module == 'td_module_mx2' || $td_module == 'td_module_flex_1' ) {
+                    $td_module_search = new $td_module($post);
+                    $buffy .= $td_module_search->render($post);
                 } else {
 			        $tdb_post = array(
                         'post_id' => $post->ID,
@@ -341,8 +351,8 @@ class td_ajax {
                         'post_theme_settings' => td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' ),
                     );
 
-                    $td_module_mx2 = new $td_module($tdb_post, $block_atts);
-                    $buffy .= $td_module_mx2->render($tdb_post);
+                    $td_module_search = new $td_module($tdb_post, $block_atts);
+                    $buffy .= $td_module_search->render($tdb_post);
                 }
 			}
 		}
@@ -1177,6 +1187,85 @@ class td_ajax {
 		die( json_encode( $parameters ) );
 	}
 
+
+	static function on_ajax_change_theme_version() {
+
+    	$version = $_POST['version'];
+	    $url = $_POST['url'];
+
+	    $reply = array();
+
+	    if ( ! isset( $version ) || ! isset( $url ) ) {
+		    $reply[ 'errors' ][] = 'Invalid data';
+
+	    } else {
+
+	    	set_transient( 'td_update_theme_to_version_' . TD_THEME_NAME, 1, 10 );
+
+	    	$version = str_replace( [ TD_THEME_NAME, '-', ' '], '', $version);
+
+		    tagdiv_util::update_option( 'theme_update_to_version', json_encode( array( $version => $url ) ) );
+
+		    add_filter( 'pre_set_site_transient_update_themes', function( $transient ) {
+
+		    	$theme_slug = get_option('stylesheet');
+                $to_version = tagdiv_util::get_option( 'theme_update_to_version' );
+
+                if ( ! empty( $to_version )) {
+                    $args = array();
+                    $to_version = json_decode( $to_version, true );
+                    $to_version_keys = array_keys( $to_version );
+                    if ( is_array( $to_version_keys ) && count( $to_version_keys ) ) {
+                        $to_version_serial = $to_version_keys[ 0 ];
+                        $to_version_url = $to_version[$to_version_serial];
+
+                        $transient->response[ $theme_slug ] = array(
+                            'theme'       => $theme_slug,
+                            'new_version' => $to_version_serial,
+                            'url' => "https://tagdiv.com/" . TD_THEME_NAME,
+                            'clear_destination' => true,
+                            'package'     => add_query_arg( $args, $to_version_url ),
+                        );
+                    }
+                }
+
+                return $transient;
+            });
+		    delete_site_transient( 'update_themes' );
+	    }
+
+	    die( json_encode( $reply ) );
+    }
+
+
+
+    static function on_ajax_check_theme_version() {
+
+    	$reply = array();
+
+	    $response = tagdiv_check_theme_version();
+
+	    if ( false !== $response ) {
+	    	$reply['versions'] = $response;
+	    }
+
+	    die( json_encode( $reply ) );
+    }
+
+    static function on_ajax_video_modal() {
+
+        $buffy_array = array();
+
+        $video_url = $_POST['td_video_url'];
+
+        if( $video_url != '' ) {
+            $buffy_array['video_service'] = td_video_support::detect_video_service($video_url);
+            $buffy_array['video_embed'] = td_video_support::render_video($video_url, 'yes', 'yes');
+        }
+
+        die( json_encode( $buffy_array ) );
+
+    }
 
 }
 

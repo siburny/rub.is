@@ -26,6 +26,18 @@ class td_module_flex_5 extends td_module {
         $modified_date = $this->get_shortcode_att('show_modified_date');
         $hide_audio = $this->get_shortcode_att('hide_audio');
 
+        $video_popup = $this->get_shortcode_att('video_popup');
+        $video_ad_code = rawurldecode( base64_decode( strip_tags(  $this->get_shortcode_att('video_rec') ) ) );
+        $video_ad_title = $this->get_shortcode_att('video_rec_title');
+
+        $video_popup_params = array(
+            'visible' => $video_popup != '' ? true : false,
+            'ad' => array(
+                'code' => $video_ad_code,
+                'title' => $video_ad_title
+            )
+        );
+
         if (empty($image_size)) {
             $image_size = 'td_696x0';
         }
@@ -39,8 +51,9 @@ class td_module_flex_5 extends td_module {
 
             $meta_info .= '<span class="td-author-date">';
                 if( $author_photo != '' ) { $meta_info .= $this->get_author_photo(); }
-                $meta_info .= $this->get_author();
-                $meta_info .= $this->get_date($modified_date);
+                $meta_info .= $this->get_author(true);
+                $meta_info .= $this->get_date($modified_date, true);
+                $meta_info .= $this->get_review(); 
                 $meta_info .= $this->get_comments();
             $meta_info .= '</span>';
         $meta_info .= '</div>';
@@ -112,7 +125,9 @@ class td_module_flex_5 extends td_module {
                                     echo $this->get_category();
                                 }
 
-                                echo $this->get_image($image_size, true)
+                                echo $this->get_image($image_size, true, $video_popup_params);
+
+                                echo $this->get_video_duration();
                             ?>
                         </div>
                 <?php } ?>

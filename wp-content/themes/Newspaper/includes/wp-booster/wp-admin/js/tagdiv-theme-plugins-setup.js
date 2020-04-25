@@ -137,7 +137,7 @@ var ThemePluginsSetup = (function($){
 
         return {
             init: function(btn){
-                var pluginsWrap = $('.td-admin-plugins'),
+                var pluginsWrap = $('.td-admin-setup-plugins'),
                     pluginsInstalledImg = pluginsWrap.find('.theme-plugins-installed img');
 
                 pluginsWrap.addClass('td-installing-plugins');
@@ -267,7 +267,7 @@ jQuery(window).load(function () {
 
                 if ( 'success' === textStatus && 'undefined' !== typeof data.content ) {
 
-                    YoastSEO.app.registerModification( 'content', function() { return data.content }, 'tdYoastSEOPlugin', 5 );
+                    YoastSEO.app.registerModification( 'content', function() { return data.content; }, 'tdYoastSEOPlugin', 5 );
 
                     // wp.data.dispatch( 'core/notices' ).createNotice( 'info', 'Yoast SEO Analysis has been updated!', { id: 'td_yoast_info'} );
                     //
@@ -278,10 +278,53 @@ jQuery(window).load(function () {
             });
         };
 
-       // tdYoastSEOUpdateContent();
+        // Commented function call! There're some issues with wp 3.5 (yoast couldn't get the subheading, outbound/inbound links, etc)
+        //tdYoastSEOUpdateContent();
 
 
 
         YoastSEO.app.pluginReady( 'tdYoastSEOPlugin' );
     }
+
+
+    var $body = jQuery('body');
+
+    $body.on( 'mousedown', '.theme.active .update-message, .td-welcome-update-theme, #update-theme', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if ( 'undefined' !== typeof window.tdData ) {
+            tdConfirm.modal({
+                caption: 'Update / Downgrade Theme & Plugins',
+                htmlInfoContent: 'The theme version will change to ' + Object.keys(window.tdData.version)[0] + '. The activated plugins should be automatically updated and reactivated!',
+                hideNoButton: true,
+                callbackYes: function () {
+
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: td_ajax_url,
+                        data: {
+                            action: 'td_ajax_change_theme_version',
+                            version: Object.keys(window.tdData.version)[0],
+                            url: Object.values(window.tdData.version)[0],
+                        },
+                        success: function (data, textStatus, XMLHttpRequest) {
+                            console.log('success');
+                            console.log(textStatus);
+                            console.log(data);
+
+                            window.location.replace( window.tdData.adminUrl + 'update-core.php?action=do-theme-upgrade&update_theme=' + window.tdData.themeName );
+                        },
+                        error: function (MLHttpRequest, textStatus, errorThrown) {
+                            //console.log(errorThrown);
+                        }
+                    });
+                    tb_remove();
+                },
+            });
+        }
+
+        return false;
+
+    });
 });

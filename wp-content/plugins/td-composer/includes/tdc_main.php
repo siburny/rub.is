@@ -621,6 +621,39 @@ function tdc_on_admin_head() {
     }
 
 
+    $tdb_footer_templates = array();
+
+    // read the tdb footer templates
+    $wp_query_templates = new WP_Query( array(
+            'post_type' => 'tdb_templates',
+            'posts_per_page' => -1,
+            'meta_key' => 'tdb_template_type',
+            'meta_value' => 'footer'
+        )
+    );
+
+    if ( !empty( $wp_query_templates->posts ) ) {
+
+        foreach ( $wp_query_templates->posts as $post ) {
+
+            $tdb_footer_templates[] = array(
+                'text' => $post->post_title,
+                'val' => 'tdb_template_' . $post->ID
+            );
+        }
+    }
+
+
+    $global_footer_template_id = td_api_footer_template::get_footer_template_id();
+    $global_footer_template_content = '';
+
+    if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+        $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+        $global_footer_template_content = get_post_field('post_content', $global_footer_template_id );
+    }
+
+
+
 	$tdc_admin_settings = array(
 		'adminUrl' => admin_url(),
         'ABSPATH' => ABSPATH,
@@ -654,6 +687,10 @@ function tdc_on_admin_head() {
         'tdbHeaderTemplates' => $tdb_header_templates,
         'headerTemplateId' => $global_header_template_id,
         'headerTemplateContent' => $global_header_template_content,
+
+        'tdbFooterTemplates' => $tdb_footer_templates,
+        'footerTemplateId' => $global_footer_template_id,
+        'footerTemplateContent' => $global_footer_template_content,
 
         'listStyles' => td_config::get_list_style_params()
 	);
@@ -811,7 +848,13 @@ if (!empty($td_action)) {
 		case 'tdc':
 			// Wrapper edit page
 			$current_post = get_post($post_id);
-			do_action_ref_array( 'the_post', array( &$current_post ) );
+
+			if ( null === $current_post ) {
+			    // The page or the tdb_template does not exist! Maybe it was deleted.
+			    return;
+            }
+
+            do_action_ref_array( 'the_post', array( &$current_post ) );
 
 			tdc_state::set_post($current_post);
 
@@ -896,7 +939,7 @@ if (!empty($td_action)) {
 					}
 
 					if ( isset( $font_settings['theme_font'] ) ) {
-						wp_enqueue_style( $font_id, get_stylesheet_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );
+						wp_enqueue_style( $font_id, get_template_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );
 						continue;
 					}
 
@@ -1261,7 +1304,7 @@ if (!empty($td_action)) {
 			}
 
 			break;
-		
+
 		default:
 			// Unknown td_action - kill execution
             echo 'Unknown td_action received: ' . $td_action;

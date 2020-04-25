@@ -218,7 +218,7 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
 	                            $plugins_list_html .= '<ul>';
 
 	                            foreach ( $demo_required_plugins_array as $demo_req_plugin ) {
-		                            $plugins_list_html .= '<li><span>' . $demo_req_plugin . '</span></li>';
+		                            $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $demo_req_plugin . '</a></span></li>';
 	                            }
 
 	                            $plugins_list_html .= '</ul>';
@@ -287,9 +287,9 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
                         $plugins_list_html .= '<ul>';
 
                         foreach ( $td_demo_with_plugins_list[$demo_id] as $plugin_name ) {
-                            $plugins_list_html .= '<li><span>' . $plugin_name . '</span></li>';
+                            $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $plugin_name . '</a></span></li>';
                         }
-                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . ' td-tooltip" data-demo-id="'. $demo_id . '" href="#" title="' . $plugins_list_html . '" data-position="right" data-content-as-html="true">' . $td_name . '</a></li>';
+                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . ' td-tooltip" data-demo-id="'. $demo_id . '" href="#" title="' . esc_attr($plugins_list_html) . '" data-position="right" data-content-as-html="true">' . $td_name . '</a></li>';
                     } else {
                         echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . '" data-demo-id="'. $demo_id . '" href="#">' . $td_name . '</a></li>';
                     }

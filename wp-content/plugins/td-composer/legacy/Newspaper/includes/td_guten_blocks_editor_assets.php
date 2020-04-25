@@ -15,12 +15,13 @@
 function td_guten_blocks_assets() {
 
 	// Enqueue block styles for both frontend + backend.
-	wp_enqueue_style(
-		'td-guten-blocks-style-css',
-		TDC_URL_LEGACY . '/assets/css/td_guten_blocks_styles.css', // Block style CSS.
-		array( 'wp-editor' ), // Dependency to include the CSS after it.
-		TD_COMPOSER
-	);
+	// Not used
+//	wp_enqueue_style(
+//		'td-guten-blocks-style-css',
+//		TDC_URL_LEGACY . '/assets/css/td_guten_blocks_styles.css', // Block style CSS.
+//		array( 'wp-editor' ), // Dependency to include the CSS after it.
+//		TD_COMPOSER
+//	);
 
 	// Enqueue block editor styles for backend.
 	if ( TDC_DEPLOY_MODE == 'dev' ) {

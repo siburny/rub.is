@@ -213,7 +213,7 @@
 
 
 
-<?php if ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+<?php if ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK')  ) { ?>
 
     <!-- Force full width -->
     <?php echo td_panel_generator::box_start('Force full width', false); ?>

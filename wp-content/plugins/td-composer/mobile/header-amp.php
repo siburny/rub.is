@@ -194,7 +194,7 @@
                                 {{/td_query_posts}}
                             </div>
                             <div class="result-msg">
-                                <a href="{{td_query_all_results}}" rel="nofollow">View all results</a>
+                                <a href="{{td_query_all_results}}" data-amp-replace="?amp" data-amp-addparams="&amp" rel="nofollow">View all results</a>
                             </div>
                         </div>
                     </template>

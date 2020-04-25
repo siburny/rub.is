@@ -125,7 +125,7 @@
                 </div>
                 <?php
 
-                if ( empty( $tdc_header_template_content['tdc_header_mobile_sticky'] ) ) {
+                if ( empty( $tdc_header_template_content['tdc_header_mobile_sticky'] ) || ( ! td_util::tdc_is_live_editor_iframe() && isset( $tdc_header_template_content['tdc_is_mobile_header_sticky'] ) && false === $tdc_header_template_content['tdc_is_mobile_header_sticky'] )) {
                     $shortcode = '[tdc_zone type="tdc_header_mobile_sticky"][vc_row][vc_column][/vc_column][/vc_row][/tdc_zone]';
                 } else {
                     $shortcode = $tdc_header_template_content['tdc_header_mobile_sticky'];
@@ -153,7 +153,7 @@
                 </div>
                 <?php
 
-                if ( empty( $tdc_header_template_content['tdc_header_desktop_sticky'] ) ) {
+                if ( empty( $tdc_header_template_content['tdc_header_desktop_sticky'] ) || ( ! td_util::tdc_is_live_editor_iframe() && isset( $tdc_header_template_content['tdc_is_header_sticky'] ) && false === $tdc_header_template_content['tdc_is_header_sticky'] ) ) {
                     $shortcode = '[tdc_zone type="tdc_header_desktop_sticky"][vc_row][vc_column][/vc_column][/vc_row][/tdc_zone]';
                 } else {
                     $shortcode = $tdc_header_template_content['tdc_header_desktop_sticky'];
@@ -167,5 +167,7 @@
             <?php
 
         }
+
+    do_action('td_wp_booster_after_header'); //used by unique articles
 
         ?>

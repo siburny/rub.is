@@ -567,15 +567,39 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
     }
 
     // Clear the Video playlists cache - only if the reset button is used
-    if(!empty($_REQUEST['clear_video_cache']) && $_REQUEST['clear_video_cache'] == 1) {
-        foreach (td_system_status::get_video_playlists_meta('video_playlists_posts_ids') as $post_ID) {
-            update_post_meta($post_ID, 'td_playlist_video', '');
-        }
-        ?>
-        <!-- redirect page -->
-        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-video-cache-table';?>");</script>
+    if(!empty($_REQUEST['clear_video_cache']) ) {
+        if( $_REQUEST['clear_video_cache'] == 1 ) {
+            foreach (td_system_status::get_video_playlists_meta('video_playlists_posts_ids') as $post_ID) {
+                update_post_meta($post_ID, 'td_playlist_video', '');
+            }
+            ?>
+            <!-- redirect page -->
+            <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-video-cache-table';?>");</script>
 
-    <?php
+        <?php
+        } else if ( $_REQUEST['clear_video_cache'] == 2 ) {
+            update_option('td_playlist_video_video_ids', '');
+            update_option('td_playlist_video_channel_id', '');
+            update_option('td_playlist_video_username', '');
+            update_option('td_playlist_video_playlist_id', '');
+
+            update_option('td_playlist_videos_pool', '');
+            ?>
+
+            <!-- redirect page -->
+            <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-video-cache-table-2';?>");</script>
+        <?php
+        }
+    }
+
+    // Clear the covid19 data cache - only if the reset button is used
+    if(!empty($_REQUEST['clear_covid19_cache']) && $_REQUEST['clear_covid19_cache'] == 1) {
+        update_option('td_covid19_data', '');
+        ?>
+
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-covid19-cache-table';?>");</script>
+        <?php
     }
 
     // Clear td_log data - only if the reset button is used
@@ -628,8 +652,14 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
         $td_remote_cache_content = get_option(TD_THEME_OPTIONS_NAME . '_remote_cache');
         td_system_status::render_td_remote_cache($td_remote_cache_content);
 
+        //td video playlist data new
+        td_system_status::render_td_video_playlists_new();
+
         //td video playlist data
         td_system_status::render_td_video_playlists();
+
+        //covid19 statistical data
+        td_system_status::render_td_covid19_cached_data();
 
         // td log panel
         $td_log_content = get_option(TD_THEME_OPTIONS_NAME . '_log');
@@ -1020,6 +1050,154 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 <?php
        }
 
+        static function render_td_video_playlists_new() {
+
+            $td_playlist_videos = td_system_status::get_video_playlists_meta_new();
+            $td_videos_pool = get_option('td_playlist_videos_pool');
+            if( !is_array( $td_videos_pool ) ) {
+               $td_videos_pool = array();
+            }
+
+            if ( !empty( $td_playlist_videos ) && !empty($td_videos_pool) ) { ?>
+                <table id="td-video-cache-table-2" class="widefat td-system-status-table td-video-table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="border-right: 1px solid #dadada;">Video playlist cached youtube and vimeo ids</th>
+                            <th colspan="3">Video playlist cache reset:<a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_video_cache=2">Clear the Video playlist cache</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="td-system-status-inner-table-wrap">
+                                <?php foreach ( $td_playlist_videos as $video_service => $video_service_data ) { ?>
+                                    <table class="td-system-status-inner-table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="5" style="border-bottom:0;padding-bottom:0">
+                                                    <?php if ( $video_service == 'youtube_ids' ) {
+                                                        printf ('%1$s', 'YOUTUBE');
+                                                    } else if ( $video_service == 'vimeo_ids' ) {
+                                                        printf ('%1$s', 'VIMEO');
+                                                    } ?>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="1">Source type</th>
+                                                <th colspan="4" class="td-system-status-inner-table-wrap">
+                                                    <table class="td-system-status-inner-table">
+                                                        <tr>
+                                                            <th class="td-system-status-inner-table-name">Source name</th>
+                                                            <th class="td-system-status-inner-table-video">Video</th>
+                                                            <th class="td-system-status-inner-table-time">Timestamp</th>
+                                                        </tr>
+                                                    </table>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            foreach ( $video_service_data as $source => $source_data ) { ?>
+                                                <tr>
+                                                    <td colspan="1" style="width:20%"><?php
+                                                        switch( $source ) {
+                                                            case 'video_ids':
+                                                                printf ('%1$s', 'Video IDs');
+                                                                break;
+                                                            case 'channel_id':
+                                                                printf ('%1$s', 'Channels (by channel id)');
+                                                                break;
+                                                            case 'username':
+                                                                printf ('%1$s', 'Channels (by username)');
+                                                                break;
+                                                            case 'playlist_id':
+                                                                printf ('%1$s', 'Playlists (by id)');
+                                                                break;
+                                                            default:
+                                                                break;
+                                                        }
+                                                        ?></td>
+                                                    <?php
+                                                    switch( $source ) {
+                                                        case 'video_ids': ?>
+                                                            <td colspan="4" class="td-system-status-inner-table-wrap" style="width:80%">
+                                                                <table class="td-system-status-inner-table">
+                                                                    <tr>
+                                                                        <td class="td-system-status-inner-table-name"></td>
+                                                                        <td class="td-system-status-inner-table-video">
+                                                                            <?php
+                                                                            foreach ( $source_data['items'] as $key => $video_id ) {
+                                                                                if ( isset($td_videos_pool[$video_service][$video_id]) ) { ?>
+                                                                                    <div class="td-remote-value-data-container">
+                                                                                        <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?></a></div>
+                                                                                        <div class="td-array-viewer"><pre>
+                                                                                            <?php print_r( $td_videos_pool[$video_service][$video_id] ) ?>
+                                                                                        </pre></div>
+                                                                                    </div>
+                                                                                <?php }
+                                                                            } ?>
+                                                                        </td>
+                                                                        <td class="td-system-status-inner-table-time"></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+
+                                                            <?php
+                                                            break;
+
+                                                            break;
+                                                        case 'channel_id':
+                                                        case 'username':
+                                                        case 'playlist_id': ?>
+                                                            <td colspan="4" class="td-system-status-inner-table-wrap" style="width:80%">
+                                                                <?php
+                                                                foreach ( $source_data as $name => $name_data ) { ?>
+                                                                    <table class="td-system-status-inner-table">
+                                                                        <tr>
+                                                                            <td class="td-system-status-inner-table-name">
+                                                                                <?php printf('%1$s', $name) ?>
+                                                                            </td>
+                                                                            <td class="td-system-status-inner-table-video">
+                                                                                <?php
+                                                                                foreach( $name_data['items'] as $video_id ) { ?>
+                                                                                    <div class="td-remote-value-data-container">
+                                                                                        <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?></a></div>
+                                                                                        <div class="td-array-viewer"><pre>
+                                                                                <?php print_r( $td_videos_pool[$video_service][$video_id] ) ?>
+                                                                            </pre></div>
+                                                                                    </div>
+                                                                                <?php } ?>
+                                                                            </td>
+                                                                            <td class="td-system-status-inner-table-time">
+                                                                                <?php printf('%1$s', date('H:i:s', time() - $name_data['timestamp']) . ' ago') ?>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                <?php } ?>
+                                                            </td>
+                                                            <?php
+                                                            break;
+
+                                                        default:
+                                                            break;
+                                                    } ?>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <?php } else { ?>
+                <!-- video playlists no data -->
+                <table id="td-video-cache-table-2" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                    <?php echo '<tr><td>There is no cached data for youtube and/or vimeo video playlists!</td></tr>'; ?>
+                </table>
+            <?php
+            }
+        }
+
        static function render_td_video_playlists () {
 
            $td_playlist_videos = td_system_status::get_video_playlists_meta();
@@ -1091,16 +1269,41 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                    <?php } ?>
                    </tbody>
                     </table>
-           <?php } else { ?>
-
-                   <!-- video playlists no data -->
-                   <table id="td-video-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
-                       <?php echo '<tr><td>There is no cached data for youtube and/or vimeo video playlists!</td></tr>'; ?>
-                   </table>
-
-               <?php } ?>
+           <?php } ?>
 
            <?php
+       }
+
+       static function render_td_covid19_cached_data() {
+
+           $td_covid19_data = get_option('td_covid19_data');
+           if( !is_array( $td_covid19_data ) ) {
+               $td_covid19_data = array();
+           }
+
+           if( !empty( $td_covid19_data ) ) { ?>
+               <table id="td-covid19-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                   <thead>
+                       <tr>
+                           <th colspan="2" style="border-right: 1px solid #dadada;">Covid-19 statistical data cache</th>
+                           <th colspan="3">Cache reset:<a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_covid19_cache=1">Clear the cached data</a></th>
+                       </tr>
+                   </thead>
+
+                   <tbody>
+                        <tr>
+                            <td colspan="2">Data from</td>
+                            <td colspan="3"><?php echo $td_covid19_data['date'] ?></td>
+                        </tr>
+                   </tbody>
+               </table>
+           <?php } else { ?>
+               <!-- video playlists no data -->
+               <table id="td-covid19-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                   <?php echo '<tr><td>There is no cached statistical data for Covid-19!</td></tr>'; ?>
+               </table>
+           <?php }
+
        }
 
        /**
@@ -1137,6 +1340,42 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
            } else {
                return array();
            }
+       }
+
+
+       static function get_video_playlists_meta_new () {
+            $posts_video_playlist_meta_array = array();
+
+            $playlists_sources_video_ids = get_option('td_playlist_video_video_ids');
+            if( is_array($playlists_sources_video_ids) ) {
+                foreach ( $playlists_sources_video_ids as $video_service => $video_service_data ) {
+                    $posts_video_playlist_meta_array[$video_service]['video_ids'] = $video_service_data;
+                }
+            }
+
+            $playlists_sources_channel_id = get_option('td_playlist_video_channel_id');
+            if( is_array($playlists_sources_channel_id) ) {
+                foreach ( $playlists_sources_channel_id as $video_service => $video_service_data ) {
+                    $posts_video_playlist_meta_array[$video_service]['channel_id'] = $video_service_data;
+                }
+            }
+
+            $playlists_sources_username = get_option('td_playlist_video_username');
+            if( is_array($playlists_sources_username) ) {
+                foreach ( $playlists_sources_username as $video_service => $video_service_data ) {
+                    $posts_video_playlist_meta_array[$video_service]['username'] = $video_service_data;
+                }
+            }
+
+            $playlists_sources_playlist_id = get_option('td_playlist_video_playlist_id');
+            if( is_array($playlists_sources_playlist_id) ) {
+                foreach ( $playlists_sources_playlist_id as $video_service => $video_service_data ) {
+                    $posts_video_playlist_meta_array[$video_service]['playlist_id'] = $video_service_data;
+                }
+            }
+
+           return $posts_video_playlist_meta_array;
+
        }
 
        static function render_diagnostics() {

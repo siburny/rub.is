@@ -809,65 +809,69 @@ class td_block_big_grid_flex_3 extends td_block {
 				}
 				
 				/* @mix_type */
-                .$unique_block_class .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     content: '';
                     width: 100%;
                     height: 100%;
                     position: absolute;
+                    top: 0;
+                    left: 0;
                     opacity: 1;
                     transition: opacity 1s ease;
                     -webkit-transition: opacity 1s ease;
                     mix-blend-mode: @mix_type;
                 }
                 /* @color */
-                .$unique_block_class .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     background: @color;
                 }
                 /* @mix_gradient */
-                .$unique_block_class .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     @mix_gradient;
                 }
                 
                 
                 /* @mix_type_h */
                 @media (min-width: 1141px) {
-                    .$unique_block_class .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                         content: '';
                         width: 100%;
                         height: 100%;
                         position: absolute;
+                        top: 0;
+                        left: 0;
                         opacity: 0;
                         transition: opacity 1s ease;
                         -webkit-transition: opacity 1s ease;
                         mix-blend-mode: @mix_type_h;
                     }
-                    .$unique_block_class .td-module-container:hover .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:after {
                         opacity: 1;
                     }
                 }
                 
                 /* @color_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     background: @color_h;
                 }
                 /* @mix_gradient_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     @mix_gradient_h;
                 }
                 /* @mix_type_off */
-                .$unique_block_class .td-module-container:hover .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:before {
                     opacity: 0;
                 }
                     
                 /* @effect_on */
-                .$unique_block_class .entry-thumb {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb {
                     filter: @fe_brightness @fe_contrast @fe_saturate;
                     transition: all 1s ease;
                     -webkit-transition: all 1s ease;
                 }
                 /* @effect_on_h */
                 @media (min-width: 1141px) {
-                    .$unique_block_class .td-module-container:hover .entry-thumb {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb {
                         filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
                     }
                 }

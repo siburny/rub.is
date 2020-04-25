@@ -351,6 +351,14 @@
     margin-left: 0;
     font-weight: 700;
   }
+
+  .td_panel_box_youtube_api_configuration {
+    .td-box-control-full {
+      .td-panel-input {
+        width: 550px !important;
+      }
+    }
+  }
 }
 
 /*  ----------------------------------------------------------------------------
@@ -549,8 +557,6 @@
     }
   }
 }
-
-
 
 .td-box-title {
   .td-box-title-label {
@@ -766,6 +772,14 @@
 
 // footer settings
 #td-panel-footer {
+  &.hide-settings {
+    .tdb-hide {
+      display: none;
+    }
+    .tdb-show {
+      display: block;
+    }
+  }
   .td_panel_box_footer_settings {
     .td-small-wrapper-o-separator {
       margin-bottom: 16px;
@@ -808,7 +822,7 @@
 // templates settings
 #td-panel-template-settings {
 
-  //tdb author template settings
+  // tdb author template settings
   .td_panel_box_author_template {
     .td-box-content {
       .td-box-row {
@@ -855,6 +869,47 @@
     }
   }
 
+  // tdb tag template settings
+  .td_panel_box_tag_template {
+    .td-template-wrap {
+      margin: 0 19px 14px 0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+
+      &:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+    }
+
+    .td-template-name {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 5px 0;
+      width: 240px;
+      min-height: 20px;
+      line-height: 18px;
+    }
+
+    .td-input-style-overwrite {
+      display: inline-block;
+      float: right;
+      margin-top: -2px;
+      width: 293px;
+
+      input {
+        width: 100%;
+        padding: 5px 5px;
+        height: 28px;
+
+        &::placeholder {
+          color: #bfbfbf;
+        }
+      }
+    }
+  }
+
   .tdb-show {
     display: none;
   }
@@ -880,6 +935,44 @@
 
       > .td-box {
         margin-bottom: 0;
+      }
+    }
+  }
+}
+
+
+.td-import-settings-col-1 {
+  display: inline-block;
+  width: 549px;
+  vertical-align: top;
+}
+
+.td-import-settings-col-2 {
+  display: inline-block;
+  width: 252px;
+  padding-left: 30px;
+  box-sizing: border-box;
+
+  .td-box-control-full {
+    width: 100%;
+
+    .td-theme-settings-list {
+      margin: 0;
+      list-style-type: disc;
+      height: 103px;
+      overflow: auto;
+      font-family: @font_open_sans;
+
+      li {
+        margin-left: 16px;
+        margin-bottom: 0;
+        font-size: 11px;
+        color: #555555;
+        cursor: pointer;
+
+        &:hover {
+          color: #0073aa;
+        }
       }
     }
   }

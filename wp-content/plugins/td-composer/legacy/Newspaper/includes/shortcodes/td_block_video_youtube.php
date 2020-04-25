@@ -244,7 +244,7 @@ class td_block_video_youtube extends td_block {
 
     }
 
-	/**
+	/**696
 	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.
 	 */
 	function __construct() {
@@ -256,8 +256,7 @@ class td_block_video_youtube extends td_block {
 
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
-        // get the playlist
-        return td_video_playlist_render::render_generic( $atts, 'youtube', $this->block_uid, $this->get_block_css() );
+        return td_video_playlist_render::render_generic($atts, 'youtube', $this->block_uid, $this->get_block_css());
 
     }
 }

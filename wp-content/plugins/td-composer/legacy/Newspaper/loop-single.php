@@ -24,7 +24,7 @@ if (have_posts()) {
 
                 <div class="td-module-meta-info">
                     <?php $td_mod_single->show_author() ?>
-                    <?php $td_mod_single->show_date(false) ?>
+                    <?php $td_mod_single->show_date(false, false) ?>
                     <?php $td_mod_single->show_comments() ?>
                     <?php $td_mod_single->show_views() ?>
                 </div>

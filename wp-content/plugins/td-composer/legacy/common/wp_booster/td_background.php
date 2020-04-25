@@ -25,6 +25,7 @@ class td_background {
             'theme_bg_position' => td_util::get_option('tds_site_background_position_x'),
             'theme_bg_attachment' => td_util::get_option('tds_site_background_attachment'),
             'theme_bg_color' => td_util::get_option('tds_site_background_color'),
+            'site_boxed' => td_util::get_option('tds_site_boxed'),
 
             //the background ad support was merged with this from td_ads.php
             'td_ad_background_click_link' => stripslashes(td_util::get_option('tds_background_click_url')),
@@ -43,7 +44,7 @@ class td_background {
         }
 
         // activate the boxed layout - if we have an image or color
-        if ($background_params['theme_bg_image'] != '' or  $background_params['theme_bg_color'] != '') {
+        if (($background_params['theme_bg_image'] != '' or  $background_params['theme_bg_color'] != '') and $background_params['site_boxed'] == '') {
             $background_params['is_boxed_layout'] = true;
             //set the global is boxed layout, used on post templates (single template 3)
             td_global::$is_boxed_layout = true;

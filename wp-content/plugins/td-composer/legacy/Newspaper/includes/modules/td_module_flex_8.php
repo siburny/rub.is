@@ -38,8 +38,9 @@ class td_module_flex_8 extends td_module {
                     <?php if ($category_position == '') { echo $this->get_category(); }?>
 
                     <div class="td-editor-date">
-                        <?php echo $this->get_author();?>
-                        <?php echo $this->get_date($modified_date);?>
+                        <?php echo $this->get_author(true);?>
+                        <?php echo $this->get_date($modified_date, true);?>
+                        <?php echo $this->get_review();?>
                     </div>
                 </div>
             </div>

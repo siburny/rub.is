@@ -87,8 +87,63 @@ class td_data_source {
         }
 
 
+        // modified for taxonomy support
         if (!empty($category_ids)) {
-            $wp_query_args['cat'] = $category_ids;
+            $tax_ids = explode (',', $category_ids);
+            $taxonomies_array = array();
+//            $tax_not_in = array();
+//            $tax_in = array();
+
+            foreach ($tax_ids as $tax_id) {
+
+                if (intval($tax_id) < 0) {
+                    $tax_id = str_replace('-', '', $tax_id);
+                }
+
+
+                $tax_args = get_term($tax_id);
+                if ($tax_args != '') {
+                    $taxonomies_array[$tax_args->taxonomy][] = $tax_args->slug;
+                }
+            }
+
+            /**
+             *          category_ids cannot be empty
+             *          so we check if there is only one taxonomy id or more
+             *          stop and run old code if the category is the only taxonomy
+             */
+            if(count($taxonomies_array) === 1 ) {
+
+                if(isset($taxonomies_array['category'])) {
+                    $wp_query_args['cat'] = $category_ids;
+                } else {
+                    foreach ($taxonomies_array as $taxonomy => $terms_array) {
+                        $wp_query_args['tax_query'] = array(
+                            array(
+                                'taxonomy' => $taxonomy,
+                                'field' => 'slug',
+                                'terms' => $terms_array,
+                            )
+                        );
+                    }
+                }
+
+            } elseif( count($taxonomies_array) > 1 ) {
+
+                $tax_query = array();
+                $tax_query['relation'] = 'OR';
+
+                //this is duplicated @see single tax case above, because we need to add relation "OR"
+                foreach ($taxonomies_array as $taxonomy => $terms_array) {
+                    $tax_query[] = array(
+                        'taxonomy' => $taxonomy,
+                        'field' => 'slug',
+                        'terms' => $terms_array,
+                    );
+                }
+
+                $wp_query_args['tax_query'] = $tax_query;
+            }
         }
 
         if (!empty($tag_slug)) {

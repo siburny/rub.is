@@ -9,15 +9,13 @@
  * @version     3.4.1
  */
 
-td_global::$current_template = 'woo_single';
-
-
-get_header();
-global $post;
-
 //set the template id, used to get the template specific settings
 $template_id = 'woo_single';
 
+td_global::set_current_template( $template_id );
+
+get_header();
+global $post;
 
 $loop_sidebar_position = td_util::get_option('tds_' . $template_id . '_sidebar_pos'); //sidebar right is default (empty)
 

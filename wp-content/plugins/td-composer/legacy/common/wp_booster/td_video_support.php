@@ -20,53 +20,119 @@ class td_video_support{
 	 *
 	 * @return string - the player HTML
 	 */
-	static function render_video($videoUrl) {
+	static function render_video($videoUrl, $controls = 'yes', $autoplay = '', $loop = '') {
+	    $controlsParam = '';
+	    $autoplayParam = '';
+        $loopParam = '';
+
 		$buffy = '';
 		switch (self::detect_video_service($videoUrl)) {
 			case 'youtube':
-				$buffy .= '
-                <div class="wpb_video_wrapper">
-                    <iframe id="td_youtube_player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id($videoUrl) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720' . self::get_youtube_time_param($videoUrl) . '" frameborder="0" allowfullscreen=""></iframe>
+                if( $controls == '' ) {
+                    $controlsParam = 'controls=0"';
+                }
+                if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
+                    $autoplayParam = 'autoplay=1';
+                }
+                if( $loop != '' ) {
+                    $loopParam = 'loop=1&playlist=' . self::get_youtube_id($videoUrl);
+                }
+
+                $tds_video_lazy = td_util::get_option('tds_video_lazy');
+                if ( ! empty($tds_video_lazy) && wp_is_mobile()) {
+
+                    $buffy .= '
+                        <div class="wpb_video_wrapper">
+                        <script>
+                            (function() {
+                                jQuery().ready(function() {
+                                    
+                                    if ( "undefined" === typeof window.tdLazyVideo) {
+                                        
+                                        window.tdLazyVideo = function() {
+                                            
+                                            jQuery("iframe.td-youtube-player-lazy").each(function() {
+                                                var $this = jQuery(this),
+                                                    dataSrc = $this.data("src"),
+                                                    dataSrcdoc = $this.data("srcdoc");
+                                                
+                                                if ( "undefined" !== typeof dataSrc && "undefined" !== typeof dataSrcdoc ) {
+                                                    $this.attr("src", dataSrc);
+                                                    if ( true === tdDetect.isPhoneScreen ) {
+                                                        $this.attr("srcdoc", dataSrcdoc);
+                                                    }
+                                                }
+                                            });
+                                        };
+                                                                                
+                                        window.tdLazyVideo();
+                                    }
+                                });
+                            })();
+                        </script>
+                        
+                        <iframe
+                            class="td-youtube-player-lazy"
+                            width="600" 
+                            height="560"
+                            src="" 
+                            data-src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id($videoUrl) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param($videoUrl) . '"
+                            data-srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%;}img{position:absolute;width:100%;top:0;margin:auto}.td-center-align{top: 50%;left: 50%;transform: translate(-50%, -50%);-webkit-transform: translate(-50%, -50%);position: absolute;}</style><a href=https://www.youtube.com/embed/' . self::get_youtube_id($videoUrl) . '?autoplay=1><img src=' . self::get_thumb_url( $videoUrl ) . ' alt=\'Video The Dark Knight Rises: What Went Wrong? – Wisecrack Edition\'><span class=\'td-center-align\' style=\'width: 40px;height: 40px;
+    background-color: rgba(0, 0, 0, 0.48);border: 2px solid #fff;border-radius: 100%;z-index: 1;-webkit-box-shadow: 0 0 0.15em rgba(0, 0, 0, 0.4);box-shadow: 0 0 0.15em rgba(0, 0, 0, 0.4);\'><span class=\'td-center-align\' style=\'    width: 0;
+    height: 0;border-top: 7px solid transparent;border-bottom: 7px solid transparent;border-left: 10px solid #fff;\'></span></span></a>"
+                            frameborder="0"
+                            allow="autoplay"
+                            allowfullscreen></iframe>
+                    </div>';
+
+                } else {
+
+				    $buffy .= '
+                        <div class="wpb_video_wrapper">
+                            <iframe id="td_youtube_player" class="td-youtube-player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id( $videoUrl ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param( $videoUrl ) . '" frameborder="0" allowfullscreen="" allow="autoplay"></iframe>                            
+                        </div>';
+			    }
+
+                $buffy .= '
+        
                     <script type="text/javascript">
-						var tag = document.createElement("script");
-						tag.src = "https://www.youtube.com/iframe_api";
+                            
+                        jQuery().ready(function() {
+                            tdShowVideo.loadApiYoutube(); 
+                        });
+                        
+                    </script>';
 
-						var firstScriptTag = document.getElementsByTagName("script")[0];
-						firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-						var player;
-
-						function onYouTubeIframeAPIReady() {
-							player = new YT.Player("td_youtube_player", {
-								height: "720",
-								width: "960",
-								events: {
-									"onReady": onPlayerReady
-								}
-							});
-						}
-
-						function onPlayerReady(event) {
-							player.setPlaybackQuality("hd720");
-						}
-					</script>
-
-                </div>
-
-                ';
 
 				break;
 			case 'dailymotion':
+                if( $controls == '' ) {
+                    $controlsParam = 'controls=false';
+                }
+                if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
+                    $autoplayParam = 'autoplay=1&mute=0';
+                }
+
 				$buffy .= '
                     <div class="wpb_video_wrapper">
-                        <iframe frameborder="0" width="600" height="560" src="' . td_global::$http_or_https . '://www.dailymotion.com/embed/video/' . self::get_dailymotion_id($videoUrl) . '"></iframe>
+                        <iframe frameborder="0" width="600" height="560" src="' . td_global::$http_or_https . '://www.dailymotion.com/embed/video/' . self::get_dailymotion_id($videoUrl) . '?' . $controlsParam . '&' . $autoplayParam .  '" allow="autoplay"></iframe>
                     </div>
                 ';
 				break;
 			case 'vimeo':
+			    if( $controls == '' ) {
+                    $controlsParam = 'controls=false';
+                }
+                if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
+                    $autoplayParam = 'autoplay=1';
+                }
+                if( $loop != '' ) {
+                    $loopParam = 'loop=1';
+                }
+
 				$buffy = '
                 <div class="wpb_video_wrapper">
-                    <iframe src="' . td_global::$http_or_https . '://player.vimeo.com/video/' . self::get_vimeo_id($videoUrl) . '" width="500" height="212" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                    <iframe src="' . td_global::$http_or_https . '://player.vimeo.com/video/' . self::get_vimeo_id($videoUrl) . '?' . $controlsParam . '&' . $autoplayParam . '&' . $loopParam . '" width="500" height="212" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                 </div>
                 ';
 				break;
@@ -175,7 +241,26 @@ class td_video_support{
 				}
 
 				break;
-		}
+            case 'self-hosted':
+                if( $controls != '' ) {
+                    $controlsParam = 'controls';
+                }
+                if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
+                    $autoplayParam = 'autoplay';
+                }
+                if( $loop != '' ) {
+                    $loopParam = 'loop';
+                }
+
+                $buffy .= '
+                <div class="wpb_video_wrapper">
+                    <video ' . $controlsParam . ' ' . $autoplayParam . ' ' . $loopParam .'>
+                        <source src="' . $videoUrl . '">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>';
+                break;
+        }
 		return $buffy;
 	}
 
@@ -236,6 +321,9 @@ class td_video_support{
                 return;
             }
 
+            $videoDuration = self::get_video_duration($td_post_video['td_video']);
+            update_post_meta( $post_id, 'td_post_video_duration', $videoDuration );
+
 			$videoThumbUrl = self::get_thumb_url( $td_post_video['td_video'] );
 
             // its time to setup the thumb
@@ -274,7 +362,7 @@ class td_video_support{
 	 * @param $videoUrl
 	 * @return bool
 	 */
-	private static function validate_video_url($videoUrl) {
+	static function validate_video_url($videoUrl) {
 		if (self::detect_video_service($videoUrl) === false) {
 			return false;
 		}
@@ -370,42 +458,100 @@ class td_video_support{
 				break;
 
 			case 'twitter':
-			if (!class_exists('TwitterApiClient')) {
-				require_once 'wp-admin/external/twitter-client.php';
-				$Client = new TwitterApiClient;
-				$Client->set_oauth (YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET, SOME_ACCESS_KEY, SOME_ACCESS_SECRET);
-				try {
-					$path = 'statuses/show';
-					$args = array (
-						'id' => self::get_twitter_id($videoUrl),
-						'include_entities' => true
-					);
-                    $data = $Client->call( $path, $args, 'GET' );
+                if (!class_exists('TwitterApiClient')) {
+                    require_once 'wp-admin/external/twitter-client.php';
+                    $Client = new TwitterApiClient;
+                    $Client->set_oauth (YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET, SOME_ACCESS_KEY, SOME_ACCESS_SECRET);
+                    try {
+                        $path = 'statuses/show';
+                        $args = array (
+                            'id' => self::get_twitter_id($videoUrl),
+                            'include_entities' => true
+                        );
+                        $data = $Client->call( $path, $args, 'GET' );
 
 
-					//json data decode
-					if ($data === null) {
-						td_log::log(__FILE__, __FUNCTION__, 'api call failed for twitter video thumbnail request api', $videoUrl);
-					}
+                        //json data decode
+                        if ($data === null) {
+                            td_log::log(__FILE__, __FUNCTION__, 'api call failed for twitter video thumbnail request api', $videoUrl);
+                        }
 
-					if (empty($data['entities']['media'])){
-						add_filter( 'redirect_post_location', array( __CLASS__, 'td_twitter_notice_on_redirect_post_location' ), 99 );
+                        if (empty($data['entities']['media'])){
+                            add_filter( 'redirect_post_location', array( __CLASS__, 'td_twitter_notice_on_redirect_post_location' ), 99 );
 
-					} else  {
-						return $data['entities']['media'][0]['media_url'] . ':large';
-					}
-				}
-				catch( Exception $Ex ){
-					//twitter rate limit will show here
-					//echo 'Caught exception: ',  $Ex->getMessage();
-					//print_r($Ex);
-				}
-			} else {
-				add_filter( 'redirect_post_location', array( __CLASS__, 'td_twitter_class_notice_on_redirect_post_location' ), 99 );
-			}
+                        } else  {
+                            return $data['entities']['media'][0]['media_url'] . ':large';
+                        }
+                    }
+                    catch( Exception $Ex ){
+                        //twitter rate limit will show here
+                        //echo 'Caught exception: ',  $Ex->getMessage();
+                        //print_r($Ex);
+                    }
+                } else {
+                    add_filter( 'redirect_post_location', array( __CLASS__, 'td_twitter_class_notice_on_redirect_post_location' ), 99 );
+                }
 		}
 		return '';
 	}
+
+
+
+    /**
+     * Returns the video duration from the video URL
+     * @param $videoUrl
+     * @return string
+     */
+	static function get_video_duration($videoUrl) {
+
+        switch (self::detect_video_service($videoUrl)) {
+            case 'youtube':
+                $video_id = self::get_youtube_id($videoUrl);
+                $video_info = td_remote_video::api_get_videos_info(array($video_id), 'youtube');
+
+                if( $video_info != FALSE ) {
+                    return $video_info[$video_id]['time'];
+                }
+
+                break;
+
+            case 'dailymotion':
+                $video_id = self::get_dailymotion_id($videoUrl);
+                $video_info = td_remote_video::api_get_videos_info(array($video_id), 'dailymotion');
+
+                if( $video_info != FALSE ) {
+                    return $video_info[$video_id]['time'];
+                }
+
+                break;
+
+            case 'vimeo':
+                $video_id = self::get_vimeo_id($videoUrl);
+                $video_info = td_remote_video::api_get_videos_info(array($video_id), 'vimeo');
+
+                if( $video_info != FALSE ) {
+                    return $video_info[$video_id]['time'];
+                }
+
+                break;
+
+            case 'facebook':
+            case 'twitter':
+                break;
+
+            case 'self-hosted':
+                $video_info = wp_get_attachment_metadata( attachment_url_to_postid($videoUrl) );
+
+                if( $video_info != FALSE ) {
+                    return gmdate('H:i:s', $video_info['length']);
+                }
+
+                break;
+        }
+
+        return '';
+
+    }
 
 
 	/*
@@ -587,7 +733,7 @@ class td_video_support{
     /*
      * Detect the video service from url
      */
-    private static function detect_video_service($videoUrl) {
+    static function detect_video_service($videoUrl) {
         $videoUrl = strtolower($videoUrl);
         if (strpos($videoUrl,'youtube.com') !== false or strpos($videoUrl,'youtu.be') !== false) {
             return 'youtube';
@@ -605,6 +751,10 @@ class td_video_support{
 		if (strpos($videoUrl,'twitter.com') !== false) {
 			return 'twitter';
 		}
+
+		if(preg_match('(.mp4|.webm|.ogg)', $videoUrl) != false) {
+		    return 'self-hosted';
+        }
 
 		return false;
     }

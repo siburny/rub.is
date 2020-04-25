@@ -104,6 +104,26 @@
 <?php echo td_panel_generator::box_end(); ?>
 
 
+<?php echo td_panel_generator::box_start('YouTube API Configuration', true); ?>
+
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">API KEY</span>
+        <p>Follow <a href="https://forum.tagdiv.com/youtube-api-key/" target="_blank">this guide</a> to get your own YouTube API key</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_yt_api_key'
+        ));
+        ?>
+    </div>
+</div>
+
+<?php echo td_panel_generator::box_end(); ?>
+
+
 <?php echo td_panel_generator::box_start('Social Networks', false); ?>
 
 <div class="td-box-row">

@@ -465,20 +465,15 @@ class td_instagram {
 		$access_token = $td_instagram_access_tk->td_maybe_clean( $connected_account['access_token'] );
 		$user_id = $connected_account['user_id'];
 
-		$instragram_data['user'] = array();
-		$instragram_data['user']['with_access_token'] = true;
-		$instragram_data['user']['profile_pic_url'] = $connected_account['profile_picture'];
-		$instragram_data['user']['instagram_id'] = $connected_account['username'];
-		$instragram_data['user']['edge_followed_by']['count'] = $connected_account['followers'];
-
 		// check the cache
 		if ( td_remote_cache::is_expired(__CLASS__, $cache_key ) === true ) {
 
 			// cache is expired - do a request
-			$instagram_get_data = td_remote_http::get_page('https://api.instagram.com/v1/users/' . $user_id . '/media/recent?access_token=' . $access_token . '&count=33', __CLASS__ );
+			$instagram_get_media_data = td_remote_http::get_page('https://api.instagram.com/v1/users/' . $user_id . '/media/recent?access_token=' . $access_token . '&count=33', __CLASS__ );
+            $instagram_get_user_data = td_remote_http::get_page('https://api.instagram.com/v1/users/' . $user_id . '?access_token=' . $access_token, __CLASS__ );
 
 			// check the call response
-			if ( $instagram_get_data === false ) {
+			if ( $instagram_get_media_data === false || $instagram_get_user_data === false ) {
 
 			    // check the cache and return the last stored data even if it's expired
 				$instagram_data = td_remote_cache::get(__CLASS__, $cache_key );
@@ -498,37 +493,44 @@ class td_instagram {
             }
 
 			// try to decode the json
-			$instagram_json = json_decode( $instagram_get_data, true );
+			$instagram_media_json = json_decode( $instagram_get_media_data, true );
+            $instagram_user_json = json_decode( $instagram_get_user_data, true );
 
-			if ( $instagram_json === null and json_last_error() !== JSON_ERROR_NONE ) {
-				td_log::log(__FILE__, __FUNCTION__, 'Error decoding the instagram API json', $instagram_json );
-				return 'Error decoding the Instagram API json';
+			if ( ( $instagram_media_json === null || $instagram_user_json === null ) and json_last_error() !== JSON_ERROR_NONE ) {
+				td_log::log(__FILE__, __FUNCTION__, 'Error decoding the instagram API json', $instagram_media_json );
+                td_log::log(__FILE__, __FUNCTION__, 'Error decoding the instagram API json', $instagram_user_json );
+                return 'Error decoding the Instagram API json';
 			}
 
 			// current instagram data is not set
-			if ( ! isset( $instagram_json['data'] ) ) {
+			if ( ! isset( $instagram_media_json['data'] ) || ! isset( $instagram_user_json['data'] ) ) {
 
 			    $error_message = '';
 
-			    if ( isset( $instagram_json['meta'] ) ) {
+			    if ( isset( $instagram_media_json['meta'] ) ) {
 
 			        // if we have an error message like an invalid access token, if the access token is over the rate limit..etc set a specific message to let the user know that
-			        if ( isset( $instagram_json['meta']['error_message'] ) ) {
+			        if ( isset( $instagram_media_json['meta']['error_message'] ) ) {
 
-			            if ( $instagram_json['meta']['error_type'] === 'OAuthRateLimitException' ) {
+			            if ( $instagram_media_json['meta']['error_type'] === 'OAuthRateLimitException' ) {
 				            $error_message = 'Block Render Failed - This account\'s access token is currently over the rate limit. Please try removing this account and wait at leats an hour before reconnecting it.';
 			            } else {
-				            $error_message = 'Block Render Failed - ' . $instagram_json['meta']['error_message'];
+				            $error_message = 'Block Render Failed - ' . $instagram_media_json['meta']['error_message'];
 			            }
                     }
                 }
 
 			    // log the instagram reply json for debugging
-				td_log::log(__FILE__, __FUNCTION__, 'Instagram access token API reply: ', $instagram_json );
+				td_log::log(__FILE__, __FUNCTION__, 'Instagram access token API reply: ', $instagram_media_json );
 				return td_util::get_block_error('Instagram Gallery', $error_message );
 			}
 
-			$instragram_data['user']['feeds'] = $instagram_json['data'];
+            $instragram_data['user'] = array();
+            $instragram_data['user']['with_access_token'] = true;
+            $instragram_data['user']['profile_pic_url'] = $instagram_user_json['data']['profile_picture'];
+            $instragram_data['user']['instagram_id'] = $instagram_user_json['data']['username'];
+            $instragram_data['user']['edge_followed_by']['count'] = $instagram_user_json['data']['counts']['followed_by'];
+			$instragram_data['user']['feeds'] = $instagram_media_json['data'];
 
 			td_remote_cache::set(__CLASS__, $cache_key, $instragram_data, self::$caching_time); //we have a reply and we set it
 			return 'instagram_cache_updated';
@@ -539,7 +541,7 @@ class td_instagram {
 			$instragram_data = td_remote_cache::get(__CLASS__, $cache_key );
 			return 'instagram_cache';
 		}
-		
+
     }
 
     private static function render_demo($block_atts) {

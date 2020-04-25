@@ -280,6 +280,22 @@ jQuery().ready(function() {
             });
         }
     });
+
+
+    /**
+     * Used to select import settings
+     */
+    jQuery('body').on('click', '.td-theme-settings', function() {
+        var $this = jQuery(this),
+            $importEl = jQuery('textarea[name="td_update_theme_options[tds_update_theme_options]"]'),
+            dataValue = $this.data('value');
+
+        if ( $importEl.length && 'undefined' !== typeof dataValue ) {
+            $importEl.attr('value', dataValue);
+            $this.siblings().removeClass('selected');
+            $this.addClass( 'selected' );
+        }
+    });
 });
 
 

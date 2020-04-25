@@ -375,12 +375,10 @@ if ( ! function_exists( 'load_css_live' ) ) {
 											return false;
 										};
 
-										var editorValue = editor.getSession().getValue();
-
-										editor_textarea.val(editorValue);
-
+										editor_textarea.val(editor.getSession().getValue());
+										
 										if ('undefined' !== typeof tdcAdminIFrameUI) {
-											tdcAdminIFrameUI.getLiveIframe().contents().find('.tdw-css-writer-editor:first').val(editorValue);
+											tdcAdminIFrameUI.getLiveIframe().contents().find('.tdw-css-writer-editor:first').val(editor.getSession().getValue());
 
 											// Mark the content as modified
 											// This is important for showing info when composer closes

@@ -20,6 +20,18 @@ class td_module_flex_4 extends td_module {
         $modified_date = $this->get_shortcode_att('show_modified_date');
         $hide_audio = $this->get_shortcode_att('hide_audio3');
 
+        $video_popup = $this->get_shortcode_att('video_popup3');
+        $video_ad_code = rawurldecode( base64_decode( strip_tags(  $this->get_shortcode_att('video_rec3') ) ) );
+        $video_ad_title = $this->get_shortcode_att('video_rec_title3');
+
+        $video_popup_params = array(
+            'visible' => $video_popup != '' ? true : false,
+            'ad' => array(
+                'code' => $video_ad_code,
+                'title' => $video_ad_title
+            )
+        );
+
         if (empty($image_size)) {
             $image_size = 'td_218x150';
         }
@@ -35,7 +47,8 @@ class td_module_flex_4 extends td_module {
                 <?php if( $hide_image == '' ) { ?>
                     <div class="td-image-container">
                         <?php if ($category_position == 'image') { echo $this->get_category(); }?>
-                        <?php echo $this->get_image($image_size, true);?>
+                        <?php echo $this->get_image($image_size, true, $video_popup_params);?>
+                        <?php echo $this->get_video_duration(); ?>
                     </div>
                 <?php } ?>
 
@@ -51,8 +64,9 @@ class td_module_flex_4 extends td_module {
 
                         <span class="td-author-date">
                             <?php if( $author_photo != '' ) { echo $this->get_author_photo(); } ?>
-                            <?php echo $this->get_author();?>
-                            <?php echo $this->get_date($modified_date);?>
+                            <?php echo $this->get_author(true);?>
+                            <?php echo $this->get_date($modified_date, true);?>
+                            <?php echo $this->get_review();?>
                             <?php echo $this->get_comments();?>
                         </span>
                     </div>

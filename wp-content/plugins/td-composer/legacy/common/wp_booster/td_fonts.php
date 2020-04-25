@@ -966,6 +966,7 @@ class td_fonts {
         944 => 'Zhi Mang Xing',
         945 => 'Zilla Slab',
         946 => 'Zilla Slab Highlight',
+        947 => 'Gelasio',
     );
 
 
@@ -1229,6 +1230,53 @@ class td_fonts {
 
         //print_r($tmp_google_font_family);
         return $tmp_google_font_family;
+    }
+
+
+    static function get_google_fonts_for_url($google_fonts) {
+
+//    	var_dump($google_fonts);
+//    	die;
+    	$google_fonts_names = '';
+
+    	foreach ( $google_fonts as $google_fonts_id => $font_weights ) {
+
+	    	if ( 'DEFAULT' !== $google_fonts_id ) {
+
+			    $font_value = '';
+
+			    if ( ! empty( td_fonts::$font_names_google_list[ $google_fonts_id ] ) ) {
+				    $font_value .= td_fonts::$font_names_google_list[ $google_fonts_id ];
+
+				    $final_font_weights = '';
+				    if ( is_array( $font_weights ) ) {
+					    $font_weights = array_unique( $font_weights );
+
+					    foreach ( $font_weights as $font_weight ) {
+						    if ( ! empty( $font_weight ) ) {
+							    if ( ! empty( $final_font_weights ) ) {
+								    $final_font_weights .= ',';
+							    }
+							    $final_font_weights .= $font_weight;
+						    }
+					    }
+					    if ( ! empty( $final_font_weights ) ) {
+						    $font_value .= ':' . $final_font_weights;
+					    } else if ( ! empty( $font_value ) ) {
+						    $font_value .= ':400';
+					    }
+					    if ( ! empty( $font_value ) ) {
+						    if ( ! empty( $google_fonts_names ) ) {
+							    $google_fonts_names .= '|';
+						    }
+						    $google_fonts_names .= $font_value;
+					    }
+				    }
+			    }
+		    }
+	    }
+
+	    return $google_fonts_names;
     }
 
 

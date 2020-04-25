@@ -136,7 +136,7 @@ if ( 'header' === $tdbTemplateType && 'publish' === get_post_status( $post ) ) {
         if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
 
             $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
-            $mobileMenuId = get_post_meta( $global_header_template_id, 'header_mobile_menu_id', true );
+            $tdc_mobile_header_id = get_post_meta( $global_header_template_id, 'header_mobile_menu_id', true );
         }
 
     } else if ( 'no_header' !== $tdc_header_template_id ) {
@@ -157,8 +157,41 @@ if ( 'header' === $tdbTemplateType && 'publish' === get_post_status( $post ) ) {
             if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
 
                 $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
-                $mobileMenuId = get_post_meta( $global_header_template_id, 'header_mobile_menu_id', true );
+                $tdc_mobile_header_id = get_post_meta( $global_header_template_id, 'header_mobile_menu_id', true );
             }
+        }
+    }
+}
+
+
+
+if ( 'footer' === $tdbTemplateType && 'publish' === get_post_status( $post ) ) {
+
+    $tdc_footer_template_id = $post->ID;
+    $tdc_footer_template_content = '';//$post->post_content;
+    $tdc_footer_template_content = get_post_field('post_content', $tdc_footer_template_id );
+
+} else {
+
+    $tdc_footer_template_id = get_post_meta( $post->ID, 'tdc_footer_template_id', true );
+    $tdc_footer_template_content = '';
+
+    if ( empty( $tdc_footer_template_id ) ) {
+
+        $tdc_footer_template_id = '';
+
+    } else if ( 'no_footer' !== $tdc_footer_template_id ) {
+
+        $post_status = get_post_status( $tdc_footer_template_id );
+
+        if ( 'publish' === $post_status ) {
+
+            $tdc_footer_template_content = get_post_field('post_content', $tdc_footer_template_id );
+
+        } else {
+
+            // Use the global footer template if it's set
+            $tdc_footer_template_id = '';
         }
     }
 }
@@ -198,6 +231,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
             headerTemplateId: '<?php echo $tdc_header_template_id ?>',
             headerTemplateContent: '<?php echo $tdc_header_template_content ?>',
+
+            footerTemplateId: '<?php echo $tdc_footer_template_id ?>',
+            footerTemplateContent: '<?php echo $tdc_footer_template_content ?>',
 
             mobileMenuId: '<?php echo $tdc_mobile_header_id ?>',
 
@@ -273,9 +309,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                 <span class="tdc-sidebar-icon tdc-icon-cloud"></span>
                 <span class="tdc-header-label tdc-text-cloud">Cloud</span>
             </a>
-            <a class="tdc-sidebar-w-button tdc-zone-button tdc-header-link tdc-header-manager" href="#" title="Open the header manager">
+            <a class="tdc-sidebar-w-button tdc-zone-button tdc-header-link tdc-header-manager" href="#" title="Open the zone manager">
                 <span class="tdc-sidebar-icon tdc-icon-header"></span>
-                <span class="tdc-header-label tdc-text-header">Header</span>
+                <span class="tdc-header-label tdc-text-header">Manager</span>
             </a>
 
             <a class="tdc-header-link tdc-close-page" href="#" title="Close the composer and switch to backend">
@@ -631,6 +667,10 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 						// Here will be displayed the extended shortcodes
 						foreach ( $single_post_mapped_shortcodes as $mapped_shortcode ) {
 
+						    if ( in_array( $mapped_shortcode['base'], array( 'tdb_single_related', 'tdb_single_related_author'))) {
+						        continue;
+                            }
+
 							$data_row_start_values = '';
 
 							if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
@@ -662,21 +702,21 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                         // Here will be displayed the extended shortcodes
                         foreach ( $category_page_mapped_shortcodes as $mapped_shortcode ) {
 
-//                            if ( in_array( $mapped_shortcode['base'], array(
-//                                    'tdb_category_grid_1',
-//                                    'tdb_category_grid_2',
-//                                    'tdb_category_grid_3',
-//                                    'tdb_category_grid_4',
-//                                    'tdb_category_grid_5',
-//                                    'tdb_category_grid_6',
-//                                    'tdb_category_grid_7',
-//                                    'tdb_category_grid_8',
-//                                    'tdb_category_grid_9',
-//                                    'tdb_category_grid_10',
-//                                ))
-//                            ) {
-//                                continue;
-//                            }
+                            if ( in_array( $mapped_shortcode['base'], array(
+                                    'tdb_category_grid_1',
+                                    'tdb_category_grid_2',
+                                    'tdb_category_grid_3',
+                                    'tdb_category_grid_4',
+                                    'tdb_category_grid_5',
+                                    'tdb_category_grid_6',
+                                    'tdb_category_grid_7',
+                                    'tdb_category_grid_8',
+                                    'tdb_category_grid_9',
+                                    'tdb_category_grid_10',
+                                ))
+                            ) {
+                                continue;
+                            }
 
                             $data_row_start_values = '';
 
@@ -969,7 +1009,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
 						if ( 'page' === $tdbTemplateType ) {
                             foreach ( $common_page_el_mapped_shortcodes as $common_page_el_mapped_shortcode ) {
-                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' ) {
+                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' || $common_page_el_mapped_shortcode['base'] === 'tdb_breadcrumbs' || $common_page_el_mapped_shortcode['base'] === 'tdb_title' ) {
                                     $external_mapped_shortcodes[] = $common_page_el_mapped_shortcode;
                                 }
                             }
@@ -1139,8 +1179,8 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 			<li class="tdc-copy-shortcode">Copy<span>CTRL + C</span></li>
 			<li class="tdc-paste-shortcode-before">Paste Before<span>CTRL + SHIFT + V</span></li>
 			<li class="tdc-paste-shortcode-after separator space">Paste After<span>CTRL + V</span></li>
-			<li class="tdc-copy-style active">Copy Style<ul class="tdc-copy-list-attrs tdc-list-atts"></ul></li>
-			<li class="tdc-paste-style separator space">Paste Style<ul class="tdc-paste-list-attrs tdc-list-atts"></ul></li>
+			<li class="tdc-copy-style active">Copy Style<i class="td-icon-right-arrow"></i><ul class="tdc-copy-list-attrs tdc-list-atts"></ul></li>
+			<li class="tdc-paste-style separator space">Paste Style<i class="td-icon-right-arrow"></i><ul class="tdc-paste-list-attrs tdc-list-atts"></ul></li>
             <li class="tdc-reset-style separator space">Reset Style</li>
             <li class="tdc-save-shortcode">Save as Element<span>SHIFT + S</span></li>
 			<li class="tdc-delete-shortcode">Delete<span>DEL</span></li>
@@ -1199,53 +1239,67 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
     <div id="tdc-zone">
         <header>
-            <div class="title">Header manager</div>
+            <div class="title">Website Manager</div>
             <div class="tdc-iframe-close-button"></div>
         </header>
         <div class="content">
-            <div class="tdc-header-template-title">Choose header template</div>
-            <div class="tdc-header-template-select">
-                <select class="tdc-header-template-list">
-                    <option value="">Global Template</option>
-                    <option value="no_header">No Header</option>
-                </select>
-                <div class="tdc-header-template-cloud">Import template</div>
+            <div class="tdc-template-wrap">
+                <div class="tdc-template-title tdc-template-supertitle"><span>Header</span></div>
+                <div class="tdc-template-title tdc-header-template-title">Choose header template</div>
+                <div class="tdc-template-select tdc-header-template-select">
+                    <select class="tdc-template-list tdc-header-template-list">
+                        <option value="">Global Template</option>
+                        <option value="no_header">No Header</option>
+                    </select>
+                    <div class="tdc-template-cloud tdc-header-template-cloud">Import header</div>
+                </div>
+                <div class="tdc-header-template-zones">
+                    <div class="tdc-header-zone">
+                        <div class="tdc-zone-group">
+                            <div class="tdc-zone tdc-zone-active" data-type="tdc_header_desktop">
+                                <div class="tdc-template-title">Main menu</div>
+                                <div class="tdc-zone-icon tdc-zone-icon-mainm"></div>
+                            </div>
+                            <div class="tdc-zone tdc-zone-sticky-inactive" data-type="tdc_header_desktop_sticky">
+                                <div class="tdc-template-title">Main menu sticky</div>
+                                <div class="tdc-zone-icon tdc-zone-icon-mainms"></div>
+                                <div class="tdc-zone-sticky-info">
+                                    <div class="tdc-zone-sticky-switch">
+                                        <div class="tdc-zone-sticky-switch-ball"></div>
+                                    </div>
+                                    <div class="tdc-zone-sticky-txt" title="This option is only applicable in the composer.">Enable/disable sticky menu</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tdc-zone-group">
+                            <div class="tdc-zone" data-type="tdc_header_mobile">
+                                <div class="tdc-template-title">Mobile menu</div>
+                                <div class="tdc-zone-icon tdc-zone-icon-mobm"></div>
+                            </div>
+                            <div class="tdc-zone tdc-zone-sticky-inactive" data-type="tdc_header_mobile_sticky">
+                                <div class="tdc-template-title">Mobile menu sticky</div>
+                                <div class="tdc-zone-icon tdc-zone-icon-mobms"></div>
+                                <div class="tdc-zone-sticky-info">
+                                    <div class="tdc-zone-sticky-switch">
+                                        <div class="tdc-zone-sticky-switch-ball"></div>
+                                    </div>
+                                    <div class="tdc-zone-sticky-txt" title="This option is only applicable in the composer.">Enable/disable sticky menu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="tdc-header-template-zones">
-                <div class="tdc-header-template-title tdc-header-template-supertitle">Zones</div>
-                <div class="tdc-header-zone">
-                    <div class="tdc-zone-group">
-                        <div class="tdc-zone tdc-zone-active" data-type="tdc_header_desktop">
-                            <div class="tdc-header-template-title">Main menu</div>
-                            <div class="tdc-zone-icon tdc-zone-icon-mainm"></div>
-                        </div>
-                        <div class="tdc-zone tdc-zone-sticky-inactive" data-type="tdc_header_desktop_sticky">
-                            <div class="tdc-header-template-title">Main menu sticky</div>
-                            <div class="tdc-zone-icon tdc-zone-icon-mainms"></div>
-                            <div class="tdc-zone-sticky-info">
-                                <div class="tdc-zone-sticky-switch">
-                                    <div class="tdc-zone-sticky-switch-ball"></div>
-                                </div>
-                                <div class="tdc-zone-sticky-txt" title="This option is only applicable in the composer.">Enable/disable sticky menu</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tdc-zone-group">
-                        <div class="tdc-zone" data-type="tdc_header_mobile">
-                            <div class="tdc-header-template-title">Mobile menu</div>
-                            <div class="tdc-zone-icon tdc-zone-icon-mobm"></div>
-                        </div>
-                        <div class="tdc-zone tdc-zone-sticky-inactive" data-type="tdc_header_mobile_sticky">
-                            <div class="tdc-header-template-title">Mobile menu sticky</div>
-                            <div class="tdc-zone-icon tdc-zone-icon-mobms"></div>
-                            <div class="tdc-zone-sticky-info">
-                                <div class="tdc-zone-sticky-switch">
-                                    <div class="tdc-zone-sticky-switch-ball"></div>
-                                </div>
-                                <div class="tdc-zone-sticky-txt" title="This option is only applicable in the composer.">Enable/disable sticky menu</div>
-                            </div>
-                        </div>
-                    </div>
+
+            <div class="tdc-template-wrap">
+                <div class="tdc-template-title tdc-template-supertitle"><span>Footer</span></div>
+                <div class="tdc-template-title tdc-footer-template-title">Choose footer template</div>
+                <div class="tdc-template-select tdc-footer-template-select">
+                    <select class="tdc-template-list tdc-footer-template-list">
+                        <option value="">Global Template</option>
+                        <option value="no_footer">No Footer</option>
+                    </select>
+                    <div class="tdc-template-cloud tdc-footer-template-cloud">Import footer</div>
                 </div>
             </div>
         </div>

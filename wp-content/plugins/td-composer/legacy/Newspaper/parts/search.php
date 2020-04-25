@@ -11,6 +11,6 @@
 				<input id="td-header-search-mob" type="text" value="<?php echo get_search_query(); ?>" name="s" autocomplete="off" />
 			</div>
 		</form>
-		<div id="td-aj-search-mob"></div>
+		<div id="td-aj-search-mob" class="td-ajax-search-flex"></div>
 	</div>
 </div>

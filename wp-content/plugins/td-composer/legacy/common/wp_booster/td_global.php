@@ -225,7 +225,7 @@ class td_global {
 		 * set properly the column number
 		 */
 
-		if (td_global::$current_template === 'page-title-sidebar') {
+		if (td_global::get_current_template() === 'page-title-sidebar') {
 			global $post;
 
 			$td_page = td_util::get_post_meta_array($post->ID, 'td_page');
@@ -700,20 +700,22 @@ class td_global {
     	if ( substr( $template_id, 0, 4 ) == 'tdb_' ) {
 
     		if ( $and_exist ) {
-			    $query = new WP_Query(
-                    array(
-                        'p' => self::tdb_get_template_id( $template_id ),
-                        'post_type' => 'tdb_templates',
-                    )
-                );
 
-			    return $query->have_posts();
+    			/*
+    			 * Previous was with WP_Query. Diff from previous WP_Query is that wmpl hooks on query without default wp_parse_args. That's why wp get_posts inside code is used
+    			 */
+
+    			$posts = get_posts(array(
+                    'p' => self::tdb_get_template_id( $template_id ),
+                    'post_type' => 'tdb_templates'
+                ));
+
+			    return count($posts) > 0;
 	        }
 	        return true;
 	    }
     	return false;
     }
-
 
     /**
      * extract the template id from a api_single_template ID
@@ -740,6 +742,14 @@ class td_global {
      */
     static function get_demo_installing() {
         return self::$demo_installing;
+    }
+
+    static function set_current_template($current_template) {
+    	self::$current_template = $current_template;
+    }
+
+    static function get_current_template() {
+    	return self::$current_template;
     }
 }
 

@@ -162,6 +162,18 @@ add_action('wp_ajax_td_ajax_get_template_style',        array('td_ajax', 'on_aja
 add_action('wp_ajax_nopriv_td_render_content', array('td_ajax', 'on_ajax_render_content'));
 add_action('wp_ajax_td_render_content',        array('td_ajax', 'on_ajax_render_content'));
 
+add_action('wp_ajax_nopriv_td_ajax_change_theme_version', array('td_ajax', 'on_ajax_change_theme_version'));
+add_action('wp_ajax_td_ajax_change_theme_version',        array('td_ajax', 'on_ajax_change_theme_version'));
+
+add_action('wp_ajax_nopriv_td_ajax_check_theme_version', array('td_ajax', 'on_ajax_check_theme_version'));
+add_action('wp_ajax_td_ajax_check_theme_version',        array('td_ajax', 'on_ajax_check_theme_version'));
+
+
+// ajax: module video modal
+add_action('wp_ajax_nopriv_td_ajax_video_modal', array('td_ajax', 'on_ajax_video_modal'));
+add_action('wp_ajax_td_ajax_video_modal',        array('td_ajax', 'on_ajax_video_modal'));
+
+
 //ajax: instagram feeds with access token implementation
 require_once( 'td_instagram_access_tk.php' );
 
@@ -419,65 +431,173 @@ function td_load_css_fonts() {
 
     td_util::check_header();
 
-	$cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+    td_util::check_footer();
 
-	$unique_google_fonts_ids = array();
-
-	//filter the google fonts used by user
-	if (!empty($cur_td_fonts)) {
-
-		foreach ( $cur_td_fonts as $section_font_settings ) {
-			if ( isset( $section_font_settings['font_family'] ) ) {
-				$explode_font_family = explode( '_', $section_font_settings['font_family'] );
-				if ( $explode_font_family[0] == 'g' ) {
-					$unique_google_fonts_ids[] = $explode_font_family[1];
-				}
-			}
-		}
-	}
-
-	$extra_google_fonts_ids = array();
-
-	// Filter used to modify the post checked for icon fonts
+    // Filter used to modify the post checked for icon fonts
 	$post_id = apply_filters( 'td_filter_google_fonts_post_id', get_the_ID() );
 
-	$tds_footer_page = td_util::get_option('tds_footer_page');
-	if ( intval($tds_footer_page) !== $post_id ) {
-		$footer_page = get_post( $tds_footer_page );
-		if ( $footer_page instanceof WP_Post ) {
-			$footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
-			if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
-				foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
-					$extra_google_fonts_ids[] = $footer_google_fonts_id;
-				}
-			}
-		}
-	}
+	$new_meta_exists = metadata_exists( 'post', $post_id, 'tdc_google_fonts_settings' );
 
-	// 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
-	$extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
+	if ( $new_meta_exists || is_archive() || is_search() || is_404() || is_front_page() || is_home() ||
+         ( td_global::$is_woocommerce_installed && is_product() ) ||
+         ( td_global::$is_bbpress_installed && td_global::get_current_template() === 'bbpress' ) ) {
 
-	$post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts', true );
-	if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
-		foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
-			$extra_google_fonts_ids[] = $post_google_fonts_id;
-		}
-	}
+	    // new method to get all used google fonts
 
-	// remove duplicated font ids
-	$unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
+        $cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+
+        $unique_google_fonts_ids = array();
+
+        //filter the google fonts used by user
+        if (!empty($cur_td_fonts)) {
+
+            foreach ( $cur_td_fonts as $section_font_settings ) {
+                if ( isset( $section_font_settings['font_family'] ) ) {
+                    $explode_font_family = explode( '_', $section_font_settings['font_family'] );
+                    if ( $explode_font_family[0] == 'g' ) {
+                        $unique_google_fonts_ids[] = $explode_font_family[1];
+                    }
+                }
+            }
+        }
+
+        $panel_fonts_names = td_fonts::get_google_fonts_names( $unique_google_fonts_ids );
+
+        $google_fonts_ids = array();
+
+        // Filter used to modify the post checked for icon fonts
+        $post_id = apply_filters( 'td_filter_google_fonts_post_id', get_the_ID() );
+
+        $tds_footer_page = td_util::get_option('tds_footer_page');
+        if ( intval($tds_footer_page) !== $post_id ) {
+            $footer_page = get_post( $tds_footer_page );
+
+            if ( $footer_page instanceof WP_Post ) {
+
+                $footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts_settings', true );
+                if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
+                    foreach ( $footer_google_fonts_ids as $footer_google_fonts_id => $font_weights ) {
+                        $google_fonts_ids[ $footer_google_fonts_id ] = $font_weights;
+                    }
+                }
+            }
+        }
+
+        $extra_google_fonts_ids = array();
+
+        // 'td_filter_google_fonts_settings' - custom hook used to add google fonts from extra source
+        $extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts_settings', $extra_google_fonts_ids );
+
+        $post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts_settings', true );
+
+        if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
+            foreach ( $post_google_fonts_ids as $post_google_fonts_id => $font_weights ) {
+                if ( array_key_exists( $post_google_fonts_id, $extra_google_fonts_ids ) && is_array( $extra_google_fonts_ids[ $post_google_fonts_id ] ) ) {
+                    $extra_google_fonts_ids[ $post_google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $post_google_fonts_id ], $post_google_fonts_ids[ $post_google_fonts_id ] ) );
+                } else {
+                    $extra_google_fonts_ids[ $post_google_fonts_id ] = $font_weights;
+                }
+            }
+        }
+
+        foreach ( $extra_google_fonts_ids as $google_fonts_id => $font_weights ) {
+            if ( array_key_exists( $google_fonts_id, $google_fonts_ids ) && is_array( $extra_google_fonts_ids[ $google_fonts_id ] ) ) {
+                $google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+            } else {
+                $google_fonts_ids[ $google_fonts_id ] = $font_weights;
+            }
+        }
+
+        $google_fonts_names = td_fonts::get_google_fonts_for_url( $google_fonts_ids );
+
+        $final_fonts_names = '';
+
+        if ( ! empty( $panel_fonts_names )) {
+            $final_fonts_names = $panel_fonts_names;
+        }
+
+        if ( ! empty( $google_fonts_names )) {
+            if ( empty( $final_fonts_names )) {
+                $final_fonts_names = $google_fonts_names;
+            } else {
+                $final_fonts_names .= '|' . $google_fonts_names;
+            }
+        }
+
+        if ( ! empty( $final_fonts_names )) {
+            //used to pull fonts from google
+            $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . $final_fonts_names . '&display=swap';
+        }
 
 
-	//used to pull fonts from google
-	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query() . '&display=swap';
 
-	/*
+    } else {
+
+
+	    // old method to get all used google fonts
+
+        $cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+
+        $unique_google_fonts_ids = array();
+
+        //filter the google fonts used by user
+        if (!empty($cur_td_fonts)) {
+
+            foreach ( $cur_td_fonts as $section_font_settings ) {
+                if ( isset( $section_font_settings['font_family'] ) ) {
+                    $explode_font_family = explode( '_', $section_font_settings['font_family'] );
+                    if ( $explode_font_family[0] == 'g' ) {
+                        $unique_google_fonts_ids[] = $explode_font_family[1];
+                    }
+                }
+            }
+        }
+
+        $extra_google_fonts_ids = array();
+
+        // Filter used to modify the post checked for icon fonts
+        $post_id = apply_filters( 'td_filter_google_fonts_post_id', get_the_ID() );
+
+        $tds_footer_page = td_util::get_option('tds_footer_page');
+        if ( intval($tds_footer_page) !== $post_id ) {
+            $footer_page = get_post( $tds_footer_page );
+            if ( $footer_page instanceof WP_Post ) {
+                $footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
+                if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
+                    foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
+                        $extra_google_fonts_ids[] = $footer_google_fonts_id;
+                    }
+                }
+            }
+        }
+
+        // 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
+        $extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
+
+        $post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts', true );
+        if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
+            foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
+                $extra_google_fonts_ids[] = $post_google_fonts_id;
+            }
+        }
+
+        // remove duplicated font ids
+        $unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
+
+
+        //used to pull fonts from google
+        $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . '&display=swap';
+
+    }
+
+
+    /*
 	 * add the google link for fonts used by user
 	 * td_fonts_css_files: holds the link to fonts.googleapis.com built above
 	 * this section will appear in the header of the source of the page
 	 */
 	if(!empty($td_fonts_css_files) && td_options::get('g_use_google_fonts') !== 'disabled') {
-		wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
+	    wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
 	}
 }
 
@@ -770,9 +890,53 @@ function hook_wp_head() {
 	}
 
 	$tds_general_modal_image = td_util::get_option('tds_general_modal_image');
-
 	if (!empty($tds_general_modal_image)) {
 		td_js_buffer::add_variable('tds_general_modal_image', $tds_general_modal_image);
+	}
+
+	$tds_video_scroll = td_util::get_option('tds_video_scroll');
+	if (!empty($tds_video_scroll)) {
+		td_js_buffer::add_variable('tds_video_scroll', $tds_video_scroll);
+	}
+
+	$tds_video_position_h = td_util::get_option('tds_video_position_h');
+	if (!empty($tds_video_position_h)) {
+		td_js_buffer::add_variable('tds_video_position_h', $tds_video_position_h);
+	}
+
+	$tds_video_distance_h = td_util::get_option('tds_video_distance_h');
+	if (!empty($tds_video_distance_h)) {
+		td_js_buffer::add_variable('tds_video_distance_h', $tds_video_distance_h);
+	}
+
+	$tds_video_position_v = td_util::get_option('tds_video_position_v');
+	if (!empty($tds_video_position_v)) {
+		td_js_buffer::add_variable('tds_video_position_v', $tds_video_position_v);
+	}
+
+	$tds_video_distance_v = td_util::get_option('tds_video_distance_v');
+	if (!empty($tds_video_distance_v)) {
+		td_js_buffer::add_variable('tds_video_distance_v', $tds_video_distance_v);
+	}
+
+	$tds_video_width = td_util::get_option('tds_video_width');
+	if (!empty($tds_video_width)) {
+		td_js_buffer::add_variable('tds_video_width', $tds_video_width);
+	}
+
+	$tds_video_playing_one = td_util::get_option('tds_video_playing_one');
+	if (!empty($tds_video_playing_one)) {
+		td_js_buffer::add_variable('tds_video_playing_one', $tds_video_playing_one);
+	}
+
+	$tds_video_pause_hidden = td_util::get_option('tds_video_pause_hidden');
+	if (!empty($tds_video_pause_hidden)) {
+		td_js_buffer::add_variable('tds_video_pause_hidden', $tds_video_pause_hidden);
+	}
+
+	$tds_video_lazy = td_util::get_option('tds_video_lazy');
+	if (!empty($tds_video_lazy)) {
+		td_js_buffer::add_variable('tds_video_lazy', $tds_video_lazy);
 	}
 }
 
@@ -892,9 +1056,11 @@ function td_wpseo_title($seo_title) {
 add_filter('wpseo_json_ld_output', 'td_remove_yoast_json', 10, 1);
 function td_remove_yoast_json($data){
 	global $post;
-	$td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
-	if (isset($td_post_theme_settings['has_review'])) {
-		$data = array();
+	if (is_single()) {
+		$td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
+		if (isset($td_post_theme_settings['has_review'])) {
+			$data = array();
+		}
 	}
 	return $data;
 }
@@ -1447,7 +1613,7 @@ function td_change_backbone_js_hook() {
                 '</div>';
 
 			//inject our settings in the template - before <div class="setting align">
-			td_template_content = td_template_content.replace('<div class="setting align">', td_our_content + '<div class="setting align">');
+			td_template_content = td_template_content.replace('<fieldset class="setting-group">', td_our_content + '<fieldset class="setting-group">');
 
 			//save the template
 			jQuery('#tmpl-image-details').html(td_template_content);
@@ -2320,7 +2486,9 @@ if (is_admin()) {
 
 	add_action('admin_enqueue_scripts', function ($hook_suffix){
 
-	    if ( 'newspaper_page_td_theme_panel' === $hook_suffix ) {
+		$theme = strtolower(TD_THEME_NAME);
+
+	    if ( $theme . '_page_td_theme_panel' === $hook_suffix ) {
 			wp_enqueue_script(
 				'td-instagram-access',
 				TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdInstagramAccess.js',
@@ -2612,6 +2780,28 @@ function td_template_include_filter( $wordpress_template_path ) {
             } else {
                 // it's a theme template, load that one
                 return td_api_single_template::_get_theme_template( $single_template_id, $wordpress_template_path );
+            }
+        }
+
+        // Get primary category - post template settings
+        td_global::load_single_post($post);
+        $td_primary_category = td_global::get_primary_category_id();
+
+        if ( ! empty( $td_primary_category ) ) {
+
+            $post_category_template = td_util::get_category_option( $td_primary_category, 'tdb_post_category_template' );
+
+            // make sure the template exists, maybe it was deleted or something
+            if ( td_global::is_tdb_template( $post_category_template, true ) ) {
+
+                $tdb_template_id = td_global::tdb_get_template_id($post_category_template);
+
+                // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                if ( $td_single_override != $tdb_template_id ) {
+                    return $td_single_override;
+                }
             }
         }
 

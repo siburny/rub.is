@@ -11,19 +11,15 @@ class td_block_categories_tags extends td_block {
         $raw_css =
             "<style>
 
-                /* @inline */
+                /* @display */
 				.$unique_block_class .td-ct-item {
-					display: inline-block;
-				}
-				
-				/* @item_space */
-				.$unique_block_class .td-ct-item {
-					margin: @item_space;
+					display: @display;
 				}
 				
 				/* @item_space_right */
 				.$unique_block_class .td-ct-item {
 					margin-right: @item_space_right;
+					margin-bottom: 0;
 				}
 				.$unique_block_class .td-ct-item:last-child {
 					margin-right: 0;
@@ -31,6 +27,7 @@ class td_block_categories_tags extends td_block {
 				/* @item_space_bottom */
 				.$unique_block_class .td-ct-item {
 					margin-bottom: @item_space_bottom;
+					margin-right: 0;
 				}
 				.$unique_block_class .td-ct-item:last-child {
 					margin-bottom: 0;
@@ -140,28 +137,27 @@ class td_block_categories_tags extends td_block {
     static function cssMedia( $res_ctx ) {
 
         // inline list elements
-        $res_ctx->load_settings_raw( 'inline', $res_ctx->get_shortcode_att('inline') );
+        $display = $res_ctx->get_shortcode_att('inline');
+        if( $display == 'yes' ) {
+            $res_ctx->load_settings_raw( 'display', 'inline-block' );
+        } else {
+            $res_ctx->load_settings_raw( 'display', 'block' );
+        }
 
 
         // list item space
         $item_space = $res_ctx->get_shortcode_att('item_space');
-        $res_ctx->load_settings_raw( 'item_space', $item_space );
-        if ( is_numeric( $item_space ) ) {
-            $res_ctx->load_settings_raw( 'item_space', $item_space . 'px' );
+        if( $display == 'yes' ) {
+            $res_ctx->load_settings_raw( 'item_space_right', $item_space );
+            if( $item_space != '' && is_numeric( $item_space ) ) {
+                $res_ctx->load_settings_raw( 'item_space_right', $item_space  . 'px' );
+            }
+        } else {
+            $res_ctx->load_settings_raw( 'item_space_bottom', $item_space );
+            if( $item_space != '' && is_numeric( $item_space ) ) {
+                $res_ctx->load_settings_raw( 'item_space_bottom', $item_space . 'px' );
+            }
         }
-//        $item_space = $res_ctx->get_shortcode_att('item_space');
-//        $display_inline = $res_ctx->get_shortcode_att('inline');
-//        if( $display_inline == 'yes' ) {
-//            $res_ctx->load_settings_raw( 'item_space_right', $item_space );
-//            if( $item_space != '' && is_numeric( $item_space ) ) {
-//                $res_ctx->load_settings_raw( 'item_space_right', $item_space  . 'px' );
-//            }
-//        } else {
-//            $res_ctx->load_settings_raw( 'item_space_bottom', $item_space );
-//            if( $item_space != '' && is_numeric( $item_space ) ) {
-//                $res_ctx->load_settings_raw( 'item_space_bottom', $item_space . 'px' );
-//            }
-//        }
         // items padding
         $items_padding = $res_ctx->get_shortcode_att('items_padding');
         $res_ctx->load_settings_raw( 'items_padding', $items_padding );

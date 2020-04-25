@@ -433,11 +433,6 @@ $post_td_post_100_push_ups_id = td_demo_content::add_post(array(
 /*  ----------------------------------------------------------------------------
 	PAGES
 */
-$page_footer_template_id = td_demo_content::add_page(array(
-    'title' => 'Footer Template',
-    'file' => 'footer_template.txt',
-));
-
 $page_home_id = td_demo_content::add_page(array(
     'title' => 'Home',
     'file' => 'home.txt',
@@ -464,6 +459,15 @@ $template_date_template_id = td_demo_content::add_cloud_template(array(
 ));
 
 td_demo_misc::update_global_date_template( 'tdb_template_' . $template_date_template_id);
+
+
+$template_404_template_id = td_demo_content::add_cloud_template(array(
+    'title' => '404 Template',
+    'file' => '404_cloud_template.txt',
+    'template_type' => '404',
+));
+
+td_demo_misc::update_global_404_template( 'tdb_template_' . $template_404_template_id);
 
 
 $template_search_template_id = td_demo_content::add_cloud_template(array(
@@ -507,16 +511,22 @@ $template_header_template_id = td_demo_content::add_cloud_template(array(
     'file' => 'header_cloud_template.txt',
     'template_type' => 'header',
 ));
-
 td_demo_misc::update_global_header_template( 'tdb_template_' . $template_header_template_id);
+//update mobile menu id in cloud header template
+update_post_meta( $template_header_template_id, 'header_mobile_menu_id', $menu_td_demo_header_menu_id );
+
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Cloud Template - Classic PRO',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
 
 
 
 /*  ----------------------------------------------------------------------------
 	GENERAL SETTINGS
 */
-td_util::update_option('tds_footer_page', $page_footer_template_id);
-
 td_demo_misc::update_background('', false);
 
 td_demo_misc::update_background_mobile('');

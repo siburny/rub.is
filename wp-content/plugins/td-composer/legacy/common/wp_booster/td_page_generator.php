@@ -931,7 +931,7 @@ class td_page_generator {
     static function get_pagination() {
         global $wp_query;
 
-        if ( td_global::$current_template == '404' ) {
+        if ( td_global::get_current_template() === '404' ) {
             return;
         }
 
@@ -958,7 +958,7 @@ class td_page_generator {
         // hack for category pages - pagination
         // we also have to check for page-pagebuilder-latest.php template because we are running there in a FAKE loop and if the category
         // filter is active for that loop, WordPress believes that we are on a category
-        if(!is_admin() and td_global::$current_template != 'page-homepage-loop' and is_category()) {
+        if(!is_admin() and td_global::get_current_template() !== 'page-homepage-loop' and is_category()) {
 	        $posts_shown_in_loop = td_api_category_top_posts_style::_helper_get_posts_shown_in_the_loop();
 
             $numposts = $wp_query->found_posts - $posts_shown_in_loop; // fix the pagination, we have x less posts because the rest are in the top posts loop
@@ -1085,7 +1085,7 @@ class td_page_generator {
         /**
          * infinite loading pagination ONLY FOR CATEGORIES FOR NOW (19 aug 2015)
          */
-        if(!is_admin() and td_global::$current_template != 'page-homepage-loop' and is_category() and !empty($wp_query)) {
+        if(!is_admin() and td_global::get_current_template() !== 'page-homepage-loop' and is_category() and !empty($wp_query)) {
 
             // the filter_by parameter is used on categories to filter them. The theme uses normal pagination when the filter is used for now.
             // if we want to use the filter + loop ajax, we have to send the atts for each filter. It can be done, but not now (19 aug 2015)

@@ -12,6 +12,7 @@ td_api_autoload::add('td_weather', TDC_PATH . '/legacy/common/wp_booster/td_weat
 td_api_autoload::add('td_pinterest', TDC_PATH . '/legacy/common/wp_booster/td_pinterest.php');
 td_api_autoload::add('td_exchange', TDC_PATH . '/legacy/common/wp_booster/td_exchange.php');
 td_api_autoload::add('td_instagram', TDC_PATH . '/legacy/common/wp_booster/td_instagram.php');
+td_api_autoload::add('td_covid19', TDC_PATH . '/legacy/common/wp_booster/td_covid19.php');
 
 
 /* ----------------------------------------------------------------------------
@@ -237,13 +238,18 @@ if (!function_exists('mb_convert_encoding')) {
  * @param $td_options
  */
 function tdc_load_google_fonts( &$compiled_css, $fonts_to_load, $td_options ) {
-    foreach ( $fonts_to_load as $font_id => $font_family_name ) {
 
-        if ( is_numeric( $font_id ) ) {
-            $compiled_css .= '@import url("https://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names( array( $font_id ))  . '&display=swap' . '");' . PHP_EOL;
+	$google_fonts_names = td_fonts::get_google_fonts_for_url( $fonts_to_load );
 
-        } else if ( 0 === strpos( $font_id, 'file_' ) ) {
+	if ( ! empty( $google_fonts_names )) {
+		$compiled_css .= '@import url("https://fonts.googleapis.com/css?family=' . $google_fonts_names  . '&display=swap' . '");' . PHP_EOL;
+	}
 
+	foreach ( $fonts_to_load as $font_id => $font_weights ) {
+
+        if ( ! is_numeric( $font_id ) && 'DEFAULT' !== $font_id && ! empty( td_fonts::$font_names_google_list[ $font_id ] ) && 0 === strpos( $font_id, 'file_' ) ) {
+
+        	$font_family_name = td_fonts::$font_names_google_list[ $font_id ];
             $font_file_link = $td_options['td_fonts_user_inserted']['font_' . $font_id];
 
             $compiled_css .= ' @font-face {' .

@@ -160,7 +160,7 @@ $external_shortcodes = array(
                     "type" => "textfield",
                     "value" => "",
                     "heading" => __("Youtube id", TD_THEME_NAME),
-                    "description" => "User: www.youtube.com/user/<b style='color: #000'>ENVATO</b><br/>Channel: www.youtube.com/ <b style='color: #000'>channel/UCJr72fY4cTaNZv7WPbvjaSw</b>",
+                    "description" => "User: www.youtube.com/user/<b style='color: #000'>ENVATO</b><br/>Channel: www.youtube.com/ <b style='color: #000'>channel/UCJr72fY4cTaNZv7WPbvjaSw</b><br><a href='https://forum.tagdiv.com/youtube-api-key/' target='_blank'>YouTube API Key guide</a>",
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),

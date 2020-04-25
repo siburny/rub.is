@@ -445,6 +445,11 @@ class td_demo_misc extends td_demo_base {
         $td_options['tdb_header_template'] = $template_id;
     }
 
+    static function update_global_footer_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_footer_template'] = $template_id;
+    }
+
     static function update_global_date_template( $template_id ) {
         $td_options = &td_options::get_all_by_ref();
         $td_options['tdb_date_template'] = $template_id;
@@ -453,6 +458,11 @@ class td_demo_misc extends td_demo_base {
     static function update_global_tag_template( $template_id ) {
         $td_options = &td_options::get_all_by_ref();
         $td_options['tdb_tag_template'] = $template_id;
+    }
+
+    static function update_global_attachment_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_attachment_template'] = $template_id;
     }
 }
 
@@ -966,7 +976,7 @@ class td_demo_content extends td_demo_base {
 	    $template_type = $params['template_type'];
 
         $template_types = array(
-            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header'
+            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header', 'footer'
         );
 
         if ( in_array( $template_type, $template_types) === false ) {
