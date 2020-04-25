@@ -34202,13 +34202,31 @@ class td_config {
                 "param_name" => "post_custom_field_name",
                 "type" => "textfield",
                 "value" => '',
-                "heading" => 'Custom Field Name:',
+                "heading" => 'Custom Field Name 1:',
                 "holder" => "div",
                 "class" => "tdc-textfield-big",
                 'group' => $group
             ),
             array(
                 "param_name" => "post_custom_field_value",
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'Custom Field Filter (e.g. 02/15, today, tomorrow, or yesterday):',
+                "holder" => "div",
+                "class" => "tdc-textfield-big",
+                'group' => $group
+            ),
+            array(
+                "param_name" => "post_custom_field2_name",
+                "type" => "textfield",
+                "value" => '',
+                "heading" => 'Custom Field Name 2:',
+                "holder" => "div",
+                "class" => "tdc-textfield-big",
+                'group' => $group
+            ),
+            array(
+                "param_name" => "post_custom_field2_value",
                 "type" => "textfield",
                 "value" => '',
                 "heading" => 'Custom Field Filter (e.g. 02/15, today, tomorrow, or yesterday):',
@@ -34302,7 +34320,8 @@ class td_config {
                     'Random Posts' => 'random_posts',
                     'Random posts Today' => 'random_today' ,
                     'Random posts from last 7 Day' => 'random_7_day' ,
-                    'Most Commented' => 'comment_count'
+                    'Most Commented' => 'comment_count',
+                    'By Rank' => 'by_rank'
                 ),
                 "heading" => 'Sort order:',
                 "description" => "How to sort the posts. Notice that Popular (last 7 days) option is affected by caching plugins and CDNs. For popular posts we recommend the jetpack (24-48hrs) method",

@@ -17,6 +17,8 @@ class td_data_source {
                 array(
                     'post_custom_field_name' => '',
                     'post_custom_field_value' => '',
+                    'post_custom_field2_name' => '',
+                    'post_custom_field2_value' => '',
                     'post_ids' => '',
                     'post_slug' => '',
                     'category_ids' => '',
@@ -232,6 +234,17 @@ class td_data_source {
                             'after' => '1 week ago'
                             );
                 break;
+            case 'by_rank':
+                $wp_query_args['meta_query'] = 	array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'rank',
+                        'type'    => 'numeric'
+                    ),
+                );
+                $wp_query_args['orderby'] = 'rank';
+                $wp_query_args['order'] = 'DESC';
+                break;
         }
 
         if (!empty($autors_id)) {
@@ -305,7 +318,11 @@ class td_data_source {
         }
 
 
-		// custom field
+        if (empty($wp_query_args['meta_query'])) {
+            $wp_query_args['meta_query'] = array('relation' => 'AND');
+        }
+
+		// custom field 1
 		if (!empty($post_custom_field_name) && !empty($post_custom_field_value)) {
 			if($post_custom_field_value == 'today') {
 				$date = date('m/d/');
@@ -326,13 +343,23 @@ class td_data_source {
 				} else {
 					$date = $post_custom_field_value;
 				}
-			}
-			
-			$wp_query_args['meta_key'] = $post_custom_field_name;
-			$wp_query_args['meta_value'] = $wp_query_args['meta_value'] ? $wp_query_args['meta_value'] : '^'.preg_quote($date);
-			$wp_query_args['meta_compare'] = 'RLIKE';
+            }
+            
+            $wp_query_args['meta_query'][] = array(
+                'key' => $post_custom_field_name,
+                'value' => '^'.preg_quote($date),
+                'compare' => 'RLIKE',
+            );
 		}
 
+		// custom field 2
+		if (!empty($post_custom_field2_name) && !empty($post_custom_field2_value)) {
+            $wp_query_args['meta_query'][] = array(
+                'key' => $post_custom_field2_name,
+                'value' => preg_quote($post_custom_field2_value),
+            );
+        }
+        
         // post in section
         if (!empty($post_ids)) {
 
