@@ -456,10 +456,6 @@ class Ai1wm_Import_Database {
 				// Replace Uploads URL
 				foreach ( array( $uploads_url, $uploads_url_www_inversion ) as $url ) {
 
-					// Get domain
-					$old_domain = parse_url( $url, PHP_URL_HOST );
-					$new_domain = parse_url( $blog['New']['WordPress']['UploadsURL'], PHP_URL_HOST );
-
 					// Get path
 					$old_path = parse_url( $url, PHP_URL_PATH );
 					$new_path = parse_url( $blog['New']['WordPress']['UploadsURL'], PHP_URL_PATH );
@@ -467,16 +463,16 @@ class Ai1wm_Import_Database {
 					// Get scheme
 					$new_scheme = parse_url( $blog['New']['WordPress']['UploadsURL'], PHP_URL_SCHEME );
 
-					// Add domain and path with single quote
-					if ( ! in_array( sprintf( "='%s%s", $old_domain, untrailingslashit( $old_path ) ), $old_replace_values ) ) {
-						$old_replace_values[] = sprintf( "='%s%s", $old_domain, untrailingslashit( $old_path ) );
-						$new_replace_values[] = sprintf( "='%s%s", $new_domain, untrailingslashit( $new_path ) );
+					// Add path with single quote
+					if ( ! in_array( sprintf( "='%s", trailingslashit( $old_path ) ), $old_replace_values ) ) {
+						$old_replace_values[] = sprintf( "='%s", trailingslashit( $old_path ) );
+						$new_replace_values[] = sprintf( "='%s", trailingslashit( $new_path ) );
 					}
 
-					// Add domain and path with double quote
-					if ( ! in_array( sprintf( '="%s%s', $old_domain, untrailingslashit( $old_path ) ), $old_replace_values ) ) {
-						$old_replace_values[] = sprintf( '="%s%s', $old_domain, untrailingslashit( $old_path ) );
-						$new_replace_values[] = sprintf( '="%s%s', $new_domain, untrailingslashit( $new_path ) );
+					// Add path with double quote
+					if ( ! in_array( sprintf( '="%s', trailingslashit( $old_path ) ), $old_replace_values ) ) {
+						$old_replace_values[] = sprintf( '="%s', trailingslashit( $old_path ) );
+						$new_replace_values[] = sprintf( '="%s', trailingslashit( $new_path ) );
 					}
 
 					// Set Uploads URL scheme
@@ -754,10 +750,6 @@ class Ai1wm_Import_Database {
 			// Replace Uploads URL
 			foreach ( array( $uploads_url, $uploads_url_www_inversion ) as $url ) {
 
-				// Get domain
-				$old_domain = parse_url( $url, PHP_URL_HOST );
-				$new_domain = parse_url( ai1wm_get_uploads_url(), PHP_URL_HOST );
-
 				// Get path
 				$old_path = parse_url( $url, PHP_URL_PATH );
 				$new_path = parse_url( ai1wm_get_uploads_url(), PHP_URL_PATH );
@@ -765,16 +757,16 @@ class Ai1wm_Import_Database {
 				// Get scheme
 				$new_scheme = parse_url( ai1wm_get_uploads_url(), PHP_URL_SCHEME );
 
-				// Add domain and path with single quote
-				if ( ! in_array( sprintf( "='%s%s", $old_domain, untrailingslashit( $old_path ) ), $old_replace_values ) ) {
-					$old_replace_values[] = sprintf( "='%s%s", $old_domain, untrailingslashit( $old_path ) );
-					$new_replace_values[] = sprintf( "='%s%s", $new_domain, untrailingslashit( $new_path ) );
+				// Add path with single quote
+				if ( ! in_array( sprintf( "='%s", trailingslashit( $old_path ) ), $old_replace_values ) ) {
+					$old_replace_values[] = sprintf( "='%s", trailingslashit( $old_path ) );
+					$new_replace_values[] = sprintf( "='%s", trailingslashit( $new_path ) );
 				}
 
-				// Add domain and path with double quote
-				if ( ! in_array( sprintf( '="%s%s', $old_domain, untrailingslashit( $old_path ) ), $old_replace_values ) ) {
-					$old_replace_values[] = sprintf( '="%s%s', $old_domain, untrailingslashit( $old_path ) );
-					$new_replace_values[] = sprintf( '="%s%s', $new_domain, untrailingslashit( $new_path ) );
+				// Add path with double quote
+				if ( ! in_array( sprintf( '="%s', trailingslashit( $old_path ) ), $old_replace_values ) ) {
+					$old_replace_values[] = sprintf( '="%s', trailingslashit( $old_path ) );
+					$new_replace_values[] = sprintf( '="%s', trailingslashit( $new_path ) );
 				}
 
 				// Add Uploads URL scheme
@@ -955,6 +947,9 @@ class Ai1wm_Import_Database {
 
 		// Set Visual Composer
 		$mysql->set_visual_composer( ai1wm_validate_plugin_basename( 'js_composer/js_composer.php' ) );
+
+		// Set Oxygen Builder
+		$mysql->set_oxygen_builder( ai1wm_validate_plugin_basename( 'oxygen/functions.php' ) );
 
 		// Set Optimize Press
 		$mysql->set_optimize_press( ai1wm_validate_plugin_basename( 'optimizePressPlugin/optimizepress.php' ) );

@@ -27,44 +27,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
 
-class Ai1wm_Recursive_Exclude_Filter extends RecursiveFilterIterator {
-
-	protected $exclude = array();
-
-	public function __construct( RecursiveIterator $iterator, $exclude = array() ) {
-		parent::__construct( $iterator );
-		if ( is_array( $exclude ) ) {
-			foreach ( $exclude as $path ) {
-				$this->exclude[] = ai1wm_replace_forward_slash_with_directory_separator( $path );
-			}
-		}
-	}
-
-	public function accept() {
-		if ( in_array( ai1wm_replace_forward_slash_with_directory_separator( $this->getInnerIterator()->getSubPathname() ), $this->exclude ) ) {
-			return false;
-		}
-
-		if ( in_array( ai1wm_replace_forward_slash_with_directory_separator( $this->getInnerIterator()->getPathname() ), $this->exclude ) ) {
-			return false;
-		}
-
-		if ( in_array( ai1wm_replace_forward_slash_with_directory_separator( $this->getInnerIterator()->getPath() ), $this->exclude ) ) {
-			return false;
-		}
-
-		if ( strpos( $this->getInnerIterator()->getSubPathname(), "\n" ) !== false ) {
-			return false;
-		}
-
-		if ( strpos( $this->getInnerIterator()->getSubPathname(), "\r" ) !== false ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function getChildren() {
-		return new self( $this->getInnerIterator()->getChildren(), $this->exclude );
-	}
+if ( ai1wm_got_url_rewrite() ) {
+	printf(
+		__(
+			'» <a class="ai1wm-no-underline" href="%s" target="_blank">Save permalinks structure</a>. (opens a new window)<br />' .
+			'» <a class="ai1wm-no-underline" href="https://oxygenbuilder.com/documentation/other/importing-exporting/#resigning" target="_blank">Re-sign Oxygen Builder shortcodes</a>. (opens a new window)<br />' .
+			'» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Optionally, review the plugin</a>. (opens a new window)',
+			AI1WM_PLUGIN_NAME
+		),
+		admin_url( 'options-permalink.php#submit' )
+	);
+} else {
+	_e(
+		'» Permalinks are set to default. <a class="ai1wm-no-underline" href="https://help.servmask.com/knowledgebase/permalinks-are-set-to-default/" target="_blank">Why?</a> (opens a new window)<br />' .
+		'» <a class="ai1wm-no-underline" href="https://oxygenbuilder.com/documentation/other/importing-exporting/#resigning" target="_blank">Re-sign Oxygen Builder shortcodes</a>. (opens a new window)<br />' .
+		'» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Optionally, review the plugin</a>. (opens a new window)',
+		AI1WM_PLUGIN_NAME
+	);
 }
