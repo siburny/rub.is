@@ -315,14 +315,23 @@ class td_module_single_base extends td_module {
 
         } else {
             if (td_util::get_option('tds_p_show_date') != 'hide') {
-//                $td_article_date_unix = get_the_time('U', $this->post->ID);
 
-                // get_post_datetime() used since WP 5.3
-//                $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
+                global $wp_version;
+                //old WP support
+                if (version_compare($wp_version, '5.3', '<')) {
+                    $td_article_date = date(DATE_W3C, get_the_time('U', $this->post->ID));
+                } else {
+                    // get_post_datetime() used from WP 5.3
+                    $td_article_date = get_post_datetime($this->post->ID, 'date', 'gmt');
+                    if ( $td_article_date !== false  ) {
+                        $td_article_date = $td_article_date->format(DATE_W3C);
+                    }
+                }
 
                 $buffy .= '<span class="td-post-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_date . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
+
             }
         }
 
@@ -557,7 +566,16 @@ class td_module_single_base extends td_module {
 
 	        //if the post individual template is not set, check the global settings, if template 1 is set disable the top ad
 	        } else {
-		        $td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+	        	$option_id = 'td_default_site_post_template';
+	            if (class_exists('SitePress', false )) {
+	                global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+                    if ( 1 === $translation_mode ) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+		        $td_default_site_post_template = td_util::get_option($option_id);
 	        }
 
 	        //default post template - is empty, check td_api_single_template::_helper_td_global_list_to_metaboxes()

@@ -1158,14 +1158,16 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                                                                             </td>
                                                                             <td class="td-system-status-inner-table-video">
                                                                                 <?php
-                                                                                foreach( $name_data['items'] as $video_id ) { ?>
-                                                                                    <div class="td-remote-value-data-container">
-                                                                                        <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?></a></div>
-                                                                                        <div class="td-array-viewer"><pre>
-                                                                                <?php print_r( $td_videos_pool[$video_service][$video_id] ) ?>
-                                                                            </pre></div>
-                                                                                    </div>
-                                                                                <?php } ?>
+                                                                                foreach( $name_data['items'] as $video ) {
+                                                                                    if( $video['status'] == 'public' ) { ?>
+                                                                                        <div class="td-remote-value-data-container">
+                                                                                            <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?></a></div>
+                                                                                            <div class="td-array-viewer"><pre>
+                                                                                                <?php print_r( $td_videos_pool[$video_service][$video['id']] ) ?>
+                                                                                            </pre></div>
+                                                                                        </div>
+                                                                                    <?php }
+                                                                                } ?>
                                                                             </td>
                                                                             <td class="td-system-status-inner-table-time">
                                                                                 <?php printf('%1$s', date('H:i:s', time() - $name_data['timestamp']) . ' ago') ?>
@@ -1281,7 +1283,11 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                $td_covid19_data = array();
            }
 
-           if( !empty( $td_covid19_data ) ) { ?>
+           if( !empty( $td_covid19_data ) ) {
+               $td_covid19_data_date = new DateTime("@" . $td_covid19_data['timestamp']);
+               $local_timezone = get_option('timezone_string') ? get_option( 'timezone_string' ) : date_default_timezone_get();
+               $td_covid19_data_date->setTimezone(new DateTimeZone($local_timezone));
+               ?>
                <table id="td-covid19-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
                    <thead>
                        <tr>
@@ -1293,7 +1299,7 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                    <tbody>
                         <tr>
                             <td colspan="2">Data from</td>
-                            <td colspan="3"><?php echo $td_covid19_data['date'] ?></td>
+                            <td colspan="3"><?php echo $td_covid19_data_date->format(get_option('date_format') . ' ' . get_option('time_format') ) ?></td>
                         </tr>
                    </tbody>
                </table>

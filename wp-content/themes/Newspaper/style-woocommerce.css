@@ -346,11 +346,6 @@
 .woocommerce div.product .woocommerce-tabs ul.tabs:before {
   border-bottom: 2px solid #222;
 }
-@media (min-width: 1019px) {
-  .woocommerce-page .related ul li.product {
-    width: 22.05% !important;
-  }
-}
 .woocommerce-cart .woocommerce table {
   border-collapse: collapse !important;
 }

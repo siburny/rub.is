@@ -11,6 +11,14 @@ class td_block_ad_box extends td_block {
 
         $raw_css =
             "<style>
+
+                /* @ad_general_css */
+				.$unique_block_class.td-a-rec {
+					text-align: center;
+				}
+				.$unique_block_class .td-element-style {
+					z-index: -1;
+				}
             
                 /* @spot_hide_placeholder */
                 .$unique_block_class .td-spot-id-spot_img_hidden {
@@ -134,18 +142,26 @@ class td_block_ad_box extends td_block {
 				}
 				
 				/* @spot_img_horiz_left */
-				.$unique_block_class.td-a-rec-img,
-				.$unique_block_class .td-adspot-title {
+				.$unique_block_class.td-a-rec-img {
 				    text-align: left;
 				}
+				@media (max-width: 767px) {
+				    .$unique_block_class.td-a-rec-img {
+				        text-align: center;
+				    }
+                }
 				.$unique_block_class.td-a-rec-img img {
                     margin: 0 auto 0 0;
                 }
 				/* @spot_img_horiz_right */
-				.$unique_block_class.td-a-rec-img,
-				.$unique_block_class .td-adspot-title {
+				.$unique_block_class.td-a-rec-img {
 				    text-align: right;
 				}
+				@media (max-width: 767px) {
+				    .$unique_block_class.td-a-rec-img {
+				        text-align: center;
+				    }
+                }
 				.$unique_block_class.td-a-rec-img img {
                     margin: 0 0 0 auto;
                 }
@@ -161,11 +177,6 @@ class td_block_ad_box extends td_block {
 				/* @f_title */
 				.$unique_block_class .td-adspot-title {
 					@f_title
-				}
-
-				/* @ad_general_css */
-				.$unique_block_class .td-element-style {
-					z-index: -1;
 				}
 				
 			</style>";
@@ -410,17 +421,19 @@ class td_block_ad_box extends td_block {
             //get the block css
             $buffy .= $this->get_block_css();
 
-            $buffy .= $rec_title;
+            $buffy .= '<div style="display: inline-block">';
+                $buffy .= $rec_title;
 
-            if ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
-                $buffy .= '<div class="td-spot-id-spot_img_hidden"><div class="tdc-placeholder-title"></div></div>';
-            }
+                if ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                    $buffy .= '<div class="td-spot-id-spot_img_hidden"><div class="tdc-placeholder-title"></div></div>';
+                }
 
-            foreach ($spot_imgs as $key => $spot_img) {
-                $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
-                $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" alt="" />';
-                $buffy .= '</a>';
-            }
+                foreach ($spot_imgs as $key => $spot_img) {
+                    $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
+                    $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" alt="" />';
+                    $buffy .= '</a>';
+                }
+                $buffy .= '</div>';
             $buffy .= '</div>';
         } else if( $spot_code != '' ) {
             $buffy .= '<div class="td-block td-a-rec td-a-rec-id-custom-spot ' . $this->get_ad_css_class( $atts ) . '">';

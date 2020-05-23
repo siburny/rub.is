@@ -305,6 +305,8 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                 $preview_url = get_permalink($post->ID);
             }
             ?>
+
+            <?php if (TD_THEME_NAME !== 'Newsmag') { ?>
             <a class="tdc-sidebar-w-button tdb-load-template tdc-header-link tdc-load-cloud" href="#" title="Add an element from the cloud library">
                 <span class="tdc-sidebar-icon tdc-icon-cloud"></span>
                 <span class="tdc-header-label tdc-text-cloud">Cloud</span>
@@ -313,7 +315,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                 <span class="tdc-sidebar-icon tdc-icon-header"></span>
                 <span class="tdc-header-label tdc-text-header">Manager</span>
             </a>
-
+            <?php } ?>
             <a class="tdc-header-link tdc-close-page" href="#" title="Close the composer and switch to backend">
                 <span class="tdc-sidebar-icon tdc-icon-close"></span>
                 <span class="tdc-header-label tdc-text-close">Close</span>
@@ -1009,7 +1011,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
 						if ( 'page' === $tdbTemplateType ) {
                             foreach ( $common_page_el_mapped_shortcodes as $common_page_el_mapped_shortcode ) {
-                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' || $common_page_el_mapped_shortcode['base'] === 'tdb_breadcrumbs' || $common_page_el_mapped_shortcode['base'] === 'tdb_title' ) {
+                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' || $common_page_el_mapped_shortcode['base'] === 'tdb_breadcrumbs' || $common_page_el_mapped_shortcode['base'] === 'tdb_title' || $common_page_el_mapped_shortcode['base'] === 'tdb_woo_menu_cart' ) {
                                     $external_mapped_shortcodes[] = $common_page_el_mapped_shortcode;
                                 }
                             }
@@ -1161,6 +1163,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 		</div>
 
 		<div id="tdc-font-list">
+		</div>
+
+        <div id="tdc-editor-css" style="z-index:2;height:650px;width:calc(100% + 26px);left:-13px">
 		</div>
 
 		<?php

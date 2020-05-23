@@ -89,4 +89,4 @@ if (TD_DEBUG_LIVE_THEME_STYLE) {
 
 }
 
-//td_demo_state::update_state("estates_pro", 'full');
+//td_demo_state::update_state("medicine_pro", 'full');

@@ -276,3 +276,4 @@
 <span data-font_class="td-icon-audio-speaker"><i class="td-icon-audio-speaker td-size-big"></i></span>
 <span data-font_class="td-icon-audio-speaker-mute"><i class="td-icon-audio-speaker-mute td-size-big"></i></span>
 <span data-font_class="td-icon-audio-refresh"><i class="td-icon-audio-refresh td-size-big"></i></span>
+<span data-font_class="td-icon-cart"><i class="td-icon-cart td-size-big"></i></span>

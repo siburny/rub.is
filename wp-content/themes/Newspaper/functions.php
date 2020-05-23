@@ -392,7 +392,7 @@ add_action( 'current_screen', function() {
 
                     var $formUpgradeThemes = jQuery('form[name="upgrade-themes"]');
                     if ( $formUpgradeThemes.length ) {
-                        var $input = $formUpgradeThemes.find('input[type="checkbox"][value="<?php echo $theme_name ?>"]');
+                        var $input = $formUpgradeThemes.find('input[type="checkbox"][value="<?php echo esc_js(sanitize_title($theme_name)) ?>"]');
                         if ($input.length) {
                             $input.attr( 'checked', true );
                             $formUpgradeThemes.submit();
@@ -406,3 +406,30 @@ add_action( 'current_screen', function() {
         });
     }
 });
+
+
+
+
+
+add_filter( 'render_block', 'td_filter_youtube_embed', 10, 3);
+function td_filter_youtube_embed( $block_content, $block ) {
+
+    if( 'core-embed/youtube' !== $block['blockName'] ) {
+        return $block_content;
+    }
+
+    $matches = array();
+    preg_match('/iframe(.*)src=\"(\S*)\"/', $block_content, $matches);
+
+    if ( !empty($matches) && is_array($matches) && 3 === count($matches)) {
+        $url = $matches[2];
+        if (strpos($url, '?') > 0 ) {
+            $new_url = $url . '&enablejsapi=1';
+        } else {
+            $new_url = $url . '?enablejsapi=1';
+        }
+        $block_content = str_replace( $url, $new_url, $block_content);
+    }
+
+  return $block_content;
+}

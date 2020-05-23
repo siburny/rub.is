@@ -77,7 +77,16 @@ td_page_views::update_page_views($post->ID);
 
 //added by Radu A. check if this post have a post template to be display with.
 //if not use the default site post template from Theme Panel -> Post Settings -> Default site post template
-$td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+$option_id = 'td_default_site_post_template';
+if (class_exists('SitePress', false )) {
+    global $sitepress;
+	$sitepress_settings = $sitepress->get_settings();
+	$translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+	if ( 1 === $translation_mode ) {
+		$option_id .= $sitepress->get_current_language();
+	}
+}
+$td_default_site_post_template = td_util::get_option($option_id);
 
 if(empty($td_post_theme_settings['td_post_template']) and !empty($td_default_site_post_template)) {
 	$td_post_theme_settings['td_post_template'] = $td_default_site_post_template;

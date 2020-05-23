@@ -321,6 +321,16 @@ class td_config_mob {
             )
         );
 
+		td_api_smart_list::add('td_smart_list_mob_2',
+			array(
+				'file' => TDC_PATH . '/mobile/includes/smart_lists/td_smart_list_mob_2.php',
+				'text' => 'Smart list mobile 2',
+				'img' => '',
+				'extract_first_image' => true,
+				'group' => 'mob' // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
+			)
+		);
+
         td_api_smart_list::add('td_smart_list_amp_1',
             array(
                 'file' => TDC_PATH . '/mobile/amp/smart_lists/td_smart_list_amp_1.php',
@@ -330,7 +340,17 @@ class td_config_mob {
                 'group' => 'mob'
             )
         );
-
+		
+		td_api_smart_list::add('td_smart_list_amp_2',
+			array(
+				'file' => TDC_PATH . '/mobile/amp/smart_lists/td_smart_list_amp_2.php',
+				'text' => 'Smart list amp 2',
+				'img' => '',
+				'extract_first_image' => true,
+				'group' => 'mob'
+			)
+		);
+		
         /**
          * social sharing styles
          */

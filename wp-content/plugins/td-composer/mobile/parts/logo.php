@@ -49,12 +49,22 @@ if (!empty($td_logo_title_mob)) {
     $td_logo_title = ' title="' . $td_logo_title . '"';
 }
 
+// H1 on logo when there's no title with H1 in page
+$td_use_h1_logo = false;
+if ( ( is_front_page() || is_home() ) && td_util::get_option('tds_h1_on_logo') != 'hide' ) {
+    $td_use_h1_logo = true;
+}
+
 
 if (!empty($td_mobile_customLogo)) {
 
     // mobile logo here
     if (!empty($td_mobile_customLogoR)) {
         //if retina
+
+        if($td_use_h1_logo === true) {
+            echo '<h1 class="td-logo">';
+        }
         ?>
 
         <a class="td-mobile-logo" href="<?php echo esc_url(home_url('/')); ?>">
@@ -64,14 +74,23 @@ if (!empty($td_mobile_customLogo)) {
                  alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
         </a>
     <?php
+        if($td_use_h1_logo === true) {
+            echo '</h1>';
+        }
     } else {
         //not retina
         if (!empty($td_mobile_customLogo)) {
+            if($td_use_h1_logo === true) {
+                echo '<h1 class="td-logo">';
+            }
             ?>
             <a class="td-mobile-logo" href="<?php echo esc_url(home_url('/')); ?>">
                 <img src="<?php echo $td_mobile_customLogo ?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
             </a>
         <?php
+            if($td_use_h1_logo === true) {
+                echo '</h1>';
+            }
         }
     }
 
@@ -80,6 +99,9 @@ if (!empty($td_mobile_customLogo)) {
     // header logo here
     if (!empty($td_header_logoR)) {
         //if retina
+        if($td_use_h1_logo === true) {
+            echo '<h1 class="td-logo">';
+        }
         ?>
 
         <a class="td-header-logo" href="<?php echo esc_url(home_url('/')); ?>">
@@ -89,14 +111,23 @@ if (!empty($td_mobile_customLogo)) {
                  alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
         </a>
     <?php
+        if($td_use_h1_logo === true) {
+            echo '</h1>';
+        }
     } else {
         //not retina
         if (!empty($td_header_logo)) {
+            if($td_use_h1_logo === true) {
+                echo '<h1 class="td-logo">';
+            }
             ?>
             <a class="td-header-logo" href="<?php echo esc_url(home_url('/')); ?>">
                 <img src="<?php echo $td_header_logo ?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
             </a>
         <?php
+            if($td_use_h1_logo === true) {
+                echo '</h1>';
+            }
         } else { ?>
             <div class="td-logo-text-wrap">
                 <span class="td-logo-text-container">

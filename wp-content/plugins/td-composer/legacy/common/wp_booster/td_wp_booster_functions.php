@@ -2099,7 +2099,16 @@ function td_add_single_template_class($classes) {
 			$active_single_template = $td_post_theme_settings['td_post_template'];
 		} else {
 			// we may have a global post template form td panel
-			$td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+            $option_id = 'td_default_site_post_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+				$sitepress_settings = $sitepress->get_settings();
+				$translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+				if ( 1 === $translation_mode ) {
+					$option_id .= $sitepress->get_current_language();
+				}
+			}
+			$td_default_site_post_template = td_util::get_option($option_id);
 			if(!empty($td_default_site_post_template)) {
 				$active_single_template = $td_default_site_post_template;
 			}
@@ -2806,7 +2815,15 @@ function td_template_include_filter( $wordpress_template_path ) {
         }
 
         // read the global setting
-        $default_template_id = td_util::get_option('td_default_site_post_template');
+        $option_id = 'td_default_site_post_template';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+			$sitepress_settings = $sitepress->get_settings();
+			$translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+			if ( 1 === $translation_mode ) {
+				$option_id .= $sitepress->get_current_language();
+			}        }
+        $default_template_id = td_util::get_option($option_id);
 
         // STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
         if ( td_global::is_tdb_template( $default_template_id ) ) {
@@ -2883,4 +2900,29 @@ add_filter( 'comments_template', function (){
 
 
 
+wp_oembed_add_provider( '#https?://(www\.)?tiktok\.com/.*/video/.*#i', 'https://www.tiktok.com/oembed', true );
 
+
+function td_tiktok_embed_video( $attributes ) {
+    if ( ! empty($attributes['url'])) {
+	    $url = trim( $attributes[ 'url' ] );
+	    if ( empty( $url ) || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+		    $content = '<p>' . esc_html( 'Please insert a TikTok valid URL in sidebar block attribute.' ) . '</p>';
+	    } else {
+		    $content = filter_var( $url, FILTER_VALIDATE_URL );
+	    }
+    }
+	return apply_filters( 'the_content', $content );
+}
+
+
+add_action( 'init', function () {
+	register_block_type('td-tiktok-embed-video/video',
+        array(
+		    'render_callback' => 'td_tiktok_embed_video',
+		    'attributes'      => array(
+			    'url' => array( 'type' => 'string' ),
+		    ),
+	    )
+    );
+});

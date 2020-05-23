@@ -21,7 +21,8 @@
 }
 @media (max-width: 767px) {
   .tdc_woo_shortcodes .woocommerce ul.products li.product {
-    width: 100% !important;
+    padding-left: 0;
+    padding-right: 0;
     text-align: left !important;
   }
   .tdc_woo_shortcodes .woocommerce ul.products li.product:last-child {
@@ -35,9 +36,18 @@
     width: 30%;
     margin-right: 30px;
     margin-bottom: 0 !important;
+    /* responsive portrait phone */
   }
   .tdc_woo_shortcodes .woocommerce ul.products li.product .onsale {
     right: 70%;
+  }
+}
+@media (max-width: 767px) and (max-width: 767px) {
+  .tdc_woo_shortcodes .woocommerce ul.products li.product img {
+    margin-right: 15px;
+    margin-bottom: 15px !important;
+    width: 100%;
+    float: none;
   }
 }
 .tdc_woo_shortcodes .woocommerce ul.products li.product .woocommerce-loop-product__link {

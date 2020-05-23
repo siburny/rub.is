@@ -111,7 +111,16 @@ class td_background {
 
             // if we don't have any single_template set on this post, try to laod the default global setting
             if(empty($post_meta_values['td_post_template'])) {
-                $td_site_post_template = td_util::get_option('td_default_site_post_template');
+            	$option_id = 'td_default_site_post_template';
+		        if (class_exists('SitePress', false )) {
+		            global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+                    if ( 1 === $translation_mode ) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+                $td_site_post_template = td_util::get_option($option_id);
             } else {
                 $td_site_post_template = $post_meta_values['td_post_template'];
             }

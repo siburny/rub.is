@@ -182,6 +182,10 @@ class td_module_single_mob extends td_module_single_base {
 
             $td_smart_list_class = td_util::is_amp() ? 'td_smart_list_amp_1' : 'td_smart_list_mob_1';
 
+            if (td_util::get_option('tdm_smartlist_2') == 'yes' ) {
+                $td_smart_list_class = td_util::is_amp() ? 'td_smart_list_amp_2' : 'td_smart_list_mob_2';
+            }
+
             if (class_exists($td_smart_list_class)) {
                 /**
                  * @var $td_smart_list_obj td_smart_list

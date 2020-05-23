@@ -29,8 +29,6 @@
 <?php echo td_panel_generator::box_end();?>
 
 
-
-
 <!-- Thumbs on Modules/Blocks -->
 <?php
     echo td_panel_generator::ajax_box('Thumbs on Modules/Blocks', array(
@@ -39,7 +37,6 @@
         ), '', 'td_panel_box_thumb_on_modules'
     );
 ?>
-
 
 
 

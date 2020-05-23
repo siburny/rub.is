@@ -20,7 +20,7 @@ class td_video_support{
 	 *
 	 * @return string - the player HTML
 	 */
-	static function render_video($videoUrl, $controls = 'yes', $autoplay = '', $loop = '') {
+	static function render_video($videoUrl, $controls = 'yes', $autoplay = '', $loop = '', $is_ajax = false) {
 	    $controlsParam = '';
 	    $autoplayParam = '';
         $loopParam = '';
@@ -39,7 +39,7 @@ class td_video_support{
                 }
 
                 $tds_video_lazy = td_util::get_option('tds_video_lazy');
-                if ( ! empty($tds_video_lazy) && wp_is_mobile()) {
+                if ( ! empty($tds_video_lazy) && wp_is_mobile() && ! $is_ajax && ! td_util::is_amp()) {
 
                     $buffy .= '
                         <div class="wpb_video_wrapper">
@@ -87,10 +87,18 @@ class td_video_support{
 
                 } else {
 
-				    $buffy .= '
-                        <div class="wpb_video_wrapper">
-                            <iframe id="td_youtube_player" class="td-youtube-player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id( $videoUrl ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param( $videoUrl ) . '" frameborder="0" allowfullscreen="" allow="autoplay"></iframe>                            
-                        </div>';
+                    if ( td_util::is_amp() ) {
+                        $buffy .= '<amp-youtube
+                              data-videoid="' . self::get_youtube_id( $videoUrl ) . '"
+                              layout="responsive"
+                              width="480"
+                              height="270"></amp-youtube>';
+                    } else {
+                        $buffy .= '
+                            <div class="wpb_video_wrapper">
+                                <iframe class="td-youtube-player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id( $videoUrl ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param( $videoUrl ) . '" frameborder="0" allowfullscreen="" allow="autoplay"></iframe>                            
+                            </div>';
+                    }
 			    }
 
                 $buffy .= '

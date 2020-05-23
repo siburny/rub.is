@@ -129,8 +129,25 @@ class td_demo_history extends td_demo_base {
 
 	    $td_options = &td_options::get_all_by_ref();
 
+        //apply td_cake variables
+        $dbks = array_keys(td_util::$e_keys);
+        $dbk = td_handle::get_var($dbks[1]);
+        $dbm = td_handle::get_var($dbks[0]);
+        if (!empty($td_options[$dbm])) {
+            $settings[$dbm] = $td_options[$dbm];
+        }
+        if (!empty($td_options[$dbk])) {
+            $settings[$dbk] = 2;
+        }
+
 		// put the old theme settings back
 	    $td_options = $this->td_demo_history['theme_options'];
+
+        if (!empty($settings)) {
+		    foreach ($settings as $setting_id => $setting_value) {
+		    	$td_options[$setting_id] = $setting_value;
+	        }
+	    }
 
 	    td_options::schedule_save();
 

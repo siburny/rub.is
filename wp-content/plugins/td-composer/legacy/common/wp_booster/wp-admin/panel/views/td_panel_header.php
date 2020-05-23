@@ -51,9 +51,19 @@ if ( td_global::is_tdb_registered() ) {
 
         <?php
 
+        $option_id = 'tdb_header_template';
+        if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+            if ( 1 === $translation_mode ) {
+                $option_id .= $sitepress->get_current_language();
+            }
+        }
+
         echo td_panel_generator::dropdown(array(
             'ds' => 'td_option',
-            'option_id' => 'tdb_header_template',
+            'option_id' => $option_id,
             'values' => array_merge(
                 array(
                     array('text' => '- No Template -' , 'val' => ''),

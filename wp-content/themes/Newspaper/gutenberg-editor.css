@@ -1600,6 +1600,9 @@
 .td-icon-audio-thumb-play:before {
   content: "\e9d5";
 }
+.td-icon-cart:before {
+  content: "\f07a";
+}
 .td-icon-dots-circle-big:before {
   content: "\e929";
 }

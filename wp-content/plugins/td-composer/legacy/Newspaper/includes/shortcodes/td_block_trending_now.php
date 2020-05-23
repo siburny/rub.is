@@ -25,6 +25,7 @@ class td_block_trending_now extends td_block {
 				.$unique_block_class .td-next-prev-wrap a:hover {
 				    color: #fff;
 				}
+               
                 /* @header_text_color */
 				.$unique_block_class .td-trending-now-title {
 					color: @header_text_color;
@@ -53,6 +54,11 @@ class td_block_trending_now extends td_block {
 				/* @f_article */
 				.$unique_block_class .entry-title a {
 					@f_article
+				}
+				/* @next_prev_hover_color */
+				.td-theme-wrap .$unique_block_class .td-next-prev-wrap a:hover {
+					background-color: @next_prev_hover_color;
+					border-color: @next_prev_hover_color;
 				}
 				
 			</style>";
@@ -85,6 +91,8 @@ class td_block_trending_now extends td_block {
 
         // next prev border color
         $res_ctx->load_settings_raw( 'next_prev_border_color', $res_ctx->get_shortcode_att('next_prev_border_color') );
+        // next prev hover color
+        $res_ctx->load_settings_raw( 'next_prev_hover_color', $res_ctx->get_shortcode_att('next_prev_hover_color') );
 
 
 

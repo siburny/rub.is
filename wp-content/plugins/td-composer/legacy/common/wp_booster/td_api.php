@@ -875,7 +875,16 @@ class td_api_footer_template extends td_api_base {
     }
 
     static function get_footer_template_id() {
-    	$tdb_footer_template = td_util::get_option('tdb_footer_template');
+    	$option_id = 'tdb_footer_template';
+    	if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+            if ( 1 === $translation_mode ) {
+                $option_id .= $sitepress->get_current_language();
+            }
+        }
+    	$tdb_footer_template = td_util::get_option($option_id);
 
     	if ( empty( $tdb_footer_template ) ) {
     		return '';
@@ -884,6 +893,7 @@ class td_api_footer_template extends td_api_base {
     }
 
 }
+
 /**
  * Created by ra on 2/13/2015.
  */
@@ -1117,7 +1127,16 @@ class td_api_header_style extends td_api_base {
     }
 
     static function get_header_template_id() {
-    	$tdb_header_template = td_util::get_option('tdb_header_template');
+    	$option_id = 'tdb_header_template';
+    	if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+            if ( 1 === $translation_mode ) {
+                $option_id .= $sitepress->get_current_language();
+            }  
+        }
+    	$tdb_header_template = td_util::get_option($option_id);
 
     	if ( empty( $tdb_header_template ) ) {
     		return '';

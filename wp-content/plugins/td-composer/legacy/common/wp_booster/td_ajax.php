@@ -1260,7 +1260,7 @@ class td_ajax {
 
         if( $video_url != '' ) {
             $buffy_array['video_service'] = td_video_support::detect_video_service($video_url);
-            $buffy_array['video_embed'] = td_video_support::render_video($video_url, 'yes', 'yes');
+            $buffy_array['video_embed'] = td_video_support::render_video($video_url, 'yes', 'yes', '', true);
         }
 
         die( json_encode( $buffy_array ) );

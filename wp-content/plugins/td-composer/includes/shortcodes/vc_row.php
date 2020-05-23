@@ -406,14 +406,14 @@ class vc_row extends tdc_composer_block {
             if ( ! empty( $queried_object ) ) {
 
 	            // on page templates
-	            if ( $queried_object->post_type === 'page' ) {
+	            if ( ! empty( $queried_object->post_type ) && $queried_object->post_type === 'page' ) {
 
 		            if ( is_paged() ) {
 			            $is_paged = true;
 		            }
 
 		            // on cloud templates use the tdb_state_content
-	            } elseif ( $queried_object->post_type === 'tdb_templates' && class_exists( 'tdb_state_content' ) && tdb_state_content::has_wp_query() ) {
+	            } elseif ( ! empty( $queried_object->post_type ) && $queried_object->post_type === 'tdb_templates' && class_exists( 'tdb_state_content' ) && tdb_state_content::has_wp_query() ) {
 
 		            $template_wp_query = tdb_state_content::get_wp_query();
 

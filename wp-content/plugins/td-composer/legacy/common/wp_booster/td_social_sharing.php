@@ -120,7 +120,7 @@ class td_social_sharing {
             case 'twitter':
                 $twitter_user = td_util::get_option( 'tds_tweeter_username' );
                 return array(
-                    'url' => 'https://twitter.com/intent/tweet?text=' . htmlspecialchars(urlencode(html_entity_decode($page_title, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8') . '&url=' . urlencode($page_permalink) . '&via=' . urlencode( $twitter_user ? $twitter_user : get_bloginfo( 'name' ) ) ,
+                    'url' => 'https://twitter.com/intent/tweet?text=' . htmlspecialchars(urlencode(html_entity_decode($page_title, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8') . '&url=' . urlencode($page_permalink) . '&via=' . urlencode( $twitter_user ? $twitter_user : html_entity_decode(get_bloginfo( 'name' ), ENT_QUOTES) ) ,
                     'title' => 'Twitter'
                 );
                 break;

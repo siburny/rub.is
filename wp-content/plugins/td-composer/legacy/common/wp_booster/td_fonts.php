@@ -967,6 +967,7 @@ class td_fonts {
         945 => 'Zilla Slab',
         946 => 'Zilla Slab Highlight',
         947 => 'Gelasio',
+        948 => 'Inter',
     );
 
 

@@ -481,7 +481,11 @@ class td_block_covid_19_stats extends td_block {
                     }
                 $buffy .= '</div>';
 
-                $buffy .= '<div class="td-covid-date">Data from ' . $countries_data['date'] . '</div>';
+                $date = new DateTime("@" . $countries_data['timestamp']);
+                $local_timezone = get_option('timezone_string') ? get_option( 'timezone_string' ) : date_default_timezone_get();
+                $date->setTimezone(new DateTimeZone($local_timezone));
+
+                $buffy .= '<div class="td-covid-date">Updated on ' . $date->format(get_option('date_format') . ' ' . get_option('time_format') ) . '</div>';
 
             $buffy .= '</div>';
 		$buffy .= '</div>';

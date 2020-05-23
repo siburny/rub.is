@@ -44,6 +44,13 @@ class td_block_covid_19_counter extends td_block {
                     text-align: center;
                     color: #666;
                 }
+                .$unique_block_class .td-covid-date {
+                    display: none;
+                    margin-top: 8px;
+                    font-size: 12px;
+                    text-align: center;
+                    color: #999;
+                }
                 
                 /* @counter_padding */
                 .$unique_block_class .td-covid-country-count {
@@ -54,15 +61,26 @@ class td_block_covid_19_counter extends td_block {
                 .$unique_block_class .td-covid-country {
                     align-items: flex-start;
                 }
-                .$unique_block_class .td-covid-stat-name {
+                .$unique_block_class .td-covid-stat-name,
+                .$unique_block_class .td-covid-date {
                     text-align: left;
                 }
                 /* @content_align_horizontal_right */
                 .$unique_block_class .td-covid-country {
                     align-items: flex-end;
                 }
-                .$unique_block_class .td-covid-stat-name {
+                .$unique_block_class .td-covid-stat-name,
+                .$unique_block_class .td-covid-date {
                     text-align: right;
+                }
+                
+                /* @show_date */
+                .$unique_block_class .td-covid-date {
+                    display: @show_date;
+                }
+                /* @date_space */
+                .$unique_block_class .td-covid-date {
+                    margin-top: @date_space;
                 }
                 
                 
@@ -77,6 +95,15 @@ class td_block_covid_19_counter extends td_block {
                 /* @statistic_color */
                 .$unique_block_class .td-covid-stat-name {
                     color: @statistic_color;
+                }
+                /* @date_color */
+                .$unique_block_class .td-covid-date {
+                    color: @date_color;
+                }
+                
+                /* @display_inline */
+                .$unique_block_class {
+                    display: inline-block;
                 }
             
 
@@ -96,6 +123,10 @@ class td_block_covid_19_counter extends td_block {
                 /* @f_stat */
 				.$unique_block_class .td-covid-stat-name {
 					@f_stat
+				}
+                /* @f_date */
+				.$unique_block_class .td-covid-date {
+					@f_date
 				}
 				
 			</style>";
@@ -128,6 +159,22 @@ class td_block_covid_19_counter extends td_block {
             $res_ctx->load_settings_raw( 'counter_padding', $counter_padding . 'px' );
         }
 
+        // show last updated text
+        $res_ctx->load_settings_raw('show_date', $res_ctx->get_shortcode_att('show_date'));
+
+        // last updated text space
+        $date_space = $res_ctx->get_shortcode_att('date_space');
+        $res_ctx->load_settings_raw( 'date_space', $date_space );
+        if ( is_numeric( $date_space ) ) {
+            $res_ctx->load_settings_raw( 'date_space', $date_space . 'px' );
+        }
+
+        // display inline
+        $display_inline = $res_ctx->get_shortcode_att('display_inline');
+        if( $display_inline != '' ) {
+            $res_ctx->load_settings_raw( 'display_inline', 1 );
+        }
+
 
         /*-- COLORS -- */
         // country name color
@@ -136,6 +183,8 @@ class td_block_covid_19_counter extends td_block {
         $res_ctx->load_settings_raw('counter_color', $res_ctx->get_shortcode_att('counter_color'));
         // statistic name color
         $res_ctx->load_settings_raw('statistic_color', $res_ctx->get_shortcode_att('statistic_color'));
+        // last updated text color
+        $res_ctx->load_settings_raw('date_color', $res_ctx->get_shortcode_att('date_color'));
 
 
         /*-- FONTS -- */
@@ -143,6 +192,7 @@ class td_block_covid_19_counter extends td_block {
         $res_ctx->load_font_settings( 'f_country' );
         $res_ctx->load_font_settings( 'f_count' );
         $res_ctx->load_font_settings( 'f_stat' );
+        $res_ctx->load_font_settings( 'f_date' );
 
     }
 
@@ -172,6 +222,10 @@ class td_block_covid_19_counter extends td_block {
         $all_countries_text = 'All countries';
         if( $this->get_att('all_countries_text') != '' ) {
             $all_countries_text = $this->get_att('all_countries_text');
+        }
+        $country_text = '';
+        if( $this->get_att('country_text') != '' ) {
+            $country_text = $this->get_att('country_text');
         }
         $confirmed_text = 'Total confirmed cases';
         if( $this->get_att('confirmed_text') != '' ) {
@@ -233,11 +287,9 @@ class td_block_covid_19_counter extends td_block {
                     }
 
                 } else {
-                    $country_data = $countries_data['data'][$country_name];
+                    if ( isset( $countries_data['data'][$country_name][$statistic] ) ) {
 
-                    if( !empty( $country_data ) ) {
-
-                        $statistic_counter = $country_data[$statistic];
+                    	$statistic_counter = $countries_data['data'][$country_name][$statistic];
 
                     } else {
                             $buffy .= td_util::get_block_error('Covid-19 Counter', 'Render failed - no data exists for chosen country' );
@@ -255,7 +307,11 @@ class td_block_covid_19_counter extends td_block {
                         if( $country_name == 'All countries' ) {
                             $buffy .= $all_countries_text;
                         } else {
-                            $buffy .= $country_name;
+                            if( $country_text != '' ) {
+                                $buffy .= $country_text;
+                            } else {
+                                $buffy .= $country_name;
+                            }
                         }
                     $buffy .= '</div>';
 
@@ -277,6 +333,12 @@ class td_block_covid_19_counter extends td_block {
                                 break;
                         }
                     $buffy .= '</div>';
+
+                    $date = new DateTime("@" . $countries_data['timestamp']);
+                    $local_timezone = get_option('timezone_string') ? get_option( 'timezone_string' ) : date_default_timezone_get();
+                    $date->setTimezone(new DateTimeZone($local_timezone));
+
+                    $buffy .= '<div class="td-covid-date">Updated on ' . $date->format(get_option('date_format') . ' ' . get_option('time_format') ) . '</div>';
                 $buffy .= '</div>';
 
             $buffy .= '</div>';

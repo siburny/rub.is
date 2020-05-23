@@ -2,7 +2,7 @@
 Theme Name: 	Newspaper
 Theme URI: 		http://tagdiv.com
 Description: 	Premium WordPress template, clean and easy to use.
-Version: 		10.3.2
+Version: 		10.3.4
 Author: 		tagDiv
 Author URI: 	http://themeforest.net/user/tagDiv/portfolio
 License:
@@ -4523,6 +4523,21 @@ header .td-icon-comments {
 .td-post-template-default .td-post-featured-image img {
   width: auto;
 }
+.td-post-template-default .wpb_video_wrapper {
+  margin-bottom: 26px;
+}
+.td-post-template-default .wpb_video_wrapper .fb-video {
+  margin-bottom: 0;
+}
+.td-post-template-default .wpb_video_wrapper iframe {
+  display: block;
+}
+.td-post-template-default .wpb_video_wrapper .twitter-video {
+  max-width: none !important;
+}
+.td-post-template-default .wpb_video_wrapper video {
+  max-width: 100%;
+}
 /*  ----------------------------------------------------------------------------
     Comment section
 */
@@ -5908,6 +5923,9 @@ header .td-icon-comments {
 }
 .td-icon-audio-thumb-play:before {
   content: "\e9d5";
+}
+.td-icon-cart:before {
+  content: "\f07a";
 }
 .td-icon-dots-circle-big:before {
   content: "\e929";

@@ -25,9 +25,9 @@ if ( defined('TD_COMPOSER' ) ) {
 
         <div class="about-wrap td-admin-wrap td-update-page" style="text-align: center">
 
-            <h1 style="text-align: center"><?php echo TD_THEME_NAME ?> Theme updates</h1>
+<!--            <h1 style="text-align: center">--><?php //echo TD_THEME_NAME ?><!-- Theme updates</h1>-->
             <div class="about-text" style="width:auto; margin: 0">
-                <a class="button button-large button-primary td-panel-check-updates" href="#">Check for updates</a>
+
             </div>
         </div>
 
@@ -58,6 +58,7 @@ if ( defined('TD_COMPOSER' ) ) {
                             <span><?php echo $latest_version_serial ?></span>
                         </div>
                     </div>
+                    <a class="button button-large button-primary td-panel-check-updates" href="#">Check for updates</a>
                     <a class="button button-large button-primary td-panel-update-theme-to-latest" href="#">Install update</a>
                 </div>
             </div>
@@ -66,11 +67,11 @@ if ( defined('TD_COMPOSER' ) ) {
         } else {
             ?>
 
-
             <div class=" about-wrap td-admin-wrap td-update-page" style="text-align: center">
                 <div class="td-white-box">
                     <h2>You're up to date!</h2>
                     <?php echo TD_THEME_NAME . ' <b>' . TD_THEME_VERSION . '</b>' ?> is the newest version available.</p>
+                    <a class="button button-large button-primary td-button-updated td-panel-check-updates" href="#">Check for updates</a>
                 </div>
             </div>
 
@@ -79,9 +80,8 @@ if ( defined('TD_COMPOSER' ) ) {
         ?>
 
         <div class=" about-wrap td-admin-wrap td-update-page" style="text-align: center">
-            <h1><?php echo TD_THEME_NAME ?> Time Machine</h1>
             <div class="td-white-box">
-                <h2>Available theme versions</h2>
+                <h2><?php echo TD_THEME_NAME ?> Time Machine</h2>
                 <?php
                 $versions = td_util::get_option( 'theme_update_versions' );
 

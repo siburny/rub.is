@@ -26,18 +26,19 @@ class td_block_title extends td_block {
 				.$unique_block_class .td-block-title {
 					text-align: center;
 				}
-				.$unique_block_class.td_block_template_4 .td-block-title > *:before {
-				    right: 10px;
+				.$unique_block_class.td_block_template_4 .td-block-title > *:before,
+				.$unique_block_class.td_block_template_17 .td-block-title:after,
+				.$unique_block_class.td_block_template_13 .td-block-subtitle,
+				.$unique_block_class.td_block_template_9 .td-block-title:after {
+				    right: 0;
+				    left: 0;
+				}
+				.$unique_block_class.td_block_template_5 .td-block-title > * {
+				    border-width: 0 0 0 4px;
 				}
 				.$unique_block_class.td_block_template_8 .td-block-title > * {
 					padding-left: 20px;
-				}
-				.$unique_block_class.td_block_template_9 .td-block-title:after {
-					right: 0;
-				}
-				.$unique_block_class.td_block_template_13 .td-block-subtitle {
-					left: 0;
-					right: 0;
+					padding-right: 20px;
 				}
 				/* @align_right */
 				.$unique_block_class .td-block-title {
@@ -58,10 +59,9 @@ class td_block_title extends td_block {
 					right: 0;
 					left: auto;
 				}
-				.$unique_block_class.td_block_template_12 .td-pulldown-category,
-				.$unique_block_class.td_block_template_13 .td-pulldown-category {
-					right: auto;
-					left: 0;
+				.$unique_block_class.td_block_template_13 .td-block-subtitle {
+					right: -4px;
+					left: auto;
 				}
 				.$unique_block_class.td_block_template_17 .td-block-title:after {
 					right: 15px;
@@ -70,6 +70,25 @@ class td_block_title extends td_block {
 				/* @align_left */
 				.$unique_block_class .td-block-title {
 					text-align: left;
+				}
+				.$unique_block_class.td_block_template_4 .td-block-title > *:before {
+				    right: auto;
+				    left: 10px;
+				}
+				.$unique_block_class.td_block_template_5 .td-block-title > * {
+				    border-width: 0 0 0 4px;
+				}
+				.$unique_block_class.td_block_template_8 .td-block-title > * {
+					padding-left: 0;
+					padding-right: 20px;
+				}
+				.$unique_block_class.td_block_template_9 .td-block-title:after {
+					right: auto;
+					left: 0;
+				}
+				.$unique_block_class.td_block_template_13 .td-block-subtitle {
+					right: auto;
+					left: -4px;
 				}
 				.$unique_block_class.td_block_template_17 .td-block-title:after {
 					right: auto;

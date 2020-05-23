@@ -4230,6 +4230,22 @@ title one row controls
   float: none;
   display: inline-block;
 }
+.td-update-page .td-panel-check-updates {
+  margin: 0 5px;
+}
+.td-update-page .td-panel-update-theme-to-latest {
+  margin: 0 5px;
+  background: #14b764;
+  border-color: #14b764;
+}
+.td-update-page .td-panel-update-theme-to-latest:hover,
+.td-update-page .td-panel-update-theme-to-latest:focus {
+  background: #12a55a;
+  border-color: #12a55a;
+}
+.td-update-page .td-button-updated {
+  margin-top: 20px;
+}
 .td-theme-update .toplevel_page_td_theme_welcome .wp-menu-name:after {
   content: '1';
   display: inline-block;
@@ -4541,6 +4557,9 @@ title one row controls
 .widget-content .tdc-tabs-wrapper input,
 .widget-content .tdc-tabs-wrapper select {
   height: 28px;
+}
+.widget-content .tdc-tabs-wrapper .checkbox {
+  height: 16px;
 }
 .widget-content .tdc-tabs-wrapper label {
   margin-bottom: 4px;

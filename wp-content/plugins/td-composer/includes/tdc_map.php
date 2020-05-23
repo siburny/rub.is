@@ -2365,6 +2365,7 @@ $tdc_api_blocks = array(
                 array(
                     array(
                         'com_divider' => 'dashed',
+						'number' => 5
                     ),
                 )
             )

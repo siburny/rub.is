@@ -4,6 +4,41 @@ td_api_ad::helper_display_ads();
 
 ?>
 
+<!-- Modal Video Popup -->
+<?php echo td_panel_generator::box_start('Modal Video Popup', false); ?>
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">Ad code:</span>
+		<p>Paste your ad code here.</p>
+	</div>
+	<div class="td-box-control-full">
+		<?php
+		echo td_panel_generator::textarea(array(
+			'ds' => 'td_option',
+			'option_id' => 'tds_modal_video_ad'
+		));
+		?>
+	</div>
+</div>
+
+<!-- A title for the Ad-->
+<div class="td-box-row">
+	<div class="td-box-description">
+		<span class="td-box-title">AD title:</span>
+
+		<p>A title for the Ad, like - <strong>Advertisement</strong>.</p>
+	</div>
+	<div class="td-box-control-full">
+		<?php
+		echo td_panel_generator::input( array(
+			'ds'        => 'td_option',
+			'option_id' => 'tds_modal_video_ad_title'
+		) );
+		?>
+	</div>
+</div>
+<?php echo td_panel_generator::box_end();?>
+
 
 <?php
 //backround add

@@ -11,11 +11,21 @@ $menu_td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu',
 /*  ----------------------------------------------------------------------------
 	CLOUD TEMPLATES
 */
+$template_404_template_id = td_demo_content::add_cloud_template(array(
+    'title' => '404 Template',
+    'file' => '404_cloud_template.txt',
+    'template_type' => '404',
+));
+
+td_demo_misc::update_global_404_template( 'tdb_template_' . $template_404_template_id);
+
 $template_tag_template_id = td_demo_content::add_cloud_template(array(
     'title' => 'Tag Template',
     'file' => 'tag_cloud_template.txt',
     'template_type' => 'tag',
 ));
+
+td_demo_misc::update_global_tag_template( 'tdb_template_' . $template_tag_template_id);
 
 $template_category_global_template_id = td_demo_content::add_cloud_template(array(
     'title' => 'Category Template – Global',

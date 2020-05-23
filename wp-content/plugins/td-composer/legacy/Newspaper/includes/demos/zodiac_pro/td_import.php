@@ -477,6 +477,14 @@ $menu_td_demo_mobile_menu_id = td_demo_menus::create_menu('td-demo-mobile-menu',
 	CLOUD TEMPLATES
 */
 
+$template_author_template_id = td_demo_content::add_cloud_template(array(
+	'title' => 'Author Template',
+	'file' => 'author_cloud_template.txt',
+	'template_type' => 'author',
+));
+
+td_demo_misc::update_global_author_template( 'tdb_template_' . $template_author_template_id);
+
 $template_footer_template_global_id = td_demo_content::add_cloud_template(array(
     'title' => 'Zodiac Footer Template',
     'file' => 'footer_cloud_template.txt',
@@ -492,6 +500,15 @@ $template_date_template_id = td_demo_content::add_cloud_template(array(
 ));
 
 td_demo_misc::update_global_date_template( 'tdb_template_' . $template_date_template_id);
+
+
+$td_cloud_global_author_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Zodiac Author Template',
+    'file' => 'author_cloud_template.txt',
+    'template_type' => 'author'
+));
+
+td_demo_misc::update_global_author_template( 'tdb_template_' . $td_cloud_global_author_template_id );
 
 
 $template_tag_template_id = td_demo_content::add_cloud_template(array(

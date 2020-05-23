@@ -233,6 +233,8 @@ class td_flex_block_1 extends td_block {
             $res_ctx->load_settings_raw( 'meta_horiz_align_center', 1 );
         } else if ( $content_align == 'content-horiz-right' ) {
 	        $res_ctx->load_settings_raw( 'meta_horiz_align_right', 1 );
+        } else if ( $content_align == 'content-horiz-left' ) {
+            $res_ctx->load_settings_raw( 'meta_horiz_align_left', 1 );
         }
 
 	    // article title space
@@ -1122,6 +1124,7 @@ class td_flex_block_1 extends td_block {
 				}
 				.$unique_block_class .td-category-pos-image .td-post-category {
 					left: 50%;
+					right: auto;
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
@@ -1140,12 +1143,37 @@ class td_flex_block_1 extends td_block {
 				.$unique_block_class .td-category-pos-image .td-post-category {
 					left: auto;
 					right: 0;
+					transform: translateX(0);
+                    -webkit-transform: translateX(0);
 				}
 				.$unique_block_class .td-image-container {
 					margin-left: auto;
 				}
 				.$unique_block_class .td-ajax-next-page {
                     margin-right: 0;
+                }
+                
+                /* @meta_horiz_align_left */
+				.$unique_block_class .td-module-meta-info,
+				.$unique_block_class .td-next-prev-wrap {
+					text-align: left;
+				}
+				.$unique_block_class .td-category-pos-above .td-post-category {
+				    align-self: flex-start  !important;
+				}
+				.$unique_block_class .td-category-pos-image .td-post-category {
+					left: 0;
+					right: auto;
+					transform: translateX(0);
+                    -webkit-transform: translateX(0);
+				}
+				.$unique_block_class .td-image-container {
+					margin-left: 0;
+					margin-right: auto;
+				}
+				.$unique_block_class .td-ajax-next-page {
+                    margin-right: auto;
+                    margin-left: 0;
                 }   
 				
 				

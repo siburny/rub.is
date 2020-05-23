@@ -55,9 +55,18 @@
         </div>
         <div class="td-box-control-full">
             <?php
+            $option_id = 'td_default_site_post_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+                if ( 1 === $translation_mode ) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
             echo td_panel_generator::visual_select_o(array(
                 'ds' => 'td_option',
-                'option_id' => 'td_default_site_post_template',
+                'option_id' => $option_id,
                 'values' => td_api_single_template::_helper_td_global_list_to_panel_values()
             ));
             ?>
@@ -882,6 +891,7 @@
 <!-- Advanced options -->
 <?php echo td_panel_generator::box_start('Video settings', false); ?>
 
+<?php if ( TD_THEME_NAME !== 'Newsmag' ) { ?>
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
@@ -905,6 +915,7 @@
             ?>
         </div>
     </div>
+<?php } ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-no-short-description">

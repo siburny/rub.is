@@ -35,7 +35,7 @@ class td_video_playlist_render {
 	        $buffy .= '<div class="td_block_inner">';
 
                 // display error if api key was not provided
-                if( td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' ) {
+                if( $list_type == 'youtube' && td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' ) {
                     $buffy .= td_util::get_block_error('Video playlist', '<strong>A YouTube API key</strong> has not been provided. Go to <strong>Theme Panel > Social Networks > YouTube API Configuration</strong>');
                 } else {
                     //inner content of the block
@@ -153,6 +153,8 @@ class td_video_playlist_render {
                         foreach ($playlist_video_ids as $video_id) {
                             if ( !in_array( $video_id, $td_playlist_videos[$list_name]['items'] ) ) {
                                 $uncached_ids[] = $video_id;
+                            } else if ( !isset( $playlist_videos_pool[$list_name][$video_id] ) ) {
+                                $uncached_ids[] = $video_id;
                             }
                         }
 
@@ -176,12 +178,12 @@ class td_video_playlist_render {
 	                                }
 
                                     update_option('td_playlist_videos_pool', $playlist_videos_pool);
+
+                                    update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
                                 }
                             }
 
                         }
-
-                        update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
 
                     } else {
 
@@ -201,11 +203,11 @@ class td_video_playlist_render {
                                     $playlist_videos_pool[$list_name] = $playlist_videos_pool[$list_name] + $uncached_videos;
                                 }
                                 update_option('td_playlist_videos_pool', $playlist_videos_pool);
+
+                                $td_playlist_videos[$list_name]['items'] = $playlist_video_ids;
+                                update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
                             }
                         }
-
-                        $td_playlist_videos[$list_name]['items'] = $playlist_video_ids;
-                        update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
 
                     }
 

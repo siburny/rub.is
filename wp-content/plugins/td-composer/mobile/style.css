@@ -4064,6 +4064,57 @@ header .td-module-meta-info .td-post-comments a {
   opacity: 0.5;
 }
 /*  ----------------------------------------------------------------------------
+    Smart list 2
+*/
+.tdm_smart_list_2 {
+  margin-top: 38px;
+}
+.tdm_smart_list_2 .td-number-and-title {
+  text-align: left;
+  padding: 0;
+  margin-bottom: 21px;
+  position: relative;
+}
+.tdm_smart_list_2 .td-sml-description {
+  margin-top: 0;
+}
+.tdm_smart_list_2 h2 {
+  margin: 0;
+  line-height: 32px;
+}
+.tdm_smart_list_2 .td-item {
+  margin-bottom: 53px;
+}
+.tdm_smart_list_2 .td-sml-current-item-title {
+  margin-top: 2px;
+  width: 100%;
+  padding-left: 50px;
+  font-size: 24px;
+  line-height: 28px;
+  display: inline-block;
+}
+.tdm_smart_list_2 .td-sml-current-item-nr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 30px;
+  color: #fff;
+  background-color: #222;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  display: inline-block;
+}
+.tdm_smart_list_2 .td-slide-smart-list-figure {
+  text-align: center;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 16px;
+}
+/*  ----------------------------------------------------------------------------
     wordpress default galleries
 */
 .gallery img {
@@ -4957,4 +5008,7 @@ body {
 .td-custom-html-mob {
   text-align: center;
   margin: 0 auto;
+}
+.td-close-video-fixed {
+  display: none;
 }

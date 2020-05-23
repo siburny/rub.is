@@ -2698,7 +2698,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration text color",
                             "value"      => "",
                             "class"      => "",
@@ -2707,7 +2707,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_bg_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration background color",
                             "value"      => "",
                             "class"      => "",
@@ -2741,7 +2741,7 @@ class td_config {
 		                        'Center'  => 'center',
 		                        'Bottom'  => 'flex-end',
 		                    ),
-		                    "heading"     => 'Meta info alignment',
+		                    "heading"     => 'Vertical align',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
@@ -2749,13 +2749,14 @@ class td_config {
 		                ),
 		                array(
 		                    "param_name" => "meta_info_horiz",
-		                    "type" => "dropdown",
+		                    "type" => "dropdown-responsive",
 		                    "value" => array(
+                                'Default' => 'layout-default',
 		                        'Left' => 'content-horiz-left',
 		                        'Center' => 'content-horiz-center',
 		                        'Right' => 'content-horiz-right'
 		                    ),
-		                    "heading" => 'Meta info horiz align',
+		                    "heading" => 'Horiz. align',
 		                    "description" => "",
 		                    "holder" => "div",
 		                    'tdc_dropdown_images' => true,
@@ -4690,7 +4691,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration text color",
                             "value"      => "",
                             "class"      => "",
@@ -4699,7 +4700,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_bg_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration background color",
                             "value"      => "",
                             "class"      => "",
@@ -6505,7 +6506,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration text color",
                             "value"      => "",
                             "class"      => "",
@@ -6514,7 +6515,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_bg_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration background color",
                             "value"      => "",
                             "class"      => "",
@@ -9171,7 +9172,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration text color",
                             "value"      => "",
                             "class"      => "",
@@ -9180,7 +9181,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_bg_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration background color",
                             "value"      => "",
                             "class"      => "",
@@ -12049,7 +12050,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration text color",
                             "value"      => "",
                             "class"      => "",
@@ -12058,7 +12059,7 @@ class td_config {
                         array(
                             "param_name" => "vid_t_bg_color",
                             "holder"     => "div",
-                            "type"       => "gradient",
+                            "type"       => "colorpicker",
                             'heading'    => "Video duration background color",
                             "value"      => "",
                             "class"      => "",
@@ -26327,6 +26328,16 @@ class td_config {
                             'group' => 'Style'
                         ),
                         array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Next/prev hover color',
+                            "param_name" => "next_prev_hover_color",
+                            "value" => '',
+                            "description" => 'Optional - Choose a custom next/prev hover color',
+                            'group' => 'Style'
+                        ),
+                        array(
                             "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
@@ -29023,14 +29034,14 @@ class td_config {
                         ),
                         array(
                             "param_name" => "content_align_horizontal",
-                            "type" => "dropdown",
+                            "type" => "dropdown-responsive",
                             "value" => array(
                                 'Default' => 'layout-default',
                                 'Left' => 'content-horiz-left',
                                 'Center' => 'content-horiz-center',
                                 'Right' => 'content-horiz-right'
                             ),
-                            "heading" => 'Horizontal align',
+                            "heading" => 'Title align',
                             "description" => "",
                             "holder" => "div",
                             'tdc_dropdown_images' => true,
@@ -29068,7 +29079,6 @@ class td_config {
                 )
             )
         );
-
 
         td_api_block::add('td_block_weather',
             array(
@@ -30728,6 +30738,16 @@ class td_config {
                             "placeholder" => 'All countries',
                         ),
                         array(
+                            "param_name"  => "country_text",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Country text',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => '',
+                        ),
+                        array(
                             "param_name"  => "confirmed_text",
                             "type"        => "textfield",
                             "value"       => '',
@@ -30774,6 +30794,15 @@ class td_config {
                             "class" => "tdc-separator-small",
                         ),
                         array(
+                            "param_name"  => "display_inline",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Display inline",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => ""
+                        ),
+                        array(
                             "param_name" => "content_align_horizontal",
                             "type" => "dropdown",
                             "value" => array(
@@ -30796,6 +30825,29 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "15px 0 11px 0",
+                        ),
+                        array(
+                            "param_name"  => "show_date",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Hide' => 'none',
+                                'Show' => 'block',
+                            ),
+                            "heading"     => 'Show last updated',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name"  => "date_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Last updated text space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "8",
                         ),
 
                         array(
@@ -30836,6 +30888,16 @@ class td_config {
                             "group"      => ''
                         ),
                         array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Last updated text color',
+                            "param_name" => "date_color",
+                            "value" => '',
+                            "description" => '',
+                            "group"      => ''
+                        ),
+                        array(
                             "param_name" => "separator",
                             "type"       => "text_separator",
                             'heading'    => 'Fonts',
@@ -30847,12 +30909,80 @@ class td_config {
                     td_config_helper::get_map_block_font_array( 'f_country', false, 'Country name text' ),
                     td_config_helper::get_map_block_font_array( 'f_count', false, 'Counter text' ),
                     td_config_helper::get_map_block_font_array( 'f_stat', false, 'Statistic name text' ),
+                    td_config_helper::get_map_block_font_array( 'f_date', false, 'Last updated text' ),
                     array(
                         array(
                             "param_name" => "separator",
                             "type" => "horizontal_separator",
                             "value" => "",
                             "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
+                )
+            )
+        );
+
+        td_api_block::add('td_block_raw_css',
+            array(
+                'map_in_visual_composer' => true,
+                'map_in_td_composer' => true,
+                "name" => 'Raw CSS',
+                "base" => "td_block_raw_css",
+                "class" => "",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-td_block_raw_css',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_raw_css.php',
+                'tdc_style_params' => array(
+                    'el_class'
+                ),
+                'params' => array_merge(
+                    array(
+                        array(
+                            "param_name" => "content",
+                            "type" => "editor_css",
+                            "holder" => "div",
+                            'class' => '',
+                            "heading" => 'Open CSS Editor',
+                            "value" => base64_encode(__('//CSS code here! Replace this with any non empty css code and that\'s it', 'td_composer' ) ),
+                            "description" => 'Enter your content.'
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
                         ),
                         array(
                             'param_name' => 'el_class',
@@ -32466,6 +32596,30 @@ class td_config {
                     'tagDiv Cloud Library',
                 ),
             ),
+            'medicine_pro' => array(
+                'text' => 'Coronavirus Medicine PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/medicine_pro/',
+                'img' => TDC_URL_DEMO . '/medicine_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_medicine_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'covid_dark_pro' => array(
+                'text' => 'Covid Dark PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_dark_pro/',
+                'img' => TDC_URL_DEMO  . '/covid_dark_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_dark_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
             'cov19_italy_report_pro' => array(
                 'text' => 'COV-19 Italy Report PRO',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/cov19_italy_report_pro/',
@@ -32489,13 +32643,36 @@ class td_config {
                 ),
             ),
             'pandemic_pro' => array(
-                'text' => 'Pandemic PRO',
+                'text' => 'Covid Pandemic PRO',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/pandemic_pro/',
                 'img' => TDC_URL_DEMO . '/pandemic_pro/screenshot.png',
                 'demo_url' => 'https://demo.tagdiv.com/newspaper_pandemic_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+            ),
+            'london_news_pro' => array(
+                'text' => 'London News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/london_news_pro/',
+                'img' => TDC_URL_DEMO . '/london_news_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_london_news_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+            ),
+            'amberlight_pro' => array(
+                'text' => 'Amberlight PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/amberlight_pro/',
+                'img' => TDC_URL_DEMO . '/amberlight_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_amberlight_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),

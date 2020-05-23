@@ -194,6 +194,25 @@ class td_block {
                             }
                         }
                         break;
+
+                    case '_current_author':
+                        global $tdb_state_author;
+
+                        if ( ! empty( $tdb_state_author ) ) {
+                            $author_wp_query = $tdb_state_author->get_wp_query();
+
+                            if ( ! empty( $author_wp_query ) ) {
+                                $this->atts[ 'live_filter' ] = 'cur_post_same_author';
+
+                                if (!empty( $author_wp_query->query_vars['author'])){
+                                    $this->atts[ 'live_filter_cur_post_author' ] = $author_wp_query->query_vars['author'];
+                                } else if ( !empty( $author_wp_query->queried_object ) ) {
+	                                $this->atts[ 'live_filter_cur_post_author' ] = $author_wp_query->queried_object->ID;
+                                }
+                            }
+                        }
+
+                        break;
                 }
             }
 

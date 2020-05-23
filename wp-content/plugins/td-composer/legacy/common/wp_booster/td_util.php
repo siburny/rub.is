@@ -69,7 +69,7 @@ class td_util {
             // read the per post single_template
             $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
 
-            // if we don't have any single_template set on this post, try to laod the default global setting
+            // if we don't have any single_template set on this post, try to load the default global setting
             if ( ! empty( $post_meta_values['td_post_template'] ) ) {
 
                 $td_site_post_template = $post_meta_values['td_post_template'];
@@ -80,10 +80,34 @@ class td_util {
 
             } else {
 
-                $td_default_site_post_template = td_util::get_option( 'td_default_site_post_template' );
+                $td_primary_category = td_global::get_primary_category_id();
 
-                if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
-                    $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+                if ( ! empty( $td_primary_category ) ) {
+
+                    $post_category_template = td_util::get_category_option( $td_primary_category, 'tdb_post_category_template' );
+
+                    // make sure the template exists, maybe it was deleted or something
+                    if ( td_global::is_tdb_template( $post_category_template, true ) ) {
+                        $template_id = td_global::tdb_get_template_id($post_category_template);
+                    }
+                }
+
+                if (empty($template_id)) {
+
+	                $option_id = 'td_default_site_post_template';
+	                if ( class_exists( 'SitePress', false ) ) {
+		                global $sitepress;
+                        $sitepress_settings = $sitepress->get_settings();
+                        $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+                        if ( 1 === $translation_mode ) {
+                            $option_id .= $sitepress->get_current_language();
+                        }
+                    }
+	                $td_default_site_post_template = td_util::get_option( $option_id );
+
+	                if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
+		                $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+	                }
                 }
             }
 
@@ -387,7 +411,16 @@ class td_util {
 
             } else {
 
-                $td_default_site_post_template = td_util::get_option( 'td_default_site_post_template' );
+                $option_id = 'td_default_site_post_template';
+                if (class_exists('SitePress', false )) {
+                    global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
+                    if ( 1 === $translation_mode ) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+                $td_default_site_post_template = td_util::get_option( $option_id );
 
                 if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
                     $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
@@ -1296,6 +1329,7 @@ class td_util {
                     array( 'Single - More from author' => '_more_author' ),
                     array( 'Single - Related by category' => '_related_cat' ),
                     array( 'Single - Related from tags' => '_related_tag' ),
+                    array( 'Author - Current author' => '_current_author' ),
                     array( '-- [By Category] --' => '__' ),
                     self::$td_category2id_array_walker_buffer
                 );
@@ -1312,6 +1346,7 @@ class td_util {
                     array( 'Single - More from author' => '_more_author' ),
                     array( 'Single - Related by category' => '_related_cat' ),
                     array( 'Single - Related from tags' => '_related_tag' ),
+                    array( 'Author - Current author' => '_current_author' ),
                     array( '-- [By Category] --' => '__' ),
                     self::$td_category2id_array_walker_buffer
                 );

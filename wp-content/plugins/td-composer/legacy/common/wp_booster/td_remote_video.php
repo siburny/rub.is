@@ -151,7 +151,7 @@ class td_remote_video {
 
         $buffy_videos = array();
 
-        $video_ids_comma = implode($video_ids, ',');
+        $video_ids_comma = implode(',', $video_ids);
 
         if( !empty( $video_ids_comma ) ) {
             $api_url = 'https://www.googleapis.com/youtube/v3/videos?id=' . $video_ids_comma . '&part=id,contentDetails,snippet,player&key=' . self::get_yt_api_key();

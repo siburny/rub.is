@@ -148,7 +148,11 @@ class td_remote_http {
 	private static function get_page_via_channel($url, $caller_id = '', $channel) {
 		switch ($channel) {
 			case 'wordpress':
-				return self::get_url_wordpress($url, $caller_id);
+				$result = self::get_url_wordpress($url, $caller_id);
+				if ( false === $result ) {
+					return self::get_url_wordpress($url, $caller_id, array());
+				}
+				return $result;
 			break;
 
 			case 'file_get_contents':
@@ -172,14 +176,14 @@ class td_remote_http {
 	 *
 	 * @return bool|string
 	 */
-	private static function get_url_wordpress($url, $caller_id = '') {
-		//return false;
-		$response = wp_remote_get($url, array(
+	private static function get_url_wordpress($url, $caller_id = '', $settings = array(
 			'timeout' => self::http_request_timeout,
 			'sslverify' => false,
 			'headers' => array('Accept-language' => 'en'),
 			'user-agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
-		));
+		)) {
+
+		$response = wp_remote_get($url, $settings);
 
 		if (is_wp_error($response)) {
 			td_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' got wp_error, get_error_message: ' . $response->get_error_message());
