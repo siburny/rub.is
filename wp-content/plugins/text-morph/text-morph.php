@@ -5,7 +5,7 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 4.3
+ * Version: 4.4
  */
 
 require_once 'Numword.php';
@@ -39,7 +39,11 @@ function morph_func($atts, $content = '')
         $ret .= $atts['add'];
     }
 
-    if (array_key_exists('money', $atts) && is_numeric($atts['money'])) {
+    if (array_key_exists('money', $atts)) {
+        if (!is_numeric($atts['money'])) {
+            return $atts['money'];
+        }
+
         define('USD_TO_EUR', 0.93);
         define('USD_TO_GBP', 0.81);
 
@@ -87,29 +91,33 @@ function morph_func($atts, $content = '')
         }
 
         if (array_key_exists('display', $atts)) {
-            $date = new DateTime($atts['time'], new DateTimeZone(get_option('timezone_string')));
+            try {
+                $date = new DateTime($atts['time'], new DateTimeZone(get_option('timezone_string')));
 
-            if (array_key_exists('option', $atts) && substr($atts['option'], 0, 3) == 'gmt') {
-                $date->setTimezone(new DateTimeZone(substr($atts['option'], 3)));
-            }
-
-            if (array_key_exists('math', $atts)) {
-                $parts = explode(':', substr($atts['math'], 1));
-
-                if (substr($atts['math'], 0, 1) == '+') {
-                    $date->add(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
-                } else if (substr($atts['math'], 0, 1) == '-') {
-                    $date->sub(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                if (array_key_exists('option', $atts) && substr($atts['option'], 0, 3) == 'gmt') {
+                    $date->setTimezone(new DateTimeZone(substr($atts['option'], 3)));
                 }
-            }
 
-            switch ($atts['display']) {
-                case 'hh:mm':
-                    $ret = $date->format('H:i');
-                    break;
-                case 'h:mm':
-                    $ret = $date->format('g:i A');
-                    break;
+                if (array_key_exists('math', $atts)) {
+                    $parts = explode(':', substr($atts['math'], 1));
+
+                    if (substr($atts['math'], 0, 1) == '+') {
+                        $date->add(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                    } else if (substr($atts['math'], 0, 1) == '-') {
+                        $date->sub(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                    }
+                }
+
+                switch ($atts['display']) {
+                    case 'hh:mm':
+                        $ret = $date->format('H:i');
+                        break;
+                    case 'h:mm':
+                        $ret = $date->format('g:i A');
+                        break;
+                }
+            } catch (Exception $e) {
+                $ret = $atts['time'];
             }
         } else {
             $ret = $atts['time'];
@@ -154,8 +162,8 @@ function morph_func($atts, $content = '')
         }
     }
 
-    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr'))) {
-        if (empty($ret)) {
+    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr', 'minutes'))) {
+        if ($ret == '' || $ret == null) {
             return 'N/A';
         }
         if (!is_numeric($ret)) {
@@ -163,6 +171,11 @@ function morph_func($atts, $content = '')
         }
 
         switch ($atts['display']) {
+            case 'minutes':
+                $h = floor($ret / 60);
+                $m = $ret % 60;
+                $ret = ($h > 0 ? $h . ' hour' . ($h > 1 ? 's' : '') . ($m > 0 ? ' ' : '') : '') . ($m > 0 || $h == 0 ? $m . ' minute' . ($m != 1 ? 's' : '') : '');
+                break;
             case 'lb':
                 $unit = 'lb';
                 break;
@@ -178,7 +191,7 @@ function morph_func($atts, $content = '')
                 $unit = 'cm';
                 break;
             case 'foot':
-                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet ' : ' foot ') : '') . ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es');
+                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet' : ' foot') . ($ret % 12 > 0 ? ' ' : '') : '') . ($ret % 12 > 0 || floor($ret / 12) == 0 ? ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es') : '');
                 break;
             case 'feet':
                 $ret = floor($ret / 12) . '\' ' . ($ret % 12) . '"';
