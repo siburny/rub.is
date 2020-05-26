@@ -1,65 +1,212 @@
 <?php
+
 /**
  * Plugin Name: API Metadata
  * Description: Plugin that performs an API request to a shopping platform and returns requested metadata fields.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.3.0
+ * Version: 0.4.0
  */
+
+use Amazon\ProductAdvertisingAPI\v1\Configuration;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\api\DefaultApi;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\GetItemsRequest;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\GetItemsResource;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\PartnerType;
+
+require_once 'vendor/autoload.php';
 
 function api_metadata_shortcode($atts, $content = '')
 {
     if (isset($atts['amazon']) && isset($atts['show'])) {
-        $data = make_amazon_request($atts['amazon']);
-        if (!empty($data)) {
+        $item = make_amazon_request($atts['amazon']);
+
+        //var_dump($item);exit;
+        $ret = '';
+
+        if (!empty($item)) {
             switch ($atts['show']) {
                 case 'date':
-                    if (!isset($atts['display'])) {
-                        return $data['Items']['Item']['ItemAttributes']['ReleaseDate'];
+                    if ($item->getItemInfo()->getProductInfo()->getReleaseDate() == null) {
+                        return get_option('api-metadata-settings-placeholder-date');
+                    } else if (!isset($atts['display'])) {
+                        return format_date($item->getItemInfo()->getProductInfo()->getReleaseDate()->getDisplayValue(), 'mmmm d, yyyy');
                     } else {
-                        return format_date($data['Items']['Item']['ItemAttributes']['ReleaseDate'], $atts['display']);
+                        return format_date($item->getItemInfo()->getProductInfo()->getReleaseDate()->getDisplayValue(), $atts['display']);
                     }
+                    break;
 
                 case 'director':
-                    return $data['Items']['Item']['ItemAttributes']['Director'];
+                    $display = isset($atts['display']) ? $atts['display'] : 3;
+
+                    $all = $item->getItemInfo()->getByLineInfo()->getContributors();
+
+                    if(empty($all)) {
+                        return '';
+                    }
+
+                    $dir = array_filter($all, function ($el) {
+                        return $el['role'] == 'Director';
+                    });
+
+                    $names = array();
+                    array_walk($dir, function ($el) use (&$names) {
+                        $names[] = $el->getName();
+                    });
+
+                    if (!empty($dir)) {
+                        $ret = implode("; ", array_slice($names, 0, $display));
+                    } else {
+                        return '';
+                    }
+                    break;
 
                 case 'title':
-                    return $data['Items']['Item']['ItemAttributes']['Title'];
+                    $ret = $item->getItemInfo()->getTitle()->getDisplayValue();
+                    break;
 
                 case 'url':
-                    return $data['Items']['Item']['DetailPageURL'];
+                    $ret = $item->getDetailPageURL();
+                    break;
 
                 case 'price':
-                    return $data['Items']['Item']['ItemAttributes']['ListPrice']['FormattedPrice'];
+                    if (
+                        $item->getOffers() !== null
+                        and $item->getOffers() !== null
+                        and $item->getOffers()->getListings() !== null
+                        and $item->getOffers()->getListings()[0]->getSavingBasis() !== null
+                        and $item->getOffers()->getListings()[0]->getSavingBasis()->getDisplayAmount() !== null
+                    ) {
+                        $ret = $item->getOffers()->getListings()[0]->getSavingBasis()->getDisplayAmount();
+                    } else if (
+                        $item->getOffers() !== null
+                        and $item->getOffers() !== null
+                        and $item->getOffers()->getListings() !== null
+                        and $item->getOffers()->getListings()[0]->getPrice() !== null
+                        and $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount() !== null
+                    ) {
+                        $ret = $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount();
+                    } else {
+                        return 'N/A';
+                    }
+                    break;
 
                 case 'rating':
-                    return $data['Items']['Item']['ItemAttributes']['AudienceRating'];
+                    if (
+                        $item->getItemInfo() != null
+                        && $item->getItemInfo()->getContentRating() != null
+                        && $item->getItemInfo()->getContentRating()->getAudienceRating() != null
+                        && $item->getItemInfo()->getContentRating()->getAudienceRating()->getDisplayValue() != null
+                    ) {
+                        $ret = $item->getItemInfo()->getContentRating()->getAudienceRating()->getDisplayValue();
+                    } else {
+                        return 'N/A';
+                    }
+                    break;
 
                 case 'genre':
-                    return $data['Items']['Item']['ItemAttributes']['Genre'];
+                    return '';
 
                 case 'creator':
                     $display = isset($atts['display']) ? $atts['display'] : 3;
-                    return is_array($data['Items']['Item']['ItemAttributes']['Creator']) ?
-                    implode(", ", array_slice($data['Items']['Item']['ItemAttributes']['Creator'], 0, $display)) : '';
+
+                    $all = $item->getItemInfo()->getByLineInfo()->getContributors();
+
+                    if(empty($all)) {
+                        return '';
+                    }
+
+                    $dir = array_filter($all, function ($el) {
+                        return $el['role'] == 'Writer';
+                    });
+
+                    $names = array();
+                    array_walk($dir, function ($el) use (&$names) {
+                        $names[] = $el->getName();
+                    });
+
+                    if (!empty($dir)) {
+                        $ret = implode("; ", array_slice($names, 0, $display));
+                    } else {
+                        return '';
+                    }
+                    break;
 
                 case 'studio':
-                    return $data['Items']['Item']['ItemAttributes']['Studio'];
+                    $ret = $item->getItemInfo()->getByLineInfo()->getManufacturer()->getDisplayValue();
+                    break;
 
                 case 'runtime':
-                    return $data['Items']['Item']['ItemAttributes']['RunningTime'];
+                    return '';
 
                 case 'saleprice':
-                    return $data['Items']['Item']['Offers']['Offer']['OfferListing']['Price']['FormattedPrice'];
+                    if (
+                        $item->getOffers() !== null
+                        and $item->getOffers() !== null
+                        and $item->getOffers()->getListings() !== null
+                        and $item->getOffers()->getListings()[0]->getPrice() !== null
+                        and $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount() !== null
+                    ) {
+                        $ret = $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount();
+                    } else {
+                        return 'N/A';
+                    }
+                    break;
 
                 case 'poster':
-                    return '<img src="' . $data['Items']['Item']['ImageSets']['ImageSet'][0]['LargeImage']['URL'] . '" />';
+                    if (
+                        $item->getImages() != null
+                        && $item->getImages()->getPrimary() != null
+                        && $item->getImages()->getPrimary()->getLarge() != null
+                        && $item->getImages()->getPrimary()->getLarge()->getURL() != null
+                    ) {
+                        return '<img src="' . $item->getImages()->getPrimary()->getLarge()->getURL() . '" />';
+                    } else if (isset($atts['placeholder'])) {
+                        return '<img src="' . get_option('api-metadata-settings-placeholder-poster') . '" />';
+                    }
+                    return '';
 
                 case 'actors':
                     $display = isset($atts['display']) ? $atts['display'] : 3;
-                    return is_array($data['Items']['Item']['ItemAttributes']['Actor']) ?
-                    implode(", ", array_slice($data['Items']['Item']['ItemAttributes']['Actor'], 0, $display)) : '';
+
+                    $all = $item->getItemInfo()->getByLineInfo()->getContributors();
+
+                    if(empty($all)) {
+                        return '';
+                    }
+
+                    $dir = array_filter($all, function ($el) {
+                        return $el['role'] == 'Actor';
+                    });
+
+                    $names = array();
+                    array_walk($dir, function ($el) use (&$names) {
+                        $names[] = $el->getName();
+                    });
+
+                    if (!empty($dir)) {
+                        $ret = implode("; ", array_slice($names, 0, $display));
+                    } else {
+                        return '';
+                    }
+                    break;
             }
+
+            if (array_key_exists('transform', $atts)) {
+                switch ($atts['transform']) {
+                    case 'capitalize':
+                        $ret = ucwords(strtolower($ret));
+                        break;
+                    case 'uppercase':
+                        $ret = strtoupper($ret);
+                        break;
+                    case 'lowercase':
+                        $ret = strtolower($ret);
+                        break;
+                }
+            }
+
+            return $ret;
         }
     } else if (isset($atts['imdb']) && isset($atts['show'])) {
         $apiKey = get_option('api-metadata-settings-omdbapi-apikey');
@@ -71,7 +218,15 @@ function api_metadata_shortcode($atts, $content = '')
         if (!empty($data)) {
             switch (strtolower($atts['show'])) {
                 case 'poster':
-                    return '<img src="' . $data['Poster'] . '" />';
+                    if (empty($data['Poster']) || strtolower($data['Poster']) == 'n/a') {
+                        if (isset($atts['placeholder'])) {
+                            return '<img src="' . get_option('api-metadata-settings-placeholder-poster') . '" />';
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '<img src="' . $data['Poster'] . '" />';
+                    }
 
                 case 'metascore':
                     return $data['Metascore'];
@@ -81,7 +236,9 @@ function api_metadata_shortcode($atts, $content = '')
                         return 'N/A';
                     }
 
-                    $score = array_filter($data['Ratings'], function ($v) {return $v['Source'] == 'Rotten Tomatoes';});
+                    $score = array_filter($data['Ratings'], function ($v) {
+                        return $v['Source'] == 'Rotten Tomatoes';
+                    });
 
                     if (!$score || !is_array($score) || count($score) != 1) {
                         return 'N/A';
@@ -146,45 +303,60 @@ function format_date($date, $display)
 
 function api_metadata_settings_page()
 {
-    ?>
-<div class="wrap">
-     <form action="options.php" method="post">
-        <h2>API Metadata Settings for Amazon</h2>
-        <?php settings_fields('api-metadata-settings');?>
-        <table class="form-table">
-            <tr>
-                <td width="10%">Access Key</td>
-                <td><input placeholder="" name="api-metadata-settings-amazon-accesskey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-accesskey')); ?>" style="width:100%;"></td>
-            </tr>
-            <tr>
-                <td>Secret Key</td>
-                <td><input placeholder="" name="api-metadata-settings-amazon-secretkey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-secretkey')); ?>" style="width:100%;"></td>
-            </tr>
-            <tr>
-                <td>Tag</td>
-                <td><input placeholder="" name="api-metadata-settings-amazon-tag" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-tag')); ?>" style="width:100%;"></td>
-            </tr>
-            <tr>
-                <td>Endpoint</td>
-                <td><input placeholder="" name="api-metadata-settings-amazon-endpoint" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-endpoint')); ?>" style="width:100%;"></td>
-            </tr>
-            <tr>
-                <td><?php submit_button();?></td>
-            </tr>
-        </table>
+?>
+    <div class="wrap">
+        <form action="options.php" method="post">
+            <h2>API Metadata Settings for Amazon</h2>
+            <?php settings_fields('api-metadata-settings'); ?>
+            <table class="form-table">
+                <tr>
+                    <td width="10%">Access Key</td>
+                    <td><input placeholder="" name="api-metadata-settings-amazon-accesskey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-accesskey')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td>Secret Key</td>
+                    <td><input placeholder="" name="api-metadata-settings-amazon-secretkey" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-secretkey')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td>Tag</td>
+                    <td><input placeholder="" name="api-metadata-settings-amazon-tag" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-tag')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td>Endpoint</td>
+                    <td><input placeholder="" name="api-metadata-settings-amazon-endpoint" value="<?php echo esc_attr(get_option('api-metadata-settings-amazon-endpoint')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td><?php submit_button(); ?></td>
+                </tr>
+            </table>
 
-        <h2>API Metadata Settings for OMDB API</h2>
-        <table class="form-table">
-            <tr>
-                <td width="10%">Api Key</td>
-                <td><input placeholder="" name="api-metadata-settings-omdbapi-apikey" value="<?php echo esc_attr(get_option('api-metadata-settings-omdbapi-apikey')); ?>" style="width:100%;"></td>
-            </tr>
-            <tr>
-                <td><?php submit_button();?></td>
-            </tr>
-        </table>
-    </form>
-</div>
+            <h2>API Metadata Settings for OMDB API</h2>
+            <table class="form-table">
+                <tr>
+                    <td width="10%">Api Key</td>
+                    <td><input placeholder="" name="api-metadata-settings-omdbapi-apikey" value="<?php echo esc_attr(get_option('api-metadata-settings-omdbapi-apikey')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td><?php submit_button(); ?></td>
+                </tr>
+            </table>
+
+            <h2>Placeholders</h2>
+            <table class="form-table">
+                <tr>
+                    <td width="10%">Date</td>
+                    <td><input placeholder="" name="api-metadata-settings-placeholder-date" value="<?php echo esc_attr(get_option('api-metadata-settings-placeholder-date')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td width="10%">Poster</td>
+                    <td><input placeholder="" name="api-metadata-settings-placeholder-poster" value="<?php echo esc_attr(get_option('api-metadata-settings-placeholder-poster')); ?>" style="width:100%;"></td>
+                </tr>
+                <tr>
+                    <td><?php submit_button(); ?></td>
+                </tr>
+            </table>
+        </form>
+    </div>
 <?php
 }
 
@@ -224,41 +396,58 @@ function make_amazon_request($itemId)
         return $ret;
     }
 
-    $access_key_id = get_option('api-metadata-settings-amazon-accesskey');
-    $secret_key = get_option('api-metadata-settings-amazon-secretkey');
-    $tag = get_option('api-metadata-settings-amazon-tag');
-    $endpoint = get_option('api-metadata-settings-amazon-endpoint');
+    $config = new Configuration();
 
-    $uri = '/onca/xml';
+    $config->setAccessKey(get_option('api-metadata-settings-amazon-accesskey'));
+    $config->setSecretKey(get_option('api-metadata-settings-amazon-secretkey'));
+    $config->setHost(get_option('api-metadata-settings-amazon-endpoint'));
+    $config->setRegion('us-east-1');
 
-    $params = array(
-        'Service' => 'AWSECommerceService',
-        'Operation' => 'ItemLookup',
-        'AWSAccessKeyId' => $access_key_id,
-        'AssociateTag' => $tag,
-        'ItemId' => $itemId,
-        'IdType' => 'ASIN',
-        'ResponseGroup' => 'ItemAttributes,Offers,Images',
-        'Timestamp' => gmdate('Y-m-d\TH:i:s\Z'),
+    $apiInstance = new DefaultApi(
+        new GuzzleHttp\Client(),
+        $config
     );
 
-    ksort($params);
+    $resources = [
+        GetItemsResource::IMAGESPRIMARYLARGE,
+        GetItemsResource::ITEM_INFOBY_LINE_INFO,
+        GetItemsResource::ITEM_INFOCONTENT_INFO,
+        GetItemsResource::ITEM_INFOCONTENT_RATING,
+        GetItemsResource::ITEM_INFOFEATURES,
+        GetItemsResource::ITEM_INFOMANUFACTURE_INFO,
+        GetItemsResource::ITEM_INFOPRODUCT_INFO,
+        GetItemsResource::ITEM_INFOTECHNICAL_INFO,
+        GetItemsResource::ITEM_INFOTITLE,
+        GetItemsResource::OFFERSLISTINGSPRICE,
+        GetItemsResource::OFFERSLISTINGSSAVING_BASIS,
+    ];
 
-    $pairs = array();
-    foreach ($params as $key => $value) {
-        array_push($pairs, rawurlencode($key) . '=' . rawurlencode($value));
+    $getItemsRequest = new GetItemsRequest();
+    $getItemsRequest->setItemIds([$itemId]);
+    $getItemsRequest->setPartnerTag(get_option('api-metadata-settings-amazon-tag'));
+    $getItemsRequest->setPartnerType(PartnerType::ASSOCIATES);
+    $getItemsRequest->setResources($resources);
+
+
+    try {
+        $getItemsResponse = $apiInstance->getItems($getItemsRequest);
+
+        if ($getItemsResponse->getErrors() !== null) {
+            error_log('Amazon Product API error [Code: ' . $getItemsResponse->getErrors()[0]->getCode() . ', Message: ' . $getItemsResponse->getErrors()[0]->getMessage() . ']');
+        } else if ($getItemsResponse->getItemsResult() !== null) {
+            if ($getItemsResponse->getItemsResult()->getItems() !== null) {
+                $data = $getItemsResponse->getItemsResult()->getItems()[0];
+
+                set_transient('amazon_product_' . $itemId, $data, DAY_IN_SECONDS);
+
+                return $data;
+            }
+        }
+    } catch (Exception $exception) {
+        error_log('Amazon Product API Exception: ' . $exception->getMessage());
     }
 
-    $canonical_query_string = join('&', $pairs);
-    $signature = base64_encode(hash_hmac('sha256', "GET\n" . $endpoint . "\n" . $uri . "\n" . $canonical_query_string, $secret_key, true));
-    $request_url = 'https://' . $endpoint . $uri . '?' . $canonical_query_string . '&Signature=' . rawurlencode($signature);
-
-    $xml = file_get_contents($request_url);
-    $data = json_decode(json_encode(simplexml_load_string($xml)), true);
-
-    set_transient('amazon_product_' . $itemId, $data, DAY_IN_SECONDS);
-
-    return $data;
+    return '';
 }
 
 function make_http_request($url)
@@ -285,4 +474,6 @@ add_action('admin_init', function () {
     register_setting('api-metadata-settings', 'api-metadata-settings-amazon-tag');
     register_setting('api-metadata-settings', 'api-metadata-settings-amazon-endpoint');
     register_setting('api-metadata-settings', 'api-metadata-settings-omdbapi-apikey');
+    register_setting('api-metadata-settings', 'api-metadata-settings-placeholder-date');
+    register_setting('api-metadata-settings', 'api-metadata-settings-placeholder-poster');
 });
