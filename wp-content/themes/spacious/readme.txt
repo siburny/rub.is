@@ -13,7 +13,6 @@ External resources linked to the theme.
 Resources packed within the theme.
 * Genericons by Joen Asmussen http://genericons.com/
   Licensed under the GPL, version 2 or later http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
-* Image in the screenshot is from public domain http://unsplash.com/ link: unsplash.com/post/53469911317/download-by-aleks-dorohovich
 * HTML5 Shiv @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
 * The script jquery.cycle.all.js is dual licensed under GPL & MIT
 * Other custom js files are our own creation and is licensed under the same license as this theme.
@@ -46,8 +45,20 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+= Version 1.7.3 - 2020-06-19 =
+* Enhancement - Gutenberg compatibility.
+* Tweak - Add more Google Fonts.
+* Added - New Demo (Spacious Vet)- Use this Spacious demo to create your pet-friendly vet website.
+* Added - New Demo (Spacious Event )- Use this Spacious demo if you want to create an event website.
+* Remove - Unrequired deprecated demo config for theme demo lists.
+
+= Version 1.7.2 - 2020-05-27 =
+* Fix - JS error while certain header HTML element not rendered.
+* Tweak - Added new required header fields for style.css.
+* Tweak - Add and improve theme-related notices.
+
 = Version 1.7.1 - 2020-02-19 =
-* Tweak -Refactor theme page according to WordPress theme guidelines.
+* Tweak - Refactor theme page according to WordPress theme guidelines.
 
 = Version 1.7.0 - 2020-02-19 =
 * Tweak - Minor Enhancement.
