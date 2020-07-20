@@ -1894,7 +1894,7 @@ class td_api_text {
 
 class td_api_features {
 	private static $features = array (
-		'require_activation' => true,
+		'require_activation' => false,
 		'require_demos' => true,
 		'require_panel' => true,
 		'require_vc' => true,
