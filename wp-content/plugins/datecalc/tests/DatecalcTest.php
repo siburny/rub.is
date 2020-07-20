@@ -170,11 +170,11 @@ final class datecalctest extends TestCase
         return [
             [
                 '[datecalc date="12/25/1994" display="w"]',
-                '52'
+                'Week 52'
             ],
             [
                 '[datecalc date="12/25/1994" display="w" ordinalize="true"]',
-                '52nd'
+                'Week 52nd'
             ],
         ];
     }
@@ -187,32 +187,75 @@ final class datecalctest extends TestCase
                 'Christmas'
             ],
             [
-                '[datecalc date="12/25/2020" holiday="true" type="US"]',
+                '[datecalc date="12/25/2020" holiday="true" country="US"]',
                 'Christmas'
             ],
             [
-                '[datecalc date="12/25/2020" holiday="true" type="RU"]',
-                ''
+                '[datecalc date="12/25/2020" holiday="true" country="RU"]',
+                'No major holidays found for this date.'
             ],
             [
                 '[datecalc date="01/07/2020" holiday="true"]',
-                ''
+                'No major holidays found for this date.'
             ],
             [
-                '[datecalc date="01/07/2020" holiday="true" type="US"]',
-                ''
+                '[datecalc date="01/07/2020" holiday="true" country="US"]',
+                'No major holidays found for this date.'
             ],
             [
-                '[datecalc date="01/07/2020" holiday="true" type="RU"]',
-                'Orthodox Christmas Day'
+                '[datecalc date="01/07/2020" holiday="true" country="RU"]',
+                'Orthodox Christmas'
             ],
             [
                 '[datecalc date="01/07/2020" holiday="true" type="XX"]',
-                ''
+                'No major holidays found for this date.'
+            ],
+            [
+                '[datecalc date="12/25/1984" holidays="true" type="major"]',
+                'Christmas'
+            ],
+            [
+                '[datecalc date="1/1/2020" holidays="true" type="christian"]',
+                'Solemnity of Mary'
+            ],
+            [
+                '[datecalc date="1/1/1984" holidays="true" type="major" description="true"]',
+                'This is the descrition for NY\'s Day'
             ],
         ];
     }
-    
+
+    public function shortcode_date_roman()
+    {
+        return [
+            [
+                '[datecalc date="5/7/2020" roman="true"]',
+                'VVIIMMXX'
+            ],
+            [
+                '[datecalc date="5/7/2020" roman="true" display="m d yyyy"]',
+                'V VII MMXX'
+            ],
+        ];
+    }
+
+    public function shortcode_date_quarter()
+    {
+        return [
+            [
+                '[datecalc date="1/1/2020" display="q"]',
+                '1st quarter'
+            ],
+            [
+                '[datecalc date="1/1/2020" display="q text"]',
+                'first quarter'
+            ],
+            [
+                '[datecalc date="8/1/2020" display="q abbr"]',
+                'Q3'
+            ],
+        ];
+    }
 
     /**
      * @dataProvider shortcode_seasons_should_output_provider
@@ -222,10 +265,33 @@ final class datecalctest extends TestCase
      * @dataProvider shortcode_quality_should_output_description_provider
      * @dataProvider shortcode_date_week_provider
      * @dataProvider shortcode_date_holiday_provider
+     * @dataProvider shortcode_date_roman
+     * @dataProvider shortcode_date_quarter
      */
     public function test_shortcode_should_output($shortcode, $output_expected)
     {
         $output = do_shortcode($shortcode);
         $this->assertEquals($output_expected, $output);
+    }
+
+    public function test_all_holidays_are_valid()
+    {
+        global $holidays;
+
+        $this->assertGreaterThan(0, count($holidays), 'No holidays were loaded');
+
+        $year = 2020;
+
+        foreach ($holidays as $h) {
+            $date = $h['date'];
+            if (strpos($date, '/') !== false) {
+                $date .= '/' . $year;
+            } else {
+                $date .= ' ' . $year;
+            }
+
+            $key = strtotime($date);
+            $this->assertNotEmpty($key, 'Error parsing holiday rule: [' . $date . ']');
+        }
     }
 }

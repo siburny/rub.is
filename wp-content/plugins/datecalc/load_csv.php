@@ -1,5 +1,29 @@
 <?php
 
+global
+    $billboard,
+    $babynames,
+    $babybirths,
+    $nhl,
+    $nfl,
+    $mlb,
+    $nba,
+    $events,
+    $birthdays,
+    $presidents,
+    $movies,
+    $games,
+    $worldcup,
+    $australianopen,
+    $cricket,
+    $frenchopen,
+    $marchmadness,
+    $usopen,
+    $wimbledon,
+    $markets,
+    $holidays,
+    $all_data;
+
 $billboard = array();
 $babynames = array();
 $babybirths = array();
@@ -20,6 +44,7 @@ $marchmadness = array();
 $usopen = array();
 $wimbledon = array();
 $markets = array();
+$holidays = array();
 
 $all_data = array();
 
@@ -115,5 +140,14 @@ foreach ($csvs as $file) {
     array_walk($input, function ($a) use (&$all_data, $name, $input) {
         $all_data[$name][$a[0]] = array_combine($input[0], $a);
     });
-
 }
+
+$skip = true;
+$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/holidays.csv'));
+array_walk($input, function ($a) use (&$holidays, $input, &$skip) {
+    if (!$skip) {
+        $holidays[] = array_combine($input[0], $a);
+    } else {
+        $skip = false;
+    }
+});

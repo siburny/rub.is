@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Date Calculator and Formatter
  * Description: Flexible date and time formatter
- * Version: 3.7
+ * Version: 3.8
  */
 
 require_once 'Numword.php';
@@ -150,6 +150,7 @@ function zodiacQuality($day, $month)
 function datecalc_func($atts)
 {
     global $billboard, $all_data;
+
     $prefix = '';
 
     if (empty($atts)) {
@@ -270,13 +271,15 @@ function datecalc_func($atts)
     } else if (array_key_exists('roman', $atts) && ($atts['roman'] == 'yes' || $atts['roman'] == '1' || $atts['roman'] == 'true')) {
         if (array_key_exists('display', $atts)) {
             $ret = $atts['display'];
-
-            $ret = str_replace('yyyy', ConvertToRoman($date->format('Y')), $ret);
-            $ret = str_replace('mm', ConvertToRoman($date->format('n')), $ret);
-            $ret = str_replace('dd', ConvertToRoman($date->format('j')), $ret);
         } else {
-            $ret = ConvertToRoman($date->format('Y'));
+            $ret = 'mmddyyyy';
         }
+
+        $ret = str_replace('yyyy', ConvertToRoman($date->format('Y')), $ret);
+        $ret = str_replace('mm', ConvertToRoman($date->format('n')), $ret);
+        $ret = str_replace('dd', ConvertToRoman($date->format('j')), $ret);
+        $ret = str_replace('m', ConvertToRoman($date->format('n')), $ret);
+        $ret = str_replace('d', ConvertToRoman($date->format('j')), $ret);
 
         return $ret;
     } else if (array_key_exists('zodiac', $atts) && ($atts['zodiac'] == 'yes' || $atts['zodiac'] == '1' || $atts['zodiac'] == 'true')) {
@@ -474,27 +477,46 @@ function datecalc_func($atts)
 
         return $ret['name'] . ' developed by ' . $ret['developer'] . '.';
     } else if (array_key_exists('holiday', $atts) || array_key_exists('holidays', $atts)) {
-        $type = 'US';
-        if (array_key_exists('type', $atts) && strlen($atts['type']) == 2) {
-            $type = strtoupper($atts['type']);
+        $type = 'all';
+        if (array_key_exists('type', $atts)) {
+            $type = $atts['type'];
         }
 
-        try {
-            $holidays = Yasumi\Yasumi::createByISO3166_2($type, $date->format('Y'));
-            $h = $holidays->on($date);
+        $country = 'us';
+        if (array_key_exists('country', $atts) && (strlen($atts['country']) == 2 || $atts['country'] == 'all')) {
+            $country = strtolower($atts['country']);
+        }
 
-            if ($h->count() > 0) {
-                $holiday = array_pop(iterator_to_array($h));
+        $all = get_all_holidays($date->format('Y'));
+        if (!$all) {
+            return 'No major holidays found for this date.';
+        }
 
-                return $description ?
-                    nl2br_str(get_option('date-calc-holidays-' . strtolower($holiday->shortName))) :
-                    $holiday->getName();
-            } else {
-                return '';
+        $search_date = $date->format('n/j');
+        $ret = array();
+        foreach ($all as $d) {
+            foreach ($d as $h) {
+                if ($h['date'] == $search_date && ($h['type'] == $type || $type == 'all') && ($country == 'all' || $h['country'] == $country)) {
+                    $ret[] = $h;
+                }
             }
-        } catch (Exception $e) {
-            return '';
         }
+
+        if (count($ret) == 1) {
+            return $description ? $ret[0]['description'] : $ret[0]['holiday'];
+        } else if (count($ret) > 1) {
+            $ret = $description ? array_column($ret, 'description') : array_column($ret, 'holiday');
+
+            $count = 3;
+            if (array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+                $count = 0 + $atts['show'];
+            }
+
+            $ret = array_slice($ret, 0, $count);
+            return '<ul><li>' . implode('</li><li>', $ret) . '</li></ul>';
+        }
+
+        return 'No major holidays found for this date.';
     } else if (array_key_exists('difference', $atts) && $atts['difference'] != 'true') {
         $doPlural = function ($nb, $str) {
             return $nb > 1 ? $str . 's' : $str;
@@ -700,7 +722,7 @@ function datecalc_func($atts)
     } else {
         $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
 
-        $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|week|w|s|text)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|week|w|s|text|q)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
         $replace = array(
             'yyyy' => 'Y',
             'yy' => 'y',
@@ -796,6 +818,22 @@ function datecalc_func($atts)
                         $ret .= 'Fall (autumn)';
                         break;
                 }
+            } else if ($token == 'q') {
+                $q = ceil($date->format('n') / 3);
+
+                if ($atts['display'] == 'q') {
+                    return $q . _ordinal_suffix($q) . ' quarter';
+                } else if ($atts['display'] == 'q text') {
+                    $format = NumberFormatter::SPELLOUT;
+                    $f = new NumberFormatter("en", $format);
+                    $f->setTextAttribute(NumberFormatter::DEFAULT_RULESET, "%spellout-ordinal");
+
+                    return $f->format($q) . ' quarter';
+                } else if ($atts['display'] == 'q abbr') {
+                    return 'Q' . $q;
+                } else {
+                    return $token;
+                }
             } else {
                 $ret .= $token;
             }
@@ -842,24 +880,35 @@ function datecalc_func($atts)
     return $ret;
 }
 
-$all_holidays = array();
-function get_all_holidays()
+function get_all_holidays($year)
 {
-    global $all_holidays;
+    global $holidays;
 
-    for ($i = date("Y"); $i > date("Y") - 20; $i--) {
-        $holidays = Yasumi\Yasumi::createByISO3166_2('US', $i);
-        $h = $holidays->between(new DateTime('01/01/' . $i), new DateTime('12/31/' . $i));
+    $ret = array();
 
-        foreach ($h as $holiday) {
-            $all_holidays[str_replace(':', '-', $holiday->shortName)] = $holiday->getName();
+    foreach ($holidays as $h) {
+        $date = $h['date'];
+        if (strpos($date, '/') !== false) {
+            $date .= '/' . $year;
+        } else {
+            $date .= ' ' . $year;
+        }
+
+        $date = strtotime($date);
+        if ($date) {
+            $key = date('n/j', $date);
+            $h['date'] = $key;
+
+            if (!isset($ret[$key])) {
+                $ret[$key] = array();
+            }
+
+            $ret[$key][] = $h;
         }
     }
 
-    $all_holidays = array_unique($all_holidays);
-    sort($all_holidays);
+    return $ret;
 }
-get_all_holidays();
 
 function date_calc_settings_page()
 {
