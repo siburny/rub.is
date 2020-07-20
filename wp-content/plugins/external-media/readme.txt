@@ -3,18 +3,21 @@ Author: Minnur Yunusov
 Author URI: http://www.minnur.com/
 Contributors: minnur
 Donate link: https://goo.gl/C2cBDF
-Tags: Dropbox, Box, OneDrive, Google Drive, Instagram, CloudApp, Upload from remote, remote media, remote URL, remote image, remote file, external media, wp remote upload, external media upload, external image upload
-Requires at least: 4.4
-Tested up to: 5.2
-Stable tag: 1.0.19
+Tags: Dropbox, Box, OneDrive, Google Drive, Unsplash, Instagram, Pexels, Pixabay, AWS, Upload from remote, remote media, remote URL, remote image, remote file, external media, wp remote upload, external media upload, external image upload
+Requires at least: 5.2
+Tested up to: 5.4.2
+Stable tag: 1.0.25
+Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Import files from thrid-party services (Dropbox, Box, OneDrive, Google Drive, Instagram, CloudApp and any external file).
+Import files from thrid-party services (Dropbox, Box, OneDrive, Google Drive, and any external file).
 
 == Description ==
 
-Import files from or create external links from third-party services (Dropbox, Box, OneDrive, Google Drive, Instagram, [CloudApp](http://www.shareasale.com/r.cfm?B=1027572&U=1597643&M=71652&urllink=) and any other external file from URL).
+Import files from or create external links from third-party services (Dropbox, Box, OneDrive, Google Drive and any other external file from URL).
+
+> [External Media Premium](https://downloads.minnur.com/wordpress/external-media-premium) is a premium version of this plugin with support for Unsplash, Instagram, Pexels, Pixabay and AWS.
 
 This plugin provides convenient way of linking and using files from the services listed above. It is intuitive, controls located where you expect them to be. For instance if you would like to create a link to your file in your Dropbox account, just press Add Media and choose Insert from URL media tab and then click Link to Dropbox button.
 
@@ -25,10 +28,6 @@ The plugin provide two options:
 Note: Imported files from a remote services become a permanent file and changes made to the file on the service won't reflect on the site. You would have to re-import the file using External Media plugin.
 
 The plugin won't upload the same file twice, instead it will check if the file already exists in your Wordpress site and re-use it.
-
-Instagram plugin allows you to easily upload images from your Instagram to your website (permanently) this won't be a link to a photo if you choose Upload option.
-
-> [Donations](https://goo.gl/C2cBDF) are always appreciated. This will help me to continue support and add new features for free. Thank you for using my plugin.
 
 == Installation ==
 
@@ -65,38 +64,20 @@ Instagram plugin allows you to easily upload images from your Instagram to your 
   - Copy the "Api Key" (see under "Backend Parameters") and use it in the 
     plugin to enable insert links or imports from Box.
 
-**Instagram.**
+.**
 
-  NOTE: Please note you might need to re-open Instagram file picker popup after you
+  NOTE: Please note you might need to re-ope file picker popup after you
     first time login. Please also note that users only can choose their own photos.
 
-  - Open https://www.instagram.com/developer/clients/manage/ and register
+  - Open https://ww.com/developer/clients/manage/ and register
     a New Client.
   - Provide Redirect URI (this can be found on the plugin configuration page)
   - Use Client ID and Client Secret in the plugin.
-  - NOTE: This plugin ONLY allows to use your own Instagram pictures.
+  - NOTE: This plugin ONLY allows to use your ow pictures.
 
 **OneDrive (Microsoft).**
 
-  NOTE: OneDrive button doesn't always trigger the popup. You have to keep pressing the
-    button until the popup shows up. It behaves the same even on the MS's website.
-    See https://dev.onedrive.com/sdk/javascript-picker-saver.htm
-    It might start working well once they fixe the issue.
-
-  - Please Register (https://account.live.com/developers/applications) your app 
-    to get an app ID (client ID), if you haven't already done so.
-  - Ensure that the web page that is going to reference the SDK is a 
-    Redirect URL under Application Settings.
-  - Set Mobile or desktop client app to No.
-  - Leave Target domain empty.
-  - Set Restrict JWT issuing to Yes.
-  - Copy the Client ID and use it on the plugin configuration page.
-
-  IMPORTANT: Most people have problems with properly configuring the OneDrive app. 
-    You have to add your wp-admin/edit.php?post_type=page page paths as Redirect URLs.
-    For instance: http://example.com/wp-admin/post-new.php,
-    http://wp.local.com:8888/wp-admin/post-new.php?post_type=page. 
-    To FIX this issue you would have to provide all the page URLs where you are going to use the uploader.
+  Please [Register your app](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) to get an Application (client) ID, if you haven't already done so. Ensure that the web page that is going to reference the SDK is a Redirect URL under Redirect URIs (Web platform). Enable Implicit grant and make sure Access Tokens and ID Tokens checked. Set Treat application as a public client to Yes.
 
 **GoogleDrive.**
 
@@ -110,12 +91,7 @@ Instagram plugin allows you to easily upload images from your Instagram to your 
   - Add your domain to Authorized JavaScript origins.
     More about scopes: https://developers.google.com/picker/docs/#otherviews
   - Make sure you enable Picker API.
-
-**CloudApp.**
-
-  - Use your existing account or create new account in [CloudApp](http://www.shareasale.com/r.cfm?B=1027572&U=1597643&M=71652&urllink=).
-  - Enter your Email address and password
-  - Save configuration.
+  - Make sure you enable Drive API.
 
 **Usage.**
 
@@ -130,7 +106,18 @@ For more information or customization please contact the author of this plugin.
 
 == Frequently Asked Questions ==
 
-Not available at the moment.
+= What does the plugin do? =
+The plugin import files from external services into Wordpress. It does not link files to externals services. It grabs files and downloads into your Wordpress Media Library so you could use it on your website.
+
+= Configuration requirements? =
+You would need to have credentials for the plugin in order to be able to import files.
+
+= How to get Premium version =
+[External Media Premium](https://downloads.minnur.com/wordpress/external-media-premium) is a premium version of this plugin with support for Unsplash, Instagram, Pexels, Pixabay and AWS. After the payment you will get download button. The downloaded file then could be uploaded to your wordpress plugins direcotry and installed.
+
+= Don't see a service that you need? =
+If you don't see a service that you need please [create a support ticket](https://wordpress.org/support/plugin/external-media/#new-topic-0) and I will review your request.
+
 
 == Upgrade Notice ==
 
@@ -140,10 +127,31 @@ Not available at the moment.
 
 1. /assets/screenshot-1.png
 2. /assets/screenshot-2.png
-3. /assets/screenshot-3.png
 
 == Changelog ==
 
+= 1.0.25 =
+* Fix OneDrive integration.
+* Version bump.
+= 1.0.24 =
+* Refine core library to allow referer setting in remote calls.
+* Version bump.
+= 1.0.23 =
+* Fix imported media empty caption issue.
+* Version bump.
+= 1.0.22 =
+* Refine admin CSS.
+* Version bump.
+= 1.0.21 =
+* Add caption support for premium plugin widgets.
+* Version bump.
+= 1.0.20 =
+* Add reference to Premium version.
+* Remove CloudApp depricated integration
+* Remove obsolete Instagram integration.
+* Fix OneDrive integration issue.
+* Refine Google Drive integration.
+* Version bump. Test with Wordpress 5.4.2
 = 1.0.19 =
 * Version bump. Test with Wordpress 5.2.2
 = 1.0.18 =

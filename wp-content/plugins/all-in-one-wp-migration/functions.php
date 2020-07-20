@@ -1197,14 +1197,6 @@ function ai1wm_deactivate_jetpack_modules( $modules ) {
  * @return boolean
  */
 function ai1wm_deactivate_sitewide_revolution_slider( $basename ) {
-	global $wp_version;
-
-	// Do not deactivate Revolution Slider (WordPress >= 5.2)
-	if ( version_compare( $wp_version, '5.2', '>=' ) ) {
-		return false;
-	}
-
-	// Deactivate Revolution Slider
 	if ( ( $plugins = get_plugins() ) ) {
 		if ( isset( $plugins[ $basename ]['Version'] ) && ( $version = $plugins[ $basename ]['Version'] ) ) {
 			if ( version_compare( PHP_VERSION, '7.3', '>=' ) && version_compare( $version, '5.4.8.3', '<' ) ) {
@@ -1235,14 +1227,6 @@ function ai1wm_deactivate_sitewide_revolution_slider( $basename ) {
  * @return boolean
  */
 function ai1wm_deactivate_revolution_slider( $basename ) {
-	global $wp_version;
-
-	// Do not deactivate Revolution Slider (WordPress >= 5.2)
-	if ( version_compare( $wp_version, '5.2', '>=' ) ) {
-		return false;
-	}
-
-	// Deactivate Revolution Slider
 	if ( ( $plugins = get_plugins() ) ) {
 		if ( isset( $plugins[ $basename ]['Version'] ) && ( $version = $plugins[ $basename ]['Version'] ) ) {
 			if ( version_compare( PHP_VERSION, '7.3', '>=' ) && version_compare( $version, '5.4.8.3', '<' ) ) {
@@ -1794,4 +1778,23 @@ function ai1wm_got_url_rewrite() {
 	}
 
 	return apache_mod_loaded( 'mod_rewrite', false );
+}
+
+/**
+ * Returns whether the server supports URL permalinks.
+ * Detects Apache's mod_rewrite and URL permalinks.
+ *
+ * @return boolean Whether the server supports URL permalinks.
+ */
+function ai1wm_got_url_permalinks() {
+	global $wp_rewrite, $is_apache;
+	if ( $wp_rewrite->using_permalinks() ) {
+		return true;
+	}
+
+	if ( $is_apache ) {
+		return apache_mod_loaded( 'mod_rewrite', false );
+	}
+
+	return true;
 }

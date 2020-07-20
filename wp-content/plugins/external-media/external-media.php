@@ -6,17 +6,18 @@
 
 /*
   Plugin Name: External Media
-  Description: Import files from thrid-party services (Dropbox, Box, OneDrive, Google Drive, Instagram, CloudApp and any remote URL).
-  Version: 1.0.19
+  Description: Import files from thrid-party services (Dropbox, Box, OneDrive, Google Drive and raw remote URL).
+  Version: 1.0.25
   Author: Minnur Yunusov
   Author URI: http://www.minnur.com/
   Text Domain: WP_ExternalMedia
+  Requires PHP: 7.1
 */
 
 define( 'WP_ExternalMedia_PATH', dirname( __FILE__ ) );
 define( 'WP_ExternalMedia_PluginName', plugin_basename( __FILE__ ) );
 define( 'WP_ExternalMedia_Prefix', 'WPExternalMedia_' );
-define( 'WP_ExternalMedia_Version', '1.0.19' );
+define( 'WP_ExternalMedia_Version', '1.0.25' );
 
 if ( !class_exists( 'WP_ExternalMedia' ) ) {
 

@@ -20,19 +20,6 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     add_action( 'wp_ajax_upload-remote-file', array( &$this, 'upload_remote_file' ) );
     // Add link to plugin settings page.
     add_filter( 'plugin_action_links_' . WP_ExternalMedia_PluginName, array( &$this, 'action_links' ) );
-    // Add suport for embeds
-    wp_embed_register_handler( 'cloudapp', '#https://cl\.ly/(.*)#i', array( &$this, 'embed_cloudapp' ) );
-  }
-
-  /**
-   * Generate CloudApp embed
-   */
-  public function embed_cloudapp( $matches, $attr, $url, $rawattr ) {
-    $embed = sprintf(
-      '<div class="cloudapp-embed" data-slug="%s"><a href="https://cl.ly/%s">' . __('View in CloudApp') . '</a><script async src="https://embed.cl.ly/embedded.gz.js" charset="utf-8"></script></div>', 
-      esc_attr($matches[1]), esc_attr($matches[1])
-    );
-    return apply_filters( 'embed_cloudapp', $embed, $matches, $attr, $url, $rawattr );
   }
 
   /**
@@ -44,7 +31,7 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     }
     // Plugin redirect callback paths.
     add_rewrite_tag( '%external_media_plugin%', '([^&]+)' );
-    add_rewrite_rule( '^external\-media/?(.*)?', 'index.php?external_media_plugin=$matches[1]', 'top' );
+    add_rewrite_rule( 'external-media/([^/]*)/?', 'index.php?external_media_plugin=$matches[1]', 'top' );
   }
 
   /**
@@ -55,8 +42,10 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     $file = $_POST['url'];
     $plugin = $_POST['plugin'];
     $filename = $_POST['filename'];
+    $caption = !empty($_POST['caption']) ? $_POST['caption'] : '';
+    $referer = !empty($_POST['referer']) ? $_POST['referer'] : '';
     $loaded_plugin = $this->load_plugin( $plugin );
-    $this->_call_class_method( $loaded_plugin['phpClassName'], 'download', array( $file, $filename ) );
+    $this->_call_class_method( $loaded_plugin['phpClassName'], 'download', array( $file, $filename, $caption, $referer ) );
   }
 
   /**

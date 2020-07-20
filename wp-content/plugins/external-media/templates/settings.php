@@ -13,9 +13,12 @@ $title = __('External Media Settings');
 <div class="wrap">
 <h1><?php echo esc_html( $title ); ?></h1>
 
+<?php if (!is_plugin_active('external-media-premium/external-media-premium.php')) : ?>
 <div class="external-media-donation-box">
-  <p><?php _e('This is a 100% free plugin developed by one developer. All your donations help improve plugin and add new features. <a href="https://goo.gl/C2cBDF" class="button button-primary" target="_blank">Donate Now</a>'); ?></p>
+  <p><?php _e('<strong><a href="https://downloads.minnur.com/wordpress/external-media-premium" class="button button-primary" target="_blank">Go Premium &check;</a> New Premium version of the plugin is available with support of Unsplash, Instagram, Pexel, Pixabay, AWS and Any exernal URL.</strong>'); ?></p>
 </div>
+<?php endif; ?>
+
 <p><?php _e('Please configure each plugin that you would like to use. Once configured you should be able to see a new Media upload buttons.'); ?></p>
 
 <form action="options.php" method="post">
@@ -46,6 +49,7 @@ $title = __('External Media Settings');
               <p class="description"><?php _e('This option will add JS and CSS assets on the public site (non-admin pages).'); ?></p>
             </td>
           </tr>
+          <?php do_action( 'external-media-general-settings' ); ?>
         </table>
       </div>
     </li>
@@ -62,17 +66,6 @@ $title = __('External Media Settings');
             <label for="<?php echo $prefix . $plugin; ?>_enable" class="enable"><?php _e('Enable this plugin'); ?></label>
             </td>
           </tr>
-          <?php // Hide options that current plugin doesn't support. ?>
-          <?php if ( $showLinkButton ) : ?>
-          <tr>
-          <th scope="row"></th>
-            <td>
-            <input name="<?php echo $prefix . $plugin; ?>_insert_url_only" type="checkbox" id="<?php echo $prefix . $plugin; ?>_insert_url_only" value="1" <?php checked( '1', get_option( $prefix . $plugin . '_insert_url_only', 0 ) ); ?>/>
-            <label for="<?php echo $prefix . $plugin; ?>_insert_url_only" class="enable"><?php _e('Only allow insert URL to remote files'); ?></label>
-              <p class="description"><?php _e('If this option is checked you will be able to insert URLs to remote files only. No file import will be available.'); ?></p>
-            </td>
-          </tr>
-          <?php endif; ?>
           <?php foreach ( $settings as $name => $item ) : ?>
           <tr>
             <th scope="row"><?php if ( !empty( $item['#title'] ) ) : ?><label for="<?php echo $prefix . $name; ?>"><?php echo $item['#title'] ?></label><?php endif; ?></th>

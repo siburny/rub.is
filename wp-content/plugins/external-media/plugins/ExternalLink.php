@@ -91,7 +91,8 @@ class ExternalLink extends WP_ExternalPluginBase {
     $elements['external_link'] = array(
       '#title' => '',
       '#type' => 'markup',
-      '#markup' => '<div><p>' . __('This plugin enables an option to import files from any remote URL.') . '</p></div>',
+      '#markup' => '<div><p>' . __('This plugin enables option to import files from remote URLs.') . '</p><br/>
+        <p>' . __('<strong>IMPORTANT: This feature will become obsolete in the free version. If you would like to import media from any URL you would have to download Premium version</strong>.') . '</p></div>',
     );
     return $elements;
   }
@@ -128,12 +129,12 @@ class ExternalLink extends WP_ExternalPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function download( $file, $filename ) {
+  public function download( $file, $filename, $caption, $referer ) {
     // Remove parameters from URL.
     // This will prevent from saving a file with "?" parameter which generates
     // broken thumbnails.
     $filename = strtok($filename, '?');
-    $attachment_id = $this->save_remote_file( $file, get_class($this), $filename );
+    $attachment_id = $this->save_remote_file( $file, get_class($this), $filename, $caption, $referer );
     if ( ! $attachment = wp_prepare_attachment_for_js( $attachment_id ) ) {
       wp_send_json_error();
     }

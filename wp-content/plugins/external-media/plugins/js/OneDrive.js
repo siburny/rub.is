@@ -11,16 +11,18 @@ jQuery(function ($) {
     var $cardinality = $( this ).data( 'cardinality' );
     // OneDrive plugin.
     var pickerOptions = {
-      success: function( file ) {
+      clientId: onedrive_client_id,
+      action: 'download',
+      success: function( files ) {
         if ( $type == 'url' ) {
-          $( '#embed-url-field' ).val( file.values[0].link ).change();
+          $( '#embed-url-field' ).val( files.value[0]['@microsoft.graph.downloadUrl'] ).change();
         }
         else {
           var _count = 0;
-          for ( var i = 0; i < file.values.length; i++ ) {
+          for ( var i = 0; i < files.value.length; i++ ) {
             if ( $cardinality > 1 ) {
               if ( _count < $cardinality ) {
-                external_media_upload( $plugin, file.values[i].link, file.values[i].fileName );
+                external_media_upload( $plugin, files.value[i]['@microsoft.graph.downloadUrl'], files.value[i]['name'], '', '' );
                 _count++;
               }
             }
@@ -28,10 +30,14 @@ jQuery(function ($) {
         }
       },
       cancel: function() {
-         // handle when the user cancels picking a file
+        // handle when the user cancels picking a file
       },
       linkType: ( $type == 'url' ) ? 'webViewLink' : 'downloadLink',
-      multiSelect: ( $type == 'url' ) ? false : true
+      multiSelect: ( $type == 'url' ) ? false : true,
+      advanced: {
+        redirectUri: onedrive_redirect_url,
+        scopes: 'Files.ReadWrite'
+      }
     }
 
     OneDrive.open( pickerOptions );
