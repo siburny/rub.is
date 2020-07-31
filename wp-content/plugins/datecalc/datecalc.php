@@ -3,12 +3,11 @@
 /**
  * Plugin Name: Date Calculator and Formatter
  * Description: Flexible date and time formatter
- * Version: 3.8
+ * Version: 3.99
  */
 
 require_once 'Numword.php';
 require_once 'load_csv.php';
-require_once 'vendor/autoload.php';
 
 function number_format_nozero($nbr, $precision = 0)
 {
@@ -149,9 +148,10 @@ function zodiacQuality($day, $month)
 
 function datecalc_func($atts)
 {
-    global $billboard, $all_data;
+    global $all_data;
 
     $prefix = '';
+    $date = new DateTime();
 
     if (empty($atts)) {
         $atts = array();
@@ -291,12 +291,29 @@ function datecalc_func($atts)
         }
     } else if (array_key_exists('element', $atts) && ($atts['element'] == 'yes' || $atts['element'] == '1' || $atts['element'] == 'true')) {
         $ret = zodiacElement($date->format('j'), $date->format('n'));
+
+        if (array_key_exists('icon', $atts)) {
+            $icons = array(
+                'Fire' => '🔥',
+                'Earth' => '🌎',
+                'Air' => '💨',
+                'Water' => '🌊'
+            );
+            return $icons[$ret];
+        }
+
         $ret = $description ? nl2br_str(get_option('date-calc-zodiacelement-' . strtolower($ret))) : $ret;
     } else if (array_key_exists('quality', $atts) && ($atts['quality'] == 'yes' || $atts['quality'] == '1' || $atts['quality'] == 'true')) {
         $ret = zodiacQuality($date->format('j'), $date->format('n'));
         $ret = $description ? nl2br_str(get_option('date-calc-zodiacquality-' . strtolower($ret))) : $ret;
     } else if (array_key_exists('chinesezodiac', $atts) && ($atts['chinesezodiac'] == 'yes' || $atts['chinesezodiac'] == '1' || $atts['chinesezodiac'] == 'true')) {
         $chineseZodiac = array('Monkey', 'Rooster', 'Dog', 'Pig', 'Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Serpent', 'Horse', 'Goat');
+        $icons = array('🐒', '🐓', '🐕', '🐖', '🐀', '🐂', '🐅', '🐇', '🐉', '🐍', '🐎', '🐐');
+
+        if (array_key_exists('icon', $atts)) {
+            return $icons[$date->format('Y') % 12];
+        }
+
         $ret = $chineseZodiac[$date->format('Y') % 12];
         $ret = $description ? nl2br_str(get_option('date-calc-chinesezodiac-' . strtolower($ret))) : $ret;
     } else if (array_key_exists('flower', $atts) && ($atts['flower'] == 'yes' || $atts['flower'] == '1' || $atts['flower'] == 'true')) {
@@ -334,11 +351,11 @@ function datecalc_func($atts)
         $ret = $ret;
     } else if (array_key_exists('song', $atts) && ($atts['song'] == 'yes' || $atts['song'] == '1' || $atts['song'] == 'true')) {
         $key = $date->format('n/j/Y');
-        if (array_key_exists($key, $billboard)) {
+        if (array_key_exists($key, $all_data['song'])) {
             if (array_key_exists('youtube', $atts)) {
-                return '<iframe src="https://www.youtube.com/embed?listType=search&amp;list=' . urlencode($billboard[$key]['Artist'] . ' - ' . $billboard[$key]['Song']) . '" frameborder="0"></iframe>';
+                return '<iframe src="https://www.youtube.com/embed?listType=search&amp;list=' . urlencode($all_data['song'][$key][0]['Artist'] . ' - ' . $all_data['billboard'][$key][0]['Song']) . '" frameborder="0"></iframe>';
             } else {
-                return '&quot;' . $billboard[$key]['Song'] . '&quot; by ' . $billboard[$key]['Artist'];
+                return '&quot;' . $all_data['song'][$key][0]['song'] . '&quot; by ' . $all_data['song'][$key][0]['artist'];
             }
         }
         return '[Not available]. No song matches found.';
@@ -352,37 +369,40 @@ function datecalc_func($atts)
             }
         }
         $ret = planet($date->format('j'), $date->format('n'));
+
+        if (array_key_exists('icon', $atts)) {
+            $icons = array('Sun' => '☉', 'Moon' => '☽', 'Mercury' => '☿', 'Venus' => '♀', 'Mars' => '♂', 'Jupiter' => '♃', 'Saturn' => '♄', 'Uranus' => '♅', 'Neptune' => '♆', 'Pluto' => '♇');
+            return $icons[$ret];
+        }
+
         $ret = $description ? nl2br_str(get_option('date-calc-planet-' . strtolower($ret))) : $ret;
-    } else if (array_key_exists('babyname', $atts)) {
-        global $babynames;
+    } else if (array_key_exists('babyname', $atts) || array_key_exists('babynames', $atts)) {
         $count = array_key_exists('numbers', $atts);
 
-        if (!array_key_exists($date->format('Y'), $babynames)) {
+        if (!array_key_exists($date->format('Y'), $all_data['babyname'])) {
             return '';
         }
-        $ret = $babynames[$date->format('Y')];
+        $ret = $all_data['babyname'][$date->format('Y')];
 
         if ($count) {
             if ($display == 'girl') {
-                return number_format_nozero(str_replace(',', '', $ret['GirlNumber']));
+                return number_format_nozero(str_replace(',', '', $ret[0]['girlnumber']));
             } else if ($display == 'boy') {
-                return number_format_nozero(str_replace(',', '', $ret['BoyNumbers']));
+                return number_format_nozero(str_replace(',', '', $ret[0]['boynumbers']));
             }
         } else {
             if ($display == 'girl') {
-                return str_replace(',', '', $ret['Girl']);
+                return str_replace(',', '', $ret[0]['girl']);
             } else if ($display == 'boy') {
-                return str_replace(',', '', $ret['Boy']);
+                return str_replace(',', '', $ret[0]['boy']);
             }
         }
         return '';
-    } else if (array_key_exists('birthdays', $atts)) {
-        global $birthdays;
-
-        if (!array_key_exists($date->format('n/j/Y'), $birthdays)) {
-            return '[No one at this time]. No matches found in our celebrity database.';
+    } else if (array_key_exists('birthday', $atts) || array_key_exists('birthdays', $atts)) {
+        if (!array_key_exists($date->format('n/j/Y'), $all_data['birthday'])) {
+            return 'We could not find a celebrity that shares a birthday with you. However, we update our database constantly, and invite you to check back later to see if we found someone with the same birthday.';
         }
-        $ret = $birthdays[$date->format('n/j/Y')];
+        $ret = $all_data['birthday'][$date->format('n/j/Y')];
 
         $count = 3;
         if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
@@ -401,14 +421,12 @@ function datecalc_func($atts)
             }
         }
 
-        return implode(', ', $str);
-    } else if (array_key_exists('events', $atts)) {
-        global $events;
-
-        if (!array_key_exists($date->format('n/j'), $events)) {
+        return 'You share a birthday with ' . implode(', ', $str);
+    } else if (array_key_exists('event', $atts) || array_key_exists('events', $atts)) {
+        if (!array_key_exists($date->format('n/j'), $all_data['event'])) {
             return '';
         }
-        $ret = $events[$date->format('n/j')];
+        $ret = $all_data['event'][$date->format('n/j')];
 
         $count = 3;
         if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
@@ -430,59 +448,22 @@ function datecalc_func($atts)
         }
 
         return $str;
-    } else if (array_key_exists('babybirth', $atts)) {
-        global $babybirths;
-
-        if (!array_key_exists($date->format('Y'), $babybirths)) {
-            return '';
-        }
-        $ret = $babybirths[$date->format('Y')];
-
-        if ($display == 'year') {
-            return number_format_nozero(str_replace(',', '', $ret['BabiesYear']));
-        } else if ($display == 'month') {
-            return number_format_nozero(str_replace(',', '', $ret['BabiesYear']) / 12);
-        } else if ($display == 'day') {
-            return number_format_nozero(str_replace(',', '', $ret['BabiesDay']));
-        } else if ($display == 'minute') {
-            return number_format_nozero(str_replace(',', '', $ret['BabiesMinute']));
-        }
-        return '';
     } else if (array_key_exists('president', $atts)) {
-        global $presidents;
-
-        foreach ($presidents as $key => $val) {
-            if ($val['Took office'] <= $date && ($val['Left office'] == 'Incumbent' || $val['Left office'] > $date)) {
-                return $val['President'] . ' (' . $val['Party'] . ')';
+        foreach ($all_data['president'] as $key => $val) {
+            $val = $val[0];
+            if (new DateTime($val['took office']) <= $date && ($val['left office'] == 'Incumbent' || new DateTime($val['left office']) > $date)) {
+                return $val['president'] . ' (' . $val['party'] . ')';
             }
         }
 
         return '';
-    } else if (array_key_exists('movies', $atts)) {
-        global $movies;
-
-        if (!array_key_exists($date->format('Y'), $movies)) {
-            return '';
-        }
-        $ret = $movies[$date->format('Y')];
-
-        return $ret['name'] . ' directed by ' . $ret['director'] . ' starring ' . $ret['stars'] . '.';
-    } else if (array_key_exists('games', $atts)) {
-        global $games;
-
-        if (!array_key_exists($date->format('Y'), $games)) {
-            return '';
-        }
-        $ret = $games[$date->format('Y')];
-
-        return $ret['name'] . ' developed by ' . $ret['developer'] . '.';
     } else if (array_key_exists('holiday', $atts) || array_key_exists('holidays', $atts)) {
         $type = 'all';
         if (array_key_exists('type', $atts)) {
             $type = $atts['type'];
         }
 
-        $country = 'us';
+        $country = 'all';
         if (array_key_exists('country', $atts) && (strlen($atts['country']) == 2 || $atts['country'] == 'all')) {
             $country = strtolower($atts['country']);
         }
@@ -494,11 +475,9 @@ function datecalc_func($atts)
 
         $search_date = $date->format('n/j');
         $ret = array();
-        foreach ($all as $d) {
-            foreach ($d as $h) {
-                if ($h['date'] == $search_date && ($h['type'] == $type || $type == 'all') && ($country == 'all' || $h['country'] == $country)) {
-                    $ret[] = $h;
-                }
+        foreach ($all[$search_date] as $h) {
+            if (($h['type'] == $type || $type == 'all') && ($country == 'all' || $h['country'] == $country)) {
+                $ret[] = $h;
             }
         }
 
@@ -661,11 +640,9 @@ function datecalc_func($atts)
 
         return number_format_nozero(1.0 * $diff->format('%a') / 29.5);
     } else if (array_key_exists('population', $atts)) {
-        $population = array('2019' => '7714576923', '2018' => '7632819325', '2017' => '7550262101', '2016' => '7466964280', '2015' => '7383008820', '2014' => '7298453033', '2013' => '7213426452', '2012' => '7128176935', '2011' => '7043008586', '2010' => '6958169159', '2009' => '6873741054', '2008' => '6789771253', '2007' => '6706418593', '2006' => '6623847913', '2005' => '6542159383', '2004' => '6461370865', '2003' => '6381408987', '2002' => '6302149639', '2001' => '6223412158', '2000' => '6145006989', '1999' => '6066867391', '1998' => '5988846103', '1997' => '5910566295', '1996' => '5831565020', '1995' => '5751474416', '1994' => '5670319703', '1993' => '5588094837', '1992' => '5504401149', '1991' => '5418758803', '1990' => '5330943460', '1989' => '5240735117', '1988' => '5148556956', '1987' => '5055636132', '1986' => '4963633228', '1985' => '4873781796', '1984' => '4786483862', '1983' => '4701530843', '1982' => '4618776168', '1981' => '4537845777', '1980' => '4458411534', '1979' => '4380585755', '1978' => '4304377112', '1977' => '4229201257', '1976' => '4154287594', '1975' => '4079087198', '1974' => '4003448151', '1973' => '3927538695', '1972' => '3851545181', '1971' => '3775790900', '1970' => '3700577650', '1969' => '3625905514', '1968' => '3551880700', '1967' => '3479053821', '1966' => '3408121405', '1965' => '3339592688', '1964' => '3273670772', '1963' => '3210271352', '1962' => '3149244245', '1961' => '3090305279', '1960' => '3033212527', '1959' => '2977824686', '1958' => '2924081243', '1957' => '2871952278', '1956' => '2821383444', '1955' => '2772242535', '1954' => '2724302468', '1953' => '2677230358', '1952' => '2630584384', '1951' => '2583816786');
-
-        if (array_key_exists($date->format('Y'), $population)) {
+        if (array_key_exists($date->format('Y'), $all_data['population'])) {
             if (array_key_exists('display', $atts) && $atts['display'] == 'abbr') {
-                $ret = $population[$date->format('Y')];
+                $ret = $all_data['population'][$date->format('Y')][0]['population'];
 
                 if ($ret >= 1000000000) {
                     $ret = round($ret / 1000000000, 2) . ' billion';
@@ -677,7 +654,7 @@ function datecalc_func($atts)
 
                 return $ret;
             } else {
-                return number_format_nozero($population[$date->format('Y')]);
+                return number_format_nozero($all_data['population'][$date->format('Y')][0]['population']);
             }
         }
 
@@ -708,17 +685,46 @@ function datecalc_func($atts)
         $f2->setTextAttribute(NumberFormatter::DEFAULT_RULESET, '%spellout- nal');
 
         $ret = $date->format('F') . ' ' . $f2->format($date->format('j')) . ', ' . $f1->format(substr($date->format('Y'), 0, 2)) . ' ' . $f1->format(substr($date->format('Y'), 2, 2));
-    } else if (count($atts) == 2 && ($diff = array_values(array_intersect(array_keys($atts), array_keys($all_data))))) {
+    } else if (count($atts) == 2 && !array_key_exists('display', $atts)) {
+
+        // DYNAMIC CSV
+
+        $diff = array_values(array_intersect(array_keys($atts), array_keys($all_data)));
+        if (empty($diff)) {
+            foreach ($atts as $a => $v) {
+                if (substr($a, -1, 1) == 's' && substr($a, -2, 1) != 's') {
+                    $atts[substr($a, 0, -1)] = $v;
+                }
+            }
+            $diff = array_values(array_intersect(array_keys($atts), array_keys($all_data)));
+        }
+
         $name = $diff[0];
 
+        $ret = null;
         if (array_key_exists($date->format('Y'), $all_data[$name])) {
-            return $all_data[$name][$date->format('Y')]['output'];
-        }
-        if (array_key_exists($date->format('n/j/Y'), $all_data[$name])) {
-            return $all_data[$name][$date->format('n/j/Y')]['output'];
+            $ret = $all_data[$name][$date->format('Y')];
+        } else if (array_key_exists($date->format('n/j/Y'), $all_data[$name])) {
+            $ret = $all_data[$name][$date->format('n/j/Y')];
+        } else {
+            return '';
         }
 
-        return '';
+        if (empty($ret)) {
+            return '';
+        }
+
+        if (count($ret) == 1) {
+            $ret = $ret[0];
+        }
+
+        if (array_key_exists('output', $ret)) {
+            return $ret['output'];
+        } else if (array_key_exists('name', $ret)) {
+            return $ret['name'];
+        } else {
+            return '';
+        }
     } else {
         $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
 
@@ -776,7 +782,7 @@ function datecalc_func($atts)
                         $ret .= $r->days;
                         $month = ($month + 3 + 12 - 1) % 12 + 1;
 
-                        $ret .= ' day' . ($r->days == 1 ? '' : 's') . ' left till ';
+                        $ret .= ' day' . ($r->days == 1 ? '' : 's') . ' left until ';
                     } else {
                         $diff = clone $date;
 
@@ -882,12 +888,12 @@ function datecalc_func($atts)
 
 function get_all_holidays($year)
 {
-    global $holidays;
+    global $all_data;
 
     $ret = array();
 
-    foreach ($holidays as $h) {
-        $date = $h['date'];
+    foreach ($all_data['holiday'] as $h) {
+        $date = $h[0]['date'];
         if (strpos($date, '/') !== false) {
             $date .= '/' . $year;
         } else {
@@ -897,13 +903,8 @@ function get_all_holidays($year)
         $date = strtotime($date);
         if ($date) {
             $key = date('n/j', $date);
-            $h['date'] = $key;
-
-            if (!isset($ret[$key])) {
-                $ret[$key] = array();
-            }
-
-            $ret[$key][] = $h;
+            //$h['date'] = $key;
+            $ret[$key] = $h;
         }
     }
 
@@ -912,18 +913,19 @@ function get_all_holidays($year)
 
 function date_calc_settings_page()
 {
-    global $all_holidays;
+    global $all_data;
 
     if (isset($_GET['tab'])) {
         $active_tab = $_GET['tab'];
     } else {
-        $active_tab = 'zodiac';
+        $active_tab = 'general';
     }
 ?>
 
     <h2>Date Calc Plugin Options</h2>
 
     <h2 class="nav-tab-wrapper">
+        <a href="?page=date-calc-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>">General</a>
         <a href="?page=date-calc-settings&tab=zodiac" class="nav-tab <?php echo $active_tab == 'zodiac' ? 'nav-tab-active' : ''; ?>">Zodiac</a>
         <a href="?page=date-calc-settings&tab=zodiacelement" class="nav-tab <?php echo $active_tab == 'zodiacelement' ? 'nav-tab-active' : ''; ?>">Zodiac Elements</a>
         <a href="?page=date-calc-settings&tab=zodiacquality" class="nav-tab <?php echo $active_tab == 'zodiacquality' ? 'nav-tab-active' : ''; ?>">Zodiac Quality</a>
@@ -935,14 +937,28 @@ function date_calc_settings_page()
         <a href="?page=date-calc-settings&tab=flower" class="nav-tab <?php echo $active_tab == 'flower' ? 'nav-tab-active' : ''; ?>">Flower</a>
         <a href="?page=date-calc-settings&tab=stone" class="nav-tab <?php echo $active_tab == 'stone' ? 'nav-tab-active' : ''; ?>">Birthstone</a>
         <a href="?page=date-calc-settings&tab=lifepath" class="nav-tab <?php echo $active_tab == 'lifepath' ? 'nav-tab-active' : ''; ?>">Life Path Number</a>
-        <a href="?page=date-calc-settings&tab=holidays" class="nav-tab <?php echo $active_tab == 'holidays' ? 'nav-tab-active' : ''; ?>">Holidays</a>
     </h2>
 
     <div class="wrap">
         <form action="options.php" method="post">
-            <?php settings_fields('date-calc-settings'); ?>
+            <?php settings_fields('date-calc-settings');
 
-            <?php
+            if ($active_tab == 'general') { ?>
+                <h2>General Settings</h2>
+                <table class="form-table">
+                    <tr>
+                        <th style="vertical-align:top;">CSVs to load</th>
+                        <td><textarea name="date-calc-general-csvs" class="large-text code" type="textarea" rows="30" cols="80"><?php echo esc_attr(get_option('date-calc-general-csvs')); ?></textarea></td>
+                    </tr>
+                    <tr>
+                        <th style="vertical-align:top;">CSVs to ignore</th>
+                        <td><textarea name="date-calc-general-ignore" class="regular-text code" type="textarea" rows="10"><?php echo esc_attr(get_option('date-calc-general-ignore')); ?></textarea></td>
+                    </tr>
+                </table>
+            <?php } else { ?>
+                <input type='hidden' name="date-calc-general-csvs" value="<?php echo esc_attr(get_option('date-calc-general-csvs')); ?>" />
+                <input type='hidden' name="date-calc-general-ignore" value="<?php echo esc_attr(get_option('date-calc-general-ignore')); ?>" />
+            <?php }
 
             print_options('Zodiac', 'zodiac', array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius'), $active_tab);
 
@@ -972,11 +988,18 @@ function date_calc_settings_page()
 
             print_options('Life Path Number', 'lifepath', array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22'), $active_tab);
 
-            print_options('Holidays', 'holidays', array_keys($all_holidays), $active_tab, array_values($all_holidays));
-
             submit_button();
             ?>
         </form>
+
+        <h3>Cache Statistics</h3>
+        <ul>
+        <?php
+        foreach($all_data as $key => $value) {
+            print '<li>' . $key . ': <b>' . count($value). '</b> record(s)</li>';
+        }
+        ?>
+        </ul>
     </div>
     <?php
 }
@@ -1016,7 +1039,8 @@ add_action('admin_menu', function () {
 });
 
 add_action('admin_init', function () {
-    global $all_holidays;
+    register_setting('date-calc-settings', 'date-calc-general-csvs');
+    register_setting('date-calc-settings', 'date-calc-general-ignore');
 
     $zodiac = array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn');
     foreach ($zodiac as $z) {
@@ -1070,10 +1094,5 @@ add_action('admin_init', function () {
     $lifepath = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22');
     foreach ($lifepath as $z) {
         register_setting('date-calc-settings', 'date-calc-lifepath-' . str_replace(array('/', ' ', ','), '-', strtolower($z)));
-    }
-
-    $holidays = array_keys($all_holidays);
-    foreach ($holidays as $z) {
-        register_setting('date-calc-settings', 'date-calc-holidays-' . strtolower($z));
     }
 });
