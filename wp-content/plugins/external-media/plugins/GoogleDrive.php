@@ -89,7 +89,7 @@ class GoogleDrive extends WP_ExternalPluginBase {
     $google_starred_only = get_option( WP_ExternalMedia_Prefix . 'google_starred_only', 0 );
     $google_view_id = get_option( WP_ExternalMedia_Prefix . 'google_view_id' );
     // Google scopes.
-    $google_scope = array('"https://www.googleapis.com/auth/drive.file"');
+    $google_scope = array('"https://www.googleapis.com/auth/drive.readonly"');
     wp_register_script( get_class( $this ), plugins_url( '/plugins/js/GoogleDrive.js', WP_ExternalMedia_PluginName ), array( 'jquery', 'WP_ExternalMedia_admin_view_js', 'GoogleDrive_lib' ) );
     wp_register_script( get_class( $this ) . '_lib', 'https://apis.google.com/js/api.js' );
     wp_enqueue_script( get_class( $this ) );

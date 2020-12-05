@@ -74,12 +74,13 @@ class QM_Collector_Environment extends QM_Collector {
 		global $wp_version;
 
 		$mysql_vars = array(
-			'key_buffer_size'    => true,  # Key cache size limit
-			'max_allowed_packet' => false, # Individual query size limit
-			'max_connections'    => false, # Max number of client connections
-			'query_cache_limit'  => true,  # Individual query cache size limit
-			'query_cache_size'   => true,  # Total cache size limit
-			'query_cache_type'   => 'ON',  # Query cache on or off
+			'key_buffer_size'         => true,  # Key cache size limit
+			'max_allowed_packet'      => false, # Individual query size limit
+			'max_connections'         => false, # Max number of client connections
+			'query_cache_limit'       => true,  # Individual query cache size limit
+			'query_cache_size'        => true,  # Total cache size limit
+			'query_cache_type'        => 'ON',  # Query cache on or off
+			'innodb_buffer_pool_size' => false, # The amount of memory allocated to the InnoDB buffer pool
 		);
 
 		$dbq = QM_Collectors::get( 'db_queries' );
@@ -192,8 +193,13 @@ class QM_Collector_Environment extends QM_Collector {
 			'CONCATENATE_SCRIPTS' => self::format_bool_constant( 'CONCATENATE_SCRIPTS' ),
 			'COMPRESS_SCRIPTS'    => self::format_bool_constant( 'COMPRESS_SCRIPTS' ),
 			'COMPRESS_CSS'        => self::format_bool_constant( 'COMPRESS_CSS' ),
-			'WP_LOCAL_DEV'        => self::format_bool_constant( 'WP_LOCAL_DEV' ),
+			'WP_ENVIRONMENT_TYPE' => self::format_bool_constant( 'WP_ENVIRONMENT_TYPE' ),
 		);
+
+		if ( function_exists( 'wp_get_environment_type' ) ) {
+			$this->data['wp']['environment_type'] = wp_get_environment_type();
+		}
+
 		$this->data['wp']['constants'] = apply_filters( 'qm/environment-constants', $constants );
 
 		if ( is_multisite() ) {
@@ -259,12 +265,15 @@ class QM_Collector_Environment extends QM_Collector {
 
 		$php_u = null;
 
-		if ( function_exists( 'posix_getpwuid' ) ) {
+		if ( function_exists( 'posix_getpwuid' ) && function_exists( 'posix_getuid' ) && function_exists( 'posix_getgrgid' ) ) {
 			$u = posix_getpwuid( posix_getuid() );
-			$g = posix_getgrgid( $u['gid'] );
 
-			if ( ! empty( $u ) && ! empty( $g ) ) {
-				$php_u = $u['name'] . ':' . $g['name'];
+			if ( ! empty( $u ) && isset( $u['gid']) ) {
+				$g = posix_getgrgid( $u['gid'] );
+
+				if ( ! empty( $g ) && isset( $u['name'], $g['name'] ) ) {
+					$php_u = $u['name'] . ':' . $g['name'];
+				}
 			}
 		}
 

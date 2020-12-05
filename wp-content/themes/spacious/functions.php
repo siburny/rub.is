@@ -424,7 +424,7 @@ $spacious_version = $theme['Version'];
  * Calling in the admin area for the Welcome Page as well as for the new theme notice too.
  */
 if ( is_admin() ) {
-	require_once get_template_directory() . '/inc/admin/class-spacious-admin.php';
+	require get_template_directory() . '/inc/admin/class-spacious-admin.php';
 	require get_template_directory() . '/inc/admin/class-spacious-dashboard.php';
 	require get_template_directory() . '/inc/admin/class-spacious-theme-review-notice.php';
 	require get_template_directory() . '/inc/admin/class-spacious-tdi-notice.php';
@@ -432,12 +432,6 @@ if ( is_admin() ) {
 	require get_template_directory() . '/inc/admin/class-spacious-notice.php';
 	require get_template_directory() . '/inc/admin/class-spacious-upgrade-notice.php';
 }
-
-/**
- * Load TGMPA Configs.
- */
-require_once SPACIOUS_INCLUDES_DIR . '/tgm-plugin-activation/class-tgm-plugin-activation.php';
-require_once SPACIOUS_INCLUDES_DIR . '/tgm-plugin-activation/tgmpa-spacious.php';
 
 /**
  * Load the Spacious Toolkit file.
@@ -451,13 +445,6 @@ if ( class_exists( 'Spacious_Toolkit' ) ) {
  */
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require_once get_template_directory() . '/inc/jetpack.php';
-}
-
-/**
- * Define Elementor partner ID
- */
-if ( ! defined( 'ELEMENTOR_PARTNER_ID' ) ) {
-	define( 'ELEMENTOR_PARTNER_ID', 2125 );
 }
 
 /** Add the Elementor compatibility file */

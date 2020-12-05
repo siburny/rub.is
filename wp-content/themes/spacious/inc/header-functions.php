@@ -62,7 +62,7 @@ if ( ! function_exists( 'spacious_header_info_text' ) ) :
 			return;
 		}
 
-		$spacious_header_info_text = '<div class="small-info-text"><p>' . spacious_options( 'spacious_header_info_text', '' ) . '</p></div>';
+		$spacious_header_info_text = spacious_options( 'spacious_header_info_text', '' );
 
 		echo do_shortcode( $spacious_header_info_text );
 	}
@@ -159,7 +159,7 @@ if ( ! function_exists( 'spacious_featured_image_slider' ) ) :
 		<section id="featured-slider">
 			<div class="slider-cycle">
 				<?php
-				for ( $i = 1; $i <= 5; $i ++ ) {
+				for ( $i = 1; $i <= 5; $i++ ) {
 					$spacious_slider_title       = spacious_options( 'spacious_slider_title' . $i, '' );
 					$spacious_slider_text        = spacious_options( 'spacious_slider_text' . $i, '' );
 					$spacious_slider_image       = spacious_options( 'spacious_slider_image' . $i, '' );
@@ -178,7 +178,13 @@ if ( ! function_exists( 'spacious_featured_image_slider' ) ) :
 							<figure>
 								<?php $img_altr = get_post_meta( $attachment_post_id, '_wp_attachment_image_alt', true );
 								$img_alt        = ! empty( $img_altr ) ? $img_altr : $spacious_slider_title; ?>
-								<img width="<?php echo esc_attr( $image_attributes[1] ); ?>" height="<?php echo esc_attr( $image_attributes[2] ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>" src="<?php echo esc_url( $spacious_slider_image ); ?>">
+
+								<?php if ( ! empty ( $image_attributes ) ) { ?>
+									<img width="<?php echo esc_attr( $image_attributes[1] ); ?>" height="<?php echo esc_attr( $image_attributes[2] ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>" src="<?php echo esc_url( $spacious_slider_image ); ?>">
+								<?php } else { ?>
+									<img alt="<?php echo esc_attr( $img_alt ); ?>" src="<?php echo esc_url( $spacious_slider_image ); ?>">
+								<?php } ?>
+
 							</figure>
 							<div class="entry-container">
 								<?php if ( ! empty( $spacious_slider_title ) || ! empty( $spacious_slider_text ) ) { ?>
@@ -310,15 +316,10 @@ if ( ! function_exists( 'spacious_breadcrumb' ) ) :
 			echo '</div> <!-- .breadcrumb : NavXT -->';
 
 		} elseif ( function_exists( 'yoast_breadcrumb' ) ) { // SEO by Yoast
-			$yoast_breadcrumb_option = get_option( 'wpseo_internallinks' );
-
-			// check if yoast breadcrumb is enabled
-			if ( $yoast_breadcrumb_option['breadcrumbs-enable'] === true ) {
-				echo '<div class="breadcrumb">';
-				echo '<span class="breadcrumb-title">' . __( 'You are here: ', 'spacious' ) . '</span>';
-				yoast_breadcrumb();
-				echo '</div> <!-- .breadcrumb : Yoast -->';
-			}
+			yoast_breadcrumb(
+				'<div class="breadcrumb">' . '<span class="breadcrumb-title">' . wp_kses_post( spacious_options( 'spacious_custom_breadcrumb_text', __( 'You are here: ', 'spacious' ) ) ) . '</span>',
+				'</div> <!-- .breadcrumb : Yoast -->'
+			);
 		}
 	}
 endif;

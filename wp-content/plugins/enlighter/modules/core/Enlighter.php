@@ -76,7 +76,7 @@ class Enlighter
             load_plugin_textdomain('enlighter', null, 'enlighter/lang/');
         }
 
-        // initialize theme customizer (generated the enlighterjs.css file!)
+        // initialize theme customizer (generates the enlighterjs.css file!)
         $this->_themeCustomizer = new Enlighter\customizer\ThemeCustomizer($this->_settingsManager, $this->_cacheManager);
         
         // create new resource loader
@@ -92,11 +92,13 @@ class Enlighter
         // enable EnlighterJS html attributes for Author's and Contributor's
         add_filter('wp_kses_allowed_html', array('\Enlighter\KSES', 'allowHtmlCodeAttributes'), 100, 2);
 
+        // initialize jetpack extension (frontend+backend)
+        Enlighter\extensions\Jetpack::init(
+            $this->_settingsManager->getOption('jetpack-gfm-code')
+        );
+        
         // frontend or dashboard area ?
         if (is_admin()){
-
-            // force theme cache reload
-            $this->_themeManager->clearCache();
 
             // editor
             $this->_resourceLoader->backendEditor();
@@ -112,7 +114,7 @@ class Enlighter
                 $this->_settingsManager->getOption('bbpress-shortcode')
             );
 
-             // initialize content processor (shortcode, gfm)
+            // initialize content processor (shortcode, gfm)
             $this->_contentProcessor = new Enlighter\filter\ContentProcessor(
                 $this->_settingsManager,
                 $this->_languageManager,
@@ -221,8 +223,13 @@ class Enlighter
 
     // options page
     public function settingsPage(){
+
+        // force theme cache reload
+        $this->_themeManager->clearCache();
+        
         // well...is there no action hook for updating settings in wp ?
         if (isset($_GET['settings-updated'])){
+            // drop cached files
             $this->_cacheManager->clearCache();
         }
         

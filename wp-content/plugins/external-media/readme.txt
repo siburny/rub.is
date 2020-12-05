@@ -4,18 +4,18 @@ Author URI: http://www.minnur.com/
 Contributors: minnur
 Donate link: https://goo.gl/C2cBDF
 Tags: Dropbox, Box, OneDrive, Google Drive, Unsplash, Instagram, Pexels, Pixabay, AWS, Upload from remote, remote media, remote URL, remote image, remote file, external media, wp remote upload, external media upload, external image upload
-Requires at least: 5.2
-Tested up to: 5.4.2
-Stable tag: 1.0.25
+Requires at least: 5.4
+Tested up to: 5.5.1
+Stable tag: 1.0.27
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Import files from thrid-party services (Dropbox, Box, OneDrive, Google Drive, and any external file).
+Import files from thrid-party services into Wordpress Media Library (Dropbox, Box, OneDrive, Google Drive, and any external file).
 
 == Description ==
 
-Import files from or create external links from third-party services (Dropbox, Box, OneDrive, Google Drive and any other external file from URL).
+Import files from or create external links from third-party services into Wordpress Media Library (Dropbox, Box, OneDrive, Google Drive and any other external file from URL).
 
 > [External Media Premium](https://downloads.minnur.com/wordpress/external-media-premium) is a premium version of this plugin with support for Unsplash, Instagram, Pexels, Pixabay and AWS.
 
@@ -130,6 +130,10 @@ Not available at the moment.
 
 == Changelog ==
 
+= 1.0.27 =
+* Update plugin information.
+= 1.0.26 =
+* Test with 5.5.1
 = 1.0.25 =
 * Fix OneDrive integration.
 * Version bump.

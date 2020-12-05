@@ -5,6 +5,7 @@ code.EnlighterJSRAW,pre.EnlighterJSRAW{background-color:#f7f7f7;color:#565b60;fo
 /* Enlighter dynamic generated stylesheet - DO NOT EDIT */
 code.EnlighterJSRAW, pre.EnlighterJSRAW{font-family:"Source Code Pro", "Liberation Mono", "Courier New", Courier, monospace !important;font-size:0.7em !important;line-height:1.4em !important;color:#000000 !important;background-color:#f9f9f9 !important;}
 pre.EnlighterJSRAW[data-enlighter-language="generic"]:before{content:"Enlighter: Generic Highlighting";}
+pre.EnlighterJSRAW[data-enlighter-language="raw"]:before{content:"Enlighter: Plain text";}
 pre.EnlighterJSRAW[data-enlighter-language="abap"]:before{content:"Enlighter: ABAP";}
 pre.EnlighterJSRAW[data-enlighter-language="asm"]:before{content:"Enlighter: Generic Assembly";}
 pre.EnlighterJSRAW[data-enlighter-language="apache"]:before{content:"Enlighter: Apache httpd";}
@@ -39,7 +40,8 @@ pre.EnlighterJSRAW[data-enlighter-language="prolog"]:before{content:"Enlighter: 
 pre.EnlighterJSRAW[data-enlighter-language="python"]:before{content:"Enlighter: Python";}
 pre.EnlighterJSRAW[data-enlighter-language="purebasic"]:before{content:"Enlighter: Purebasic";}
 pre.EnlighterJSRAW[data-enlighter-language="qml"]:before{content:"Enlighter: QML";}
-pre.EnlighterJSRAW[data-enlighter-language="raw"]:before{content:"Enlighter: RAW Code";}
+pre.EnlighterJSRAW[data-enlighter-language="r"]:before{content:"Enlighter: R";}
+pre.EnlighterJSRAW[data-enlighter-language="routeros"]:before{content:"Enlighter: RouterOS";}
 pre.EnlighterJSRAW[data-enlighter-language="ruby"]:before{content:"Enlighter: Ruby";}
 pre.EnlighterJSRAW[data-enlighter-language="rust"]:before{content:"Enlighter: Rust";}
 pre.EnlighterJSRAW[data-enlighter-language="scala"]:before{content:"Enlighter: SCALA";}

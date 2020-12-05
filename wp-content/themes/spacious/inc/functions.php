@@ -37,6 +37,7 @@ function spacious_scripts_styles_method() {
 	 * Loads our main stylesheet.
 	 */
 	wp_enqueue_style( 'spacious_style', get_stylesheet_uri() );
+	wp_style_add_data( 'spacious_style', 'rtl', 'replace' );
 
 	if ( spacious_options( 'spacious_color_skin', 'light' ) == 'dark' ) {
 		wp_enqueue_style( 'spacious_dark_style', SPACIOUS_CSS_URL . '/dark.css' );
@@ -447,15 +448,17 @@ endif;
  * Change hex code to RGB
  * Source: https://css-tricks.com/snippets/php/convert-hex-to-rgb/#comment-1052011
  */
-function spacious_hex2rgb( $hexstr ) {
-	$int = hexdec( str_replace( '#', '', $hexstr ) );
+if ( ! function_exists( 'spacious_hex2rgb' ) ) {
+	function spacious_hex2rgb( $hexstr ) {
+		$int = hexdec( str_replace( '#', '', $hexstr ) );
 
-	$rgb = array( "red" => 0xFF & ( $int >> 0x10 ), "green" => 0xFF & ( $int >> 0x8 ), "blue" => 0xFF & $int );
-	$r   = $rgb['red'];
-	$g   = $rgb['green'];
-	$b   = $rgb['blue'];
+		$rgb = array( "red" => 0xFF & ( $int >> 0x10 ), "green" => 0xFF & ( $int >> 0x8 ), "blue" => 0xFF & $int );
+		$r   = $rgb['red'];
+		$g   = $rgb['green'];
+		$b   = $rgb['blue'];
 
-	return "rgba($r,$g,$b, 0.85)";
+		return "rgba($r,$g,$b, 0.85)";
+	}
 }
 
 /**
@@ -464,7 +467,7 @@ function spacious_hex2rgb( $hexstr ) {
  */
 function spacious_darkcolor( $hex, $steps ) {
 	// Steps should be between -255 and 255. Negative = darker, positive = lighter
-	$steps = max( - 255, min( 255, $steps ) );
+	$steps = max( -255, min( 255, $steps ) );
 
 	// Normalize into a six character long hex string
 	$hex = str_replace( '#', '', $hex );
@@ -493,7 +496,7 @@ function spacious_darkcolor( $hex, $steps ) {
 function spacious_custom_css() {
 	$primary_color         = spacious_options( 'spacious_primary_color', '#0FBE7C' );
 	$primary_opacity       = spacious_hex2rgb( $primary_color );
-	$primary_dark          = spacious_darkcolor( $primary_color, - 50 );
+	$primary_dark          = spacious_darkcolor( $primary_color, -50 );
 	$spacious_internal_css = '';
 	if ( $primary_color != '#0FBE7C' ) {
 		$spacious_internal_css .= ' blockquote { border-left: 3px solid ' . $primary_color . '; }
@@ -554,12 +557,6 @@ function spacious_custom_css() {
 		<?php
 	}
 
-	$spacious_custom_css = spacious_options( 'spacious_custom_css' );
-	if ( $spacious_custom_css && ! function_exists( 'wp_update_custom_css_post' ) ) {
-		?>
-		<style type="text/css"><?php echo $spacious_custom_css; ?></style>
-		<?php
-	}
 }
 
 add_action( 'wp_head', 'spacious_custom_css', 100 );
@@ -859,36 +856,6 @@ if ( ! function_exists( 'spacious_the_custom_logo' ) ) {
 		}
 	}
 }
-
-/**
- * Migrate any existing theme CSS codes added in Customize Options to the core option added in WordPress 4.7
- */
-function spacious_custom_css_migrate() {
-	if ( function_exists( 'wp_update_custom_css_post' ) ) {
-		$custom_css = spacious_options( 'spacious_custom_css' );
-		if ( $custom_css ) {
-			// assigning theme name
-			$themename = get_option( 'stylesheet' );
-			$themename = preg_replace( "/\W/", "_", strtolower( $themename ) );
-
-			$core_css = wp_get_custom_css(); // Preserve any CSS already added to the core option.
-			$return   = wp_update_custom_css_post( $core_css . $custom_css );
-
-			if ( ! is_wp_error( $return ) ) {
-				$theme_options = get_option( $themename );
-				// Remove the old theme_mod, so that the CSS is stored in only one place moving forward.
-				if ( isset( $theme_options['spacious_custom_css'] ) ) {
-					unset( $theme_options['spacious_custom_css'] );
-				}
-
-				// Finally, update spacious theme options.
-				update_option( $themename, $theme_options );
-			}
-		}
-	}
-}
-
-add_action( 'after_setup_theme', 'spacious_custom_css_migrate' );
 
 /**
  * Transfer header designs options to header display type.
