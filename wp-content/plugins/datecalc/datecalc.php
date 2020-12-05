@@ -642,7 +642,7 @@ function datecalc_func($atts)
     } else if (array_key_exists('population', $atts)) {
         if (array_key_exists($date->format('Y'), $all_data['population'])) {
             if (array_key_exists('display', $atts) && $atts['display'] == 'abbr') {
-                $ret = $all_data['population'][$date->format('Y')][0]['population'];
+                $ret = $all_data['population'][$date->format('Y')][0]['output'];
 
                 if ($ret >= 1000000000) {
                     $ret = round($ret / 1000000000, 2) . ' billion';
@@ -654,7 +654,7 @@ function datecalc_func($atts)
 
                 return $ret;
             } else {
-                return number_format_nozero($all_data['population'][$date->format('Y')][0]['population']);
+                return number_format_nozero($all_data['population'][$date->format('Y')][0]['output']);
             }
         }
 
