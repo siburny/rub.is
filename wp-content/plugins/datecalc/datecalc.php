@@ -138,12 +138,48 @@ function zodiacElement($day, $month)
     return ($day > $last_day[$month]) ? $zodiacElement[$month + 1] : $zodiacElement[$month];
 }
 
+function zodiacLuckyDay($day, $month)
+{
+    $luckyDay = array('', 'Saturday', 'Wednesday', 'Thursday', 'Tuesday', 'Friday', 'Wednesday', 'Monday', 'Sunday', 'Wednesday', 'Friday', 'Tuesday', 'Thursday', 'Saturday');
+    $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
+
+    return ($day > $last_day[$month]) ? $luckyDay[$month + 1] : $luckyDay[$month];
+}
+
+function zodiacSpiritAnimal($day, $month)
+{
+    $spiritAnimal = array('', 'Goose', 'Otter', 'Wolf', 'Hawk', 'Beaver', 'Deer', 'Woodpecker', 'Salmon', 'Bear', 'Raven', 'Snake', 'Owl', 'Goose');
+    $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
+
+    return ($day > $last_day[$month]) ? $spiritAnimal[$month + 1] : $spiritAnimal[$month];
+}
+
 function zodiacQuality($day, $month)
 {
     $zodiacQuality = array('', 'Cardinal', 'Fixed', 'Mutable', 'Cardinal', 'Fixed', 'Mutable', 'Cardinal', 'Fixed', 'Mutable', 'Cardinal', 'Fixed', 'Mutable', 'Cardinal');
     $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
 
     return ($day > $last_day[$month]) ? $zodiacQuality[$month + 1] : $zodiacQuality[$month];
+}
+
+function zodiacColor($day, $month, $icon = false)
+{
+    $zodiacColorName = array('', 'Grey', 'Blue', 'Light Green', 'Red', 'Green', 'Yellow', 'Silver', 'Orange', 'Brown', 'Pink', 'Black', 'Purple', 'Grey');
+    $zodiacColorCode = array('', '808080', '0000FF', '90EE90', 'FF0000', '00FF00', 'FFFF00', 'C0C0C0', 'FFA500', 'A52A2A', 'FFC0CB', '000000', '800080', '808080');
+    $last_day = array('', 19, 18, 20, 20, 21, 21, 22, 22, 21, 22, 21, 20, 19);
+
+    if ($icon) {
+        $color = '';
+        if ($day > $last_day[$month]) {
+            $color = $zodiacColorCode[$month + 1];
+        } else {
+            $color = $zodiacColorCode[$month];
+        }
+
+        return '<span style="color:#'.$color.'">&#x2B24;</span>';
+    } else {
+        return (($day > $last_day[$month]) ? $zodiacColorName[$month + 1] : $zodiacColorName[$month]);
+    }
 }
 
 function datecalc_func($atts)
@@ -289,6 +325,8 @@ function datecalc_func($atts)
             $ret = zodiac($date->format('j'), $date->format('n'));
             $ret = $description ? nl2br_str(get_option('date-calc-zodiac-' . strtolower($ret))) : $ret;
         }
+    } else if (array_key_exists('powercolor', $atts) && ($atts['powercolor'] == 'yes' || $atts['powercolor'] == '1' || $atts['powercolor'] == 'true')) {
+        $ret = zodiacColor($date->format('j'), $date->format('n'), array_key_exists('icon', $atts) && !empty($atts['icon']));
     } else if (array_key_exists('element', $atts) && ($atts['element'] == 'yes' || $atts['element'] == '1' || $atts['element'] == 'true')) {
         $ret = zodiacElement($date->format('j'), $date->format('n'));
 
@@ -303,6 +341,14 @@ function datecalc_func($atts)
         }
 
         $ret = $description ? nl2br_str(get_option('date-calc-zodiacelement-' . strtolower($ret))) : $ret;
+    } else if (array_key_exists('spiritanimal', $atts) && ($atts['spiritanimal'] == 'yes' || $atts['spiritanimal'] == '1' || $atts['spiritanimal'] == 'true')) {
+        $ret = zodiacSpiritAnimal($date->format('j'), $date->format('n'));
+
+        $ret = $description ? nl2br_str(get_option('date-calc-zodiacspiritanimal-' . strtolower($ret))) : $ret;
+    } else if (array_key_exists('luckyday', $atts) && ($atts['luckyday'] == 'yes' || $atts['luckyday'] == '1' || $atts['luckyday'] == 'true')) {
+        $ret = zodiacLuckyDay($date->format('j'), $date->format('n'));
+
+        $ret = $description ? nl2br_str(get_option('date-calc-zodiacluckyday-' . strtolower($ret))) : $ret;
     } else if (array_key_exists('quality', $atts) && ($atts['quality'] == 'yes' || $atts['quality'] == '1' || $atts['quality'] == 'true')) {
         $ret = zodiacQuality($date->format('j'), $date->format('n'));
         $ret = $description ? nl2br_str(get_option('date-calc-zodiacquality-' . strtolower($ret))) : $ret;
@@ -701,6 +747,10 @@ function datecalc_func($atts)
 
         $name = $diff[0];
 
+        if (!isset($all_data[$name])) {
+            return '';
+        }
+
         $ret = null;
         if (array_key_exists($date->format('Y'), $all_data[$name])) {
             $ret = $all_data[$name][$date->format('Y')];
@@ -994,11 +1044,11 @@ function date_calc_settings_page()
 
         <h3>Cache Statistics</h3>
         <ul>
-        <?php
-        foreach($all_data as $key => $value) {
-            print '<li>' . $key . ': <b>' . count($value). '</b> record(s)</li>';
-        }
-        ?>
+            <?php
+            foreach ($all_data as $key => $value) {
+                print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
+            }
+            ?>
         </ul>
     </div>
     <?php

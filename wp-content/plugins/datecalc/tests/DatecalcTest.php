@@ -396,6 +396,44 @@ final class datecalctest extends TestCase
                 '[datecalc date="1/20/2009" mlb="true"]',
                 'New York Yankeess beat Philadelphia Phillies (4 - 2)'
             ],
+
+            // Power colors
+            [
+                '[datecalc date="1/20/2009" powercolor="true"]',
+                'Blue'
+            ],
+            [
+                '[datecalc date="6/2/2009" powercolor="true"]',
+                'Yellow'
+            ],
+            [
+                '[datecalc date="1/20/2009" powercolor="true" icon="true"]',
+                '<span style="color:#0000FF">&#x2B24;</span>'
+            ],
+            [
+                '[datecalc date="6/2/2009" powercolor="true" icon="true"]',
+                '<span style="color:#FFFF00">&#x2B24;</span>'
+            ],
+
+            // Lucky day
+            [
+                '[datecalc date="2/20/2009" luckyday="true"]',
+                'Thursday'
+            ],
+            [
+                '[datecalc date="6/2/2009" luckyday="true"]',
+                'Wednesday'
+            ],
+
+            // Spirit Animal
+            [
+                '[datecalc date="2/20/2009" spiritanimal="true"]',
+                'Wolf'
+            ],
+            [
+                '[datecalc date="6/2/2009" spiritanimal="true"]',
+                'Deer'
+            ],
         ];
     }
 
