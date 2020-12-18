@@ -6,6 +6,8 @@
  * Version: 3.99
  */
 
+use function PHPSTORM_META\map;
+
 require_once 'Numword.php';
 require_once 'load_csv.php';
 
@@ -104,6 +106,19 @@ function ConvertToRoman($num)
 
     // return the result
     return $res;
+}
+
+function generate_export_json() {
+    $all_settings = get_registered_settings();
+    $return = array();
+    
+    foreach ($all_settings as $key => $value) {
+        if($value['group'] == 'date-calc-settings') {
+            $return[$key] = get_option($key);
+        }
+    }
+
+    return json_encode($return);
 }
 
 if (!function_exists('_ordinal_suffix')) {
@@ -961,6 +976,15 @@ function get_all_holidays($year)
     return $ret;
 }
 
+function date_calc_import() {
+    if(!empty($_POST['import-data'])) {
+        $data = json_decode(stripslashes($_POST['import-data']), true);
+        foreach ($data as $key => $value) {
+            
+        }
+    }
+}
+
 function date_calc_settings_page()
 {
     global $all_data;
@@ -976,6 +1000,7 @@ function date_calc_settings_page()
 
     <h2 class="nav-tab-wrapper">
         <a href="?page=date-calc-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>">General</a>
+        <a href="?page=date-calc-settings&tab=exportimport" class="nav-tab <?php echo $active_tab == 'exportimport' ? 'nav-tab-active' : ''; ?>">Export / Import</a>
         <a href="?page=date-calc-settings&tab=zodiac" class="nav-tab <?php echo $active_tab == 'zodiac' ? 'nav-tab-active' : ''; ?>">Zodiac</a>
         <a href="?page=date-calc-settings&tab=zodiacelement" class="nav-tab <?php echo $active_tab == 'zodiacelement' ? 'nav-tab-active' : ''; ?>">Zodiac Elements</a>
         <a href="?page=date-calc-settings&tab=zodiacquality" class="nav-tab <?php echo $active_tab == 'zodiacquality' ? 'nav-tab-active' : ''; ?>">Zodiac Quality</a>
@@ -990,6 +1015,27 @@ function date_calc_settings_page()
     </h2>
 
     <div class="wrap">
+
+        <?php if ($active_tab == 'exportimport') { ?>
+        <form action="admin-post.php" method="post">
+            <input type="hidden" name="action" value="date_calc_import">
+
+            <table class="form-table">
+                <tr>
+                    <th style="vertical-align:top;">Export</th>
+                    <td><textarea class="large-text code" type="textarea" rows="15"><?php echo esc_attr(generate_export_json()); ?></textarea></td>
+                </tr>
+                <tr>
+                    <th style="vertical-align:top;">Import</th>
+                    <td>
+                        <textarea name="import-data" class="large-text code" type="textarea" rows="15"></textarea>
+                        <p class="submit"><input type="submit" name="import" id="import" class="button button-primary" value="Import"></p>
+                    </td>
+                </tr>                   
+            </table>
+        </form>
+        <?php } else { ?>
+
         <form action="options.php" method="post">
             <?php settings_fields('date-calc-settings');
 
@@ -1005,6 +1051,15 @@ function date_calc_settings_page()
                         <td><textarea name="date-calc-general-ignore" class="regular-text code" type="textarea" rows="10"><?php echo esc_attr(get_option('date-calc-general-ignore')); ?></textarea></td>
                     </tr>
                 </table>
+
+                <h3>Cache Statistics</h3>
+                <ul>
+                    <?php
+                    foreach ($all_data as $key => $value) {
+                        print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
+                    }
+                    ?>
+                </ul>
             <?php } else { ?>
                 <input type='hidden' name="date-calc-general-csvs" value="<?php echo esc_attr(get_option('date-calc-general-csvs')); ?>" />
                 <input type='hidden' name="date-calc-general-ignore" value="<?php echo esc_attr(get_option('date-calc-general-ignore')); ?>" />
@@ -1042,14 +1097,7 @@ function date_calc_settings_page()
             ?>
         </form>
 
-        <h3>Cache Statistics</h3>
-        <ul>
-            <?php
-            foreach ($all_data as $key => $value) {
-                print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
-            }
-            ?>
-        </ul>
+        <?php } ?>
     </div>
     <?php
 }
@@ -1087,6 +1135,8 @@ add_shortcode('datecalc', 'datecalc_func');
 add_action('admin_menu', function () {
     add_options_page('Date Calc Settings', 'Date Calc Settings', 'manage_options', 'date-calc-settings', 'date_calc_settings_page');
 });
+
+add_action('admin_post_date_calc_import', 'date_calc_import');
 
 add_action('admin_init', function () {
     register_setting('date-calc-settings', 'date-calc-general-csvs');
