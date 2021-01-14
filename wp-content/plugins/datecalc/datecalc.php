@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Date Calculator and Formatter
  * Description: Flexible date and time formatter
- * Version: 3.99
+ * Version: 4.00
  */
 
 use function PHPSTORM_META\map;
@@ -108,12 +108,13 @@ function ConvertToRoman($num)
     return $res;
 }
 
-function generate_export_json() {
+function generate_export_json()
+{
     $all_settings = get_registered_settings();
     $return = array();
-    
+
     foreach ($all_settings as $key => $value) {
-        if($value['group'] == 'date-calc-settings') {
+        if ($value['group'] == 'date-calc-settings') {
             $return[$key] = get_option($key);
         }
     }
@@ -191,7 +192,7 @@ function zodiacColor($day, $month, $icon = false)
             $color = $zodiacColorCode[$month];
         }
 
-        return '<span style="color:#'.$color.'">&#x2B24;</span>';
+        return '<span style="color:#' . $color . '">&#x2B24;</span>';
     } else {
         return (($day > $last_day[$month]) ? $zodiacColorName[$month + 1] : $zodiacColorName[$month]);
     }
@@ -976,13 +977,20 @@ function get_all_holidays($year)
     return $ret;
 }
 
-function date_calc_import() {
-    if(!empty($_POST['import-data'])) {
+function date_calc_import()
+{
+    if (!empty($_POST['import-data'])) {
         $data = json_decode(stripslashes($_POST['import-data']), true);
+
         foreach ($data as $key => $value) {
-            
+            if (substr($key, 0, 10) == 'date-calc-') {
+                update_option($key, $value);
+            }
         }
     }
+
+    wp_redirect(admin_url('options-general.php?page=date-calc-settings&tab=exportimport&complete=' . time()));
+    exit;
 }
 
 function date_calc_settings_page()
@@ -1017,85 +1025,93 @@ function date_calc_settings_page()
     <div class="wrap">
 
         <?php if ($active_tab == 'exportimport') { ?>
-        <form action="admin-post.php" method="post">
-            <input type="hidden" name="action" value="date_calc_import">
 
-            <table class="form-table">
-                <tr>
-                    <th style="vertical-align:top;">Export</th>
-                    <td><textarea class="large-text code" type="textarea" rows="15"><?php echo esc_attr(generate_export_json()); ?></textarea></td>
-                </tr>
-                <tr>
-                    <th style="vertical-align:top;">Import</th>
-                    <td>
-                        <textarea name="import-data" class="large-text code" type="textarea" rows="15"></textarea>
-                        <p class="submit"><input type="submit" name="import" id="import" class="button button-primary" value="Import"></p>
-                    </td>
-                </tr>                   
-            </table>
-        </form>
-        <?php } else { ?>
 
-        <form action="options.php" method="post">
-            <?php settings_fields('date-calc-settings');
+            <?php if( isset($_GET['complete']) ) { ?>
+            <div id="message" class="updated">
+                <p><strong><?php _e('Settings imported.') ?></strong></p>
+            </div>
+            <?php } ?>
 
-            if ($active_tab == 'general') { ?>
-                <h2>General Settings</h2>
+            <form action="admin-post.php" method="post">
+                <input type="hidden" name="action" value="date_calc_import">
+
                 <table class="form-table">
                     <tr>
-                        <th style="vertical-align:top;">CSVs to load</th>
-                        <td><textarea name="date-calc-general-csvs" class="large-text code" type="textarea" rows="30" cols="80"><?php echo esc_attr(get_option('date-calc-general-csvs')); ?></textarea></td>
+                        <th style="vertical-align:top;">Export</th>
+                        <td><textarea class="large-text code" type="textarea" rows="15"><?php echo esc_attr(generate_export_json()); ?></textarea></td>
                     </tr>
                     <tr>
-                        <th style="vertical-align:top;">CSVs to ignore</th>
-                        <td><textarea name="date-calc-general-ignore" class="regular-text code" type="textarea" rows="10"><?php echo esc_attr(get_option('date-calc-general-ignore')); ?></textarea></td>
+                        <th style="vertical-align:top;">Import</th>
+                        <td>
+                            <textarea name="import-data" class="large-text code" type="textarea" rows="15"></textarea>
+                            <p class="submit"><input type="submit" name="import" id="import" class="button button-primary" value="Import"></p>
+                        </td>
                     </tr>
                 </table>
+            </form>
+        <?php } else { ?>
 
-                <h3>Cache Statistics</h3>
-                <ul>
-                    <?php
-                    foreach ($all_data as $key => $value) {
-                        print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
-                    }
-                    ?>
-                </ul>
-            <?php } else { ?>
-                <input type='hidden' name="date-calc-general-csvs" value="<?php echo esc_attr(get_option('date-calc-general-csvs')); ?>" />
-                <input type='hidden' name="date-calc-general-ignore" value="<?php echo esc_attr(get_option('date-calc-general-ignore')); ?>" />
-            <?php }
+            <form action="options.php" method="post">
+                <?php settings_fields('date-calc-settings');
 
-            print_options('Zodiac', 'zodiac', array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius'), $active_tab);
+                if ($active_tab == 'general') { ?>
+                    <h2>General Settings</h2>
+                    <table class="form-table">
+                        <tr>
+                            <th style="vertical-align:top;">CSVs to load</th>
+                            <td><textarea name="date-calc-general-csvs" class="large-text code" type="textarea" rows="30" cols="80"><?php echo esc_attr(get_option('date-calc-general-csvs')); ?></textarea></td>
+                        </tr>
+                        <tr>
+                            <th style="vertical-align:top;">CSVs to ignore</th>
+                            <td><textarea name="date-calc-general-ignore" class="regular-text code" type="textarea" rows="10"><?php echo esc_attr(get_option('date-calc-general-ignore')); ?></textarea></td>
+                        </tr>
+                    </table>
 
-            print_options('Zodiac Elements', 'zodiacelement', array('fire', 'earth', 'air', 'water'), $active_tab);
+                    <h3>Cache Statistics</h3>
+                    <ul>
+                        <?php
+                        foreach ($all_data as $key => $value) {
+                            print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
+                        }
+                        ?>
+                    </ul>
+                <?php } else { ?>
+                    <input type='hidden' name="date-calc-general-csvs" value="<?php echo esc_attr(get_option('date-calc-general-csvs')); ?>" />
+                    <input type='hidden' name="date-calc-general-ignore" value="<?php echo esc_attr(get_option('date-calc-general-ignore')); ?>" />
+                <?php }
 
-            print_options('Zodiac Quality', 'zodiacquality', array('cardinal', 'fixed', 'mutable'), $active_tab);
+                print_options('Zodiac', 'zodiac', array('capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius'), $active_tab);
 
-            print_options('Chinese Zodiac', 'chinesezodiac', array('monkey', 'rooster', 'dog', 'pig', 'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'serpent', 'horse', 'goat'), $active_tab);
+                print_options('Zodiac Elements', 'zodiacelement', array('fire', 'earth', 'air', 'water'), $active_tab);
 
-            print_options('Planet', 'planet', array('saturn', 'uranus', 'neptune', 'mars', 'venus', 'mercury', 'moon', 'sun', 'pluto', 'jupiter'), $active_tab);
+                print_options('Zodiac Quality', 'zodiacquality', array('cardinal', 'fixed', 'mutable'), $active_tab);
 
-            print_options('Generation', 'generation', array('gi-generation', 'silent-generation', 'baby-boomers', 'generation-x', 'millennials', 'generation-z'), $active_tab, array('G.I. Generation', 'Silent Generation', 'Baby Boomers Generation', 'Generation X', 'Millennials Generation', 'Generation Z'));
+                print_options('Chinese Zodiac', 'chinesezodiac', array('monkey', 'rooster', 'dog', 'pig', 'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'serpent', 'horse', 'goat'), $active_tab);
 
-            $decades = array();
-            for ($z = 0; $z < (date('Y') - 1900) / 10; $z++) {
-                $decades[] = (1900 + 10 * $z) . 's';
-            }
-            print_options('Decade', 'decade', $decades, $active_tab);
+                print_options('Planet', 'planet', array('saturn', 'uranus', 'neptune', 'mars', 'venus', 'mercury', 'moon', 'sun', 'pluto', 'jupiter'), $active_tab);
 
-            print_options('Weekday', 'date', array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'), $active_tab);
+                print_options('Generation', 'generation', array('gi-generation', 'silent-generation', 'baby-boomers', 'generation-x', 'millennials', 'generation-z'), $active_tab, array('G.I. Generation', 'Silent Generation', 'Baby Boomers Generation', 'Generation X', 'Millennials Generation', 'Generation Z'));
 
-            print_options('Month', 'date', array('january', 'february', 'march', 'may', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december'), $active_tab);
+                $decades = array();
+                for ($z = 0; $z < (date('Y') - 1900) / 10; $z++) {
+                    $decades[] = (1900 + 10 * $z) . 's';
+                }
+                print_options('Decade', 'decade', $decades, $active_tab);
 
-            print_options('Flower', 'flower', array('Carnation', 'Violet', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Narcissus'), $active_tab);
+                print_options('Weekday', 'date', array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'), $active_tab);
 
-            print_options('Birthstone', 'stone', array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz'), $active_tab);
+                print_options('Month', 'date', array('january', 'february', 'march', 'may', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december'), $active_tab);
 
-            print_options('Life Path Number', 'lifepath', array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22'), $active_tab);
+                print_options('Flower', 'flower', array('Carnation', 'Violet', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Narcissus'), $active_tab);
 
-            submit_button();
-            ?>
-        </form>
+                print_options('Birthstone', 'stone', array('Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 'Emerald', 'Pearl, Moonstone and Alexandrite', 'Ruby', 'Peridot and Sardonyx', 'Sapphire', 'Opal and Tourmaline', 'Topaz and Citrine', 'Tanzanite, Turquoise, Zircon and Topaz'), $active_tab);
+
+                print_options('Life Path Number', 'lifepath', array('1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '22'), $active_tab);
+
+                submit_button();
+                ?>
+            </form>
 
         <?php } ?>
     </div>
