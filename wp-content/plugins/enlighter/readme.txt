@@ -3,8 +3,8 @@ Contributors: Andi Dittrich, aenondynamics
 Tags: syntax highlighting, syntax highlighter, highlighter, highlighting, classic editor, gutenberg, javascript, code, coding, sourcecode,customizable, visual editor, tinymce, themes, css, html, php, js, xml, c, cpp, c#, ruby, shell, java, python, sql, rust, matlab, json, ini, config, cython, lua, assembly, asm
 Donate link: https://enlighterjs.org
 Requires at least: 5.5
-Tested up to: 5.5
-Stable tag: 4.4.1
+Tested up to: 5.6
+Stable tag: 4.4.2
 License: GPL-2.0
 License URI: https://opensource.org/licenses/gpl-2.0.php
 
@@ -139,7 +139,15 @@ The WordPress plugin [related FAQ page](https://github.com/EnlighterJS/documenta
 
 ## Changelog ##
 
+### 4.4.2 ###
+
+* Bugfix: Gutenberg `escapeEditableHTML` throws an error in case the block is empty (attributes.content returns `null`)
+
 ### 4.4.1 ###
+
+* Bugfix: a `comma` caused the plugin/wordpress to crash in legacy php `7.2` (lint checks of php 7.3 worked without any issues)
+
+### 4.4.0 ###
 
 * Added: Gutenberg inline highlighting support (RichText format)
 * Added: border around Enlighter Gutenberg codeblock (default theme)
@@ -153,7 +161,6 @@ The WordPress plugin [related FAQ page](https://github.com/EnlighterJS/documenta
 * Changed: removed contextual help content if favor of the [official documentation](https://github.com/EnlighterJS/documentation)
 * Bugfix: double slashes are used in the paths of `DRI` and theme customizer resources
 * Bugfix: escape sequence were transformed into their characters in recent Gutenberg releases
-* Bugfix: a `comma` caused the plugin/wordpress to crash in legacy php `7.2` (lint checks of php 7.3 worked without any issues)
 
 ### 4.3.1 ###
 
