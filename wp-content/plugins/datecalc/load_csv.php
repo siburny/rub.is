@@ -10,8 +10,12 @@ $ignore = array_filter(explode("\n", get_option('date-calc-general-ignore')));
 $ignore = array_map('trim', $ignore);
 
 foreach ($csvs as $url) {
-    $name = substr($url, strrpos($url, '/') + 1, -4);
-    if(array_search($name, $ignore) !== false) {
+    if (strpos($url, '/') != false) {
+        $name = substr($url, strrpos($url, '/') + 1, -4);
+    } else {
+        $name = $url;
+    }
+    if (array_search($name, $ignore) !== false) {
         $all_data[$name] = array();
         continue;
     }
@@ -19,7 +23,7 @@ foreach ($csvs as $url) {
     $data = get_transient('date-calc-cache-' . $name);
 
     if ($data !== false) {
-        $all_data[$name] = unserialize(base64_decode(str_replace( "\r\n", "", $data)));
+        $all_data[$name] = unserialize(base64_decode(str_replace("\r\n", "", $data)));
     } else {
         $all_data[$name] = array();
 

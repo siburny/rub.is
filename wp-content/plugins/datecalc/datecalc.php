@@ -510,8 +510,15 @@ function datecalc_func($atts)
         }
 
         return $str;
-    } else if (array_key_exists('president', $atts)) {
-        foreach ($all_data['president'] as $key => $val) {
+    } else if (array_key_exists('president', $atts) || array_key_exists('presidents', $atts)) {
+        $array = array();
+        if(!empty($all_data['president'])) {
+            $array = $all_data['president'];
+        } elseif(!empty($all_data['presidents'])) {
+            $array = $all_data['presidents'];
+        } 
+
+        foreach ($array as $key => $val) {
             $val = $val[0];
             if (new DateTime($val['took office']) <= $date && ($val['left office'] == 'Incumbent' || new DateTime($val['left office']) > $date)) {
                 return $val['president'] . ' (' . $val['party'] . ')';
@@ -793,6 +800,10 @@ function datecalc_func($atts)
         }
     } else {
         $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
+
+        if($display == 'h:m' || $display == 'h:mm') {
+            $display .= ' AMPM';
+        }
 
         $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|week|w|s|text|q)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
         $replace = array(

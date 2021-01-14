@@ -284,7 +284,7 @@ final class datecalctest extends TestCase
             // Population
             [
                 '[datecalc date="6/2/1981" population="true"]',
-                '4,537,845,777'
+                '4,536,996,762'
             ],
             [
                 '[datecalc date="6/2/1981" population="true" display="abbr"]',
