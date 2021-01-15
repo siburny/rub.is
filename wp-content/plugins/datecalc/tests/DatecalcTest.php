@@ -377,7 +377,7 @@ final class datecalctest extends TestCase
                 '[datecalc date="1/20/2001" president="true"]',
                 'George W. Bush (Republican)'
             ],
-    
+
 
             // NFL / NHL / NBA / MLB
             [
@@ -434,6 +434,46 @@ final class datecalctest extends TestCase
                 '[datecalc date="6/2/2009" spiritanimal="true"]',
                 'Deer'
             ],
+
+            // Automatic AM/PM
+            [
+                '[datecalc date="13:00:00" display="h:m"]',
+                '1 PM'
+            ],
+            [
+                '[datecalc date="13:00:00" display="h:mm"]',
+                '1:00 PM'
+            ],
+
+            // Add/sub hours and minutes
+            [
+                '[datecalc date="00:00:00" hour="+2" display="h:mm"]',
+                '2:00 AM'
+            ],
+            [
+                '[datecalc date="12:00:00" hour="+2:00:00" display="h:m"]',
+                '2 PM'
+            ],
+            [
+                '[datecalc date="13:00:00" hour="+2:00:00" display="hh:mm"]',
+                '15:00'
+            ],
+
+            // Timezone manipulation
+            [
+                '[datecalc date="12/14/2021 22:00:00" hour="+4:30:00" option="gmt-6" display="mmmm d, h:mm"]',
+                'December 15, 1:30 AM'
+            ],
+            [
+                '[datecalc date="12/14/2021 22:00:00" hour="+4:00:00" option="gmt-8" display="mmmm d, h:m"]',
+                'December 14, 11 PM'
+            ],
+
+            // Close approximation
+            [
+                '[datecalc date="01/14/2020" difference="01/20/2021"]',
+                '1 year ago'
+            ]
         ];
     }
 

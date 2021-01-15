@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Plugin Name: Date Calculator and Formatter
+ * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.00
+ * Version: 4.1
  */
 
 use function PHPSTORM_META\map;
@@ -257,6 +257,22 @@ function datecalc_func($atts)
             } else {
                 $date->sub(new DateInterval('PT' . abs($atts['hour']) . 'H'));
             }
+        } else if (strpos($atts['hour'], ':') != false) {
+            $int = explode(':', $atts['hour']);
+
+            $int_str = 'PT' . abs($int[0]) . 'H';
+            if (!empty($int[1])) {
+                $int_str .= $int[1] . 'M';
+            }
+            if (!empty($int[2])) {
+                $int_str .= $int[2] . 'S';
+            }
+
+            if ($int[0] > 0) {
+                $date->add(new DateInterval($int_str));
+            } else {
+                $date->sub(new DateInterval($int_str));
+            }
         }
     }
 
@@ -288,6 +304,14 @@ function datecalc_func($atts)
                 $date->sub(new DateInterval('P' . abs($atts['year']) . 'Y'));
             }
         }
+    }
+
+    if (array_key_exists('option', $atts)) {
+        $tz = $atts['option'];
+        if (strtolower(substr($tz, 0, 3)) == "gmt") {
+            $tz = substr($tz, 3) . '00';
+        }
+        $date->setTimezone(new DateTimeZone($tz));
     }
 
     if (empty($date)) {
@@ -512,11 +536,11 @@ function datecalc_func($atts)
         return $str;
     } else if (array_key_exists('president', $atts) || array_key_exists('presidents', $atts)) {
         $array = array();
-        if(!empty($all_data['president'])) {
+        if (!empty($all_data['president'])) {
             $array = $all_data['president'];
-        } elseif(!empty($all_data['presidents'])) {
+        } elseif (!empty($all_data['presidents'])) {
             $array = $all_data['presidents'];
-        } 
+        }
 
         foreach ($array as $key => $val) {
             $val = $val[0];
@@ -583,7 +607,7 @@ function datecalc_func($atts)
         }
 
         if (!array_key_exists('display', $atts)) {
-            if ($diff->y > 1) { // YEAR
+            if ($diff->y > 1 || ($diff->y == 1 && $diff->m == 0)) { // YEAR
                 return $diff->y . ' ' . $doPlural($diff->y, 'year') . $ago;
             } else if ($diff->y > 0) {
                 return $diff->y . ' ' . $doPlural($diff->y, 'year') . ' and ' . $diff->m . ' ' . $doPlural($diff->m, 'month') . $ago;
@@ -801,11 +825,7 @@ function datecalc_func($atts)
     } else {
         $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
 
-        if($display == 'h:m' || $display == 'h:mm') {
-            $display .= ' AMPM';
-        }
-
-        $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|AM\/PM|AMPM|week|w|s|text|q)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $display = preg_split("/(yyyy|yy|mmmm|mmm|mm|m|dddd|ddd|dd|d|hh:mm|h:mm|h:m|AM\/PM|AMPM|week|w|s|text|q)/", $display, -1, PREG_SPLIT_DELIM_CAPTURE);
         $replace = array(
             'yyyy' => 'Y',
             'yy' => 'y',
@@ -817,8 +837,9 @@ function datecalc_func($atts)
             'ddd' => 'D',
             'dd' => 'd' . ($ordinalize ? 'S' : ''),
             'd' => $count ? 'z' : 'j' . ($ordinalize ? 'S' : ''),
-            'h:mm' => 'g:i',
-            'hh:mm' => 'h:i',
+            'h:m' => 'g A',
+            'h:mm' => 'g:i A',
+            'hh:mm' => 'G:i',
             'AM/PM' => 'A',
             'AMPM' => 'A',
             'text' => '',
@@ -1015,7 +1036,7 @@ function date_calc_settings_page()
     }
 ?>
 
-    <h2>Date Calc Plugin Options</h2>
+    <h2>dateCalc Settings</h2>
 
     <h2 class="nav-tab-wrapper">
         <a href="?page=date-calc-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>">General</a>
@@ -1038,10 +1059,10 @@ function date_calc_settings_page()
         <?php if ($active_tab == 'exportimport') { ?>
 
 
-            <?php if( isset($_GET['complete']) ) { ?>
-            <div id="message" class="updated">
-                <p><strong><?php _e('Settings imported.') ?></strong></p>
-            </div>
+            <?php if (isset($_GET['complete'])) { ?>
+                <div id="message" class="updated">
+                    <p><strong><?php _e('Settings imported.') ?></strong></p>
+                </div>
             <?php } ?>
 
             <form action="admin-post.php" method="post">
@@ -1160,7 +1181,7 @@ function print_options($title, $setting, $options, $active_tab, $option_titles =
 add_shortcode('datecalc', 'datecalc_func');
 
 add_action('admin_menu', function () {
-    add_options_page('Date Calc Settings', 'Date Calc Settings', 'manage_options', 'date-calc-settings', 'date_calc_settings_page');
+    add_options_page('dateCalc Settings', 'dateCalc Settings', 'manage_options', 'date-calc-settings', 'date_calc_settings_page');
 });
 
 add_action('admin_post_date_calc_import', 'date_calc_import');
