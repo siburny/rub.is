@@ -6,3 +6,4 @@ git/
 backup/
 *.wpress
 .vscode
+wp-content/plugins/enlighter/cache
