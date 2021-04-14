@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-final class textmorphtest extends TestCase
+final class TextMorphTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -64,9 +64,78 @@ final class textmorphtest extends TestCase
         ];
     }
 
+    public function shortcode_display_expire()
+    {
+        return [
+            [
+                '[morph data="is|was" expire="6/1/2020"]',
+                'was'
+            ],
+            [
+                '[morph data="is|was" expire="6/1/2025"]',
+                'is'
+            ],
+            [
+                '[morph data="not released|released" expire="6/1/2020"]',
+                'released'
+            ],
+            [
+                '[morph data="not released|released" expire="6/1/2020"]',
+                'released'
+            ],
+            [
+                '[morph data="takes|" expire="6/1/2020"]',
+                ''
+            ],
+            [
+                '[morph data="takes|" expire="6/1/2025"]',
+                'takes'
+            ],
+            [
+                '[morph data="|released" expire="6/1/2025"]',
+                ''
+            ],
+            [
+                '[morph data="|released" expire="6/1/2020"]',
+                'released'
+            ],
+        ];
+    }
+
+    public function shortcode_display_icons()
+    {
+        return [
+            [
+                '[morph data="male" icon="true"]',
+                '♂️'
+            ],
+            [
+                '[morph data="female" icon="true"]',
+                '♀️'
+            ],
+        ];
+    }
+    
+    public function shortcode_display_various_fixes()
+    {
+        return [
+            [
+                '[morph number="434433" display="abbr"]',
+                '434 thousand'
+            ],
+            [
+                '[morph text="some text here" description="true"]',
+                ''
+            ],
+        ];
+    }
+
     /**
      * @dataProvider shortcode_display_minutes_provider
      * @dataProvider shortcode_display_foot_provider
+     * @dataProvider shortcode_display_expire
+     * @dataProvider shortcode_display_various_fixes
+     * @dataProvider shortcode_display_icons
      */
     public function test_shortcode_should_output($shortcode, $output_expected)
     {

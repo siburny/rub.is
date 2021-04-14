@@ -5,8 +5,10 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 4.4
+ * Version: 4.5
  */
+
+use SebastianBergmann\Diff\Diff;
 
 require_once 'Numword.php';
 
@@ -37,6 +39,17 @@ function morph_func($atts, $content = '')
 
     if (array_key_exists('add', $atts)) {
         $ret .= $atts['add'];
+    }
+
+    if (array_key_exists('icon', $atts)) {
+        switch ($content) {
+            case 'male':
+                return '♂️';
+            case 'female':
+                return '♀️';
+            default:
+                return '';
+        }
     }
 
     if (array_key_exists('money', $atts)) {
@@ -124,6 +137,20 @@ function morph_func($atts, $content = '')
         }
     }
 
+    if (array_key_exists('expire', $atts)) {
+        $date = new DateTime($atts['expire'], new DateTimeZone(get_option('timezone_string')));
+        $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $data = explode('|', $content);
+
+        if (count($data) == 2) {
+            if ($date->diff($now)->invert) {
+                $ret = $data[0];
+            } else {
+                $ret = $data[1];
+            }
+        }
+    }
+
     if (array_key_exists('option', $atts) && is_numeric($atts['option']) && $atts['option'] >= 1 && $atts['option'] <= 6 && (strtolower($ret) == 'male' || strtolower($ret) == 'female')) {
         $ret = strtolower($ret);
         $gender_values = array(
@@ -208,11 +235,11 @@ function morph_func($atts, $content = '')
                 break;
             case 'abbr':
                 if ($ret >= 1000000000) {
-                    $ret = round($ret / 1000000000, 2) . ' billion';
+                    $ret = round($ret / 1000000000, 0) . ' billion';
                 } else if ($ret >= 1000000) {
-                    $ret = round($ret / 1000000, 2) . ' million';
+                    $ret = round($ret / 1000000, 0) . ' million';
                 } else if ($ret >= 1000) {
-                    $ret = round($ret / 1000, 2) . ' thousand';
+                    $ret = round($ret / 1000, 0) . ' thousand';
                 }
                 break;
         }
@@ -239,6 +266,7 @@ function morph_func($atts, $content = '')
                 break;
             }
         }
+        $ret = '';
     }
 
     if (array_key_exists('transform', $atts)) {
