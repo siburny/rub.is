@@ -46,6 +46,16 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+== Version 1.9.2 - 2021-03-01 =
+* Fix - Missed close span tag for menu toggle button.
+
+== Version 1.9.1 - 2021-02-25 =
+* Tweak - Update Screenshot image.
+
+== Version 1.9.0 - 2021-01-18 =
+* Refactor - Customize setting and control 
+* Modify - Theme options now uses Customize API instead of Options API.
+
 = Version 1.8.3 - 2020-12-21 =
 * Fix - Custom customize editor control not working since WordPress 5.6
 

@@ -202,6 +202,16 @@ abstract class WP_ExternalPluginBase {
       return;
     }
 
+    // Check permissions.
+    if (!current_user_can('upload_files')) {
+      return;
+    }
+
+    $extensions = apply_filters( 'external_media_safe_extensions', 'jpg jpeg gif png mp3 mp4 m4v mov webm' );
+    if ($this->isUnsafe( $filename, $extensions )) {
+      return;
+    }
+
     $enabled = get_option( WP_ExternalMedia_Prefix . '_prepend_plugin_name', 1 );
 
     if ( !empty( $plugin ) && $enabled ) {
@@ -276,6 +286,18 @@ abstract class WP_ExternalPluginBase {
     }
 
     return $attach_id;
+  }
+
+  /**
+   * Check if file extension is unsafe to upload.
+   */
+  protected function isUnsafe( $filename, $extensions ) {
+    if (preg_match('/\.(php|php2|php3|php4|php5|php6|php7|php8|phtml|phar|pl|py|cgi|asp|js|html|htm|xml)(\.|$)/i', $filename)) {
+      $regex = '/\.(' . preg_replace('/ +/', '|', preg_quote($extensions)) . ')$/i';
+      if (!preg_match($regex, $filename)) {
+        return true;
+      }
+    }
   }
 
 }
