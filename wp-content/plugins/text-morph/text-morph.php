@@ -259,14 +259,14 @@ function morph_func($atts, $content = '')
     }
 
     if (array_key_exists('description', $atts) && !empty($atts['description'])) {
+        $ret = '';
         $options = wp_load_alloptions();
         for ($z = 0; $z < 100; $z++) {
-            if (isset($options['text-morph-settings-find-' . $z]) && $options['text-morph-settings-find-' . $z] == $ret) {
+            if (isset($options['text-morph-settings-find-' . $z]) && $options['text-morph-settings-find-' . $z] == $content) {
                 $ret = isset($options['text-morph-settings-replace-' . $z]) ? nl2br($options['text-morph-settings-replace-' . $z]) : '';
                 break;
             }
         }
-        $ret = '';
     }
 
     if (array_key_exists('transform', $atts)) {

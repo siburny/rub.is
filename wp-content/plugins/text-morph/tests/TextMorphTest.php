@@ -124,6 +124,10 @@ final class TextMorphTest extends TestCase
                 '434 thousand'
             ],
             [
+                '[morph text="algebra" description="true"]',
+                'Algebra is algebra.'
+            ],
+            [
                 '[morph text="some text here" description="true"]',
                 ''
             ],
