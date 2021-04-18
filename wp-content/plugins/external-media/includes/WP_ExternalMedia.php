@@ -44,8 +44,12 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     $filename = $_POST['filename'];
     $caption = !empty($_POST['caption']) ? $_POST['caption'] : '';
     $referer = !empty($_POST['referer']) ? $_POST['referer'] : '';
-    $loaded_plugin = $this->load_plugin( $plugin );
-    $this->_call_class_method( $loaded_plugin['phpClassName'], 'download', array( $file, $filename, $caption, $referer ) );
+
+    if ( wp_verify_nonce( $_POST['nonce'], 'external-media-nonce' ) ) {
+      $loaded_plugin = $this->load_plugin( $plugin );
+      $this->_call_class_method( $loaded_plugin['phpClassName'], 'download', array( $file, $filename, $caption, $referer ) );
+    }
+
   }
 
   /**
@@ -142,6 +146,10 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     wp_enqueue_style( $prefix . '_css' );
     wp_enqueue_script( $prefix . '_js' );
     wp_enqueue_script( $prefix . '_view_js' );
+
+    wp_register_script( 'dummy-handle-header', '' );
+    wp_enqueue_script( 'dummy-handle-header' );
+    wp_add_inline_script( 'dummy-handle-header', 'var _external_media_nonce = "' . wp_create_nonce( 'external-media-nonce' ) . '";' );
   }
 
   /**
