@@ -207,6 +207,9 @@ abstract class WP_ExternalPluginBase {
       return;
     }
 
+    // Sanitize filename.
+    $filename = sanitize_file_name( $filename );
+
     $extensions = apply_filters( 'external_media_safe_extensions', 'jpg jpeg gif png mp3 mp4 m4v mov webm' );
     if ($this->isUnsafe( $filename, $extensions )) {
       return;
@@ -217,9 +220,6 @@ abstract class WP_ExternalPluginBase {
     if ( !empty( $plugin ) && $enabled ) {
       $filename = $plugin . '_' . $filename;
     }
-
-    // Sanitize filename.
-    $filename = sanitize_file_name( $filename );
 
     $upload_dir = wp_upload_dir();
     $file_path = urldecode( $upload_dir['path'] . '/' . $filename );

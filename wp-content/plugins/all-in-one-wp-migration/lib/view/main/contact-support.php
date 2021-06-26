@@ -28,4 +28,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/help" target="_blank"><?php _e( 'Get Support', AI1WM_PLUGIN_NAME ); ?></a>
+<a href="https://servmask.com/contact-support" target="_blank"><?php _e( 'Contact Support', AI1WM_PLUGIN_NAME ); ?></a>

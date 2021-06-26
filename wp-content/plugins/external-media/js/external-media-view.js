@@ -25,7 +25,8 @@ function external_media_upload( _plugin, _url, _filename, _caption, _referer ) {
     plugin: _plugin,
     filename: _filename,
     caption: _caption,
-    referer: _referer
+    referer: _referer,
+    nonce: _external_media_nonce
   })
   .done( function( resp ) {
     var attachment = wp.media.model.Attachment.create( resp );

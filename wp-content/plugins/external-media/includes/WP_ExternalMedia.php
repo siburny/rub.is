@@ -147,9 +147,9 @@ class WP_ExternalMedia extends WP_ExternalUtility {
     wp_enqueue_script( $prefix . '_js' );
     wp_enqueue_script( $prefix . '_view_js' );
 
-    wp_register_script( 'dummy-handle-header', '' );
-    wp_enqueue_script( 'dummy-handle-header' );
-    wp_add_inline_script( 'dummy-handle-header', 'var _external_media_nonce = "' . wp_create_nonce( 'external-media-nonce' ) . '";' );
+    wp_register_script( 'em_nonce_script', '' );
+    wp_enqueue_script( 'em_nonce_script' );
+    wp_add_inline_script( 'em_nonce_script', 'var _external_media_nonce = "' . wp_create_nonce( 'external-media-nonce' ) . '";' );
   }
 
   /**

@@ -5,8 +5,8 @@ Contributors: minnur
 Donate link: https://goo.gl/C2cBDF
 Tags: Dropbox, Box, OneDrive, Google Drive, Unsplash, Instagram, Pexels, Pixabay, AWS, Upload from remote, remote media, remote URL, remote image, remote file, external media, wp remote upload, external media upload, external image upload
 Requires at least: 5.4
-Tested up to: 5.5.1
-Stable tag: 1.0.31
+Tested up to: 5.7.1
+Stable tag: 1.0.34
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -130,6 +130,15 @@ Not available at the moment.
 
 == Changelog ==
 
+= 1.0.34 =
+* Security fix.
+* Version bump.
+= 1.0.33 =
+* Fix previous release issue.
+* Version bump.
+= 1.0.32 =
+* Fix issues in 1.0.31 related to nonce.
+* Version bump.
 = 1.0.31 =
 * Improve security. Add nonce check.
 * Version bump.
