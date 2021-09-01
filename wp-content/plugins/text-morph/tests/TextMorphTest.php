@@ -99,6 +99,10 @@ final class TextMorphTest extends TestCase
                 '[morph data="|released" expire="6/1/2020"]',
                 'released'
             ],
+            [
+                '[morph data="premieres|premiered" expire="PENDING"]',
+                'premieres'
+            ],
         ];
     }
 

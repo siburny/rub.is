@@ -138,16 +138,21 @@ function morph_func($atts, $content = '')
     }
 
     if (array_key_exists('expire', $atts)) {
-        $date = new DateTime($atts['expire'], new DateTimeZone(get_option('timezone_string')));
-        $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
         $data = explode('|', $content);
 
-        if (count($data) == 2) {
-            if ($date->diff($now)->invert) {
-                $ret = $data[0];
-            } else {
-                $ret = $data[1];
+        try {
+            $date = new DateTime($atts['expire'], new DateTimeZone(get_option('timezone_string')));
+            $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+
+            if (count($data) == 2) {
+                if ($date->diff($now)->invert) {
+                    $ret = $data[0];
+                } else {
+                    $ret = $data[1];
+                }
             }
+        } catch (Exception $ex) {
+            $ret = $data[0];
         }
     }
 
