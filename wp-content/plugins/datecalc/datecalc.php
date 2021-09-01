@@ -203,7 +203,7 @@ function datecalc_func($atts)
     global $all_data;
 
     $prefix = '';
-    $date = new DateTime();
+    $date = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
 
     if (empty($atts)) {
         $atts = array();
@@ -237,6 +237,12 @@ function datecalc_func($atts)
                 $date->setDate($now->format('Y') + 1, $date->format('m'), $date->format('d'));
             }
         }
+    }
+
+    $now_override = 'now';
+    if (array_key_exists('now_override', $atts)) {
+        $now_override = $atts['now_override'];
+        //print $now_override;
     }
 
     // TODO: delete eventually
@@ -334,13 +340,24 @@ function datecalc_func($atts)
     }
 
     if (array_key_exists('age', $atts) && ($atts['age'] == 'yes' || $atts['age'] == '1' || $atts['age'] == 'true')) {
-        $diff = date_diff($date, date_create());
+        $diff = date_diff($date, date_create($now_override, new DateTimeZone(get_option('timezone_string'))));
         $ret = $diff->format('%y');
+
+        if ($ret == 0) {
+            $ret = $diff->format('%m');
+
+            if ($ret > 0) {
+                return $ret . ' month' . ($ret > 1 ? 's' : '');
+            } else {
+                $ret = $diff->format('%d');
+                return $ret . ' day' . ($ret > 1 ? 's' : '');
+            }
+        }
     } else if (array_key_exists('dogyears', $atts) && ($atts['dogyears'] == 'yes' || $atts['dogyears'] == '1' || $atts['dogyears'] == 'true')) {
-        $diff = date_diff($date, date_create());
+        $diff = date_diff($date, date_create($now_override, new DateTimeZone(get_option('timezone_string'))));
         $ret = floor(($diff->format('%y') - 14) / 4.731136854);
     } else if (array_key_exists('fullage', $atts) && ($atts['fullage'] == 'yes' || $atts['fullage'] == '1' || $atts['fullage'] == 'true')) {
-        $diff = date_diff($date, date_create());
+        $diff = date_diff($date, date_create($now_override, new DateTimeZone(get_option('timezone_string'))));
         $ret = $diff->format('%y');
         mjohnson\numword\Numword::$sep = ' ';
         $ret = mjohnson\numword\Numword::single($ret);
@@ -401,7 +418,7 @@ function datecalc_func($atts)
         }
 
         $ret = $chineseZodiac[$date->format('Y') % 12];
-        $ret = $description ? nl2br_str(get_option('date-calc-chinesezodiac-' . strtolower($ret))) : $ret;
+        $ret = $description ? nl2br_str(get_option('date-calc-chinesezodiac-' . strtolower($ret)) . "\n\n") : $ret;
     } else if (array_key_exists('flower', $atts) && ($atts['flower'] == 'yes' || $atts['flower'] == '1' || $atts['flower'] == 'true')) {
         $flower = array('Carnation', 'Violet', 'Daffodil', 'Sweet Pea/Daisy', 'Lily of the valley', 'Rose', 'Larkspur', 'Gladiolus', 'Aster/Myosotis', 'Marigold', 'Chrysanthemum', 'Narcissus');
         $ret = $flower[$date->format('n') - 1];
@@ -422,10 +439,12 @@ function datecalc_func($atts)
             $ret = 'Generation X';
         } else if ($year <= 2000) {
             $ret = 'Millennials Generation';
-        } else {
+        } else if ($year <= 2009) {
             $ret = 'Generation Z';
+        } else {
+            $ret = 'Generation Alpha';
         }
-        $generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers Generation' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials Generation' => 'millennials', 'Generation Z' => 'generation-z');
+        $generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers Generation' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials Generation' => 'millennials', 'Generation Z' => 'generation-z', 'Generation Alpha' => 'generation-alpha');
         $ret = $description ? nl2br_str(get_option('date-calc-generation-' . $generation[$ret])) : $ret;
     } else if (array_key_exists('decade', $atts) && ($atts['decade'] == 'yes' || $atts['decade'] == '1' || $atts['decade'] == 'true')) {
         $ret = intval($date->format('Y') / 10) * 10;
@@ -687,12 +706,50 @@ function datecalc_func($atts)
         }
 
         return '';
+    } else if (array_key_exists('leap', $atts) && ($atts['leap'] == 'yes' || $atts['leap'] == '1' || $atts['leap'] == 'true')) {
+        $count = array_key_exists('count', $atts);
+        $leap = $date->format('L');
+
+        if ($leap) {
+            if ($count) {
+                $ret = '366';
+            } else {
+                $ret = 'leap year';
+            }
+        } else {
+            if ($count) {
+                $ret = '365';
+            } else {
+                $ret = 'not a leap year';
+            }
+        }
+    } else if (array_key_exists('vitals', $atts) && ($atts['vitals'] == 'yes' || $atts['vitals'] == '1' || $atts['vitals'] == 'true')) {
+        $diff = date_diff($date, date_create($now_override, new DateTimeZone(get_option('timezone_string'))))->days;
+
+        if (array_key_exists('display', $atts)) {
+            if ($atts['display'] == 'heartbeats') {
+                $ret = number_format($diff * 24 * 60 * 80);
+            }
+            if ($atts['display'] == 'blinks') {
+                $ret = number_format($diff * 24 * 60 * 17);
+            }
+            if ($atts['display'] == 'steps') {
+                $ret = number_format($diff * 24 * 7000);
+            }
+            if ($atts['display'] == 'breaths') {
+                $ret = number_format($diff * 24 * 60 * 14);
+            }
+        }
+    } else if (array_key_exists('earthtravel', $atts) && ($atts['earthtravel'] == 'yes' || $atts['earthtravel'] == '1' || $atts['earthtravel'] == 'true')) {
+        $diff = date_diff($date, date_create($now_override, new DateTimeZone(get_option('timezone_string'))))->days;
+
+        $ret = number_format($diff * 1600000) . ' miles';
     } else if (array_key_exists('sleep', $atts)) {
         $doPlural = function ($nb, $str) {
             return $nb > 1 ? $str . 's' : $str;
         };
 
-        $date_diff = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $date_diff = new DateTime($now_override, new DateTimeZone(get_option('timezone_string')));
         $diff = $date_diff->diff($date);
 
         if ($display == 'year') {
@@ -721,14 +778,14 @@ function datecalc_func($atts)
             $date->add(new DateInterval('PT1000000000S'));
         }
 
-        $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $now = new DateTime($now_override, new DateTimeZone(get_option('timezone_string')));
         if ($date > $now) {
             return 'will happen sometime on ' . $date->format('F j, Y');
         } else {
             return 'was on ' . $date->format('F j, Y');
         }
     } else if (array_key_exists('moon', $atts)) {
-        $date_diff = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        $date_diff = new DateTime($now_override, new DateTimeZone(get_option('timezone_string')));
         $diff = $date_diff->diff($date);
 
         return number_format_nozero(1.0 * $diff->format('%a') / 29.5);
@@ -1123,7 +1180,7 @@ function date_calc_settings_page()
 
                 print_options('Planet', 'planet', array('saturn', 'uranus', 'neptune', 'mars', 'venus', 'mercury', 'moon', 'sun', 'pluto', 'jupiter'), $active_tab);
 
-                print_options('Generation', 'generation', array('gi-generation', 'silent-generation', 'baby-boomers', 'generation-x', 'millennials', 'generation-z'), $active_tab, array('G.I. Generation', 'Silent Generation', 'Baby Boomers Generation', 'Generation X', 'Millennials Generation', 'Generation Z'));
+                print_options('Generation', 'generation', array('gi-generation', 'silent-generation', 'baby-boomers', 'generation-x', 'millennials', 'generation-z', 'generation-alpha'), $active_tab, array('G.I. Generation', 'Silent Generation', 'Baby Boomers Generation', 'Generation X', 'Millennials Generation', 'Generation Z', 'Generation Alpha'));
 
                 $decades = array();
                 for ($z = 0; $z < (date('Y') - 1900) / 10; $z++) {
@@ -1215,7 +1272,7 @@ add_action('admin_init', function () {
         register_setting('date-calc-settings', 'date-calc-planet-' . $z);
     }
 
-    $generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials' => 'millennials', 'Generation Z' => 'generation-z');
+    $generation = array('G.I. Generation' => 'gi-generation', 'Silent Generation' => 'silent-generation', 'Baby Boomers' => 'baby-boomers', 'Generation X' => 'generation-x', 'Millennials' => 'millennials', 'Generation Z' => 'generation-z', 'Generation Alpha' => 'generation-alpha');
     foreach ($generation as $z) {
         register_setting('date-calc-settings', 'date-calc-generation-' . $z);
     }

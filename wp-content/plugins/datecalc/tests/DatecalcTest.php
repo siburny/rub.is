@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-final class datecalctest extends TestCase
+final class DatecalcTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -260,6 +260,10 @@ final class datecalctest extends TestCase
                 '[datecalc date="1/1/2020" chinesezodiac="true" icon="true"]',
                 '🐀'
             ],
+            [
+                '[datecalc date="6/2/1981" chinesezodiac="true" description="true"]',
+                'Rooster Description Line 1<br/><br/>Rooster Description Line 2<br/><br/>'
+            ],
 
 
             // Planet
@@ -473,15 +477,103 @@ final class datecalctest extends TestCase
             [
                 '[datecalc date="01/14/2020" difference="01/20/2021"]',
                 '1 year ago'
-            ]
+            ],
+
+            // Age
+            [
+                '[datecalc date="1/1/2000" age="true"]',
+                '21',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="5/23/2021" age="true"]',
+                '1 month',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="3/23/2021" age="true"]',
+                '3 months',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="6/24/2021" age="true"]',
+                '1 day',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="6/20/2021" age="true"]',
+                '5 days',
+                '06/25/2021'
+            ],
+
+            // Generation
+            [
+                '[datecalc date="6/24/2021" generation="true"]',
+                'Generation Alpha'
+            ],
+            [
+                '[datecalc date="6/24/2021" generation="true" description="true"]',
+                'Generation Alpha Description'
+            ],
+
+            // Leap year
+            [
+                '[datecalc date="6/24/2020" leap="true"]',
+                'leap year'
+            ],
+            [
+                '[datecalc date="6/24/2021" leap="true"]',
+                'not a leap year'
+            ],
+            [
+                '[datecalc date="6/24/2020" leap="true" count="true"]',
+                '366'
+            ],
+            [
+                '[datecalc date="6/24/2021" leap="true" count="true"]',
+                '365'
+            ],
+
+            // Vitals
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="heartbeats"]',
+                '24,768,000',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="blinks"]',
+                '5,263,200',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="steps"]',
+                '36,120,000',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="breaths"]',
+                '4,334,400',
+                '06/25/2021'
+            ],
+
+            // Earth travels
+            [
+                '[datecalc date="11/22/2020" earthtravel="true"]',
+                '344,000,000 miles',
+                '06/25/2021'
+            ],
         ];
     }
 
     /**
      * @dataProvider shortcode_should_output_provider
      */
-    public function test_shortcode_should_output($shortcode, $output_expected)
+    public function test_shortcode_should_output($shortcode, $output_expected, $now_override = null)
     {
+        if (!empty($now_override)) {
+            $shortcode = str_replace(']', ' now_override="' . $now_override . '"]', $shortcode);
+        }
+
         $output = do_shortcode($shortcode);
         $this->assertEquals($output_expected, $output);
     }
