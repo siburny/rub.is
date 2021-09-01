@@ -5,7 +5,7 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 4.5
+ * Version: 4.5.1
  */
 
 use SebastianBergmann\Diff\Diff;
