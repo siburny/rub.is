@@ -35,7 +35,7 @@ define( 'AI1WM_DEBUG', false );
 // ==================
 // = Plugin Version =
 // ==================
-define( 'AI1WM_VERSION', '7.44' );
+define( 'AI1WM_VERSION', '7.47' );
 
 // ===============
 // = Plugin Name =
@@ -157,6 +157,16 @@ define( 'AI1WM_CONTENT_LIST_NAME', 'content.list' );
 // ===========================
 define( 'AI1WM_MEDIA_LIST_NAME', 'media.list' );
 
+// =============================
+// = Archive Plugins List Name =
+// =============================
+define( 'AI1WM_PLUGINS_LIST_NAME', 'plugins.list' );
+
+// ============================
+// = Archive Themes List Name =
+// ============================
+define( 'AI1WM_THEMES_LIST_NAME', 'themes.list' );
+
 // ============================
 // = Archive Tables List Name =
 // ============================
@@ -181,6 +191,11 @@ define( 'AI1WM_LESS_CACHE_NAME', '.less.cache' );
 // = Elementor CSS Cache Name =
 // ============================
 define( 'AI1WM_ELEMENTOR_CSS_NAME', 'uploads' . DIRECTORY_SEPARATOR . 'elementor' . DIRECTORY_SEPARATOR . 'css' );
+
+// =========================
+// = Themes Functions Name =
+// =========================
+define( 'AI1WM_THEMES_FUNCTIONS_NAME', 'themes' . DIRECTORY_SEPARATOR . 'functions.php' );
 
 // =============================
 // = Endurance Page Cache Name =
