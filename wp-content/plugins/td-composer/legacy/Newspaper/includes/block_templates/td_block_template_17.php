@@ -20,6 +20,123 @@ class td_block_template_17 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+           
+            /* @style_general_template_17 */
+            .td_block_template_17.widget > ul > li {
+                margin-left: 0 !important;
+            }
+            .td_block_template_17 {
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+            }
+            .td_block_template_17 .td-block-title {
+                font-size: 16px;
+                font-weight: 500;
+                margin: 3px 3px 29px;
+                padding: 12px 0 11px;
+                line-height: 1;
+                position: relative;
+                text-align: center;
+                border: 1px solid #111;
+                background-color: #fff;
+                top: -3px;
+            }
+            .td_block_template_17 .td-block-title > * {
+                margin: 0 15px;
+            }
+            .td_block_template_17 .td-block-title:before {
+                content: '';
+                height: 100%;
+                position: absolute;
+                top: 4px;
+                left: -4px;
+                right: -4px;
+                border: 1px solid #111;
+                background-color: #111;
+                z-index: -1;
+            }
+            .td_block_template_17 .td-block-title:after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                margin: 3px auto 0;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 8px 8px 0 8px;
+                border-color: #111 transparent transparent transparent;
+            }
+            .td_block_template_17 .td-block-title-wrap {
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                z-index: 2;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter {
+                background-color: transparent !important;
+                display: inline-block;
+                color: #111;
+                top: -3px;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option {
+                height: 100%;
+                display: table;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter i {
+                margin-right: 16px;
+                color: #111;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-list {
+                border-width: 0 1px 1px;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-link {
+                padding-right: 32px;
+            }
+            .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-more {
+                vertical-align: middle;
+                display: table-cell;
+                padding: 0;
+                opacity: 0.8;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-more {
+                    padding-right: 5px;
+                }
+                .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-more span {
+                    display: none;
+                }
+            }
+            .td_block_template_17.widget,
+            .td_block_template_17.td_block_social_counter {
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+            }
+            .td_block_template_17 .td-related-title a {
+                margin-right: 10px;
+                margin-left: 10px;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_17 .td-related-title a {
+                    margin: 0 8px !important;
+                    font-size: 14px;
+                }
+            }
+            .td_block_template_17 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            .td-pb-span4 .td_block_template_17 .td-block-title-wrap .td-pulldown-more {
+                padding-right: 5px;
+            }
+            .td-pb-span4 .td_block_template_17 .td-block-title-wrap .td-pulldown-more span {
+                display: none;
+            }
+            .td-pb-span4 .td_block_template_17 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-link {
+                padding-right: 22px;
+                padding-left: 26px;
+            }
+            
+            
 
             /* @header_color */
             .$unique_block_class .td-block-title {
@@ -80,7 +197,17 @@ class td_block_template_17 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_17', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+        }
+
         $td_css_compiler->load_setting_raw('header_color', $this->get_att('header_color'));
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('top_border_color', $this->get_att('top_border_color'));
@@ -109,7 +236,7 @@ class td_block_template_17 extends td_block_template {
         if(!empty($block_title_tag)) {
             $title_tag = $block_title_tag ;
         }
-        
+
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {

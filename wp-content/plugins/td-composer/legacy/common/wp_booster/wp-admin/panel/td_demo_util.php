@@ -137,7 +137,7 @@ class td_demo_history extends td_demo_base {
             $settings[$dbm] = $td_options[$dbm];
         }
         if (!empty($td_options[$dbk])) {
-            $settings[$dbk] = 2;
+            $settings[$dbk] = $td_options[$dbk];
         }
 
 		// put the old theme settings back
@@ -288,9 +288,15 @@ class td_demo_misc extends td_demo_base {
 	 * @param $ad_spot_name - the adspot id that you want to use. You should get this from the panel or other demos
 	 * @param $td_image_id
 	 */
-    static function add_ad_image($ad_spot_name, $td_image_id) {
+    static function add_ad_image($ad_spot_name, $td_image_id, $td_ad_width = '', $td_ad_height = '') {
         $td_ad_spots = td_options::get_array('td_ads');
-        $new_ad_spot['ad_code']= '<div class="td-all-devices"><a href="#" target="_blank"><img src="' . td_demo_media::get_image_url_by_td_id($td_image_id) . '"/></a></div>';
+        if ( ! empty( $td_ad_width ) ) {
+            $td_ad_width = ' width="' . $td_ad_width . '"';
+        }
+        if ( ! empty( $td_ad_height ) ) {
+            $td_ad_height = ' height="' . $td_ad_height . '"';
+        }
+        $new_ad_spot['ad_code']= '<div class="td-all-devices"><a href="https://www.google.com"><img alt="Google search engine" ' . 'src="' . td_demo_media::get_image_url_by_td_id($td_image_id) . '"' . $td_ad_width . $td_ad_height . '/></a></div>';
         $new_ad_spot['current_ad_type']= 'other';
         $td_ad_spots[strtolower($ad_spot_name)] = $new_ad_spot;
         td_options::update_array('td_ads', $td_ad_spots);
@@ -481,6 +487,26 @@ class td_demo_misc extends td_demo_base {
         $td_options = &td_options::get_all_by_ref();
         $td_options['tdb_attachment_template'] = $template_id;
     }
+
+    static function update_global_woo_product_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_woo_product_template'] = $template_id;
+    }
+
+    static function update_global_woo_archive_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_woo_archive_template'] = $template_id;
+    }
+
+    static function update_global_woo_search_archive_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_woo_search_archive_template'] = $template_id;
+    }
+
+    static function update_global_woo_shop_base_template( $template_id ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['tdb_woo_shop_base_template'] = $template_id;
+    }
 }
 
 
@@ -489,7 +515,6 @@ class td_demo_misc extends td_demo_base {
 
 
 class td_demo_category extends td_demo_base {
-
 
     static function add_category($params_array) {
 
@@ -541,7 +566,12 @@ class td_demo_category extends td_demo_base {
 
         // update the cloud category template
         if (!empty($params_array['category_cloud_template'])) {
-	        $td_options['category_options'][$new_cat_id]['tdb_category_template'] = $params_array['category_cloud_template'];
+	        $td_options['category_options'][$new_cat_id]['tdb_category_template'] = 'tdb_template_' . $params_array['category_cloud_template'];
+        }
+
+        // update the cloud post template
+        if (!empty($params_array['post_cloud_template'])) {
+            $td_options['category_options'][$new_cat_id]['tdb_post_category_template'] = 'tdb_template_' . $params_array['post_cloud_template'];
         }
 
 
@@ -599,6 +629,246 @@ class td_demo_category extends td_demo_base {
             }
         }
     }
+
+}
+
+class td_woo_demo_product_category extends td_demo_base {
+
+    static function add_woo_category($params_array) {
+
+    	// it's probably safe to also schedule a save here
+	    $td_options = &td_options::get_all_by_ref();
+
+		self::check_params(__CLASS__, __FUNCTION__, $params_array, array(
+		    'product_category_name' => 'Param is required !',
+		));
+
+		// process args @see wp_insert_term()
+	    $args = array();
+
+	    // description
+	    if ( !empty( $params_array['description'] ) ) {
+	    	$args['description'] = $params_array['description'];
+	    }
+
+	    // parent
+	    if ( !empty( $params_array['parent_id'] ) ) {
+	    	$args['parent'] = $params_array['parent_id'];
+	    }
+
+	    // insert prod cat
+	    $new_term_data = wp_insert_term( $params_array['product_category_name'], 'product_cat', $args );
+
+	    // check for errors
+	    if ( is_wp_error( $new_term_data ) ) {
+
+		    td_log::log(
+		    	__CLASS__,
+			    __FUNCTION__,
+			    'failed to insert prod cat on demo install',
+			    $new_term_data
+		    );
+
+			//self::kill(
+			//    __CLASS__,
+			//    __FUNCTION__,
+			//    $params_array,
+			//    array(
+			//	    'wp_insert_post > wp_error' => $new_term_data->get_error_message(),
+			//	    'new_product_data' => $new_term_data
+			//    )
+			//);
+
+		    // return the default product cat ( uncategorized ) id
+		    return (int) get_option( 'default_product_cat', 0 );
+	    }
+
+	    $new_product_cat_id = $new_term_data['term_id'];
+
+        // update the sidebar if needed
+        if ( !empty( $params_array['tds_woo_sidebar'] ) ) {
+	        $td_options['tds_woo_sidebar'] = $params_array['tds_woo_sidebar'];
+        }
+
+        // update the sidebar position
+        if ( !empty( $params_array['tds_woo_sidebar_pos'] ) ) {
+	        $td_options['tds_woo_sidebar_pos'] = $params_array['tds_woo_sidebar_pos'];
+        }
+
+        // update once the prod category options
+	    td_options::schedule_save();
+
+        // keep a list of installed category ids so we can delete them later if needed
+	    $td_stacks_td_woo_demo_product_categories_ids = get_option( 'td_woo_demo_product_categories_ids' );
+	    $td_stacks_td_woo_demo_product_categories_ids[]= $new_product_cat_id;
+        update_option('td_woo_demo_product_categories_ids', $td_stacks_td_woo_demo_product_categories_ids);
+
+        return $new_product_cat_id;
+    }
+
+    static function remove() {
+        $td_stacks_td_woo_demo_product_categories_ids = get_option('td_woo_demo_product_categories_ids');
+        if ( is_array( $td_stacks_td_woo_demo_product_categories_ids ) ) {
+            foreach ( $td_stacks_td_woo_demo_product_categories_ids as $prod_cat_id ) {
+	            wp_delete_term( $prod_cat_id, 'product_cat' );
+            }
+        }
+    }
+
+}
+
+class td_woo_demo_product_tag extends td_demo_base {
+
+    static function remove() {
+        $td_stacks_td_woo_demo_product_tags_ids = get_option('td_woo_demo_product_tags_ids');
+        if ( is_array( $td_stacks_td_woo_demo_product_tags_ids ) ) {
+            foreach ( $td_stacks_td_woo_demo_product_tags_ids as $prod_tag_id ) {
+	            wp_delete_term( $prod_tag_id, 'product_tag' );
+            }
+        }
+    }
+
+}
+
+class td_woo_demo_product_attribute extends td_demo_base {
+
+    static function add_woo_attribute($params_array) {
+
+		self::check_params(__CLASS__, __FUNCTION__, $params_array, array(
+		    'attribute_name' => 'Param is required !',
+		));
+
+	    $attribute_name = $params_array['attribute_name'];
+	    $attribute_slug = !empty( $params_array['attribute_slug'] ) ? $params_array['attribute_slug'] : wc_attribute_taxonomy_slug( $attribute_name );
+	    $attribute_type = !empty( $params_array['attribute_type'] ) ? $params_array['attribute_type'] : 'select';
+
+	    $attribute_is_new = false;
+
+	    if ( !taxonomy_exists( $attribute_slug ) ) {
+		    $new_attribute_id = wc_create_attribute(
+			    array(
+				    'name'         => $attribute_name,
+				    'slug'         => $attribute_slug,
+				    'type'         => $attribute_type,
+				    'order_by'     => 'menu_order',
+				    'has_archives' => false,
+			    )
+		    );
+
+		    if ( is_wp_error( $new_attribute_id ) ) {
+			    self::kill(
+				    __CLASS__,
+				    __FUNCTION__,
+				    'wc_create_attribute > wp_error',
+				    array(
+					    'wp_error > error_message' => $new_attribute_id->get_error_message(),
+					    '$params_array' => $params_array
+				    )
+			    );
+		    }
+
+		    //$taxonomy_name = wc_attribute_taxonomy_name( $attribute_name );
+		    $taxonomy_name = $attribute_slug;
+
+		    // register as taxonomy
+		    register_taxonomy(
+			    $taxonomy_name,
+			    apply_filters( 'woocommerce_taxonomy_objects_' . $taxonomy_name, array( 'product' ) ),
+			    apply_filters(
+				    'woocommerce_taxonomy_args_' . $taxonomy_name,
+				    array(
+					    'labels'       => array(
+						    'name' => $attribute_name,
+					    ),
+					    'hierarchical' => false,
+					    'show_ui'      => false,
+					    'query_var'    => true,
+					    'rewrite'      => false,
+				    )
+			    )
+		    );
+
+		    global $wc_product_attributes;
+
+		    // set product attributes global
+		    $wc_product_attributes = array();
+		    foreach ( wc_get_attribute_taxonomies() as $taxonomy ) {
+			    $wc_product_attributes[ wc_attribute_taxonomy_name( $taxonomy->attribute_name ) ] = $taxonomy;
+		    }
+
+		    // update new att flag
+		    $attribute_is_new = true;
+
+	    } else {
+	    	$attribute_taxonomies_ids = wc_get_attribute_taxonomy_ids();
+		    $slug = preg_replace( '/^pa\_/', '', wc_sanitize_taxonomy_name( $attribute_slug ) );
+		    $new_attribute_id = $attribute_taxonomies_ids[ $slug ] ?? 0;
+	    }
+
+	    // get new attribute data by id
+	    $attribute = wc_get_attribute( $new_attribute_id );
+
+	    // we have no attribute data..something went wrong.. log this step and move further..
+	    if ( empty($attribute) ) {
+		    td_log::log(__CLASS__, __FUNCTION__,
+			    'wc_get_attribute > error => get new attribute data by att id failed!',
+			    $params_array
+		    );
+		    return $new_attribute_id;
+	    }
+
+	    // add attribute terms
+	    $terms = !empty( $params_array['attribute_terms'] ) ? $params_array['attribute_terms'] : array();
+	    $attribute_taxonomy = $attribute->slug;
+	    $attribute_type = $attribute->type;
+
+	    switch ($attribute_type) {
+		    case 'color':
+			    foreach ( $terms as $term_name => $value ) { // value can be either hex color or td_id img
+				    $term_exists = term_exists( $term_name, $attribute_taxonomy );
+				    if ( !$term_exists ) {
+					    $new_term = wp_insert_term( $term_name, $attribute_taxonomy );
+					    if ( strpos($value, '#') !== false ) { // check for color (hex)
+						    update_term_meta( $new_term['term_id'], 'product_attribute_color', esc_html($value) );
+					    } elseif ( td_util::strpos_array($value, array( 'td_pic', 'tdx_pic' )) !== false ) {
+						    $img_id = td_demo_media::get_by_td_id($value);
+						    update_term_meta( $new_term['term_id'], 'product_attribute_color', absint($img_id) );
+					    }
+				    }
+			    }
+		    	break;
+		    default:
+			    foreach ( $terms as $term ) {
+				    $term_exists = term_exists( $term, $attribute_taxonomy );
+				    if ( !$term_exists ) {
+					    wp_insert_term( $term, $attribute_taxonomy );
+				    }
+			    }
+		    	break;
+	    }
+
+	    // do this just for new attributes added trough our demo import
+	    if ( $attribute_is_new ) {
+		    // keep a list of installed attributes ids so we can delete them later if needed
+		    $td_stacks_td_woo_demo_product_attributes_ids = get_option( 'td_woo_demo_product_attributes_ids' );
+		    $td_stacks_td_woo_demo_product_attributes_ids[]= $new_attribute_id;
+		    update_option('td_woo_demo_product_attributes_ids', $td_stacks_td_woo_demo_product_attributes_ids );
+	    }
+
+        // return new attribute id
+	    return $new_attribute_id;
+
+    }
+
+    static function remove() {
+        $td_stacks_td_woo_demo_product_attributes_ids = get_option('td_woo_demo_product_attributes_ids');
+        if ( is_array( $td_stacks_td_woo_demo_product_attributes_ids ) ) {
+            foreach ( $td_stacks_td_woo_demo_product_attributes_ids as $product_attribute_id ) {
+	            wc_delete_attribute( $product_attribute_id );
+            }
+        }
+    }
+
 }
 
 
@@ -792,36 +1062,43 @@ class td_demo_content extends td_demo_base {
 
 
 	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
-		    'title' => 'Param is requiered!',
-		    'file' => 'Param is requiered!',
-		    'categories_id_array' => 'Param is requiered!',
-		    //'featured_image_td_id' => 'Param is requiered!',
+		    'title' => 'Param is required!',
+		    'file' => 'Param is required!',
+		    'categories_id_array' => 'Param is required!',
+		    //'featured_image_td_id' => 'Param is required!',
 	    ));
 
 
-	    $template_name = basename( $params['file']);
+	    $template_name = basename( $params['file'] );
 
 	    $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'post',
-            'post_content' => self::parse_content(td_global::$td_demo_installer->templates[$template_name]),
+            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'post content template not set!' ) ) ?: 'failed to parse post content/post content empty!',
             'comment_status' => 'open',
             'post_category' => $params['categories_id_array'], //adding category to this post
             'guid' => td_global::td_generate_unique_id()
         );
 
-        //new post / page
+        // new post / page
         $post_id = wp_insert_post($new_post);
 
         // add our demo custom meta field, using this field we will delete all the pages
         update_post_meta($post_id, 'td_demo_content', true);
 
-        if(!empty($params['post_format'])) {
+        // add post meta
+        if( !empty( $params['post_meta'] ) && is_array( $params['post_meta'] ) ) {
+        	foreach ( $params['post_meta'] as $meta_key => $meta_value ) {
+		        update_post_meta( $post_id, $meta_key, $meta_value );
+	        }
+        }
+
+        if( !empty( $params['post_format'] ) ) {
             set_post_format($post_id, $params['post_format']);
         }
 
-        if(!empty($params['featured_image_td_id'])) {
+        if( !empty( $params['featured_image_td_id'] ) ) {
             set_post_thumbnail($post_id, td_demo_media::get_by_td_id($params['featured_image_td_id']));
         }
 
@@ -884,8 +1161,8 @@ class td_demo_content extends td_demo_base {
     static function add_page($params) {
 
 	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
-		    'title' => 'Param is requiered!',
-		    'file' => 'Param is requiered!',
+		    'title' => 'Param is required!',
+		    'file' => 'Param is required!',
 	    ));
 
 	    $template_name = basename( $params['file']);
@@ -894,7 +1171,7 @@ class td_demo_content extends td_demo_base {
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'page',
-            'post_content' => td_demo_content::parse_content( td_global::$td_demo_installer->templates[$template_name] ),
+            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'page content template not set!' ) ) ?: 'failed to parse page content/page content empty!',
             'comment_status' => 'open',
             'guid' => td_global::td_generate_unique_id()
         );
@@ -921,6 +1198,11 @@ class td_demo_content extends td_demo_base {
         // set the header template if we have one
         if (!empty($params['header_template_id'])) {
             update_post_meta($page_id, 'tdc_header_template_id', $params['header_template_id']);
+        }
+
+        // set the footer template if we have one
+        if (!empty($params['footer_template_id'])) {
+            update_post_meta($page_id, 'tdc_footer_template_id', $params['footer_template_id']);
         }
 
 	    $td_homepage_loop = array();
@@ -983,9 +1265,9 @@ class td_demo_content extends td_demo_base {
     static function add_cloud_template($params) {
 
 	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
-		    'title' => 'Param is requiered!',
-		    'file' => 'Param is requiered!',
-		    'template_type' => 'Param is requiered!',
+		    'title' => 'Param is required!',
+		    'file' => 'Param is required!',
+		    'template_type' => 'Param is required!',
 	    ));
 
 	    $template_name = basename( $params['file']);
@@ -993,7 +1275,8 @@ class td_demo_content extends td_demo_base {
 	    $template_type = $params['template_type'];
 
         $template_types = array(
-            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header', 'footer'
+            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header', 'footer',
+	        'woo_product', 'woo_archive', 'woo_search_archive', 'woo_shop_base' // td woo templates
         );
 
         if ( in_array( $template_type, $template_types) === false ) {
@@ -1005,7 +1288,7 @@ class td_demo_content extends td_demo_base {
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'tdb_templates',
-            'post_content' => td_demo_content::parse_content( td_global::$td_demo_installer->templates[$template_name] ),
+            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'cloud_template content template not set!' ) ) ?: 'failed to parse cloud_template content/cloud_template content empty!',
             'comment_status' => 'closed',
             'meta_input'   => array(
                 'tdb_template_type' => $template_type,
@@ -1048,9 +1331,263 @@ class td_demo_content extends td_demo_base {
     }
 
 
+	static function add_product($params) {
+
+		self::check_params(
+			__CLASS__,
+			__FUNCTION__,
+			$params,
+			array(
+				'title' => 'Param is required !',
+				'file' => 'Param is required !',
+			)
+		);
+
+		// product_default_content.txt
+		$template_name = basename( $params['file'] );
+
+		$new_product_data = array(
+			'post_title' => $params['title'],
+			'post_type' => 'product',
+			'post_status' => 'publish',
+			'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'product content template not set!' ) ) ?: 'failed to parse product content/product content empty!',
+			'post_excerpt'  => !empty($params['short_description']) ? $params['short_description'] : '',
+			'guid' => td_global::td_generate_unique_id()
+		);
+
+		// new product
+		$new_product_id = wp_insert_post($new_product_data);
+
+		// check for errors
+		if ( is_wp_error( $new_product_id ) ) {
+			self::kill(
+				__CLASS__,
+				__FUNCTION__,
+				$params,
+				array(
+					'wp_insert_post > wp_error' => $new_product_id->get_error_message(),
+					'new_product_data' => $new_product_data
+				)
+			);
+		}
+
+		// set product image
+		if ( !empty($params['product_image_td_id']) ) {
+			set_post_thumbnail( $new_product_id, td_demo_media::get_by_td_id( $params['product_image_td_id'] ) );
+		}
+
+		// set product gallery images
+		if ( !empty($params['product_image_gallery_td_ids']) ) {
+			$product_image_gallery_td_ids = $params['product_image_gallery_td_ids'];
+
+			$product_image_gallery_ids = array();
+			foreach ( $product_image_gallery_td_ids as $img_td_id ) {
+				$product_image_gallery_ids[] = td_demo_media::get_by_td_id($img_td_id);
+			}
+
+			// set images ids as gallery images
+			update_post_meta( $new_product_id, '_product_image_gallery', implode(',', $product_image_gallery_ids ) );
+		}
+
+		// set product categories
+		if ( !empty($params['product_categories']) ) {
+			wp_set_object_terms( $new_product_id, $params['product_categories'], 'product_cat' );
+		}
+
+		// set product tags, tags slugs or ids list
+		// @note creates a tag if it doesn't exist (using the slug)
+		if ( !empty($params['product_tags']) ) {
+
+			$new_product_tags_ids = wp_set_object_terms( $new_product_id, $params['product_tags'], 'product_tag' );
+
+			// keep a list of added product tags ids so we can delete them later on demo uninstall
+			$td_woo_demo_product_tags_ids = get_option( 'td_woo_demo_product_tags_ids', array() );
+			update_option( 'td_woo_demo_product_tags_ids', array_merge( $td_woo_demo_product_tags_ids, $new_product_tags_ids ) );
+
+		}
+
+		// set attributes
+		$attributes = !empty($params['product_attributes']) ? $params['product_attributes'] : array(); // product attributes
+		$product_attributes_meta = array();
+		$wp_set_object_terms = array(); // used just for debugging
+		$product_type = !empty($params['product_type']) ? $params['product_type'] : 'simple'; // product type
+
+		if ( !empty($attributes) && is_array($attributes) ) {
+			foreach ( $attributes as $attribute ) {
+
+				// wc get attribute data by id
+				$attribute_data = wc_get_attribute($attribute['id']);
+
+				// get terms
+				$attribute_terms = get_terms( array(
+					'taxonomy' => $attribute_data->slug,
+					'slug' => array_filter( array_map( 'trim', $attribute['terms'] ) ),
+					'hide_empty' => false,
+				));
+
+				// build att terms ids array
+				$attribute_term_ids = wp_list_pluck( $attribute_terms, 'term_id' );
+
+				$wp_set_object_terms[$attribute_data->slug] = wp_set_object_terms( $new_product_id, $attribute_term_ids, $attribute_data->slug );
+				$product_attributes_meta[$attribute_data->slug] = array(
+					'id' => $attribute['id'],
+					'name' => $attribute_data->slug,
+					'value' => $attribute['value'],
+					'position' => $attribute['position'],
+					'is_visible' => $attribute['is_visible'],
+					'is_variation' => $attribute['is_variation'],
+					'is_taxonomy' => $attribute['is_taxonomy']
+				);
+			}
+		}
+
+		// update product attributes meta
+		// @note result captured just for debugging purposes..
+ 		$update_product_attributes_meta_status = update_post_meta( $new_product_id,'_product_attributes', $product_attributes_meta );
+
+		// set default attributes
+		if ( !empty($params['product_default_attributes']) ) {
+			$product_default_attributes = $params['product_default_attributes'];
+			update_post_meta( $new_product_id, '_default_attributes', $product_default_attributes );
+		}
+
+		// set product sku
+		if ( !empty($params['product_sku']) ) {
+			update_post_meta( $new_product_id, '_sku', $params['product_sku'] );
+		}
+
+		// set product price
+		if ( !empty($params['product_price']) ) {
+			update_post_meta( $new_product_id, '_price', $params['product_price'] );
+		}
+
+		// price
+		update_post_meta( $new_product_id, '_regular_price', '111' );
+		update_post_meta( $new_product_id, '_sale_price', '100' );
+
+		// sales
+		update_post_meta( $new_product_id, 'total_sales', '0' );
+
+		// stock
+		update_post_meta( $new_product_id, '_manage_stock', 'yes' ); // activate stock management
+		wc_update_product_stock($new_product_id, 100); // set 100 in stock
+		update_post_meta( $new_product_id, '_stock_status', 'instock');
+		update_post_meta( $new_product_id, '_backorders', 'no' );
+		update_post_meta( $new_product_id, '_sold_individually', '' );
+
+		// other
+		update_post_meta( $new_product_id, '_purchase_note', '' );
+		update_post_meta( $new_product_id, '_virtual', 'yes' );
+		update_post_meta( $new_product_id, '_downloadable', 'no' );
+		update_post_meta( $new_product_id, '_featured', 'no' );
+
+		// variable product
+		if ( $product_type === 'variable' ) {
+
+			// get an instance of the WC_Product_Variable object and save it
+			$new_product = new WC_Product_Variable($new_product_id);
+			$new_product->save();
+
+			// create variations form attributes
+			self::create_product_variations($new_product);
+
+			// set product type .. simple/grouped/external/variable
+			// @todo check if it's needed..
+			//$wp_set_object_terms['product_type'] = wp_set_object_terms( $new_product_id, $product_type, 'product_type' );
+		}
+
+		// debugging
+		//self::kill(
+		//	__CLASS__,
+		//	__FUNCTION__,
+		//	'debugging', // the message as string
+		//	array(
+		//		'$params' => var_export( $params, true ),
+		//		'product_attributes_array' => var_export( $attributes, true ),
+		//		'$wp_set_object_terms' => var_export( $wp_set_object_terms, true ),
+		//		'$product_attributes_meta' => var_export( $product_attributes_meta, true ),
+		//		'$update_product_attributes_meta_status' => var_export( $update_product_attributes_meta_status, true )
+		//	)
+		//);
+
+		// add our demo custom meta field, using this field we will delete all products created during demo install
+		update_post_meta( $new_product_id, 'td_demo_content', true );
+
+		return $new_product_id;
+	}
+
+	/**
+	 * Creates all possible combinations of variations from the attributes, without creating duplicates.
+	 * @see WC_Product_Data_Store_CPT->create_all_product_variations
+	 *
+	 * @param  WC_Product $product Variable product.
+	 */
+	static function create_product_variations( $product ) {
+
+		$attributes = wc_list_pluck( array_filter( $product->get_attributes(), 'wc_attributes_array_filter_variation' ), 'get_slugs' );
+
+		if ( empty( $attributes ) ) {
+			return;
+		}
+
+		// Get existing variations so we don't create duplicates.
+		$existing_variations = array_map( 'wc_get_product', $product->get_children() );
+		$existing_attributes = array();
+
+		foreach ( $existing_variations as $existing_variation ) {
+			$existing_attributes[] = $existing_variation->get_attributes();
+		}
+
+		$possible_attributes = array_reverse( wc_array_cartesian( $attributes ) );
+
+		foreach ( $possible_attributes as $possible_attribute ) {
+
+			// allow any order if key/values -- do not use strict mode
+			if ( in_array( $possible_attribute, $existing_attributes ) ) {
+				continue;
+			}
+
+			$variation = wc_get_product_object( 'variation' );
+			$variation->set_parent_id( $product->get_id() );
+			$variation->set_attributes( $possible_attribute );
+
+			// set price
+			$variation->set_price(123);
+			$variation->set_regular_price(123);
+			$variation->set_sale_price(100);
+			$variation->save(); // returns variation_id
+
+		}
+	}
+
+	/**
+	 * Adds post meta to tds locker
+	 *
+	 * @param $params
+	 */
+	static function add_locker_meta($params) {
+
+		self::check_params(__CLASS__,__FUNCTION__, $params,
+			array(
+				'tds_locker_id' => 'Param is required !',
+				'tds_locker_meta' => 'Param is required !'
+			)
+		);
+
+		$tds_locker_id = $params['tds_locker_id'];
+		$tds_locker_meta = $params['tds_locker_meta'];
+
+		if ( !empty( $tds_locker_meta ) && is_array( $tds_locker_meta ) ) {
+			foreach ( $tds_locker_meta as $meta_key => $meta_value ) {
+				update_post_meta( $tds_locker_id, $meta_key, $meta_value );
+			}
+		}
+
+	}
+
     static function remove() {
         $args = array(
-            'post_type' => array( 'page', 'post', 'tdb_templates' ),
+            'post_type' => array( 'page', 'post', 'tdb_templates', 'product' ),
             'meta_key'  => 'td_demo_content',
             'posts_per_page' => '-1'
         );
@@ -1201,6 +1738,7 @@ class td_demo_menus extends td_demo_base {
         'td-demo-header-menu-extra',
         'td-demo-mobile-menu',
         'td-demo-footer-menu',
+        'td-demo-footer-menu-extra',
         'td-demo-custom-menu',
     );
 
@@ -1244,7 +1782,7 @@ class td_demo_menus extends td_demo_base {
 	 * @return int|WP_Error
 	 */
     static function add_link($menu_params) {
-	    // requiered parameters
+	    // required parameters
 	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
 		    'title' => 'Param is requiered!',
 		    'url' => 'Param is requiered!',
@@ -1264,8 +1802,7 @@ class td_demo_menus extends td_demo_base {
             $itemData['menu-item-parent-id'] = $menu_params['parent_id'];
         }
 
-        $menu_item_id = wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
-        return $menu_item_id;
+        return wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
     }
 
 
@@ -1305,7 +1842,47 @@ class td_demo_menus extends td_demo_base {
         }
 
 		// we do not use the menu id anywhere for now
-        $menu_item_id = wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
+        return wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
+    }
+
+
+    /**
+     * @param $menu_params
+     *  - requiered -
+     *      - product_id
+     *      - add_to_menu_id
+     *  - optional -
+     *      - parent_id -
+     */
+    static function add_product($menu_params) {
+
+        // requiered parameters
+        self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
+            'product_id' => 'To add a page to the menu, you need a page_ID. To add links or empty items, use td_demo_menus::add_link()',
+            'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+        ));
+
+
+        //$menu_id, $title='', $product_id, $parent_id = ''
+        $itemData =  array(
+            'menu-item-object-id' => $menu_params['product_id'],
+            'menu-item-parent-id' => 0,
+            'menu-item-object' => 'page',
+            'menu-item-type'      => 'post_type',
+            'menu-item-status'    => 'publish'
+        );
+
+        if (!empty($menu_params['parent_id'])) {
+            $itemData['menu-item-parent-id'] = $menu_params['parent_id'];
+        }
+
+        // if no titlte is provided, wordpress will show the title of the page
+        if (!empty($menu_params['title'])) {
+            $itemData['menu-item-title'] = $menu_params['title'];
+        }
+
+        // we do not use the menu id anywhere for now
+        return wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
     }
 
 
@@ -1341,23 +1918,23 @@ class td_demo_menus extends td_demo_base {
 	/**
 	 * adds a category to a menu
 	 * @param $menu_params
+	 * @return false|int|WP_Error|WP_Term
 	 */
     static function add_category($menu_params) {
 
-	    // requiered parameters
+	    // required parameters
 	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
-		    'title' => 'Param is requiered!',
-		    'category_id' => 'Param is requiered! - this is the category id that will be used to generate the mega menu',
-		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+		    'title' => 'Param is required!',
+		    'category_id' => 'Param is required! - this is the category id that will be used to generate the mega menu',
+		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is required'
 	    ));
-
 
         $itemData =  array(
             'menu-item-title' => $menu_params['title'],
             'menu-item-object-id' => $menu_params['category_id'],
             'menu-item-db-id' => 0,
-            'menu-item-url' => get_category_link($menu_params['category_id']),
-            'menu-item-type' => 'taxonomy', //taxonomy
+            'menu-item-url' => get_category_link( $menu_params['category_id'] ),
+            'menu-item-type' => 'taxonomy', // taxonomy
             'menu-item-status' => 'publish',
             'menu-item-object' => 'category',
         );
@@ -1366,8 +1943,40 @@ class td_demo_menus extends td_demo_base {
             $itemData['menu-item-parent-id'] = $menu_params['parent_id'];
         }
 
-        wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
+        return wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
     }
+
+
+	/**
+	 * adds a product category to a menu
+	 * @param $params
+	 * @return false|int|WP_Error|WP_Term
+	 */
+	static function add_product_cat($params) {
+
+		// required parameters
+		self::check_params(__CLASS__, __FUNCTION__, $params, array(
+			'title' => 'Param is required!',
+			'p_cat_id' => 'Param is required! - this is the category id that will be used to generate the mega menu',
+			'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is required'
+		));
+
+		$menu_item_data =  array(
+			'menu-item-title' => $params['title'],
+			'menu-item-object-id' => $params['p_cat_id'],
+			'menu-item-db-id' => 0,
+			'menu-item-url' => get_category_link( $params['p_cat_id'] ),
+			'menu-item-type' => 'taxonomy', // taxonomy
+			'menu-item-status' => 'publish',
+			'menu-item-object' => 'product_cat',
+		);
+
+		if ( !empty($params['parent_id']) ) {
+			$menu_item_data['menu-item-parent-id'] = $params['parent_id'];
+		}
+
+		return wp_update_nav_menu_item( $params['add_to_menu_id'], 0, $menu_item_data );
+	}
 
 
     /**

@@ -19,9 +19,7 @@ class tagdiv_remote_http {
 	 * @var array the supported channels. We also have to declare them below @see td_remote_http::get_page_via_channel
 	 */
 	private static $get_url_channels = array (
-		'wordpress',
-		'file_get_contents',
-		'curl'
+		'wordpress'
 	);
 
 
@@ -123,7 +121,10 @@ class tagdiv_remote_http {
 	 *          - bool FALSE: if no usable channel found
 	 *          - string: the content of the page if a channel passed. NOTE: &$channel_that_passed will contain the channel that passed
 	 */
-	private static function run_test($url, $caller_id = '', &$channel_that_passed) {
+	private static function run_test($url, $caller_id, &$channel_that_passed) {
+		if (!isset($caller_id)) {
+			$caller_id = '';
+		}
 		foreach (self::$get_url_channels as $channel) {
 			$response = self::get_page_via_channel($url, $caller_id, $channel);
 			if ($response !== false) {
@@ -145,18 +146,10 @@ class tagdiv_remote_http {
 	 *
 	 * @return bool|mixed|string
 	 */
-	private static function get_page_via_channel($url, $caller_id = '', $channel) {
+	private static function get_page_via_channel($url, $caller_id = '', $channel = '') {
 		switch ($channel) {
 			case 'wordpress':
 				return self::get_url_wordpress($url, $caller_id);
-			break;
-
-			case 'file_get_contents':
-				return self::get_url_file_get_contents($url, $caller_id);
-			break;
-
-			case 'curl':
-				return self::get_url_curl($url, $caller_id);
 			break;
 		}
 
@@ -193,95 +186,4 @@ class tagdiv_remote_http {
 		}
 		return $td_request_result;
 	}
-
-
-
-	/**
-	 * file_get_contents download channel
-	 * @param $url
-	 * @param string $caller_id
-	 *
-	 * @return bool|string
-	 */
-	private static function get_url_file_get_contents($url, $caller_id = '') {
-
-		$opts = array(
-			'http'=>array(
-				'method' => "GET",
-				'timeout' => self::http_request_timeout,        //added in td_remote_http v1.0
-				'ignore_errors' => true,                        //added in td_remote_http v1.0
-				'header' => "Accept-language: en\r\n" .
-				            "User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0\r\n"
-			)
-		);
-		$context = stream_context_create($opts);
-
-        try {
-
-            $td_data = file_get_contents($url, false, $context);
-
-            if ($td_data === false) {
-                tagdiv_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' file_get_contents returned FALSE (AKA error), full headers attached', $http_response_header); // wtf $http_response_header? -> http://php.net/manual/ro/reserved.variables.httpresponseheader.php
-                return false;
-            }
-
-            if (empty($td_data)) {
-                tagdiv_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' file_get_contents returned empty result, full headers attached', $http_response_header);   // wtf $http_response_header? -> http://php.net/manual/ro/reserved.variables.httpresponseheader.php
-                return false;
-            } else {
-                return $td_data;
-            }
-
-        } catch (Exception $e) {
-            tagdiv_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' file_get_contents returned error, full headers attached: ', array($http_response_header, $e));
-            return false;
-        }
-	}
-
-
-
-	/**
-	 * curl download channel
-	 * @param $url
-	 * @param string $caller_id
-	 *
-	 * @return bool|mixed
-	 */
-	private static function get_url_curl($url, $caller_id = '') {
-		//return false;
-		$ch = curl_init();
-		curl_setopt ($ch, CURLOPT_URL, $url);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		//mergem dupa redirecturi
-		curl_setopt ($ch,  CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt ($ch,  CURLOPT_MAXREDIRS, 3); //max redirects
-		curl_setopt ($ch,  CURLOPT_ENCODING, ''); //folosim compresia - daca e empty trimite toate formele de compresie suportate
-		//timeout? - 300 sec = 5 min
-		curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, self::http_request_timeout); //Fail if a web server doesn�t respond to a connection within a time limit (seconds).
-		curl_setopt($ch, CURLOPT_TIMEOUT, self::http_request_timeout); //Fail if a web server doesn�t return the web page within a time limit (seconds).
-		curl_setopt($ch, CURLOPT_HEADER, false);
-		// misc
-		curl_setopt($ch,CURLOPT_AUTOREFERER,true); //The referer is a URL for the web page that linked to the requested web page. When following redirects, set this to true and CURL automatically fills in the URL of the page being redirected away from.
-		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept-Language: en']);
-		curl_setopt($ch,CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0');
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		$data = curl_exec($ch);
-
-		//error checking
-		if ($data === false) {
-			tagdiv_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' curl_exec returned FALSE (AKA Error) curl_error:' . curl_error($ch) . ' curl_getinfo attached to this message', curl_getinfo($ch));
-			curl_close($ch);
-			return false;
-		}
-
-		curl_close($ch);
-
-		return $data;
-	}
-
-
-
-
-
 }

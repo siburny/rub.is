@@ -51,7 +51,7 @@ class td_module_single_base extends td_module {
      * @param string $cut_at - not used, it's added to maintain strict standards
      * @return string
      */
-    function get_title($cut_at = '') {
+    function get_title($cut_at = '', $title_tag = '') {
         $buffy = '';
         if (!empty($this->title)) {
             $buffy .= '<h1 class="entry-title">';
@@ -300,7 +300,7 @@ class td_module_single_base extends td_module {
     }
 
 
-    function get_date($modified_date = '', $show_stars_on_review = true) {
+    function get_date($modified_date = '', $show_stars_on_review = true, $time_ago = '', $time_ago_add_txt = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_p_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -569,12 +569,14 @@ class td_module_single_base extends td_module {
 	        	$option_id = 'td_default_site_post_template';
 	            if (class_exists('SitePress', false )) {
 	                global $sitepress;
-                    $sitepress_settings = $sitepress->get_settings();
-                    $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-                    if ( 1 === $translation_mode ) {
-                        $option_id .= $sitepress->get_current_language();
+	                $sitepress_settings = $sitepress->get_settings();
+                    if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if (1 === $translation_mode) {
+                            $option_id .= $sitepress->get_current_language();
+                        }
                     }
-                }
+	            }
 		        $td_default_site_post_template = td_util::get_option($option_id);
 	        }
 
@@ -669,7 +671,7 @@ class td_module_single_base extends td_module {
     function get_item_scope_meta() {
 
         // don't display meta on pages
-        if ( is_preview() || !is_single() || ( td_util::get_option('tds_disable_article_schema') == 'yes' && !$this->is_review ) ) {
+        if ( is_preview() || !is_single() || ( td_util::get_option('tds_disable_article_schema') != '' && !$this->is_review ) ) {
             return '';
         }
 
@@ -1072,7 +1074,7 @@ class td_module_single_base extends td_module {
         if (empty($hideAuthor)) {
 
             $buffy .= '<div class="author-box-wrap">';
-            $buffy .= '<a href="' . get_author_posts_url($author_id) . '">' ;
+            $buffy .= '<a href="' . get_author_posts_url($author_id) . '" aria-label="author-photo">' ;
             $buffy .= get_avatar(get_the_author_meta('email', $author_id), '96');
             $buffy .= '</a>';
 
@@ -1099,11 +1101,11 @@ class td_module_single_base extends td_module {
 
                     //the theme can use the twitter id instead of the full url. This avoids problems with yoast plugin
                     if ($td_social_id == 'twitter') {
-                        if(filter_var($authorMeta, FILTER_VALIDATE_URL)){
-
+                        if ( filter_var($authorMeta, FILTER_VALIDATE_URL) ){
+                            $authorMeta = filter_var($authorMeta, FILTER_VALIDATE_URL);
                         } else {
                             $authorMeta = str_replace('@', '', $authorMeta);
-                            $authorMeta = 'http://twitter.com/' . $authorMeta;
+                            $authorMeta = td_global::$http_or_https . '://twitter.com/' . $authorMeta;
                         }
                     }
                     $buffy .= td_social_icons::get_icon($authorMeta, $td_social_id, true);

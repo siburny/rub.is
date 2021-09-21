@@ -352,7 +352,8 @@
     font-weight: 700;
   }
 
-  .td_panel_box_youtube_api_configuration {
+  .td_panel_box_youtube_api_configuration,
+  .td_panel_box_flickr_api_configuration {
     .td-box-control-full {
       .td-panel-input {
         width: 550px !important;
@@ -938,6 +939,20 @@
       }
     }
   }
+  .td_panel_box_post_settings {
+    .td-box-control-full {
+      width: 540px;
+    }
+    > div > .td-box-content {
+      padding-bottom: 18px;
+
+      .td-box {
+        margin-bottom: 0;
+      }
+    }
+
+  }
+
 }
 
 
@@ -969,6 +984,11 @@
         font-size: 11px;
         color: #555555;
         cursor: pointer;
+
+        &.selected {
+          background-color: #d5f0ff;
+          color: #0073aa;
+        }
 
         &:hover {
           color: #0073aa;

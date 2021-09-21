@@ -606,6 +606,13 @@ class td_global {
 
 
     /**
+     * the list of svg icons used by the theme by default
+     * @var array
+     */
+    public static $svg_theme_font_list = array();
+
+
+    /**
      * @var bool
      * set true in @see td_background::wp_head_hook_background_logic if a bg img or color is set
      */
@@ -646,13 +653,16 @@ class td_global {
     }
 
 
-    //used on single posts
-    static function get_primary_category_id() {
-        if (empty(self::$post->ID)) {
-            return get_queried_object_id();
-        }
-        return self::$primary_category;
-    }
+	// used on single posts
+	static function get_primary_category_id() {
+
+		if ( empty( self::$post->ID ) ) {
+			return get_queried_object_id();
+		}
+
+		return apply_filters( 'td_primary_category', self::$primary_category, self::$post );
+
+	}
 
 
     //generate unique_ids
@@ -666,7 +676,20 @@ class td_global {
 	    while ( strlen( $newuniquid ) < 3 ) {
 	    	$newuniquid .= $uniquid[ rand(0, 12)];
 	    }
-        return 'tdi_' . self::$td_unique_counter . '_' . $newuniquid;
+	    if ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() || is_admin()) {
+	        return 'tdi_' . self::$td_unique_counter . '_' . $newuniquid;
+	    } else {
+	    	return 'tdi_' . self::$td_unique_counter;// . '_' . $newuniquid;
+	    }
+    }
+
+
+    static function reset_theme_settings() {
+    	if (class_exists('td_css_res_compiler', true) && class_exists('td_css_compiler', true)) {
+    		self::$td_unique_counter = 0;
+		    td_res_context::resetRegisteredAtts();
+		    td_css_compiler::resetRegisteredAtts();
+	    }
     }
 
 

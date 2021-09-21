@@ -20,7 +20,7 @@
             </div>
             <!-- close button -->
             <div class="td-mobile-close">
-                <a href="#"><i class="td-icon-close-mobile"></i></a>
+                <a href="#" aria-label="Close"><i class="td-icon-close-mobile"></i></a>
             </div>
         </div>
 
@@ -73,9 +73,9 @@
     </div>
 
     <!-- register/login section -->
-    <?php //if (td_util::get_option('tds_login_sign_in_widget') == 'show') { ?>
+    <?php if (td_util::get_option('tds_login_sign_in_widget') == 'show') { ?>
         <div id="login-form-mobile" class="td-register-section">
             <?php require_once('register.php'); ?>
         </div>
-    <?php //} ?>
+    <?php } ?>
 </div>

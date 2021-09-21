@@ -188,13 +188,14 @@ class tagdiv_theme_plugins_setup {
         if ( count( $plugins['all'] ) ) {
 
             ?>
-            <div class="td-admin-wrap about-wrap theme-browser feature-section td-admin-setup-plugins">
+            <div class="td-admin-setup-plugins">
                 <form class="one-col" method="post">
+                    <input type="hidden" id="td_theme_welcome_link" value="<?php echo admin_url( 'admin.php?page=td_theme_welcome' ); ?>">
                     <?php
                     if ( empty( $plugins_for_update ) ) {
                         ?>
-                            <h2>Start with the <?php echo TD_THEME_NAME ?> Theme</h2>
-                            <p class="about-description">Access the premium features and create your awesome website. To start, easily Install and Activate the following tagDiv plugins with a single click.</p>
+                            <h2>1. Install or Update the required <?php echo TD_THEME_NAME ?> plugins</h2>
+                            <p class="about-description">Easily Install and Activate the following tagDiv plugins</p>
                         <?php
                     } else {
                         ?>
@@ -223,25 +224,28 @@ class tagdiv_theme_plugins_setup {
                                             if ( isset( $plugins['activate'][ $slug ] ) ) { echo 'Inactive'; }
                                         ?>
                                     </div>
-
                                     <div class="spinner"></div>
                                 </div>
                             </li>
                         <?php } ?>
                     </ul>
                     <div class="td-button-install-wrap" <?php echo( empty( $plugins_for_update ) ? '': 'style="visibility: hidden"') ?>>
-                        <a class="button button-large button-primary td-button-install-plugins" href="#" data-callback="install_plugins">Install / Activate plugins</a>
+                        <a class="td-wp-admin-button td-button-install-plugins" href="#" data-callback="install_plugins">Install / Activate plugins</a>
                     </div>
                 </form>
-
-                <div class="theme-plugins-installed">
-                    <img src="" data-src="<?php echo get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/plugins-installed-success.gif'; ?>">
-                    <p class="lead">All plugins have been installed successfully.</p>
-                </div>
             </div>
 
             <?php
         }
+
+        ?>
+        <div class="theme-plugins-installed" <?php if ( count( $plugins['all'] ) ) echo 'style="display:none"' ?>>
+            <h2>1. tagDiv Plugins are now Successfully Installed</h2>
+            <p class="about-description">Done! You have Installed all the Required Plugins</p>
+            <svg class="td-wp-admin-ok-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#6dc25f" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+        </div>
+
+        <?php
 
         wp_nonce_field( 'theme-plugins-setup' );
 

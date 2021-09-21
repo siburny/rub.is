@@ -35,7 +35,7 @@ class tds_team_member1 extends td_style {
 					background-size: @image_size;
 				}
 				/* @image_alignment */
-				.$unique_style_class .td-member-image {
+				.$unique_style_class .tdm-member-image {
 					background-position: @image_alignment;
 				}
 				/* @img_width */
@@ -198,13 +198,18 @@ class tds_team_member1 extends td_style {
         if ( empty($name_tag ) ) {
             $name_tag = 'h3';
         }
+        $tds_animation_stack = td_util::get_option('tds_animation_stack');
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-team-member-wrap ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             if ( ! empty( $image ) ) {
                 $buffy .= '<div class="tdm-member-image-wrap">';
-                    $buffy .= '<div class="tdm-member-image td-fix-index" style="background-image: url(' . tdc_util::get_image_or_placeholder( $image ) . ');"></div>';
+                if( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                    $buffy .= '<div class="tdm-member-image td-lazy-img td-fix-index" data-type="css_image" data-img-url="' . tdc_util::get_image_or_placeholder($image) . '"></div>';
+                } else {
+                    $buffy .= '<div class="tdm-member-image td-fix-index" style="background-image: url(' . tdc_util::get_image_or_placeholder($image) . ');"></div>';
+                }
                 $buffy .= '</div>';
             }
 

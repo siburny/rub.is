@@ -31,6 +31,36 @@ class tds_icon_box3 extends td_style {
         $raw_css =
 			"<style>
 
+                /* @style_general_icon_box3 */
+                .tds_icon_box3_wrap .tdm-title-icon-wrap {
+                  position: relative;
+                  display: table;
+                }
+                .tds_icon_box3_wrap.tdm-content-horiz-center .tdm-title-icon-wrap {
+                  margin-left: auto;
+                  margin-right: auto;
+                }
+                .tds_icon_box3_wrap.tdm-content-horiz-right .tdm-title-icon-wrap {
+                  margin-left: auto;
+                }
+                .tds_icon_box3_wrap .tds-icon {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  color: #dcf3f8;
+                }
+                .tds_icon_box3_wrap .icon_box_url_wrap {
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                }
+
+                
+                
+                
                 /* @icon_vertical_space */
 				.$unique_style_class .tds-icon {
 				    top: @icon_vertical_space !important;
@@ -84,6 +114,8 @@ class tds_icon_box3 extends td_style {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_icon_box3', 1 );
+
         /*-- ICON -- */
         // icon vertical space
         $res_ctx->load_settings_raw( 'icon_vertical_space', $res_ctx->get_style_att( 'icon_vertical_space', __CLASS__ ) . 'px' );
@@ -123,7 +155,7 @@ class tds_icon_box3 extends td_style {
 
         $this->unique_style_class = td_global::td_generate_unique_id();
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' ' . 'td-fix-index' . ' ' . $this->unique_style_class . '">';
 
@@ -202,7 +234,7 @@ class tds_icon_box3 extends td_style {
                 if  ( !empty( $open_in_new_window ) ) {
                     $target_blank = 'target="_blank"';
                 }
-                $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+                $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
             }
             // Button
             $button_text = $this->get_shortcode_att('button_text');

@@ -20,7 +20,7 @@
             </div>
             <!-- close button -->
             <div class="td-mobile-close">
-                <a href="#"><i class="td-icon-close-mobile"></i></a>
+                <a href="#" aria-label="Close"><i class="td-icon-close-mobile"></i></a>
             </div>
         </div>
 

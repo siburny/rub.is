@@ -23,8 +23,9 @@ $category_id = td_util::get_http_post_val('category_id');
             foreach ( $wp_query_templates->posts as $post ) {
 
                 $tdb_template_type = get_post_meta( $post->ID, 'tdb_template_type', true );
+                $meta_is_mobile_template = get_post_meta($post->ID, 'tdc_is_mobile_template', true);
 
-                if ( $tdb_template_type === 'category' ) {
+                if ( $tdb_template_type === 'category' && (empty($meta_is_mobile_template) || '0' === $meta_is_mobile_template)) {
                     $tdb_category_template_type_values [] = array(
                         'text' => $post->post_title,
                         'val' => 'tdb_template_' . $post->ID
@@ -384,23 +385,21 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
         </div>
     </div>
 
-<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
     <!-- Hide category tag on post -->
     <div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">HIDE CATEGORY ON POST AND ON CATEGORY PAGES</span>
-        <p>Show or hide category on single post page and on category pages. Useful if you want to have hidden categories to sort things up.</p>
+        <div class="td-box-description">
+            <span class="td-box-title">HIDE CATEGORY ON POST AND ON CATEGORY PAGES</span>
+            <p>Show or hide category on single post page and on category pages. Useful if you want to have hidden categories to sort things up.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_category',
+                'item_id' => $category_id,
+                'option_id' => 'tdc_hide_on_post',
+                'true_value' => 'hide',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_category',
-            'item_id' => $category_id,
-            'option_id' => 'tdc_hide_on_post',
-            'true_value' => 'hide',
-            'false_value' => ''
-        ));
-        ?>
-    </div>
-<?php } ?>
-</div>

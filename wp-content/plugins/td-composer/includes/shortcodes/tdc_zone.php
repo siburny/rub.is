@@ -92,6 +92,11 @@ class tdc_zone extends tdc_composer_block {
                 .td-header-desktop-wrap {
                     position: @h_display;
                 }
+                /* @h_absolute */
+                .td-header-desktop-wrap {
+                    top: auto;
+                    bottom: auto;
+                }
                 /* @h_position_top */
                 .td-header-desktop-wrap {
                     top: 0;
@@ -136,6 +141,11 @@ class tdc_zone extends tdc_composer_block {
                 .td-header-mobile-wrap {
                     position: @m_display;
                     width: 100%;
+                }
+                /* @m_absolute */
+                .td-header-desktop-wrap {
+                    top: auto;
+                    bottom: auto;
                 }
                 /* @m_position_top */
                 .td-header-mobile-wrap {
@@ -213,17 +223,20 @@ class tdc_zone extends tdc_composer_block {
         // Main menu
         if( $type == 'tdc_header_desktop' ) {
             $h_display = $res_ctx->get_shortcode_att('h_display');
-            $res_ctx->load_settings_raw('h_display', 'relative');
-            if( $h_display != '' ) {
-                $res_ctx->load_settings_raw('h_display', $h_display);
+            if( $h_display == '' ) {
+                $res_ctx->load_settings_raw('h_display', 'relative');
             }
-
+            if( $h_display == 'absolute' ) {
+                $res_ctx->load_settings_raw('h_display', 'absolute');
+                $res_ctx->load_settings_raw('h_absolute', 1);
+            }
             if( $h_display == 'fixed' ) {
-                $h_position = $res_ctx->get_shortcode_att('h_position');
+                $res_ctx->load_settings_raw('h_display', 'fixed');
                 $res_ctx->load_settings_raw('h_position_top', 1);
-                if( $h_position != '' ) {
-                    $res_ctx->load_settings_raw('h_position_bottom', 1);
-                }
+            }
+            if( $h_display == 'fixed_bottom' ) {
+                $res_ctx->load_settings_raw('h_display', 'fixed');
+                $res_ctx->load_settings_raw('h_position_bottom', 1);
             }
         }
 
@@ -244,17 +257,20 @@ class tdc_zone extends tdc_composer_block {
         // Mobile menu
         if( $type == 'tdc_header_mobile' ) {
             $m_display = $res_ctx->get_shortcode_att('m_display');
-            $res_ctx->load_settings_raw('m_display', 'relative');
-            if( $m_display != '' ) {
-                $res_ctx->load_settings_raw('m_display', $m_display);
+            if( $m_display == '' ) {
+                $res_ctx->load_settings_raw('m_display', 'relative');
             }
-
+            if( $m_display == 'absolute' ) {
+                $res_ctx->load_settings_raw('m_display', 'absolute');
+                $res_ctx->load_settings_raw('m_absolute', 1);
+            }
             if( $m_display == 'fixed' ) {
-                $m_display = $res_ctx->get_shortcode_att('m_position');
+                $res_ctx->load_settings_raw('m_display', 'fixed');
                 $res_ctx->load_settings_raw('m_position_top', 1);
-                if( $m_display != '' ) {
-                    $res_ctx->load_settings_raw('m_position_bottom', 1);
-                }
+            }
+            if( $m_display == 'fixed_bottom' ) {
+                $res_ctx->load_settings_raw('m_display', 'fixed');
+                $res_ctx->load_settings_raw('m_position_bottom', 1);
             }
         }
 
@@ -290,11 +306,11 @@ class tdc_zone extends tdc_composer_block {
             'zone_shadow_shadow_spread' => '',
             'zone_shadow_shadow_color' => '',
 			'video_background' => '',
+			'video_start' => '2',
 			'video_scale' => '',
 			'video_opacity' => '',
 
             'h_display' => '',
-            'h_position' => '',
 
             'hs_sticky_type' => '',
             'hs_sticky_offset' => '0',
@@ -303,7 +319,6 @@ class tdc_zone extends tdc_composer_block {
             'hs_transitions_speed' => '0.3',
 
             'm_display' => '',
-            'm_position' => '',
 
             'ms_sticky_type' => '',
             'ms_sticky_offset' => '0',
@@ -511,7 +526,7 @@ class tdc_zone extends tdc_composer_block {
 											mute: 1,
 											showinfo: 0,
 											controls: 0,
-											start: 2,
+											start: <?php echo (int)$this->atts['video_start']; ?>,
 											playlist: '<?php echo $this->atts['video_background'] ?>'
 										};
 
@@ -521,7 +536,7 @@ class tdc_zone extends tdc_composer_block {
 
 									$iframe.attr('src', $iframe.data('api-src') + '?' + iframeSettingsStr);
 
-									$iframe.load(function () {
+									$iframe.on( 'load', function () {
 										var $iframe = jQuery(this),
 											iframeWidth = $iframe.width(),
 											iframeHeight = $iframe.height(),
@@ -612,9 +627,10 @@ class tdc_zone extends tdc_composer_block {
 	/**
 	 * Safe way to read $this->atts. It makes sure that you read them when they are ready and set!
 	 * @param $att_name
+	 * @param $default_value
 	 * @return mixed
 	 */
-	protected function get_custom_att($att_name) {
+	protected function get_custom_att($att_name, $default_value = '') {
 		if ( !isset( $this->atts ) ) {
 		    echo 'TD Composer Internal error: The atts are not set yet(AKA: the LOCAL render method was not called yet and the system tried to read an att)';
 			die;
@@ -623,7 +639,9 @@ class tdc_zone extends tdc_composer_block {
 		if ( !isset( $this->atts[$att_name] ) ) {
 			var_dump($this->atts);
 			echo 'TD Composer Internal error: The system tried to use an LOCAL att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" The list with available atts is in vc_row::render';
-			die;
+
+			//die;
+            return $default_value;
 		}
 		return $this->atts[$att_name];
 	}

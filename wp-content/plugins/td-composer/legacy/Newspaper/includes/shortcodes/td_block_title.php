@@ -10,7 +10,7 @@ class td_block_title extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
@@ -18,79 +18,79 @@ class td_block_title extends td_block {
             "<style>
 
 				/* @f_header */
-				.$unique_block_class .td-block-title a,
-				.$unique_block_class .td-block-title span {
+				body .$unique_block_class .td-block-title a,
+				body .$unique_block_class .td-block-title span {
 					@f_header
 				}
 				/* @align_center */
-				.$unique_block_class .td-block-title {
+				body .$unique_block_class .td-block-title {
 					text-align: center;
 				}
-				.$unique_block_class.td_block_template_4 .td-block-title > *:before,
-				.$unique_block_class.td_block_template_17 .td-block-title:after,
-				.$unique_block_class.td_block_template_13 .td-block-subtitle,
-				.$unique_block_class.td_block_template_9 .td-block-title:after {
+				body .$unique_block_class.td_block_template_4 .td-block-title > *:before,
+				body .$unique_block_class.td_block_template_17 .td-block-title:after,
+				body .$unique_block_class.td_block_template_13 .td-block-subtitle,
+				body .$unique_block_class.td_block_template_9 .td-block-title:after {
 				    right: 0;
 				    left: 0;
 				}
-				.$unique_block_class.td_block_template_5 .td-block-title > * {
+				body .$unique_block_class.td_block_template_5 .td-block-title > * {
 				    border-width: 0 0 0 4px;
 				}
-				.$unique_block_class.td_block_template_8 .td-block-title > * {
+				body .$unique_block_class.td_block_template_8 .td-block-title > * {
 					padding-left: 20px;
 					padding-right: 20px;
 				}
 				/* @align_right */
-				.$unique_block_class .td-block-title {
+				body .$unique_block_class .td-block-title {
 					text-align: right;
 				}
-				.$unique_block_class.td_block_template_4 .td-block-title > *:before {
+				body .$unique_block_class.td_block_template_4 .td-block-title > *:before {
 				    right: 10px;
 				    left: auto;
 				}
-				.$unique_block_class.td_block_template_5 .td-block-title > * {
+				body .$unique_block_class.td_block_template_5 .td-block-title > * {
 				    border-width: 0 4px 0 0;
 				}
-				.$unique_block_class.td_block_template_8 .td-block-title > * {
+				body .$unique_block_class.td_block_template_8 .td-block-title > * {
 					padding-left: 20px;
 					padding-right: 0;
 				}
-				.$unique_block_class.td_block_template_9 .td-block-title:after {
+				body .$unique_block_class.td_block_template_9 .td-block-title:after {
 					right: 0;
 					left: auto;
 				}
-				.$unique_block_class.td_block_template_13 .td-block-subtitle {
+				body .$unique_block_class.td_block_template_13 .td-block-subtitle {
 					right: -4px;
 					left: auto;
 				}
-				.$unique_block_class.td_block_template_17 .td-block-title:after {
+				body .$unique_block_class.td_block_template_17 .td-block-title:after {
 					right: 15px;
 					left: auto;
 				}
 				/* @align_left */
-				.$unique_block_class .td-block-title {
+				body .$unique_block_class .td-block-title {
 					text-align: left;
 				}
-				.$unique_block_class.td_block_template_4 .td-block-title > *:before {
+				body .$unique_block_class.td_block_template_4 .td-block-title > *:before {
 				    right: auto;
 				    left: 10px;
 				}
-				.$unique_block_class.td_block_template_5 .td-block-title > * {
+				body .$unique_block_class.td_block_template_5 .td-block-title > * {
 				    border-width: 0 0 0 4px;
 				}
-				.$unique_block_class.td_block_template_8 .td-block-title > * {
+				body .$unique_block_class.td_block_template_8 .td-block-title > * {
 					padding-left: 0;
 					padding-right: 20px;
 				}
-				.$unique_block_class.td_block_template_9 .td-block-title:after {
+				body .$unique_block_class.td_block_template_9 .td-block-title:after {
 					right: auto;
 					left: 0;
 				}
-				.$unique_block_class.td_block_template_13 .td-block-subtitle {
+				body .$unique_block_class.td_block_template_13 .td-block-subtitle {
 					right: auto;
 					left: -4px;
 				}
-				.$unique_block_class.td_block_template_17 .td-block-title:after {
+				body .$unique_block_class.td_block_template_17 .td-block-title:after {
 					right: auto;
 					left: 15px;
 				}
@@ -141,7 +141,10 @@ class td_block_title extends td_block {
         $buffy .= '<div class="' . $this->get_block_classes() . ' td-fix-index" ' . $this->get_block_html_atts() . '>';
 		    //get the block js
 		    $buffy .= $this->get_block_css();
+            $buffy .= '<div class="td-block-title-wrap">';
             $buffy .= $this->get_block_title();
+            $buffy .= '</div>';
+
         $buffy .= '</div>';
 
         return $buffy;

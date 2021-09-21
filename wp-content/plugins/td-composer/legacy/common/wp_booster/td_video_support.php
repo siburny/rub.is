@@ -2,20 +2,23 @@
 /**
  * Class td_video_support - tagDiv video support V 2.0 @since 4 nov 2015
  * downloads the video thumbnail and puts it asa a featured image to the post
+ *
+ * @note since 02.11.2020 facebook videos video thumbnail support has been discontinued - td video support will not download the video thumbnail and set it as featured image for the post anymore..
+ *
  */
 class td_video_support{
 
 	private static $on_save_post_post_id; // here we keep the post_id when the save_post hook runs. We need the post_id to pass it to the other hook @see on_add_attachment_set_featured_image
-	private static $fb_access_token = 'EAAC0twN8wjQBAPOUhZAWJohvqwr4iEeGooiNEKoRkkJ0KMik9nSX6xiiMZCZBSgRRai8ZAHjZCzniq36dZBgbJw93Vsom56qBi24CqesirT2sNZBvN6yTylhjDED9ri4iShPON3grZAF0fpUijQTSmzxOO71h70fN7lFpN0YLhV3Ugs2ZCaZAdvfZAd';
+    private static $caching_time = 10800; //seconds -> 3 hours
 
-	private static $caching_time = 10800; //seconds -> 3 hours
+	private static $client_access_token = '281071126312386|83f03eb7e4a2707cd68aada9b3f98c79';
 
     // flag to make sure we run the 'on_save_post_get_video_thumb' save_post hook only once..
-    // ..this is mainly bacause on gutenberg editor this hook runs twice and triggers a duplicate on video thumb generation
+    // ..this is mainly because on gutenberg editor this hook runs twice and triggers a duplicate on video thumb generation
 	private static $on_save_post_did_action = false;
 
 	/**
-	 * Render a video on the fornt end from URL
+	 * Render a video on the front end from URL
 	 * @param $videoUrl - the video url that we want to render
 	 *
 	 * @return string - the player HTML
@@ -76,7 +79,7 @@ class td_video_support{
                             width="600" 
                             height="560"
                             src="" 
-                            data-src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id($videoUrl) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param($videoUrl) . '"
+                            data-src="' . 'https://www.youtube.com/embed/' . urlencode_deep( self::get_youtube_id($videoUrl) ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param($videoUrl) . '"
                             data-srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%;}img{position:absolute;width:100%;top:0;margin:auto}.td-center-align{top: 50%;left: 50%;transform: translate(-50%, -50%);-webkit-transform: translate(-50%, -50%);position: absolute;}</style><a href=https://www.youtube.com/embed/' . self::get_youtube_id($videoUrl) . '?autoplay=1><img src=' . self::get_thumb_url( $videoUrl ) . ' alt=\'Video The Dark Knight Rises: What Went Wrong? – Wisecrack Edition\'><span class=\'td-center-align\' style=\'width: 40px;height: 40px;
     background-color: rgba(0, 0, 0, 0.48);border: 2px solid #fff;border-radius: 100%;z-index: 1;-webkit-box-shadow: 0 0 0.15em rgba(0, 0, 0, 0.4);box-shadow: 0 0 0.15em rgba(0, 0, 0, 0.4);\'><span class=\'td-center-align\' style=\'    width: 0;
     height: 0;border-top: 7px solid transparent;border-bottom: 7px solid transparent;border-left: 10px solid #fff;\'></span></span></a>"
@@ -88,15 +91,17 @@ class td_video_support{
                 } else {
 
                     if ( td_util::is_amp() ) {
+						$buffy .= '<div class="wpb_video_wrapper">';
                         $buffy .= '<amp-youtube
                               data-videoid="' . self::get_youtube_id( $videoUrl ) . '"
                               layout="responsive"
                               width="480"
                               height="270"></amp-youtube>';
-                    } else {
+						$buffy .= '</div>';
+					} else {
                         $buffy .= '
                             <div class="wpb_video_wrapper">
-                                <iframe class="td-youtube-player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . self::get_youtube_id( $videoUrl ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param( $videoUrl ) . '" frameborder="0" allowfullscreen="" allow="autoplay"></iframe>                            
+                                <iframe class="td-youtube-player" width="600" height="560" src="' . 'https://www.youtube.com/embed/' . urlencode_deep( self::get_youtube_id( $videoUrl ) ) . '?enablejsapi=1&feature=oembed&wmode=opaque&vq=hd720&' . $autoplayParam . '&' . $controlsParam . '&' . $loopParam . self::get_youtube_time_param( $videoUrl ) . '" frameborder="0" allowfullscreen="" allow="autoplay"></iframe>                            
                             </div>';
                     }
 			    }
@@ -123,7 +128,7 @@ class td_video_support{
 
 				$buffy .= '
                     <div class="wpb_video_wrapper">
-                        <iframe frameborder="0" width="600" height="560" src="' . td_global::$http_or_https . '://www.dailymotion.com/embed/video/' . self::get_dailymotion_id($videoUrl) . '?' . $controlsParam . '&' . $autoplayParam .  '" allow="autoplay"></iframe>
+                        <iframe frameborder="0" width="600" height="560" src="' . td_global::$http_or_https . '://www.dailymotion.com/embed/video/' . self::get_dailymotion_id($videoUrl) . '?' . $controlsParam . '&' . $autoplayParam .  '" allow="autoplay" allowfullscreen></iframe>
                     </div>
                 ';
 				break;
@@ -145,39 +150,32 @@ class td_video_support{
                 ';
 				break;
 			case 'facebook':
-				/* $buffy = '
-				<div class="wpb_video_wrapper td-facebook-video">
-					<iframe src="' . td_global::$http_or_https . '://www.facebook.com/plugins/video.php?href=' . urlencode($videoUrl) . '&show_text=0" width="' . $width . '" height="' . $height . '" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true" ></iframe>
-				</div>
-				';
-				*/
 
-				/**
-				 * cache & oembed implementation
-				 */
+				// cache & oembed implementation
 				$cache_key = self::get_facebook_id($videoUrl);
 				$group = 'td_facebook_video';
 
-				if (td_remote_cache::is_expired($group, $cache_key) === true) {
+				if ( td_remote_cache::is_expired( $group, $cache_key ) === true ) {
 
 					// cache is expired - do a request
-					$facebook_api_json = td_remote_http::get_page('https://www.facebook.com/plugins/video/oembed.json/?url=' . urlencode($videoUrl) , __CLASS__);
+					$facebook_api_json = td_remote_http::get_page('https://graph.facebook.com/oembed_video?url=' . urlencode($videoUrl) . '&access_token=' .  self::$client_access_token, __CLASS__ );
 
-					if ($facebook_api_json !== false) {
-						$facebook_api = @json_decode($facebook_api_json);
+					if ( $facebook_api_json !== false ) {
+						$facebook_api = @json_decode( $facebook_api_json );
+						td_log::log(__FILE__, __FUNCTION__, 'facebook api request json', $facebook_api_json );
 
 						//json data decode
-						if ($facebook_api === null and json_last_error() !== JSON_ERROR_NONE) {
+						if ( $facebook_api === null and json_last_error() !== JSON_ERROR_NONE ) {
 							td_log::log(__FILE__, __FUNCTION__, 'json decode failed for facebook video embed api', $videoUrl);
 						}
 
-						if (is_object($facebook_api) and !empty($facebook_api->html)) {
+						if ( is_object( $facebook_api ) and !empty( $facebook_api->html ) ) {
 
 							//add the html to the buffer
 							$buffy = '<div class="wpb_video_wrapper">' . $facebook_api->html . '</div>';
 
 							//set the cache
-							td_remote_cache::set($group, $cache_key, $facebook_api->html, self::$caching_time);
+							td_remote_cache::set( $group, $cache_key, $facebook_api->html, self::$caching_time );
 						}
 
 					} else {
@@ -292,12 +290,14 @@ class td_video_support{
 		//verify post is not a revision
 		if ( !wp_is_post_revision( $post_id ) ) {
 
+			$post_types = apply_filters( 'td_featured_video_support_post_type', array( 'post' ) );
+
 			if (
-                ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
-                td_util::tdc_is_live_editor_ajax() ||
-                td_util::tdc_is_live_editor_iframe() ||
-                'post' !== get_post_type($post_id)
-            ) {
+				( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+				td_util::tdc_is_live_editor_ajax() ||
+				td_util::tdc_is_live_editor_iframe() ||
+				! in_array( get_post_type($post_id), $post_types )
+			) {
 				return;
 			}
 
@@ -438,31 +438,14 @@ class td_video_support{
 				if (!is_wp_error($response)) {
 					$td_result = @json_decode(wp_remote_retrieve_body($response));
 					$result = $td_result->thumbnail_url;
-					$result = preg_replace("#_[0-9]+(x)?[0-9]+\.jpg#", '.jpg', $result);
+					$result = preg_replace("#_[0-9]+(x)?[0-9]+#", '.jpg', $result);
 
 					return $result;
 				}
 				break;
 
 			case 'facebook':
-				$facebook_api_json = td_remote_http::get_page('https://graph.facebook.com/v2.7/' . self::get_facebook_id($videoUrl) . '/thumbnails?access_token=' . self::$fb_access_token , __CLASS__);
-
-                if ( $facebook_api_json !== false ) {
-					$facebook_api = @json_decode($facebook_api_json);
-					if ($facebook_api === null and json_last_error() !== JSON_ERROR_NONE) {
-						td_log::log(__FILE__, __FUNCTION__, 'json decode failed for facebook api', $videoUrl);
-						return '';
-					}
-
-					if (is_object($facebook_api) and !empty($facebook_api)) {
-						foreach ($facebook_api->data as $result) {
-							if ($result->is_preferred !== false) {
-								return ($result->uri);
-							}
-						}
-
-					}
-				}
+				// @since 02.11.2020 the facebook videos thumbnail generator has been discontinued
 				break;
 
 			case 'twitter':
@@ -648,7 +631,7 @@ class td_video_support{
 	 */
 	private static function get_facebook_id($videoUrl) {
 
-		/**
+		/*
 		 * https://www.facebook.com/{page-name}/videos/{video-id}/
 		 * https://www.facebook.com/{username}/videos/{video-id}/ - user's video must be public
 		 * https://www.facebook.com/video.php?v={video-id}
@@ -760,7 +743,7 @@ class td_video_support{
 			return 'twitter';
 		}
 
-		if(preg_match('(.mp4|.webm|.ogg)', $videoUrl) != false) {
+		if(preg_match('(.mp4|.m4v|.mov|.wmv|.avi|.mpg|.ogv|.3gp|.3g2|.webm|.ogg)', $videoUrl) != false) {
 		    return 'self-hosted';
         }
 

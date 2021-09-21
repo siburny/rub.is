@@ -9,10 +9,178 @@ class tdm_block_image_info_box extends td_block {
         $compiled_css = '';
 
 		// $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-		$unique_block_class = $this->block_uid;
+		$unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
 		$raw_css =
 			"<style>
+                /* @style_general_image_info_box */
+                .tdm_block_image_info_box .tdm-col {
+                  width: 100%;
+                }
+                .tdm_block_image_info_box .tdm-image-wrap {
+                  overflow: hidden;
+                  position: relative;
+                  color: #fff;
+                }
+                .tdm_block_image_info_box .tdm-image-box {
+                  height: 300px;
+                  display: block;
+                  background-size: cover;
+                  background-position: center;
+                }
+                .tdm_block_image_info_box .tdm-image-box:before {
+                  content: '';
+                  -webkit-transition: all 0.3s;
+                  transition: all 0.3s;
+                  width: 100%;
+                  height: 100%;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                }
+                .tdm_block_image_info_box .tdm-title-md {
+                  font-weight: 600;
+                  color: #fff;
+                  margin: 0;
+                }
+                .tdm_block_image_info_box .tdm-image-description {
+                  position: absolute;
+                  top: 0;
+                  padding: 6% 7%;
+                  width: 100%;
+                  margin: auto;
+                  pointer-events: none;
+                }
+                @media (max-width: 767px) {
+                  .tdm_block_image_info_box .tdm-image-description {
+                    padding: 20px;
+                  }
+                }
+                .tdm_block_image_info_box .tdm-image-description p {
+                  font-family: 'Roboto', sans-serif;
+                  font-size: 16px;
+                  line-height: 24px;
+                }
+                @media (min-width: 1019px) and (max-width: 1140px) {
+                  .tdm_block_image_info_box .tdm-image-description p {
+                    font-size: 14px;
+                    line-height: 20px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                  .tdm_block_image_info_box .tdm-image-description p {
+                    font-size: 14px;
+                    line-height: 20px;
+                  }
+                }
+                .tdm_block_image_info_box .tdm-image-description p:last-of-type {
+                  margin-bottom: 0;
+                }
+                .tdm_block_image_info_box .tdm-image-meta {
+                  -webkit-transition: all 0.3s;
+                  transition: all 0.3s;
+                  position: absolute;
+                  margin-right: 30px;
+                  margin-top: 15px;
+                }
+                .tdm_block_image_info_box .tds-button {
+                  margin-top: 25px;
+                  pointer-events: all;
+                }
+                .tdm_block_image_info_box .tdm-image-border {
+                  position: absolute;
+                  bottom: 0;
+                  width: 100%;
+                  z-index: 1;
+                }
+                .tdm_block_image_info_box .tdm-image-border span {
+                  display: inline-block;
+                  width: 33.3333%;
+                  float: left;
+                  height: 4px;
+                }
+                .tdm_block_image_info_box .tdm-image-border .tdm-image-border0 {
+                  opacity: 0.8;
+                }
+                .tdm_block_image_info_box .tdm-image-border .tdm-image-border1 {
+                  opacity: 0.6;
+                }
+                .tdm_block_image_info_box .tdm-image-border .tdm-image-border2 {
+                  opacity: 0.4;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-1.tdm-content-vert-bottom .tdm-image-description {
+                  top: auto;
+                  bottom: 0;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-1.tdm-content-vert-center .tdm-image-description {
+                  bottom: 0;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-1 .tdm-image-description {
+                  display: table;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-1 .tdm-image-meta {
+                  position: relative;
+                  margin-right: 0;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-meta {
+                  bottom: 20px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-description {
+                  bottom: 0;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tds-button {
+                  position: absolute;
+                  margin-top: 40px;
+                  width: 100%;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-sm-used .tdm-image-meta {
+                  -webkit-transform: translateY(-45px);
+                  transform: translateY(-45px);
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-sm-used .tds-button {
+                  margin-top: 10px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-md-used .tdm-image-meta {
+                  -webkit-transform: translateY(-65px);
+                  transform: translateY(-65px);
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-md-used .tds-button {
+                  margin-top: 14px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-lg-used .tdm-image-meta {
+                  -webkit-transform: translateY(-87px);
+                  transform: translateY(-87px);
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-lg-used .tds-button {
+                  margin-top: 23px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-xlg-used .tdm-image-meta {
+                  -webkit-transform: translateY(-112px);
+                  transform: translateY(-112px);
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2 .tdm-image-wrap:hover.tdm-btn-xlg-used .tds-button {
+                  margin-top: 23px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2.tdm-content-horiz-center .tdm-image-meta {
+                  left: 7%;
+                  right: 7%;
+                  margin-right: 0;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2.tdm-content-horiz-center .tds-button {
+                  left: 50%;
+                  -webkit-transform: translateX(-50%);
+                  transform: translateX(-50%);
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2.tdm-content-horiz-right .tdm-image-meta {
+                  right: 7%;
+                  margin-right: 0;
+                  margin-left: 20px;
+                }
+                .tdm_block_image_info_box.td-image-info-box-style-2.tdm-content-horiz-right .tds-button {
+                  right: 0;
+                }
+
+                
                 /* @box_height */
                 .$unique_block_class .tdm-image-box {
                     @box_height
@@ -89,6 +257,8 @@ class tdm_block_image_info_box extends td_block {
      * @param $atts
      */
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_image_info_box', 1 );
 
         // box height
         $box_height = $res_ctx->get_shortcode_att( 'box_height' );
@@ -228,7 +398,7 @@ class tdm_block_image_info_box extends td_block {
 									if ( empty( $tds_button ) ) {
 										$tds_button = td_util::get_option( 'tds_button', 'tds_button1' );
 									}
-									$tds_button_instance = new $tds_button( $this->shortcode_atts );
+									$tds_button_instance = new $tds_button( $this->shortcode_atts, '', $this->unique_block_class );
 									$buffy .= $tds_button_instance->render();
 
 								$buffy .= '</div>';

@@ -5,7 +5,7 @@
         <div class="header-search-wrap">
             <div class="td-search-btns-wrap">
                 <a id="td-header-search-button" href="#" role="button" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
-                <a id="td-header-search-button-mob" href="#" role="button" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
+                <a id="td-header-search-button-mob" href="#" role="button" aria-label="Search" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
             </div>
 
             <div class="td-drop-down-search">
@@ -23,7 +23,7 @@
                 <!-- Search -->
                 <div class="header-search-wrap">
                     <div class="dropdown header-search">
-                        <a id="td-header-search-button-mob" href="#" role="button" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
+                        <a id="td-header-search-button-mob" href="#" role="button" aria-label="Search" class="dropdown-toggle " data-toggle="dropdown"><i class="td-icon-search"></i></a>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
 </div>
 
 <div id="td-header-menu" role="navigation">
-    <div id="td-top-mobile-toggle"><a href="#"><i class="td-icon-font td-icon-mobile"></i></a></div>
+    <div id="td-top-mobile-toggle"><a href="#" aria-label="mobile-toggle"><i class="td-icon-font td-icon-mobile"></i></a></div>
     <div class="td-main-menu-logo td-logo-in-menu">
         <?php
         if (td_util::get_option('tds_logo_menu_upload') == '') {

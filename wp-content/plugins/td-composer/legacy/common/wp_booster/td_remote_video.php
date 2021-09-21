@@ -177,8 +177,11 @@ class td_remote_video {
                             preg_match('/(\d+)S/', $duration, $match);
                             $s = count($match) ? filter_var($match[0], FILTER_SANITIZE_NUMBER_INT) : 0;
 
-                            $duration = gmdate("H:i:s", intval($h * 3600 + $m * 60  + $s));
-                        }
+                            if (intval($h) === '0') {
+                                $duration = gmdate("i:s", intval($m * 60  + $s));
+                            } else {
+                                $duration = gmdate("H:i:s", intval($h * 3600 + $m * 60  + $s));
+                            }                        }
     //var_dump($video_item);
 
                         $buffy_videos[$video_item['id']] = array(

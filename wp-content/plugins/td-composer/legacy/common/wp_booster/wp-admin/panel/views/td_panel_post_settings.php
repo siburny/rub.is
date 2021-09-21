@@ -23,19 +23,19 @@
     </div>
 </div>
 
-<!-- set general modal image -->
+<!-- set theme article schema -->
 <div class="td-box-row">
     <div class="td-box-description">
-        <span class="td-box-title">Disable article schema</span>
-        <p>Activating the option will disable the schema.org/Article markups in the theme. Use this when you use an SEO plugin that comes with its own markups.</p>
+        <span class="td-box-title">Enable article schema</span>
+        <p>This option will enable the schema.org/Article markups in the theme. You can deactivate this, when you use an SEO plugin that comes with its own markups.</p>
     </div>
     <div class="td-box-control-full">
         <?php
         echo td_panel_generator::checkbox(array(
             'ds' => 'td_option',
             'option_id' => 'tds_disable_article_schema',
-            'true_value' => 'yes',
-            'false_value' => ''
+            'true_value' => '',
+            'false_value' => 'hide'
         ));
         ?>
     </div>
@@ -59,9 +59,11 @@
             if (class_exists('SitePress', false )) {
                 global $sitepress;
                 $sitepress_settings = $sitepress->get_settings();
-                $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-                if ( 1 === $translation_mode ) {
-                    $option_id .= $sitepress->get_current_language();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
                 }
             }
             echo td_panel_generator::visual_select_o(array(
@@ -317,23 +319,23 @@
         </div>
     </div>
 
-    <!-- set general modal image -->
-    <div class="td-box-row">
-        <div class="td-box-description">
-            <span class="td-box-title">Disable article schema</span>
-            <p>Activating the option will disable the schema.org/Article markups in the theme. Use this when you use an SEO plugin that comes with its own markups.</p>
-        </div>
-        <div class="td-box-control-full">
-            <?php
-            echo td_panel_generator::checkbox(array(
-                'ds' => 'td_option',
-                'option_id' => 'tds_disable_article_schema',
-                'true_value' => 'yes',
-                'false_value' => ''
-            ));
-            ?>
-        </div>
+<!-- set theme article schema -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Enable article schema</span>
+        <p>This option will enable the schema.org/Article markups in the theme. You can deactivate this, when you use an SEO plugin that comes with its own markups.</p>
     </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_disable_article_schema',
+            'true_value' => '',
+            'false_value' => 'hide'
+        ));
+        ?>
+    </div>
+</div>
 
 <?php } ?>
 
@@ -891,7 +893,6 @@
 <!-- Advanced options -->
 <?php echo td_panel_generator::box_start('Video settings', false); ?>
 
-<?php if ( TD_THEME_NAME !== 'Newsmag' ) { ?>
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
@@ -915,7 +916,6 @@
             ?>
         </div>
     </div>
-<?php } ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-no-short-description">

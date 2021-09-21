@@ -32,6 +32,10 @@ class td_util {
 
     public static $e_keys = array('dGRfMDEx' => '', 'dGRfMDExXw==' => 2);
 
+    private static $font_family_list = array();
+
+    private static $font_family_list_flip = array();
+
     static function is_no_header() {
         return self::$is_no_header;
     }
@@ -56,7 +60,7 @@ class td_util {
         return self::$footer_template_id;
     }
 
-    static function check_header( $post = null ) {
+    static function check_mobile( $post = null ) {
 
         if ( empty( $post ) ) {
             global $post;
@@ -97,12 +101,14 @@ class td_util {
 	                $option_id = 'td_default_site_post_template';
 	                if ( class_exists( 'SitePress', false ) ) {
 		                global $sitepress;
-                        $sitepress_settings = $sitepress->get_settings();
-                        $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-                        if ( 1 === $translation_mode ) {
-                            $option_id .= $sitepress->get_current_language();
+		                $sitepress_settings = $sitepress->get_settings();
+                        if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                            $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                            if (1 === $translation_mode) {
+                                $option_id .= $sitepress->get_current_language();
+                            }
                         }
-                    }
+	                }
 	                $td_default_site_post_template = td_util::get_option( $option_id );
 
 	                if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
@@ -123,8 +129,20 @@ class td_util {
 
                 if ( empty( $tdb_individual_category_template ) ) {
 
+                    $option_id = 'tdb_category_template';
+                    if (class_exists('SitePress', false )) {
+                        global $sitepress;
+                        $sitepress_settings = $sitepress->get_settings();
+                        if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                            $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                            if (1 === $translation_mode) {
+                                $option_id .= $sitepress->get_current_language();
+                            }
+                        }
+                    }
+
                     // read the global template
-                    $tdb_category_template = td_options::get( 'tdb_category_template' );
+                    $tdb_category_template = td_options::get( $option_id );
 
                     if ( td_global::is_tdb_template( $tdb_category_template, true ) ) {
                         $template_id = td_global::tdb_get_template_id( $tdb_category_template );
@@ -141,8 +159,20 @@ class td_util {
             $author_query_var = get_query_var( 'author' );
             if ( ! empty( $author_query_var ) ) {
 
+                $option_id = 'tdb_author_templates';
+                if (class_exists('SitePress', false )) {
+                    global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if (1 === $translation_mode) {
+                            $option_id .= $sitepress->get_current_language();
+                        }
+                    }
+                }
+
                 // user templates
-                $tdb_author_templates = td_util::get_option( 'tdb_author_templates' );
+                $tdb_author_templates = td_util::get_option( $option_id );
 
                 if ( ! empty( $tdb_author_templates[ $author_query_var ] ) && td_global::is_tdb_template( $tdb_author_templates[ $author_query_var ], true ) ) {
 
@@ -150,7 +180,19 @@ class td_util {
 
                 } else {
 
-                    $template_id = td_options::get( 'tdb_author_template' );
+                    $option_id = 'tdb_author_template';
+                    if (class_exists('SitePress', false )) {
+                        global $sitepress;
+                        $sitepress_settings = $sitepress->get_settings();
+                        if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                            $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                            if (1 === $translation_mode) {
+                                $option_id .= $sitepress->get_current_language();
+                            }
+                        }
+                    }
+
+                    $template_id = td_options::get( $option_id );
                     if ( td_global::is_tdb_template( $template_id, true ) ) {
                         $template_id = td_global::tdb_get_template_id( $template_id );
                     }
@@ -159,37 +201,97 @@ class td_util {
 
         } else if ( is_search() ) {
 
-            $tdb_search_template = td_options::get( 'tdb_search_template' );
+            $option_id = 'tdb_search_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
+            $tdb_search_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_search_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_search_template );
             }
 
         } else if ( is_date() ) {
 
+            $option_id = 'tdb_date_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_date_template = td_options::get( 'tdb_date_template' );
+            $tdb_date_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_date_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_date_template );
             }
 
         } else if ( is_tag() ) {
 
+            $option_id = 'tdb_tag_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_tag_template = td_options::get( 'tdb_tag_template' );
+            $tdb_tag_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
             }
         } else if ( is_attachment() ) {
 
+            $option_id = 'tdb_attachment_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_tag_template = td_options::get( 'tdb_attachment_template' );
+            $tdb_tag_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
             }
         } else if ( is_404() ) {
 
+            $option_id = 'tdb_404_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_404_template = td_options::get( 'tdb_404_template' );
+            $tdb_404_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_404_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_404_template );
             }
@@ -205,6 +307,28 @@ class td_util {
         }
 
 
+        if ( ! empty( $template_id ) ) {
+            $ref_id = $template_id;
+        } else if ( $post instanceof WP_Post ) {
+            $ref_id = $post->ID;
+        }
+
+        if ( !empty($ref_id ) ) {
+	        $meta_is_mobile_template = get_post_meta( $ref_id, 'tdc_is_mobile_template', true );
+	        if ( ( ! empty( $meta_is_mobile_template ) && '1' === $meta_is_mobile_template ) ) {
+		        tdc_state::set_start_composer_for_mobile(true);
+	        }
+        }
+    }
+
+    static function check_header( $post = null ) {
+
+        if ( empty( $post ) ) {
+            global $post;
+        }
+
+        $template_id = self::get_template_id($post);
+
         if ( ! empty( $template_id ) || is_page() ) {
             add_filter('body_class', function($classes) {
                 $classes[] = 'tdb-template';
@@ -214,111 +338,290 @@ class td_util {
 
 
         if ( ! empty( $template_id ) ) {
-
             // Take header template if from the associated template used to render the current post
-            $tdc_header_template_id = get_post_meta( $template_id, 'tdc_header_template_id', true );
-            $tdb_template_type = get_post_meta( $template_id, 'tdb_template_type', true );
-
+            $ref_id = $template_id;
         } else if ( $post instanceof WP_Post ) {
-
             // Take header template if from the current post itself
-            $tdc_header_template_id = get_post_meta( $post->ID, 'tdc_header_template_id', true );
-            $tdb_template_type      = get_post_meta( $post->ID, 'tdb_template_type', true );
+            $ref_id = $post->ID;
+        }
+
+
+        if ( !empty($ref_id ) ) {
+            $tdc_header_template_id = get_post_meta( $ref_id, 'tdc_header_template_id', true );
+            $tdb_template_type      = get_post_meta( $ref_id, 'tdb_template_type', true );
         }
 
 
 
 
-        // Remove content for header templates, because their content is shown as their associated header template
-        if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'header' === $tdb_template_type ) {
-            add_filter( 'the_content', function( $content ) {
-                return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
-            });
+        if ( !empty($ref_id ) ) {
+	        $meta_is_mobile_template = get_post_meta( $ref_id, 'tdc_is_mobile_template', true );
+	        if ( ( ! empty( $meta_is_mobile_template ) && '1' === $meta_is_mobile_template ) ) {
+		        tdc_state::set_is_mobile_template(true);
+	        }
         }
 
 
+        if ( ! tdc_state::is_mobile_template() ) {
 
+            $is_mobile = false;
 
+            if ( class_exists('Mobile_Detect')) {
+	            $mobile_detect = new Mobile_Detect();
+	            if ( $mobile_detect->isMobile() ) {
 
+	                if ( !empty($ref_id ) ) {
+	                    $ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
 
-
-        if ( empty( $tdc_header_template_id ) ) {
-
-	        // Show the global template if it is set
-            // Check the status of the header template and if it's not 'publish', show the legacy global template
-            // Do nothing for 'header' type templates, because they don't need to use global header template
-
-            if ( ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
-
-	            $global_header_template_id = td_api_header_style::get_header_template_id();
-
-	            if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
-
-		            $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
-		            self::$header_template_id  = $global_header_template_id;
-
-		            $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
-		            if ( ! empty( $meta_header_template_content ) ) {
-			            self::$is_template_header = true;
-
-			            if ( self::tdc_is_installed() ) {
-				            self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
-			            }
-		            }
+		                if ( !empty($ref_id ) && 'publish' === get_post_status( $ref_id ) ) {
+		                    $tdc_header_template_id = get_post_meta( $ref_id, 'tdc_header_template_id', true );
+		                    $is_mobile = true;
+		                }
+	                }
 	            }
             }
 
-        } else {
+            // Remove content for header templates, because their content is shown as their associated header template
+            if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'header' === $tdb_template_type ) {
+                add_filter( 'the_content', function( $content ) {
+                    return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
+                });
+            }
 
-            if ( 'no_header' === $tdc_header_template_id ) {
+            if ( empty( $tdc_header_template_id ) ) {
 
-                self::$is_no_header = true;
+                // Show the global template if it is set
+                // Check the status of the header template and if it's not 'publish', show the legacy global template
+                // Do nothing for 'header' type templates, because they don't need to use global header template
+
+                if ( ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+
+                    $global_header_template_id = td_api_header_style::get_header_template_id( $is_mobile );
+
+                    if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
+
+                        $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
+                        self::$header_template_id  = $global_header_template_id;
+
+                        $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
+                        if ( ! empty( $meta_header_template_content ) ) {
+                            self::$is_template_header = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                            }
+                        }
+                    }
+
+                    if ( $is_mobile && ! empty( self::$header_template_id ) ) {
+                        $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', self::$header_template_id ) );
+                        if ( ! empty( $meta_header_template_content ) ) {
+                            self::$is_template_header = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                            }
+                        } else {
+                            self::$is_template_header = false;
+                        }
+                    }
+                }
 
             } else {
 
-	            // Check the status of the header template and if it's not 'publish', show the global template
-	            $post_status = get_post_status( $tdc_header_template_id );
+                if ( 'no_header' === $tdc_header_template_id ) {
 
-	            if ( 'publish' === $post_status ) {
+                    self::$is_no_header = true;
 
-		            self::$header_template_id     = $tdc_header_template_id;
-		            $meta_header_template_content = get_post_field( 'post_content', $tdc_header_template_id );
+                } else {
 
-		            self::$is_template_header      = true;
+                    // Check the status of the header template and if it's not 'publish', show the global template
+                    $post_status = get_post_status( $tdc_header_template_id );
 
-		            if ( self::tdc_is_installed() ) {
-			            self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
-		            }
+                    if ( 'publish' === $post_status ) {
 
-	            } else {
+                        self::$header_template_id     = $tdc_header_template_id;
+                        $meta_header_template_content = get_post_field( 'post_content', $tdc_header_template_id );
+
+                        self::$is_template_header      = true;
+
+                        if ( self::tdc_is_installed() ) {
+                            self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                        }
 
 
-	                // Show the global template if it is set
-                    // Check the status of the header template and if it's not 'publish', show the legacy global template
-                    // Do nothing for 'header' type templates, because they don't need to use global header template
-
-                    if ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) {
-
-                        $global_header_template_id = td_api_header_style::get_header_template_id();
-
-                        if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
-
-                            $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
-                            self::$header_template_id  = $global_header_template_id;
-
-                            $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
+                        if ( $is_mobile && ! empty( self::$header_template_id ) ) {
+                            $meta_header_template_content = get_post_field( 'post_content', self::$header_template_id );
                             if ( ! empty( $meta_header_template_content ) ) {
+
                                 self::$is_template_header      = true;
 
                                 if ( self::tdc_is_installed() ) {
-	                                self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                                    self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                                }
+                            } else {
+                                self::$is_template_header = false;
+                            }
+                        }
+
+                    } else {
+
+
+                        // Show the global template if it is set
+                        // Check the status of the header template and if it's not 'publish', show the legacy global template
+                        // Do nothing for 'header' type templates, because they don't need to use global header template
+
+                        if ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) {
+
+                            $global_header_template_id = td_api_header_style::get_header_template_id( $is_mobile );
+
+                            if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
+
+                                $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
+                                self::$header_template_id  = $global_header_template_id;
+
+                                $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
+                                if ( ! empty( $meta_header_template_content ) ) {
+                                    self::$is_template_header      = true;
+
+                                    if ( self::tdc_is_installed() ) {
+                                        self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                                    }
                                 }
                             }
                         }
                     }
-	            }
+                }
             }
+
+        } else {
+
+            // Remove content for header templates, because their content is shown as their associated header template
+            if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'header' === $tdb_template_type ) {
+                add_filter( 'the_content', function( $content ) {
+                    return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
+                });
+            }
+
+
+            if ( empty( $tdc_header_template_id ) ) {
+
+                // Show the global template if it is set
+                // Check the status of the header template and if it's not 'publish', show the legacy global template
+                // Do nothing for 'header' type templates, because they don't need to use global header template
+
+                if ( ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+
+                    $global_header_template_id = td_api_header_style::get_header_template_id( true );
+
+                    if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
+
+                        $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
+                        self::$header_template_id  = $global_header_template_id;
+
+                        $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
+                        if ( ! empty( $meta_header_template_content ) ) {
+                            self::$is_template_header = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                            }
+                        }
+                    }
+
+
+
+                    if ( ! empty( self::$header_template_id ) ) {
+                        $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', self::$header_template_id ) );
+                        if ( ! empty( $meta_header_template_content ) ) {
+                            self::$is_template_header = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                            }
+                        } else {
+                            self::$is_template_header = false;
+                        }
+                    }
+                }
+
+            } else {
+
+                if ( 'no_header' === $tdc_header_template_id ) {
+
+                    self::$is_no_header = true;
+
+                } else {
+
+                    // Check the status of the header template and if it's not 'publish', show the global template
+                    $post_status = get_post_status( $tdc_header_template_id );
+
+                    if ( 'publish' === $post_status ) {
+
+                        self::$header_template_id     = $tdc_header_template_id;
+                        $meta_header_template_content = get_post_field( 'post_content', $tdc_header_template_id );
+
+                        self::$is_template_header      = true;
+
+                        if ( self::tdc_is_installed() ) {
+                            self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                        }
+
+                    } else {
+
+
+                        // Show the global template if it is set
+                        // Check the status of the header template and if it's not 'publish', show the legacy global template
+                        // Do nothing for 'header' type templates, because they don't need to use global header template
+
+                        if ( isset( $tdb_template_type ) && 'header' !== $tdb_template_type ) {
+
+                            $global_header_template_id = td_api_header_style::get_header_template_id( true );
+
+                            if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
+
+                                $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
+                                self::$header_template_id  = $global_header_template_id;
+
+                                $meta_header_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_header_template_id ) );
+                                if ( ! empty( $meta_header_template_content ) ) {
+                                    self::$is_template_header      = true;
+
+                                    if ( self::tdc_is_installed() ) {
+                                        self::$header_template_content = json_decode( tdc_b64_decode( $meta_header_template_content ), true );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+//            // Important!
+//            // We have $tdc_header_template_id equal with ('') empty string - when there is no mobile template header set on the normal template header
+//            // We have $tdc_header_template_id equal with (false) boolean - when there is no mobile template header set on GLOBAL template header
+//
+//            if ( td_util::tdc_is_live_editor_iframe() && $start_composer_for_mobile && empty( self::$header_template_id ) && 'no_header' !== $tdc_header_template_id ) {
+//                add_filter( 'the_content', function( $content ) {
+//                    return
+//                        '<div class="tdc-dummy-mobile-header">
+//                             <div class="tdc-dummy-mobile-header-inner">
+//                                <span class="tdc-dmh-icon"><img src="' . TDC_URL . '/assets/images/sidebar/icon-notice.png"></span>
+//
+//                                <span class="tdc-dmh-txt">No mobile header template has been set! Please add one.</span>
+//                            </div>
+//                        </div>'
+//                        . $content;
+//                });
+//            }
         }
+
+
+
+
+
+
+
 
 
 
@@ -373,6 +676,26 @@ class td_util {
 
                 return $extra_google_fonts_ids;
             });
+
+            // extract icon fonts from header template content
+            add_filter('td_filter_icon_fonts', function( $extra_icon_fonts = array()) {
+                $header_template_id = td_util::get_header_template_id();
+
+                if ( td_util::tdc_is_installed() ) {
+                    $header_icon_fonts = get_post_meta( $header_template_id, 'tdc_icon_fonts', true );
+
+                    if ( ! empty( $header_icon_fonts ) && is_array( $header_icon_fonts ) ) {
+                        foreach ( $header_icon_fonts as $font_id => $font_settings ) {
+                            if ( empty($extra_icon_fonts) ) {
+                                $extra_icon_fonts = array();
+                            }
+                            $extra_icon_fonts[ $font_id ] = $font_settings;
+                        }
+                    }
+                }
+
+                return $extra_icon_fonts;
+            });
         }
 
         if ( self::$is_no_header ) {
@@ -387,6 +710,8 @@ class td_util {
 
     static function get_template_id( $post = null ) {
 
+        global $wp_query;
+
         $template_id = null;
 
         if ( empty( $post ) ) {
@@ -395,35 +720,74 @@ class td_util {
 
 
         // is_single should not have been working for attachments! But it does.
-        if ( is_single() && ! is_attachment() && $post instanceof WP_Post && 'tdb_templates' !== $post->post_type ) {
+        if ( is_single() && ! is_attachment() && $post instanceof WP_Post && 'tdb_templates' !== $post->post_type && 'product' !== $post->post_type ) {
 
-            // read the per post single_template
-            $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+	        // read the per post single_template
+	        $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
 
-            // if we don't have any single_template set on this post, try to laod the default global setting
-            if ( ! empty( $post_meta_values['td_post_template'] ) ) {
+	        // if we don't have any single_template set on this post, try to load the default global setting
+	        if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
 
-                $td_site_post_template = $post_meta_values['td_post_template'];
+		        $td_site_post_template = $post_meta_values[ 'td_post_template' ];
 
-                if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
-                    $template_id = td_global::tdb_get_template_id( $td_site_post_template );
-                }
+		        if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
+			        $template_id = td_global::tdb_get_template_id( $td_site_post_template );
+		        }
 
-            } else {
+	        } else {
 
-                $option_id = 'td_default_site_post_template';
-                if (class_exists('SitePress', false )) {
-                    global $sitepress;
-                    $sitepress_settings = $sitepress->get_settings();
-                    $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-                    if ( 1 === $translation_mode ) {
-                        $option_id .= $sitepress->get_current_language();
+		        $td_primary_category = td_global::get_primary_category_id();
+
+		        if ( ! empty( $td_primary_category ) ) {
+
+			        $post_category_template = td_util::get_category_option( $td_primary_category, 'tdb_post_category_template' );
+
+			        // make sure the template exists, maybe it was deleted or something
+			        if ( td_global::is_tdb_template( $post_category_template, true ) ) {
+				        $template_id = td_global::tdb_get_template_id( $post_category_template );
+			        }
+		        }
+
+		        if ( empty( $template_id ) ) {
+
+			        $option_id = 'td_default_site_post_template';
+			        if ( class_exists( 'SitePress', false ) ) {
+				        global $sitepress;
+				        $sitepress_settings = $sitepress->get_settings();
+				        if ( isset( $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ] ) ) {
+					        $translation_mode = (int) $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ];
+					        if ( 1 === $translation_mode ) {
+						        $option_id .= $sitepress->get_current_language();
+					        }
+				        }
+			        }
+			        $td_default_site_post_template = td_util::get_option( $option_id );
+
+			        if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
+				        $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+			        }
+		        }
+	        }
+
+        } else if (function_exists('is_product_category') && is_product_category()) {
+
+            $tdb_option_key = 'tdb_woo_archive_template';
+
+            $queried_object = get_queried_object();
+
+            if ( $queried_object instanceof WP_Term ) {
+                $term_id = $queried_object->term_id;
+                $tdb_woo_archive_template = get_term_meta( $term_id, $tdb_option_key, true );
+
+                if ( empty( $tdb_woo_archive_template ) ) {
+                    $default_template_id = td_util::get_option( $tdb_option_key );
+
+                    if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $default_template_id );
                     }
-                }
-                $td_default_site_post_template = td_util::get_option( $option_id );
 
-                if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
-                    $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+                } else {
+                    $template_id = td_global::tdb_get_template_id($tdb_woo_archive_template);
                 }
             }
 
@@ -439,8 +803,20 @@ class td_util {
 
                 if ( empty( $tdb_individual_category_template ) ) {
 
+                    $option_id = 'tdb_category_template';
+                    if (class_exists('SitePress', false )) {
+                        global $sitepress;
+                        $sitepress_settings = $sitepress->get_settings();
+                        if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                            $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                            if (1 === $translation_mode) {
+                                $option_id .= $sitepress->get_current_language();
+                            }
+                        }
+                    }
+
                     // read the global template
-                    $tdb_category_template = td_options::get( 'tdb_category_template' );
+                    $tdb_category_template = td_options::get( $option_id );
 
                     if ( td_global::is_tdb_template( $tdb_category_template, true ) ) {
                         $template_id = td_global::tdb_get_template_id( $tdb_category_template );
@@ -454,58 +830,152 @@ class td_util {
 
         } else if ( is_author() ) {
 
-            $author_query_var = get_query_var( 'author' );
-            if ( ! empty( $author_query_var ) ) {
+	        $author_query_var = get_query_var( 'author' );
+	        if ( ! empty( $author_query_var ) ) {
 
-                // user templates
-                $tdb_author_templates = td_util::get_option( 'tdb_author_templates' );
+		        $option_id = 'tdb_author_templates';
+		        if ( class_exists( 'SitePress', false ) ) {
+			        global $sitepress;
+			        $sitepress_settings = $sitepress->get_settings();
+			        if ( isset( $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ] ) ) {
+				        $translation_mode = (int) $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ];
+				        if ( 1 === $translation_mode ) {
+					        $option_id .= $sitepress->get_current_language();
+				        }
+			        }
+		        }
 
-                if ( ! empty( $tdb_author_templates[ $author_query_var ] ) && td_global::is_tdb_template( $tdb_author_templates[ $author_query_var ], true ) ) {
 
-                    $template_id = td_global::tdb_get_template_id( $tdb_author_templates[ $author_query_var ] );
+		        // user templates
+		        $tdb_author_templates = td_util::get_option( $option_id );
 
-                } else {
+		        if ( ! empty( $tdb_author_templates[ $author_query_var ] ) && td_global::is_tdb_template( $tdb_author_templates[ $author_query_var ], true ) ) {
 
-                    $template_id = td_options::get( 'tdb_author_template' );
-                    if ( td_global::is_tdb_template( $template_id, true ) ) {
-                        $template_id = td_global::tdb_get_template_id( $template_id );
-                    }
-                }
+			        $template_id = td_global::tdb_get_template_id( $tdb_author_templates[ $author_query_var ] );
+
+		        } else {
+
+			        $option_id = 'tdb_author_template';
+			        if ( class_exists( 'SitePress', false ) ) {
+				        global $sitepress;
+				        $sitepress_settings = $sitepress->get_settings();
+				        if ( isset( $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ] ) ) {
+					        $translation_mode = (int) $sitepress_settings[ 'custom_posts_sync_option' ][ 'tdb_templates' ];
+					        if ( 1 === $translation_mode ) {
+						        $option_id .= $sitepress->get_current_language();
+					        }
+				        }
+			        }
+
+			        $template_id = td_options::get( $option_id );
+			        if ( td_global::is_tdb_template( $template_id, true ) ) {
+				        $template_id = td_global::tdb_get_template_id( $template_id );
+			        }
+		        }
+	        }
+
+        } else if ( is_search() && $wp_query->get( 'wc_query' ) ) {
+
+            $tdb_template = td_util::get_option( 'tdb_woo_search_archive_template' );
+            if ( td_global::is_tdb_template( $tdb_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_template );
             }
 
         } else if ( is_search() ) {
 
-            $tdb_search_template = td_options::get( 'tdb_search_template' );
+            $option_id = 'tdb_search_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
+            $tdb_search_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_search_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_search_template );
             }
 
         } else if ( is_date() ) {
 
+            $option_id = 'tdb_date_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_date_template = td_options::get( 'tdb_date_template' );
+            $tdb_date_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_date_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_date_template );
             }
 
         } else if ( is_tag() ) {
 
+            $option_id = 'tdb_tag_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_tag_template = td_options::get( 'tdb_tag_template' );
+            $tdb_tag_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
             }
+
         } else if ( is_attachment() ) {
 
+            $option_id = 'tdb_attachment_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_tag_template = td_options::get( 'tdb_attachment_template' );
+            $tdb_tag_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_tag_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_tag_template );
             }
+
         } else if ( is_404() ) {
 
+            $option_id = 'tdb_404_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
             // read template
-            $tdb_404_template = td_options::get( 'tdb_404_template' );
+            $tdb_404_template = td_options::get( $option_id );
             if ( td_global::is_tdb_template( $tdb_404_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_404_template );
             }
@@ -518,7 +988,40 @@ class td_util {
                     $template_id = td_global::tdb_get_template_id( $tdb_header_template );
                 }
             }
-        }
+
+        } else if (function_exists('is_product') && is_product()) {
+
+	        // read the per post single_template
+	        $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
+
+	        // if we don't have any single_template set on this post, try to load the default global setting
+	        if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
+
+		        $td_site_post_template = $post_meta_values[ 'td_post_template' ];
+
+		        if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
+			        $template_id = td_global::tdb_get_template_id( $td_site_post_template );
+		        }
+
+	        } else {
+
+		        $option_id = 'tdb_woo_product_template';
+
+		        $td_default_site_post_template = td_util::get_option( $option_id );
+
+		        if ( ! empty( $td_default_site_post_template ) && td_global::is_tdb_template( $td_default_site_post_template, true ) ) {
+			        $template_id = td_global::tdb_get_template_id( $td_default_site_post_template );
+		        }
+	        }
+
+        } else if (function_exists('is_shop') && is_shop()) {
+
+            $tdb_template = td_util::get_option( 'tdb_woo_shop_base_template' );
+
+            if ( td_global::is_tdb_template( $tdb_template, true ) ) {
+                $template_id = td_global::tdb_get_template_id( $tdb_template );
+            }
+	    }
 
         return $template_id;
     }
@@ -551,25 +1054,19 @@ class td_util {
         }
 
 
+
         if ( ! empty( $template_id ) ) {
-
             // Take footer template if from the associated template used to render the current post
-            $tdc_footer_template_id = get_post_meta( $template_id, 'tdc_footer_template_id', true );
-            $tdb_template_type = get_post_meta( $template_id, 'tdb_template_type', true );
-
+            $ref_id = $template_id;
         } else if ( $post instanceof WP_Post ) {
-
             // Take footer template if from the current post itself
-            $tdc_footer_template_id = get_post_meta( $post->ID, 'tdc_footer_template_id', true );
-            $tdb_template_type      = get_post_meta( $post->ID, 'tdb_template_type', true );
+            $ref_id = $post->ID;
         }
 
 
-        // Remove content for footer templates, because their content is shown as their associated header template
-        if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'footer' === $tdb_template_type ) {
-            add_filter( 'the_content', function( $content ) {
-                return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
-            });
+        if ( !empty($ref_id ) ) {
+            $tdc_footer_template_id = get_post_meta( $ref_id, 'tdc_footer_template_id', true );
+            $tdb_template_type      = get_post_meta( $ref_id, 'tdb_template_type', true );
         }
 
 
@@ -577,86 +1074,248 @@ class td_util {
 
 
 
+        if ( !empty($ref_id ) ) {
+	        $meta_is_mobile_template = get_post_meta( $ref_id, 'tdc_is_mobile_template', true );
+	        if ( ( ! empty( $meta_is_mobile_template ) && '1' === $meta_is_mobile_template ) ) {
+		        tdc_state::set_is_mobile_template(true);
+	        }
+        }
 
-        if ( empty( $tdc_footer_template_id ) ) {
 
-	        // Show the global template if it is set
-            // Check the status of the footer template and if it's not 'publish', show the legacy global template
-            // Do nothing for 'header' type templates, because they don't need to use global header template
+        if ( ! tdc_state::is_mobile_template() ) {
 
-            if ( ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+            $is_mobile = false;
 
-	            $global_footer_template_id = td_api_footer_template::get_footer_template_id();
+            if ( class_exists('Mobile_Detect')) {
+	            $mobile_detect = new Mobile_Detect();
+	            if ( $mobile_detect->isMobile() ) {
 
-	            if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
-
-		            $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
-		            self::$footer_template_id  = $global_footer_template_id;
-
-		            $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
-		            if ( ! empty( $meta_footer_template_content ) ) {
-			            self::$is_template_footer = true;
-
-			            if ( self::tdc_is_installed() ) {
-				            self::$footer_template_content = $meta_footer_template_content;
-			            }
-		            }
+	                if ( !empty($ref_id ) ) {
+	                    $ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+		                if ( !empty($ref_id ) && 'publish' === get_post_status( $ref_id ) ) {
+		                    $tdc_footer_template_id = get_post_meta( $ref_id, 'tdc_footer_template_id', true );
+		                    $is_mobile = true;
+		                }
+	                }
 	            }
             }
 
-        } else {
+            // Remove content for footer templates, because their content is shown as their associated footer template
+            if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'footer' === $tdb_template_type ) {
+                add_filter( 'the_content', function( $content ) {
+                    return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,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\')"></div>';
+                });
+            }
 
-            if ( 'no_footer' === $tdc_footer_template_id ) {
+            if ( empty( $tdc_footer_template_id ) ) {
 
-                self::$is_no_footer = true;
+                // Show the global template if it is set
+                // Check the status of the footer template and if it's not 'publish', show the legacy global template
+                // Do nothing for 'footer' type templates, because they don't need to use global footer template
+
+                if ( ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+
+                    $global_footer_template_id = td_api_footer_template::get_footer_template_id( $is_mobile );
+
+                    if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+                        $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+                        self::$footer_template_id  = $global_footer_template_id;
+
+                        $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                        if ( ! empty( $meta_footer_template_content ) ) {
+                            self::$is_template_footer = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$footer_template_content = $meta_footer_template_content;
+                            }
+                        }
+                    }
+
+                    if ( $is_mobile && ! empty( self::$footer_template_id ) ) {
+                        $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', self::$footer_template_id ) );
+                        if ( ! empty( $meta_footer_template_content ) ) {
+                            self::$is_template_footer = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$footer_template_content = $meta_footer_template_content;
+                            }
+                        } else {
+                            self::$is_template_footer = false;
+                        }
+                    }
+                }
 
             } else {
 
-	            // Check the status of the header template and if it's not 'publish', show the global template
-	            $post_status = get_post_status( $tdc_footer_template_id );
+                if ( 'no_footer' === $tdc_footer_template_id ) {
 
-	            if ( 'publish' === $post_status ) {
+                    self::$is_no_footer = true;
 
-		            self::$footer_template_id = $tdc_footer_template_id;
-		            $meta_footer_template_content = get_post_field( 'post_content', $tdc_footer_template_id );
+                } else {
 
-		            self::$is_template_footer = true;
+                    // Check the status of the footer template and if it's not 'publish', show the global template
+                    $post_status = get_post_status( $tdc_footer_template_id );
 
-		            if ( self::tdc_is_installed() ) {
-			            self::$footer_template_content = $meta_footer_template_content;
-		            }
+                    if ( 'publish' === $post_status ) {
 
-	            } else {
+                        self::$footer_template_id     = $tdc_footer_template_id;
+                        $meta_footer_template_content = get_post_field( 'post_content', $tdc_footer_template_id );
+
+                        self::$is_template_footer      = true;
+
+                        if ( self::tdc_is_installed() ) {
+                            self::$footer_template_content = $meta_footer_template_content;
+                        }
 
 
-	                // Show the global template if it is set
-                    // Check the status of the header template and if it's not 'publish', show the legacy global template
-                    // Do nothing for 'header' type templates, because they don't need to use global header template
-
-                    if ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) {
-
-                        $global_footer_template_id = td_api_footer_template::get_footer_template_id();
-
-                        if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
-
-                            $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
-                            self::$footer_template_id  = $global_footer_template_id;
-
-                            $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                        if ( $is_mobile && ! empty( self::$footer_template_id ) ) {
+                            $meta_footer_template_content = get_post_field( 'post_content', self::$footer_template_id );
                             if ( ! empty( $meta_footer_template_content ) ) {
+
                                 self::$is_template_footer      = true;
 
                                 if ( self::tdc_is_installed() ) {
-	                                self::$footer_template_content = $meta_footer_template_content;
+                                    self::$footer_template_content = $meta_footer_template_content;
+                                }
+                            } else {
+                                self::$is_template_footer = false;
+                            }
+                        }
+
+                    } else {
+
+
+                        // Show the global template if it is set
+                        // Check the status of the footer template and if it's not 'publish', show the legacy global template
+                        // Do nothing for 'footer' type templates, because they don't need to use global footer template
+
+                        if ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) {
+
+                            $global_footer_template_id = td_api_footer_template::get_footer_template_id( $is_mobile );
+
+                            if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+                                $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+                                self::$footer_template_id  = $global_footer_template_id;
+
+                                $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                                if ( ! empty( $meta_footer_template_content ) ) {
+                                    self::$is_template_footer      = true;
+
+                                    if ( self::tdc_is_installed() ) {
+                                        self::$footer_template_content = $meta_footer_template_content;
+                                    }
                                 }
                             }
                         }
                     }
-	            }
+                }
+            }
+
+        } else {
+
+            // Remove content for footer templates, because their content is shown as their associated footer template
+            if ( td_util::tdc_is_live_editor_iframe() && ! empty( $tdb_template_type ) && 'footer' === $tdb_template_type ) {
+                add_filter( 'the_content', function( $content ) {
+                    return '<div class="tdc-dummy-content" style="height: 1500px; background-color: #f9f9f9; background-image: url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQBAMAAABykSv/AAAAFVBMVEUAAAAtKiYtKiYtKiYtKiYtKiYtKiazrNZrAAAAB3RSTlMAGwQIEQwV0M30jwAABqdJREFUeNrsncuS0zAQRYON2fMIa/PIrA0FrEPisHZ4rSHk/7+BKFMVGUl2R5LHlsM5C9VM102oPKqYvu6+XrzeLE58U8eqPB1FdTqyr+r3H+p4ey42qthSLrRSF13Kj1rZuP4hrfxwUeYuZd6rVNI/6vmO6sef6lF3a6VSxUWtjk/qAU8uRUt5UMXaLBrK5kGVx1JVf79Qhafq56e/Tsf+2el49FIX15dikHItKuOLzfmzb73Plfoq6Te/NoqG8i5cWQ77nOUCAAAmo1LHa3Xk6shKdZaOYqaVb+KUWb8yM55TViq+vFD6p6rye3063qn/MZ+0io1VlJVLD2Vgcd8qnl/j56leyL5bufRUVvqr9f7ykeXG55jrYkuZXhEAAKbhzebSV34495XN6ci36vf7Ynk6Hq9V8azcXYpKaRc7lYUufr9XGkWttB4uKJ3mw7tLU59L5oOolIuvApSZbD7opn5eRcwHAIDpsD2BeRbb5sNnj55dMApkpVxcCMoxzIcXXuZDYb1kSWkUq4Xu3+fkM2A+AAAkxJtzt7izzQfbUji4lLYnoJS6WPW7BwenpeBb7DEfpMmH8NGFeJsC8wEAAAzGm3x4WKXu+wSl2SG2zYfltebDY5dSthSSMR+GLVrugay0zQf7T5SU3APMBwCAWbIyzYf1xXyoDfPBZVMUW8c8Qy5YCkMXPdYunie8dvG4bT7U2rpRqmLrKprKplN58FTa77OtdH/KrF0AAAQxb/Mh6zQfMj/zYRFmPoQtUwjK+GLhYT6MtnahlYU4+aCV1UKRinuA+QAAMEtW5pBD02k+uNt/P+XOU/k/mQ968sERsHB9cauLZYDy8K/yzleJ+QAAMCVG59XjHkQpcz9l5q28rmefPPNhL60wVGmFV6y7Rjj28giHQv4aqGJQOkR8jkSO+QAAkDgr3VcKkw/FVrh6rpUb59VzP+XOqUw182GMtQvbPUhVydoFAMCE2GMGk+9iZIIyaynJfHiIzIc8JvNBmw9kPgAAQDDx19n/XHOdvelUHnTRXOUQrrN7mA9JZT7E3+1Cd/rDKctOZWO++cL9R5h8AACYEt0hSkZBlDIXlGbf56+U1y7kMYDZmA8hxSWZD5gPAAAzo2U+fLhmdH/XnUVQutIAetIh/AInDze/diFlPtgDKsNlPpShmQ81mQ8AAKkRYim88VAGxEjGBU7KlgKZD8OlQ5D5AAAAAjHmg327Cvcuhqk0mmI5cNLd6srpEGQ+TJT5ICt18Q7zAQAgCfryGeY0MJ9Qz95cua0gZz58TivzwVbGZz5k5eDpELKSzAcAgDmgW11xnkFUDnqdfedSHnX/O9e1i1eh5kN8PkP9sJkPDZkPAABJMNDahRzrJyhjipPmNO4DchoLp3KGgZPdL0R/N4b/arlDQph8AAC4LYRWd6yi3OoeOlvd+mbNB2cE6PdqaDto+AhQzAcAgImIW6bwU2YDKyMCJ0dY0Ai6SUS6axfeIxzxQzWyUvC1mHwAAJg5cuZDTKtrK8l8EM2HrZWYEb8Is7l6EWbjuQiD+QAAkBr/zdpFk15UQsfaxY2EV4wRJ5INECeS9SkBAGASdKtbz7/VvR3zYSQ7KD4CFPMBACBFxr7oPIfMh3Xk2kVs5sON3LYjbKMnvfEbAACYBDnzoUop8+FeSebDkEXplqbmw/uVWwInAQCmxe77pKw/v3X7/PYnH4bLfBg7cHIpKSP2R7oHEszimMrsKiXmAwBAEty3useQeMNUlMfbMh9WQuaDEQEaY/KQ+QAA8Le9M1ZBGIai6BD7A6K7i3tB3aWCc8Ff8P+/QQoSJYm9jZH6Gs4ZOjwudOnSm9z7aqRg0YBQFsbtM5RVLYmw0/mQMRSdDyJMESqdUKpPK1PJzQcAAJMUn7OXLHaMLQWx2PGeXOyYEbtY249d7C9q+amKt+QHYY50PgAA1IOV0gZDsYvZOh/Ofrh5i11MfulqiZ0Pop9BKAs7H9JKOh8AAEyiYhfHdvI5e5s+Z89XdpnKSjofVv7mg//TH4+3uFDZT2ly+Kzs6XwAAKgAM+6BIfMhbxhbClrZ+GF8rHDdWu182JnqfHB0PgAA1M0pefdgWUMRu2iWGLsILAWXNB+EpaDMhw7zAQCgQp7/70tabDFj58PmJ4WT83Y+bG0VTtL5AAAAmA/FnQ/OhPngfYbIfIjDFLFS9zNopTYfiF0AANhlWjR+hoBGaeeD2cLJEWXdnQ/98DwMj/3wcO0wbMOhV95ew9248vCFsgk+mOjtaSUAAPyLB4YdjhTNmj87AAAAAElFTkSuQmCC\')"></div>';
+                });
+            }
+
+
+            if ( empty( $tdc_footer_template_id ) ) {
+
+                // Show the global template if it is set
+                // Check the status of the footer template and if it's not 'publish', show the legacy global template
+                // Do nothing for 'footer' type templates, because they don't need to use global footer template
+
+                if ( ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) || ! isset( $tdb_template_type ) ) {
+
+                    $global_footer_template_id = td_api_footer_template::get_footer_template_id( true );
+
+                    if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+                        $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+                        self::$footer_template_id  = $global_footer_template_id;
+
+                        $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                        if ( ! empty( $meta_footer_template_content ) ) {
+                            self::$is_template_footer = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$footer_template_content = $meta_footer_template_content;
+                            }
+                        }
+                    }
+
+
+
+                    if ( ! empty( self::$footer_template_id ) ) {
+                        $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', self::$footer_template_id ) );
+                        if ( ! empty( $meta_footer_template_content ) ) {
+                            self::$is_template_footer = true;
+
+                            if ( self::tdc_is_installed() ) {
+                                self::$footer_template_content = $meta_footer_template_content;
+                            }
+                        } else {
+                            self::$is_template_footer = false;
+                        }
+                    }
+                }
+
+            } else {
+
+                if ( 'no_footer' === $tdc_footer_template_id ) {
+
+                    self::$is_no_footer = true;
+
+                } else {
+
+                    // Check the status of the footer template and if it's not 'publish', show the global template
+                    $post_status = get_post_status( $tdc_footer_template_id );
+
+                    if ( 'publish' === $post_status ) {
+
+                        self::$footer_template_id     = $tdc_footer_template_id;
+                        $meta_footer_template_content = get_post_field( 'post_content', $tdc_footer_template_id );
+
+                        self::$is_template_footer      = true;
+
+                        if ( self::tdc_is_installed() ) {
+                            self::$footer_template_content = $meta_footer_template_content;
+                        }
+
+                    } else {
+
+
+                        // Show the global template if it is set
+                        // Check the status of the footer template and if it's not 'publish', show the legacy global template
+                        // Do nothing for 'footer' type templates, because they don't need to use global footer template
+
+                        if ( isset( $tdb_template_type ) && 'footer' !== $tdb_template_type ) {
+
+                            $global_footer_template_id = td_api_footer_template::get_footer_template_id( true );
+
+                            if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+
+                                $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+                                self::$footer_template_id  = $global_footer_template_id;
+
+                                $meta_footer_template_content = get_post_field( 'post_content', str_replace( 'tdb_template_', '', $global_footer_template_id ) );
+                                if ( ! empty( $meta_footer_template_content ) ) {
+                                    self::$is_template_footer      = true;
+
+                                    if ( self::tdc_is_installed() ) {
+                                        self::$footer_template_content = $meta_footer_template_content;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
-
 
 
 
@@ -703,6 +1362,26 @@ class td_util {
                 }
 
                 return $extra_google_fonts_ids;
+            });
+
+            // extract icon fonts from footer template content
+            add_filter('td_filter_icon_fonts', function( $extra_icon_fonts = array()) {
+                $footer_template_id = td_util::get_footer_template_id();
+
+                if ( td_util::tdc_is_installed() ) {
+                    $footer_icon_fonts = get_post_meta( $footer_template_id, 'tdc_icon_fonts', true );
+
+                    if ( ! empty( $footer_icon_fonts ) && is_array( $footer_icon_fonts ) ) {
+                        foreach ( $footer_icon_fonts as $font_id => $font_settings ) {
+                            if ( empty($extra_icon_fonts)) {
+                                $extra_icon_fonts = array();
+                            }
+                            $extra_icon_fonts[ $font_id ] = $font_settings;
+                        }
+                    }
+                }
+
+                return $extra_icon_fonts;
             });
         }
 
@@ -1229,8 +1908,10 @@ class td_util {
         //REMOVE shortscodes and tags
         if ($show_shortcodes == '') {
 	        // strip_shortcodes(); this remove all shortcodes and we don't use it, is nor ok to remove all shortcodes like dropcaps
-	        // this remove the caption from images
+	        // this remove the caption from images - Classic
 	        $post_content = preg_replace("/\[caption(.*)\[\/caption\]/i", '', $post_content);
+            // this remove the caption from image and gallery - Gutenberg
+            $post_content = preg_replace("/\<figcaption(.*)<\/figcaption\>/i", '', $post_content);
             // this remove any script from raw html
             $post_content = preg_replace("/\[vc_raw_html\](.*)\[\/vc_raw_html\]/i",'',$post_content);
             // this remove the shortcodes but leave the text from shortcodes
@@ -1270,10 +1951,9 @@ class td_util {
 
             $post_content = stripslashes(wp_filter_nohtml_kses($post_content));*/
 
+            //remove html comments from Gutenberg blocks
+            $post_content = strip_tags( $post_content );
             $excerpt = explode(' ', $post_content, $limit);
-
-
-
 
             if (count($excerpt)>=$limit) {
                 array_pop($excerpt);
@@ -1677,6 +2357,8 @@ class td_util {
                         background-color: #e4e4e4;
                         font-size:12px;
                         padding: 10px;
+                        white-space: pre-wrap;
+                        word-break: break-all;
                     }
                     .td-wp-booster-error a {
                         background-color:#ee5734;
@@ -2054,6 +2736,17 @@ class td_util {
 
 
 	static function get_font_family_list( $flip = true ) {
+
+        if ( $flip ) {
+            if (!empty(self::$font_family_list_flip)) {
+                return self::$font_family_list_flip;
+            }
+        } else {
+            if (!empty(self::$font_family_list)) {
+                return self::$font_family_list;
+            }
+        }
+
 		$list = array(
 			'' => 'Default font',
 		);
@@ -2101,8 +2794,11 @@ class td_util {
 		foreach ( td_fonts::$font_names_google_list as $font_id => $font_name ) {
 			$list[$font_id] = $font_name;
 		}
+
+		self::$font_family_list = $list;
 		if ( $flip ) {
 			$list = array_flip( $list );
+			self::$font_family_list_flip = $list;
 		}
 		return $list;
 	}
@@ -2470,7 +3166,6 @@ class td_util {
 											}
 
 											$font_list[ $current_key ][$font_param][ $media ] = $value;
-
 										}
 
 									} else {
@@ -2486,6 +3181,22 @@ class td_util {
 			}
 		}
 	}
+
+    /**
+     * return icon html <svg> or <i>
+     * @param $icon
+     * @param $extra_class
+     * @return string
+     */
+    static function get_icon_type($icon, $extra_class='') {
+        $svg_list = td_global::$svg_theme_font_list;
+        if( array_key_exists( $icon, $svg_list ) ) {
+            $ico_html = base64_decode( $svg_list[$icon] );
+        } else {
+            $ico_html = '<i class="' . $extra_class . ' ' . $icon . '"></i>';
+        }
+        return $ico_html;
+    }
 
 }//end class td_util
 
@@ -2548,7 +3259,7 @@ if (!function_exists('mb_substr')) {
         return substr($string,$start,$length);
     }
 }
-if ( !function_exists('mb_detect_encoding')) {
+if (!function_exists('mb_detect_encoding')) {
 	function mb_detect_encoding ($string, $enc=null, $ret=null) {
 
 		static $enclist = array(
@@ -2573,6 +3284,35 @@ if ( !function_exists('mb_detect_encoding')) {
 	}
 }
 
+if (!function_exists('td_pluralize') ) {
+	/*
+	 * function to pluralize a given string
+	 */
+	function td_pluralize( $count, $text ) {
+		return $count . ( ( $count == 1 ) ? ( " $text" ) : ( " ${text}s" ) );
+	}
+}
+if (!function_exists('td_human_readable_ts') ) {
+    /*
+     * function to convert given timestamp to human readable time string
+     */
+	function td_human_readable_ts($timestamp) {
+
+		$future_date = new DateTime("@$timestamp");
+
+		$interval = date_create('now')->diff( $future_date );
+
+		$suffix = ( $interval->invert ? ' ago' : '' );
+		if ( $v = $interval->days >= 1 )
+		    return td_pluralize( $interval->days, 'day' ) . $suffix;
+		if ( $v = $interval->h >= 1 )
+		    return td_pluralize( $interval->h, 'hour' ) . $suffix;
+		if ( $v = $interval->i >= 1 )
+		    return td_pluralize( $interval->i, 'minute' ) . $suffix;
+
+		return td_pluralize( $interval->s, 'second' ) . $suffix;
+	}
+}
 
 /**
  * Placeholder function for older versions of wordpress ( before wp 4.9.6 )

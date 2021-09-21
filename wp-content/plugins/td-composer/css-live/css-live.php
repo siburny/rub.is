@@ -27,12 +27,14 @@ if ( ! function_exists( 'load_css_live' ) ) {
 		$load_in_composer        = false;
 		$load_in_composer_iframe = false;
 
-		$get_action = @$_GET['td_action'];
-		if ( isset( $get_action ) && ( 'tdc_edit' === $get_action || 'tdc' === $get_action ) ) {
-			$load_in_composer = true;
+		if (!empty($_GET['td_action'])) {
+			$get_action = $_GET[ 'td_action' ];
+			if ( isset( $get_action ) && ( 'tdc_edit' === $get_action || 'tdc' === $get_action ) ) {
+				$load_in_composer = true;
 
-			if ( 'tdc_edit' === $get_action ) {
-				$load_in_composer_iframe = true;
+				if ( 'tdc_edit' === $get_action ) {
+					$load_in_composer_iframe = true;
+				}
 			}
 		}
 
@@ -181,7 +183,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 					if ( 'undefined' !== typeof window.parent ) {
 
 						// Everything must be done onLoad, to be sure that all live css components are in loaded.
-						jQuery( window ).load(function(){
+						jQuery( window ).on( 'load', function(){
 
 							if ( 'undefined' !== typeof window.parent.editorChangeHandler ) {
 
@@ -229,7 +231,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 
 
 			<div id="tdw-css-writer" style="display: none" class="tdw-drag-dialog tdc-window-sidebar">
-				<header>
+				<header class="tdb-wm-header-drag">
 
 				<?php
 				if ( ! $load_in_composer ) {
@@ -274,7 +276,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 										var $liveIframe  = tdcAdminIFrameUI.getLiveIframe();
 
 										if ( $liveIframe.length ) {
-											$liveIframe.load(function() {
+											$liveIframe.on( 'load', function() {
 												$liveIframe.contents().find( 'body').append( '<textarea class="tdw-css-writer-editor" style="display: none"></textarea>' );
 											});
 										}
@@ -292,7 +294,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 
 
 						<script>
-							jQuery(window).load(function (){
+							jQuery(window).on( 'load', function (){
 
 								if ( 'undefined' !== typeof tdLiveCssInject ) {
 
@@ -376,7 +378,7 @@ if ( ! function_exists( 'load_css_live' ) ) {
 										};
 
 										editor_textarea.val(editor.getSession().getValue());
-										
+
 										if ('undefined' !== typeof tdcAdminIFrameUI) {
 											tdcAdminIFrameUI.getLiveIframe().contents().find('.tdw-css-writer-editor:first').val(editor.getSession().getValue());
 

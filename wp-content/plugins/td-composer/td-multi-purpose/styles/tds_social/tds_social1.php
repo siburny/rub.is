@@ -203,60 +203,38 @@ class tds_social1 extends td_style {
             $td_social_rel = ' rel="' . $this->get_shortcode_att('social_rel') . '" ';
         }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        //socials in order of input
+        $social_ordered_array = array();
+        if( '' !== $this->get_shortcode_att('social_order') ) {
+            $social_ordered_array = array_map( 'trim', explode( ',' , $this->get_shortcode_att('social_order') ) );
+        }
+
+	    $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-social-wrapper ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
-        $social_array = array();
-        $social_array['behance']        = array( $this->get_shortcode_att( 'behance' ), 'Behance' );
-        $social_array['blogger']        = array( $this->get_shortcode_att( 'blogger' ), 'Blogger' );
-        $social_array['dailymotion']    = array( $this->get_shortcode_att( 'dailymotion' ), 'Dailymotion' );
-        $social_array['delicious']      = array( $this->get_shortcode_att( 'delicious' ), 'Delicious' );
-        $social_array['deviantart']     = array( $this->get_shortcode_att( 'deviantart' ), 'Deviantart' );
-        $social_array['digg']           = array( $this->get_shortcode_att( 'digg' ), 'Digg' );
-        $social_array['dribbble']       = array( $this->get_shortcode_att( 'dribbble' ), 'Dribbble' );
-        $social_array['ebay']           = array( $this->get_shortcode_att( 'ebay' ), 'Ebay' );
-        $social_array['evernote']       = array( $this->get_shortcode_att( 'evernote' ), 'Evernote' );
-        $social_array['facebook']       = array( $this->get_shortcode_att( 'facebook' ), 'Facebook' );
-        $social_array['flickr']         = array( $this->get_shortcode_att( 'flickr' ), 'Flickr' );
-        $social_array['forrst']         = array( $this->get_shortcode_att( 'forrst' ), 'Forrst' );
-        $social_array['grooveshark']    = array( $this->get_shortcode_att( 'grooveshark' ), 'Grooveshark' );
-        $social_array['instagram']      = array( $this->get_shortcode_att( 'instagram' ), 'Instagram' );
-        $social_array['lastfm']         = array( $this->get_shortcode_att( 'lastfm' ), 'Lastfm' );
-        $social_array['linkedin']       = array( $this->get_shortcode_att( 'linkedin' ), 'LinkedIn' );
-        $social_array['mail-1']         = array( $this->get_shortcode_att( 'mail-1' ), 'Mail' );
-        $social_array['stumbleupon']    = array( $this->get_shortcode_att( 'stumbleupon' ), 'Mix' );
-        $social_array['myspace']        = array( $this->get_shortcode_att( 'myspace' ), 'Myspace' );
-        $social_array['naver']          = array( $this->get_shortcode_att( 'naver' ), 'Naver' );
-        $social_array['path']           = array( $this->get_shortcode_att( 'path' ), 'Path' );
-        $social_array['paypal']         = array( $this->get_shortcode_att( 'paypal' ), 'Paypal' );
-        $social_array['pinterest']      = array( $this->get_shortcode_att( 'pinterest' ), 'Pinterest' );
-        $social_array['reddit']         = array( $this->get_shortcode_att( 'reddit' ), 'Reddit' );
-        $social_array['rss']            = array( $this->get_shortcode_att( 'rss' ), 'RSS' );
-        $social_array['share']          = array( $this->get_shortcode_att( 'share' ), 'Share' );
-        $social_array['skype']          = array( $this->get_shortcode_att( 'skype' ), 'Skype' );
-        $social_array['soundcloud']     = array( $this->get_shortcode_att( 'soundcloud' ), 'Soundcloud' );
-        $social_array['spotify']        = array( $this->get_shortcode_att( 'spotify' ), 'Spotify' );
-        $social_array['stackoverflow']  = array( $this->get_shortcode_att( 'stackoverflow' ), 'Stackoverflow' );
-        $social_array['steam']          = array( $this->get_shortcode_att( 'steam' ), 'Steam' );
-        $social_array['telegram']       = array( $this->get_shortcode_att( 'telegram' ), 'Telegram' );
-        $social_array['tumblr']         = array( $this->get_shortcode_att( 'tumblr' ), 'Tumblr' );
-        $social_array['twitch']         = array( $this->get_shortcode_att( 'twitch' ), 'Twitch' );
-        $social_array['twitter']        = array( $this->get_shortcode_att( 'twitter' ), 'Twitter' );
-        $social_array['vimeo']          = array( $this->get_shortcode_att( 'vimeo' ), 'Vimeo' );
-        $social_array['vk']             = array( $this->get_shortcode_att( 'vk' ), 'VKontakte' );
-        $social_array['windows']        = array( $this->get_shortcode_att( 'windows' ), 'Windows' );
-        $social_array['wordpress']      = array( $this->get_shortcode_att( 'wordpress' ), 'Wordpress' );
-        $social_array['yahoo']          = array( $this->get_shortcode_att( 'yahoo' ), 'Yahoo' );
-        $social_array['youtube']        = array( $this->get_shortcode_att( 'youtube' ), 'Youtube' );
-        $social_array['xing']           = array( $this->get_shortcode_att( 'xing' ), 'Xing' );
 
+            $social_array = array();
+
+            //in order of input
+            if ( !empty($social_ordered_array) ) {
+                foreach ( $social_ordered_array as $index => $social_id ) {
+                    if ( array_key_exists ( strtolower($social_id), td_social_icons::$td_social_icons_array ) ) {
+                        $social_array[$social_id] = array($this->get_shortcode_att(strtolower($social_id)), ucfirst($social_id));
+                    }
+                }
+            } else { //get all
+                foreach ( td_social_icons::$td_social_icons_array as $social_id => $social_name ) {
+                    $social_array[$social_id] = array( $this->get_shortcode_att( $social_id ), $social_name );
+                }
+            }
+
+            //display only the socials with url
             foreach ( $social_array as $social_key => $social_value ) {
                 if( !empty( $social_value[0] ) ) {
                     $buffy .= '<div class="tdm-social-item-wrap">';
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-item">';
-                            $buffy .= '<i class="td-icon-font td-icon-' . $social_key . '"></i>';
+                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
+                            $buffy .= '<i class="td-icon-font td-icon-' . strtolower($social_key) . '"></i>';
                         $buffy .= '</a>';
-
 
                         $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-text" >' . $social_value[1] . '</a>';
                     $buffy .= '</div>';

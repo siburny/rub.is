@@ -61,7 +61,6 @@ if($loop_sidebar_position == 'sidebar_left') {
 						<?php
 						break;
 
-
 					default:
 						?>
 							<div class="td-pb-span8 td-main-content">

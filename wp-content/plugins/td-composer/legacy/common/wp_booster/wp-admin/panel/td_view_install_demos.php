@@ -115,13 +115,18 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
 
 ?>
 
-<div class=" about-wrap td-admin-wrap theme-browser">
-    <h1><?php echo TD_THEME_NAME ?> demos</h1>
+<div class=" about-wrap td-admin-wrap theme-browser td-theme-demos">
+    <h1>Explore beautiful Prebuilt Websites</h1>
     <div class="about-text">
         <p>
-            <?php echo TD_THEME_NAME ?> brings you a number of unique designs for your website. Our demos were carefully tested so you don’t have to create everything from scratch.  With the theme demos you know exactly which predefined template is perfectly designed to start building upon. Each demo is fully customizable (fonts, colors and layouts) -
-            <a href="<?php echo TD_THEME_DEMO_DOC_URL?>" target="_blank">read more</a>.
+            The <?php echo TD_THEME_NAME ?> theme brings you beautiful & unique designs for your website so you don’t have to create everything from scratch. With the Prebuilt Website you know exactly which template is perfect to start building upon. Each pre-built website is fully customizable (fonts, colors, layouts, elements).
+            <a href="<?php echo TD_THEME_DEMO_DOC_URL ?>" target="_blank">Read more</a>
         </p>
+        <p>On hover you have two different options to install it:</p>
+        <ul>
+            <li>Install <b>Design Only</b> - Use this option if your website already has content. It will import only the template design and style. No sample content will be added to the website.</li>
+            <li>Install <b>Include Content</b> - Perfect for taking Newspaper Theme for a test drive. It will import homepages, sample content with images, backgrounds, template layouts, and style.</li>
+        </ul>
     </div>
 
 
@@ -143,159 +148,320 @@ if (isset($_GET['puiu_test']) and TD_DEPLOY_MODE == 'dev') {
 			</div>
 		</div>
 	<?php } ?>
-    <hr/>
 
     <div class="td-demo-page-content">
+        <?php if ( TD_THEME_NAME == 'Newsmag' ) { ?>
+            <div class="td-admin-columns td-install-demos">
+                <?php
 
-        <div class="td-admin-columns td-install-demos">
-            <?php
+                $installed_demo = td_demo_state::get_installed_demo();
+                $td_demo_names = array();
+                $td_demo_names_with_req_plugins = array();
+                $td_demo_with_plugins_list = array();
 
-            $installed_demo = td_demo_state::get_installed_demo();
-            $td_demo_names = array();
-            $td_demo_names_with_req_plugins = array();
-            $td_demo_with_plugins_list = array();
+                $plugin_list = array();
 
-            $plugin_list = array();
-
-            foreach ( tagdiv_global::$theme_plugins_list as $plugin ) {
-                $plugin_list[ $plugin['name'] ] = $plugin[ 'td_class' ];
-            }
-
-            foreach ( td_global::$demo_list as $demo_id => $stack_params ) {
-                $td_demo_names[$stack_params['text']] = $demo_id;
-
-                $tmp_class = '';
-                if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
-                    $tmp_class = 'td-demo-installed';
+                foreach ( tagdiv_global::$theme_plugins_list as $plugin ) {
+                    $plugin_list[ $plugin['name'] ] = $plugin[ 'td_class' ];
                 }
 
-                $demo_required_plugins_array = array();
-                $demo_req_plugin_class = '';
+                foreach ( td_global::$demo_list as $demo_id => $stack_params ) {
+                    $td_demo_names[$stack_params['text']] = $demo_id;
 
-                if ( !empty ($stack_params['required_plugins']) ) {
+                    $tmp_class = '';
+                    if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
+                        $tmp_class = 'td-demo-installed';
+                    }
 
-                    foreach ( $stack_params['required_plugins'] as $demo_req_plugin ) {
+                    $demo_required_plugins_array = array();
+                    $demo_req_plugin_class = '';
 
-                        if ( isset( $plugin_list[ $demo_req_plugin ] ) && ! class_exists( $plugin_list[ $demo_req_plugin ], false) ) {
-                            $demo_required_plugins_array[] = $demo_req_plugin;
+                    if ( !empty ($stack_params['required_plugins']) ) {
+
+                        foreach ( $stack_params['required_plugins'] as $demo_req_plugin ) {
+
+                            if ( isset( $plugin_list[ $demo_req_plugin ] ) && !class_exists( $plugin_list[ $demo_req_plugin ], false ) ) {
+                                $demo_required_plugins_array[] = $demo_req_plugin;
+                            }
+                        }
+
+                        if ( !empty ($demo_required_plugins_array) ) {
+                            $demo_req_plugin_class = 'td-demo-req-plugins-disabled';
+                            $td_demo_names_with_req_plugins[] = $stack_params['text'];
+                            $td_demo_with_plugins_list[$demo_id] =  $demo_required_plugins_array;
                         }
                     }
 
-                    if ( !empty ($demo_required_plugins_array) ) {
-                        $demo_req_plugin_class = 'td-demo-req-plugins-disabled';
-                        $td_demo_names_with_req_plugins[] = $stack_params['text'];
-                        $td_demo_with_plugins_list[$demo_id] =  $demo_required_plugins_array;
-                    }
-                }
+                    ?>
 
-                ?>
+                    <div class="td-demo-<?php echo esc_attr( $demo_id ) ?> td-wp-admin-demo theme <?php echo esc_attr( $tmp_class . ' ' . $demo_req_plugin_class ) ?>">
 
-                <div class="td-demo-<?php echo esc_attr( $demo_id ) ?> td-wp-admin-demo theme <?php echo esc_attr( $tmp_class . ' ' . $demo_req_plugin_class ) ?>">
-
-                    <!-- Import content -->
-                    <div class="theme-screenshot">
-                        <div class="td-progress-bar-wrap"><div class="td-progress-bar"></div></div>
-                        <img class="td-demo-thumb" src="<?php echo td_global::$demo_list[$demo_id]['img'] ?>"/>
-                    </div>
-
-                    <div class="td-demo-meta">
-                        <div class="td-admin-title">
-                            <h3 class="theme-name"><?php printf( '%1$s', $stack_params['text'] ) ?></h3>
+                        <!-- Import content -->
+                        <div class="theme-screenshot">
+                            <div class="td-progress-bar-wrap"><div class="td-progress-bar"></div></div>
+                            <img class="td-demo-thumb" src="<?php echo td_global::$demo_list[$demo_id]['img'] ?>"/>
                         </div>
 
-                        <div class="theme-actions">
-                            <a class="button button-secondary td-button-demo-preview" href="<?php echo td_global::$demo_list[$demo_id]['demo_url'] ?>" target="_blank">Preview</a>
-                            <?php
-                            // check if we have all the required plugins
-                            if ( empty( $demo_required_plugins_array )) {
-	                            ?>
-                                <a class="button button-secondary td-button-install-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Install</a>
-	                            <?php
-                            } else {
-	                            $plugins_list_html = '';
-	                            $plugins_list_html .= '<h3>' . $stack_params['text'] . ' demo info:</h3>';
-	                            $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
-	                            $plugins_list_html .= '<ul>';
-
-	                            foreach ( $demo_required_plugins_array as $demo_req_plugin ) {
-		                            $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $demo_req_plugin . '</a></span></li>';
-	                            }
-
-	                            $plugins_list_html .= '</ul>';
-
-	                            echo '<a href="#" class="button button-secondary td-tooltip td-req-demo-disabled disabled" data-position="right" data-content-as-html="true" title="' . esc_attr($plugins_list_html) . '">Install</a>';
-
-                            }
-                            ?>
-                            <a class="button button-primary td-button-uninstall-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstall</a>
-                            <a class="button button-primary disabled td-button-installing-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Installing...</a>
-                            <a class="button button-secondary disabled td-button-demo-disabled" href="#">Install</a>
-                            <a class="button button-primary disabled td-button-uninstalling-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstalling...</a>
-                        </div>
-
-                        <div class="td-admin-checkbox td-small-checkbox">
-                            <div class="td-demo-install-content">
-                                <?php
-                                echo td_panel_generator::checkbox(array(
-                                    'ds' => 'td_import_theme_styles',
-                                    'option_id' => 'td_import_menus',
-                                    'true_value' => '',
-                                    'false_value' => 'no'
-                                ));
-                                ?>
-                                <p>Include content</p>
+                        <div class="td-demo-meta">
+                            <div class="td-admin-title">
+                                <h3 class="theme-name"><?php printf( '%1$s', $stack_params['text'] ) ?></h3>
                             </div>
-                            <p class="td-installed-text">
+
+                            <div class="theme-actions">
+                                <a class="button button-secondary td-button-demo-preview" href="<?php echo td_global::$demo_list[$demo_id]['demo_url'] ?>" target="_blank">Preview</a>
                                 <?php
-                                if (!empty(td_global::$demo_list[$demo_id]['demo_installed_text'])) {
-                                    echo td_global::$demo_list[$demo_id]['demo_installed_text'];
+                                // check if we have all the required plugins
+                                if ( empty( $demo_required_plugins_array )) {
+                                    ?>
+                                    <a class="button button-secondary td-button-install-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Install</a>
+                                    <?php
                                 } else {
-                                    echo 'Demo installed!';
+                                    $plugins_list_html = '';
+                                    $plugins_list_html .= '<h3>' . $stack_params['text'] . ' demo info:</h3>';
+                                    $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
+                                    $plugins_list_html .= '<ul>';
+
+                                    foreach ( $demo_required_plugins_array as $demo_req_plugin ) {
+                                        $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $demo_req_plugin . '</a></span></li>';
+                                    }
+
+                                    $plugins_list_html .= '</ul>';
+
+                                    echo '<a href="#" class="button button-secondary td-tooltip td-req-demo-disabled disabled" data-position="right" data-content-as-html="true" title="' . esc_attr($plugins_list_html) . '">Install</a>';
+
                                 }
                                 ?>
-                            </p>
+                                <a class="button button-primary td-button-uninstall-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstall</a>
+                                <a class="button button-primary disabled td-button-installing-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Installing...</a>
+                                <a class="button button-secondary disabled td-button-demo-disabled" href="#">Install</a>
+                                <a class="button button-primary disabled td-button-uninstalling-demo" href="#" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstalling...</a>
+                            </div>
+
+                            <div class="td-admin-checkbox td-small-checkbox">
+                                <div class="td-demo-install-content">
+                                    <?php
+                                    echo td_panel_generator::checkbox(array(
+                                        'ds' => 'td_import_theme_styles',
+                                        'option_id' => 'td_import_menus',
+                                        'true_value' => '',
+                                        'false_value' => 'no'
+                                    ));
+                                    ?>
+                                    <p>Include content</p>
+                                </div>
+                                <p class="td-installed-text">
+                                    <?php
+                                    if (!empty(td_global::$demo_list[$demo_id]['demo_installed_text'])) {
+                                        echo td_global::$demo_list[$demo_id]['demo_installed_text'];
+                                    } else {
+                                        echo 'Demo installed!';
+                                    }
+                                    ?>
+                                </p>
+                            </div>
                         </div>
+
                     </div>
+                <?php } ?>
+            </div>
+
+            <div class="td-demos-summary">
+                <span>Quick Install</span>
+                <ul>
+                    <?php
+                    ksort($td_demo_names);
+
+                    foreach ($td_demo_names as $td_name => $demo_id) {
+
+                        $tmp_class = '';
+                        $plugins_list_html= '';
+
+                        if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
+                            $tmp_class = 'td-demo-installed';
+                        }
+
+                        if ( in_array($td_name, $td_demo_names_with_req_plugins)) {
+                            $tmp_class = $tmp_class . ' td-req-demo-disabled';
+                        }
+
+                        if ( array_key_exists($demo_id, $td_demo_with_plugins_list)) {
+                            $plugins_list_html = '';
+                            $plugins_list_html .= '<h3>' . $td_name . ' demo info:</h3>';
+                            $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
+                            $plugins_list_html .= '<ul>';
+
+                            foreach ( $td_demo_with_plugins_list[$demo_id] as $plugin_name ) {
+                                $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $plugin_name . '</a></span></li>';
+                            }
+                            echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . ' td-tooltip" data-demo-id="'. $demo_id . '" href="#" title="' . esc_attr($plugins_list_html) . '" data-position="right" data-content-as-html="true">' . $td_name . '</a></li>';
+                        } else {
+                            echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . '" data-demo-id="'. $demo_id . '" href="#">' . $td_name . '</a></li>';
+                        }
+                    }?>
+                </ul>
+            </div>
+        <?php } else if ( TD_THEME_NAME == 'Newspaper' ) { ?>
+
+            <div id="demos" class="td-demos">
+                <div class="td-demo-filter td-sd-demos">
+                    <ul>
+                        <li class="td-pro-list-item"><a href="#" target="_blank" class="td-demo-filter-active" data-type="pro">Popular</a>
+<!--                            <span class="td-pro-info-icon"></span>-->
+<!--                            <span class="td-pro-info-text">Lighter, fully customizable Demos. Optimized to enhance website performance!</span>-->
+                        </li>
+                        <li><a href="#" target="_blank" data-type="shop">Shop</a></li>
+                        <li><a href="#" target="_blank" data-type="multipurpose">Multipurpose</a></li>
+                        <li><a href="#" target="_blank" data-type="blog">Blog</a></li>
+                        <li><a href="#" target="_blank" data-type="magazine">Magazine</a></li>
+                        <li><a href="#" target="_blank">All</a></li>
+                        <li><a href="#" target="_blank" data-type="latest">Latest</a></li>
+                    </ul>
+                </div>
+
+                <div class="td-demo-product-wrap td-demo-line td-filter-wrap">
+
+                    <?php
+
+                    $installed_demo = td_demo_state::get_installed_demo();
+                    $td_demo_names = array();
+                    $td_demo_names_with_req_plugins = array();
+                    $td_demo_with_plugins_list = array();
+
+                    // theme plugins list
+                    $plugin_list = array();
+                    foreach ( tagdiv_global::$theme_plugins_list as $plugin ) {
+                        $plugin_list[ $plugin['name'] ] = $plugin[ 'td_class' ];
+                    }
+
+                    // external plugins list
+                    $external_plugins_list = array(
+                        // 'plugin's class to be passed to the class_exists function' => 'plugin name as used in demo's required_plugins array'
+	                    'WooCommerce' => 'WooCommerce'
+                    );
+
+                    foreach ( td_global::$demo_list as $demo_id => $stack_params ) {
+                        $td_demo_names[$stack_params['text']] = $demo_id;
+
+                        $tmp_class = '';
+                        if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
+                            $tmp_class = 'td-demo-installed';
+                        }
+
+                        $demo_required_plugins_array = array();
+                        $demo_req_plugin_class = '';
+
+                        if ( !empty ($stack_params['required_plugins']) ) {
+
+                            // check for req plugins using our plugins list
+                            foreach ( $stack_params['required_plugins'] as $demo_req_plugin ) {
+
+	                            // check for req plugins using our plugins list
+                                if ( isset( $plugin_list[ $demo_req_plugin ] ) && !class_exists( $plugin_list[ $demo_req_plugin ], false ) ) {
+                                    $demo_required_plugins_array[] = $demo_req_plugin;
+
+                                // check for external req plugins
+                                } elseif ( in_array( $demo_req_plugin, $external_plugins_list ) && !class_exists( array_search( $demo_req_plugin, $external_plugins_list ), false ) ) {
+	                                $demo_required_plugins_array[] = $demo_req_plugin;
+                                }
+
+                            }
+
+                            if ( !empty ($demo_required_plugins_array) ) {
+                                $demo_req_plugin_class = 'td-demo-req-plugins-disabled';
+                                $td_demo_names_with_req_plugins[] = $stack_params['text'];
+                                $td_demo_with_plugins_list[$demo_id] =  $demo_required_plugins_array;
+                            }
+                        }
+
+                        // badge class
+                        $badge_class = '';
+                        if( isset($stack_params['badge']) && $stack_params['badge'] != '' ) {
+                            $badge_class = 'td-badge-' . $stack_params['badge'];
+                        }
+
+                        // demo img
+	                    $demo_img = 'https://demo.tagdiv.com/select_demo/images/newspaper/demos/' . $demo_id . '.jpg';
+
+                        ?>
+                        <div class="td-demo-<?php echo esc_attr( $demo_id ) ?> td-wp-admin-demo <?php echo esc_attr( $tmp_class . ' ' . $demo_req_plugin_class ) ?> td-demo-product td-filter" data-type="<?php echo implode(' ', $stack_params['type']) ?>">
+                            <div class="td-demo-product-inner">
+                                <h3 class="td-demo-titles"><?php printf( '%1$s', $stack_params['text'] ) ?></h3>
+
+                                <div class="td-demo-image <?php echo $badge_class ?>">
+                                    <a class="td-demo-image-inner" target="_blank" href="<?php echo td_global::$demo_list[$demo_id]['demo_url'] ?>">
+                                        <img data-scr="<?php echo $demo_img ?>" src="<?php echo $demo_img ?>" alt="" class="td-demo-img">
+                                        <div class="td-demo-img-overlay">
+                                            <img src="<?php echo TDC_URL_LEGACY ?>/assets/images/panel/demos/eye.svg" alt="" />
+                                            <span class="td-demo-img-overlay-txt">Preview</span>
+                                        </div>
+                                        <div class="td-progress-bar-wrap"><div class="td-progress-bar"></div></div>
+                                    </a>
+
+                                    <div class="td-demo-actions">
+                                        <?php
+                                        if ( empty( $demo_required_plugins_array ) ) { ?>
+                                            <a href="#" class="button td-button-install-demo" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Install</a>
+                                            <?php
+                                        } else {
+                                            $plugins_list_html = '';
+                                            $plugins_list_html .= '<h3>' . $stack_params['text'] . ' demo info:</h3>';
+                                            $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
+                                            $plugins_list_html .= '<ul>';
+                                            foreach ( $demo_required_plugins_array as $demo_req_plugin ) {
+                                                if ( in_array( $demo_req_plugin, $external_plugins_list ) ) {
+	                                                $plugins_list_html .= '<li>';
+	                                                $plugins_list_html .= '<span><a href="' . esc_url( admin_url( 'plugin-install.php?s=' . $demo_req_plugin . '&tab=search&type=term' ) ) . '">' . $demo_req_plugin . '</a></span>';
+	                                                $plugins_list_html .= '</li>';
+                                                } else {
+	                                                $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $demo_req_plugin . '</a></span></li>';
+                                                }
+                                            }
+                                            $plugins_list_html .= '</ul>';
+
+                                            echo '<a href="#" class="button td-tooltip td-req-demo-disabled" data-position="right" data-content-as-html="true" title="' . esc_attr($plugins_list_html) . '">Install</a>';
+
+                                        }
+                                        ?>
+
+                                        <a href="#" class="button td-button-uninstall-demo" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstall</a>
+                                        <a href="#" class="button td-button-installing-demo" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Installing...</a>
+                                        <a href="#" class="button td-button-demo-disabled">Install</a>
+                                        <a href="#" class="button td-button-uninstalling-demo" data-demo-id="<?php echo esc_attr( $demo_id ) ?>">Uninstalling...</a>
+
+                                        <div class="td-admin-checkbox td-small-checkbox">
+                                            <div class="td-demo-install-content">
+                                                <p>Include content</p>
+                                                <?php
+                                                echo td_panel_generator::checkbox(array(
+                                                    'ds' => 'td_import_theme_styles',
+                                                    'option_id' => 'td_import_menus',
+                                                    'true_value' => '',
+                                                    'false_value' => 'no'
+                                                ));
+                                                ?>
+                                            </div>
+                                            <p class="td-installed-text">
+                                                <?php
+                                                if (!empty(td_global::$demo_list[$demo_id]['demo_installed_text'])) {
+                                                    echo td_global::$demo_list[$demo_id]['demo_installed_text'];
+                                                } else {
+                                                    echo 'Demo installed!';
+                                                }
+                                                ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    <?php } ?>
 
                 </div>
-            <?php } ?>
-        </div>
+            </div>
 
-        <div class="td-demos-summary">
-            <span>Quick Install</span>
-            <ul>
-                <?php
-                ksort($td_demo_names);
-
-                foreach ($td_demo_names as $td_name => $demo_id) {
-
-	                $tmp_class = '';
-                    $plugins_list_html= '';
-
-	                if ( $installed_demo !== false and $installed_demo['demo_id'] == $demo_id ) {
-		                $tmp_class = 'td-demo-installed';
-	                }
-
-                    if ( in_array($td_name, $td_demo_names_with_req_plugins)) {
-                        $tmp_class = $tmp_class . ' td-req-demo-disabled';
-                    }
-
-                    if ( array_key_exists($demo_id, $td_demo_with_plugins_list)) {
-                        $plugins_list_html = '';
-                        $plugins_list_html .= '<h3>' . $td_name . ' demo info:</h3>';
-                        $plugins_list_html .= '<span>For this demo to work properly you will need to install and activate the following theme plugins:</span>';
-                        $plugins_list_html .= '<ul>';
-
-                        foreach ( $td_demo_with_plugins_list[$demo_id] as $plugin_name ) {
-                            $plugins_list_html .= '<li><span><a href="admin.php?page=td_theme_plugins">' . $plugin_name . '</a></span></li>';
-                        }
-                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . ' td-tooltip" data-demo-id="'. $demo_id . '" href="#" title="' . esc_attr($plugins_list_html) . '" data-position="right" data-content-as-html="true">' . $td_name . '</a></li>';
-                    } else {
-                        echo '<li><a class="td-wp-admin-demo td-demo-' . $demo_id . ' td-button-install-demo-quick ' . $tmp_class . '" data-demo-id="'. $demo_id . '" href="#">' . $td_name . '</a></li>';
-                    }
-                }?>
-            </ul>
-        </div>
+        <?php } ?>
     </div>
 
 </div>

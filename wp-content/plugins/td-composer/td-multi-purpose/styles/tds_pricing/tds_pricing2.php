@@ -33,10 +33,6 @@ class tds_pricing2 extends td_style {
 		$raw_css =
 			"<style>
 
-				$unique_block_class.tdm-pricing-featured:before {
-				    display: none;
-				}
-
 				/* @header_color_gradient */
 				.$unique_style_class.tds-pricing2 .tdm-pricing-header {
 				    @header_color_gradient
@@ -85,6 +81,10 @@ class tds_pricing2 extends td_style {
 				.$unique_style_class .tdm-pricing-feature i {
 				    color: @icon_color;
 				}
+				.$unique_style_class .tdm-pricing-feature .tdm-pricing-icon-svg svg,
+				.$unique_style_class .tdm-pricing-feature .tdm-pricing-icon-svg svg * {
+				    fill: @icon_color;
+				}
 				/* @features_non_color */
 				.$unique_style_class .tdm-pricing-feature.tdm-pricing-feature-non {
 				    color: @features_non_color;
@@ -93,12 +93,19 @@ class tds_pricing2 extends td_style {
 				.$unique_style_class .tdm-pricing-feature.tdm-pricing-feature-non i {
 				    color: @icon_non_color;
 				}
+				.$unique_style_class .tdm-pricing-feature.tdm-pricing-feature-non .tdm-pricing-icon-svg svg,
+				.$unique_style_class .tdm-pricing-feature.tdm-pricing-feature-non .tdm-pricing-icon-svg svg * {
+				    fill: @icon_non_color;
+				}
 				/* @icon_size */
 				.$unique_style_class .tdm-pricing-feature i {
 				    font-size: @icon_size;
 				}
+				.$unique_style_class .tdm-pricing-feature .tdm-pricing-icon-svg svg {
+				    width: @icon_size;
+				}
 				/* @icon_space */
-				.$unique_style_class .tdm-pricing-feature i {
+				.$unique_style_class .tdm-pricing-feature .tdm-pricing-icon {
 				    margin-right: @icon_space;
 				}
 				
@@ -271,8 +278,8 @@ class tds_pricing2 extends td_style {
         $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
         $button_position =  $this->get_shortcode_att( 'button_position' );
         $features = explode( "\n", rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'features' ) ) ) ) );
-        $features_icon = $this->get_shortcode_att( 'features_tdicon' );
-        $features_non_icon = $this->get_shortcode_att( 'features_non_tdicon' );
+        $features_icon = $this->get_icon_att( 'features_tdicon' );
+        $features_non_icon = $this->get_icon_att( 'features_non_tdicon' );
         $button_text = $this->get_shortcode_att( 'button_text' );
 
         $buffy_button = '';
@@ -286,8 +293,26 @@ class tds_pricing2 extends td_style {
             $buffy_button .= $tds_button_instance->render();
         }
 
+        $buffy_features_icon = '';
+        if( !empty( $features_icon ) ) {
+            if( base64_encode( base64_decode( $features_icon ) ) == $features_icon ) {
+                $buffy_features_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg">' . base64_decode( $features_icon ) . '</span>';
+            } else {
+                $buffy_features_icon .= '<i class="tdm-pricing-icon ' . $features_icon . '"></i>';
+            }
+        }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy_features_non_icon = '';
+        if( !empty( $features_non_icon ) ) {
+            if( base64_encode( base64_decode( $features_non_icon ) ) == $features_non_icon ) {
+                $buffy_features_non_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg">' . base64_decode( $features_non_icon ) . '</span>';
+            } else {
+                $buffy_features_non_icon .= '<i class="tdm-pricing-icon ' . $features_non_icon . '"></i>';
+            }
+        }
+
+
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-pricing-wrap ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             if ( !empty($ribbon_text) ) {
@@ -344,12 +369,12 @@ class tds_pricing2 extends td_style {
 
                     $icon = '';
                     if ( $non_feature == '' ) {
-                        if ( !empty( $features_icon ) ) {
-                            $icon = '<i class="' . $features_icon . '"></i>';
+                        if ( !empty( $buffy_features_icon ) ) {
+                            $icon = $buffy_features_icon;
                         }
                     } else {
-                        if ( !empty( $features_non_icon ) ) {
-                            $icon = '<i class="' . $features_non_icon . '"></i>';
+                        if ( !empty( $buffy_features_non_icon ) ) {
+                            $icon = $buffy_features_non_icon;
                         }
                     }
 

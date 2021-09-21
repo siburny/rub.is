@@ -2,6 +2,16 @@
 
 do_action( 'td_wp_booster_legacy' );
 
+/**
+ * Disable automate update for tagDiv themes
+ */
+add_filter( 'auto_update_theme', function($update, $item) {
+    if ( !empty($item) && is_object( $item) && !empty($item->theme) && ( 'Newspaper' === $item->theme || 'Newsmag' === $item->theme)) {
+        return false;
+    }
+    return $update;
+}, 999, 2);
+
 
 /**
  * Admin notices
@@ -87,9 +97,11 @@ function tagdiv_theme_css() {
 		}
 
 		// WooCommerce style
-		if ( class_exists( 'WooCommerce', false ) ) {
-			wp_enqueue_style( 'td-theme-woo', TAGDIV_ROOT . '/tagdiv-less-style.css.php?part=woocommerce', array(), wp_get_theme()->get( 'Version' ) );
-		}
+        if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && !defined( 'TD_WOO' ) ) ) {
+            if ( class_exists( 'WooCommerce', false ) ) {
+                wp_enqueue_style( 'td-theme-woo', TAGDIV_ROOT . '/tagdiv-less-style.css.php?part=woocommerce', array(), wp_get_theme()->get( 'Version' ) );
+            }
+        }
 
 		// Buddypress
 		if ( class_exists( 'Buddypress', false ) ) {
@@ -107,9 +119,11 @@ function tagdiv_theme_css() {
 		}
 
 		// WooCommerce style
-		if ( class_exists( 'WooCommerce', false ) ) {
-			wp_enqueue_style( 'td-theme-woo', TAGDIV_ROOT . '/style-woocommerce.css', array(), wp_get_theme()->get( 'Version' ) );
-		}
+        if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && !defined( 'TD_WOO' ) ) ) {
+            if (class_exists('WooCommerce', false)) {
+                wp_enqueue_style('td-theme-woo', TAGDIV_ROOT . '/style-woocommerce.css', array(), wp_get_theme()->get('Version'));
+            }
+        }
 
 		// Buddypress
 		if ( class_exists( 'Buddypress', false ) ) {
@@ -152,10 +166,6 @@ if( !function_exists('load_front_js') ) {
 			wp_enqueue_script('tagdiv-theme-js', TAGDIV_ROOT . '/includes/js/tagdiv-theme.js', array('jquery'), TD_THEME_VERSION, true);
 		} else {
 			wp_enqueue_script('tagdiv-theme-js', TAGDIV_ROOT . '/includes/js/tagdiv-theme.min.js', array('jquery'), TD_THEME_VERSION, true);
-		}
-		// Load comments reply support if needed
-		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-			wp_enqueue_script( 'comment-reply' );
 		}
 	}
 	add_action( 'wp_enqueue_scripts', 'tagdiv_theme_js' );
@@ -228,7 +238,7 @@ if ( ! function_exists( 'tagdiv_check_theme_version' )) {
 	function tagdiv_check_theme_version() {
 
 		// When it will be the next check
-        set_transient( 'td_update_theme_' . TD_THEME_NAME, '1', 3 * HOUR_IN_SECONDS );
+        set_transient( 'td_update_theme_' . TD_THEME_NAME, '1', 3 * DAY_IN_SECONDS );
 
         tagdiv_util::update_option( 'theme_update_latest_version', '' );
         tagdiv_util::update_option( 'theme_update_versions', '' );

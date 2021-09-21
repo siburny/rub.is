@@ -1,8 +1,30 @@
-<?php 
+<?php
 
 
 
-/*  ---------------------------------------------------------------------------- 
+/*  ----------------------------------------------------------------------------
+	TDS LOCKERS
+*/
+// add post meta for default locker
+//td_demo_content::add_locker_meta( array(
+//		'tds_locker_id' => (int) get_option( 'tds_default_locker_id' ),
+//		'tds_locker_meta' => array(
+//			'tds_locker_settings' => array(
+//				'tds_title' => 'This Content Is Only For Subscribers',
+//				'tds_message' => 'Please subscribe to unlock this content. Enter your email to get access.',
+//				'tds_input_placeholder' => 'Please enter your email address.',
+//				'tds_submit_btn_text' => 'Subscribe to unlock',
+//				'tds_after_btn_text' => 'Your email address is 100% safe from spam!',
+//				'tds_pp_msg' => 'Check this !! ',
+//			),
+//			'tds_locker_styles' => array(
+//				'tds_bg_color' => '#d3d3d3',
+//			),
+//		)
+//	)
+//);
+
+/*  ----------------------------------------------------------------------------
 	CATEGORIES
 */
 $cat_tagdiv_architecture_id = td_demo_category::add_category(array(
@@ -1206,7 +1228,7 @@ $post_watch_awesome_kate_manner_go_full_cooking_pro_in_england_this_week_id = td
 ));
 
 $post_silicon_valley_guru_affected_by_the_fulminant_slashed_investments_id = td_demo_content::add_post(array(
-	'title' => 'Silicon Valley Guru Affected by the Fulminant Slashed Investments',
+	'title' => 'Silicon Valley Guru Affected by the Fulminant Slashed',
 	'file' => 'post_default.txt',
 	'featured_image_td_id' => 'td_pic_3',
 	'categories_id_array' => array($cat_tagdiv_architecture_id,$cat_tagdiv_business_id,$cat_tagdiv_decorating_id,$cat_tagdiv_gadgets_id,$cat_tagdiv_health_fitness_id,$cat_tagdiv_interiors_id,$cat_tagdiv_make_it_modern_id,$cat_tagdiv_mobile_phones_id,$cat_tagdiv_new_look_id,$cat_tagdiv_photography_id,$cat_tagdiv_racing_id,$cat_tagdiv_recipes_id,$cat_tagdiv_reviews_id,$cat_tagdiv_sport_id,$cat_tagdiv_street_fashion_id,$cat_tagdiv_style_hunter_id,$cat_tagdiv_travel_id,$cat_tagdiv_video_id,$cat_tagdiv_vogue_id,),
@@ -1447,5 +1469,5 @@ td_demo_misc::add_social_buttons(array('facebook' => '#','instagram' => '#','twi
     ads
  */
 td_demo_misc::clear_all_ads();
-td_demo_misc::add_ad_image('header', 'tdx_pic_9');
-td_demo_misc::add_ad_image('sidebar', 'tdx_pic_10');
+td_demo_misc::add_ad_image('header', 'tdx_pic_9', 728, 90);
+td_demo_misc::add_ad_image('sidebar', 'tdx_pic_10', 300, 250);

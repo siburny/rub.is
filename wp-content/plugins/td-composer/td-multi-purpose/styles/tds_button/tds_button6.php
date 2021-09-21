@@ -8,12 +8,14 @@
 
 class tds_button6 extends td_style {
 
+    private $unique_block_class;
     private $unique_style_class;
     private $atts = array();
     private $index_style;
 
     function __construct( $atts, $index_style = '', $unique_block_class = '') {
         $this->atts = $atts;
+        $this->unique_block_class = $unique_block_class;
         $this->index_style = $index_style;
     }
 
@@ -23,6 +25,11 @@ class tds_button6 extends td_style {
 
         $unique_style_class = $this->unique_style_class;
 
+        $unique_block_active_class = '';
+        if ( ! empty( $this->unique_block_class ) ) {
+            $unique_block_active_class = '.' . $this->unique_block_class . '.td-scroll-in-view .' . $unique_style_class;
+        }
+
 		$raw_css =
 			"<style>
 
@@ -30,16 +37,27 @@ class tds_button6 extends td_style {
                 .$unique_style_class {
                     min-width: @button_width;
                 }
+                /* @button_padding */
+                .$unique_style_class {
+                    padding: @button_padding;
+                    height: auto;
+                    line-height: 1;
+                }
 				/* @button_icon_size */
 				.$unique_style_class i {
 					font-size: @button_icon_size;
 				}
+				/* @button_icon_svg_size */
+				.$unique_style_class svg {
+					width: @button_icon_svg_size;
+                    height: auto;
+				}
 				/* @icon_left_margin */
-				.$unique_style_class i:last-child {
+				.$unique_style_class .tdm-btn-icon:last-child {
 					margin-left: @icon_left_margin;
 				}
 				/* @icon_right_margin */
-				.$unique_style_class i:first-child {
+				.$unique_style_class .tdm-btn-icon:first-child {
 					margin-right: @icon_right_margin;
 				}
 
@@ -47,6 +65,12 @@ class tds_button6 extends td_style {
 				body .$unique_style_class .tdm-btn-text,
 				body .$unique_style_class i {
 					color: @text_color_solid;
+				}
+				.$unique_style_class svg {
+				    fill: @text_color_solid;
+				}
+				.$unique_style_class svg * {
+				    fill: inherit;
 				}
 				/* @text_color_gradient */
 				body .$unique_style_class .tdm-btn-text,
@@ -60,10 +84,33 @@ class tds_button6 extends td_style {
 				    background: none;
 					color: @text_color_gradient_1;
 				}
+				body .$unique_style_class svg {
+				    fill: @text_color_gradient_1;
+				}
+				body .$unique_style_class svg * {
+				    fill: inherit;
+				}
 				/* @text_hover_color */
 				body .$unique_style_class:hover .tdm-btn-text,
 				body .$unique_style_class:hover i {
 					color: @text_hover_color;
+				}
+				body .$unique_style_class:hover svg {
+				    fill: @text_hover_color;
+				}
+				body .$unique_style_class:hover svg * {
+				    fill: inherit;
+				}
+				/* @text_active_color */
+				body $unique_block_active_class .tdm-btn-text,
+				body $unique_block_active_class i {
+					color: @text_active_color;
+				}
+				body $unique_block_active_class svg {
+				    fill: @text_active_color;
+				}
+				body $unique_block_active_class svg * {
+				    fill: inherit;
 				}
 				/* @text_hover_gradient */
 				body .$unique_style_class:hover .tdm-btn-text,
@@ -72,30 +119,71 @@ class tds_button6 extends td_style {
 					background: transparent;
 					transition: none;
 				}
+				/* @text_active_gradient */
+				body $unique_block_active_class .tdm-btn-text,
+				body $unique_block_active_class .tdm-btn-text i {
+					-webkit-text-fill-color: unset;
+					background: transparent;
+					transition: none;
+				}
 
 				/* @icon_color_solid */
-				.$unique_style_class i {
+				body .$unique_style_class i {
 					color: @icon_color_solid;
 				    -webkit-text-fill-color: unset;
     				background: transparent;
 				}
+				body .$unique_style_class svg {
+				    fill: @icon_color_solid;
+				}
+				body .$unique_style_class svg * {
+				    fill: inherit;
+				}
 				/* @icon_color_gradient */
-				.$unique_style_class i {
+				body .$unique_style_class i {
 					@icon_color_gradient
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
-				html[class*='ie'] .$unique_style_class i {
+				html[class*='ie'] body .$unique_style_class i {
 				    background: none;
 					color: @icon_color_gradient_1;
+				}
+				body .$unique_style_class svg {
+				    fill: @icon_color_gradient_1;
+				}
+				body .$unique_style_class svg * {
+				    fill: inherit;
 				}
 
 				/* @icon_hover_color */
 				body .$unique_style_class:hover i {
 					color: @icon_hover_color;
 				}
+				body .$unique_style_class:hover svg {
+				    fill: @icon_hover_color;
+				}
+				body .$unique_style_class:hover svg * {
+				    fill: inherit;
+				}
+				/* @icon_active_color */
+				body $unique_block_active_class i {
+					color: @icon_active_color;
+				}
+				body $unique_block_active_class svg {
+				    fill: @icon_active_color;
+				}
+				body $unique_block_active_class svg * {
+				    fill: inherit;
+				}
 				/* @icon_hover_gradient */
 				body .$unique_style_class:hover i {
+					-webkit-text-fill-color: unset;
+					background: transparent;
+					transition: none;
+				}
+				/* @icon_active_gradient */
+				body $unique_block_active_class i {
 					-webkit-text-fill-color: unset;
 					background: transparent;
 					transition: none;
@@ -122,6 +210,10 @@ class tds_button6 extends td_style {
 				/* @border_hover_color */
 				body .$unique_style_class:hover:before {
 					border-color: @border_hover_color;
+				}
+				/* @border_active_color */
+				body $unique_block_active_class:before {
+					border-color: @border_active_color;
 				}
 
 				/* @border_size */
@@ -150,6 +242,11 @@ class tds_button6 extends td_style {
 					top: @shadow_hover_offset;
 					left: @shadow_hover_offset;
 				}
+				/* @shadow_active_offset */
+				$unique_block_active_class:after {
+					top: @shadow_active_offset;
+					left: @shadow_active_offset;
+				}
 				/* @shadow_color */
 				.$unique_style_class:after {
 					background-color: @shadow_color;
@@ -158,6 +255,11 @@ class tds_button6 extends td_style {
 				/* @shadow_hover_color */
 				.$unique_style_class:hover:after {
 					background-color: @shadow_hover_color;
+					opacity: 1;
+				}
+				/* @shadow_active_color */
+				$unique_block_active_class:after {
+					background-color: @shadow_active_color;
 					opacity: 1;
 				}
 
@@ -189,6 +291,12 @@ class tds_button6 extends td_style {
      */
     static function cssMedia( $res_ctx ) {
 
+        $atts = $res_ctx->get_atts();
+        $scroll_to_class = '';
+        if( isset( $atts['scroll_to_class'] ) ) {
+            $scroll_to_class = $res_ctx->get_shortcode_att('scroll_to_class');
+        }
+
         // button width
         $button_width = $res_ctx->get_shortcode_att( 'button_width' );
         $res_ctx->load_settings_raw( 'button_width', $button_width );
@@ -198,7 +306,11 @@ class tds_button6 extends td_style {
             }
         }
 
-
+        $button_padding = $res_ctx->get_shortcode_att('button_padding');
+        $res_ctx->load_settings_raw( 'button_padding', $button_padding );
+        if( $button_padding != '' && is_numeric( $button_padding ) ) {
+            $res_ctx->load_settings_raw( 'button_padding', $button_padding . 'px' );
+        }
 
         /*-- TEXT -- */
         // text color
@@ -210,21 +322,36 @@ class tds_button6 extends td_style {
         if ( !empty ($text_hover_color ) ) {
             $res_ctx->load_settings_raw( 'text_hover_gradient', 1 );
         }
+        if( $scroll_to_class != '' ) {
+            $res_ctx->load_settings_raw( 'text_active_color', $text_hover_color);
+            if ( !empty ($text_hover_color ) ) {
+                $res_ctx->load_settings_raw( 'text_active_gradient', 1 );
+            }
+        }
 
 
 
         /*-- ICON -- */
+        $button_icon = $res_ctx->get_icon_att('button_tdicon' );
         // icon size
         $icon_size = $res_ctx->get_shortcode_att('button_icon_size' );
-        $res_ctx->load_settings_raw( 'button_icon_size', $icon_size );
-        if( $icon_size != '' ) {
-            if( is_numeric( $icon_size ) ) {
-                $res_ctx->load_settings_raw( 'button_icon_size', $icon_size . 'px' );
+        if( base64_encode( base64_decode( $button_icon ) ) == $button_icon ) {
+            $res_ctx->load_settings_raw( 'button_icon_svg_size', $icon_size );
+            if( $icon_size != '' ) {
+                if( is_numeric( $icon_size ) ) {
+                    $res_ctx->load_settings_raw( 'button_icon_svg_size', $icon_size . 'px' );
+                }
+            }
+        } else {
+            $res_ctx->load_settings_raw( 'button_icon_size', $icon_size );
+            if( $icon_size != '' ) {
+                if( is_numeric( $icon_size ) ) {
+                    $res_ctx->load_settings_raw( 'button_icon_size', $icon_size . 'px' );
+                }
             }
         }
 
         // icon space
-        $button_icon = $res_ctx->get_shortcode_att('button_tdicon' );
         if ( !empty ( $button_icon ) ) {
             $icon_space = $res_ctx->get_shortcode_att( 'button_icon_space' );
 
@@ -252,6 +379,12 @@ class tds_button6 extends td_style {
         if ( !empty ($icon_hover_color ) ) {
             $res_ctx->load_settings_raw( 'icon_hover_gradient', 1 );
         }
+        if( $scroll_to_class != '' ) {
+            $res_ctx->load_settings_raw( 'icon_active_color', $icon_hover_color);
+            if ( !empty ($icon_hover_color ) ) {
+                $res_ctx->load_settings_raw( 'icon_active_gradient', 1 );
+            }
+        }
 
 
 
@@ -264,10 +397,15 @@ class tds_button6 extends td_style {
 
         // shadow hover offset
         $res_ctx->load_settings_raw( 'shadow_hover_offset', $res_ctx->get_style_att( 'shadow_hover_offset', __CLASS__ ) . 'px' );
+        if( $scroll_to_class != '' ) {
+            $res_ctx->load_settings_raw( 'shadow_active_offset', $res_ctx->get_style_att( 'shadow_hover_offset', __CLASS__ ) . 'px' );
+        }
 
         // shadow hover color
         $res_ctx->load_settings_raw( 'shadow_hover_color', $res_ctx->get_style_att( 'shadow_hover_color', __CLASS__ ) );
-
+        if( $scroll_to_class != '' ) {
+            $res_ctx->load_settings_raw( 'shadow_active_color', $res_ctx->get_style_att( 'shadow_hover_color', __CLASS__ ) );
+        }
 
 
         /*-- BORDER -- */
@@ -298,6 +436,11 @@ class tds_button6 extends td_style {
         if ( !empty( $border_hover_color ) ) {
             $res_ctx->load_settings_raw( 'border_hover_color', $border_hover_color);
         }
+        if( $scroll_to_class != '' ) {
+            if ( !empty( $border_hover_color ) ) {
+                $res_ctx->load_settings_raw( 'border_active_color', $border_hover_color);
+            }
+        }
 
         // border radius
         $border_radius = $res_ctx->get_style_att( 'border_radius', __CLASS__ );
@@ -323,7 +466,7 @@ class tds_button6 extends td_style {
         }
         $this->unique_style_class = td_global::td_generate_unique_id();
 
-        $icon = $this->get_shortcode_att('button_tdicon', $this->index_style);
+        $icon = $this->get_icon_att('button_tdicon', $this->index_style);
         $icon_position = $this->get_shortcode_att('button_icon_position', $this->index_style);
 
         $target = '';
@@ -336,9 +479,19 @@ class tds_button6 extends td_style {
 		    $button_url = '#';
 	    }
 
+        //set rel attribute on button url
+        $td_link_rel = '';
+        if ( '' !== $this->get_shortcode_att('button_url_rel', $this->index_style) ) {
+            $td_link_rel = ' rel="' . $this->get_shortcode_att('button_url_rel', $this->index_style) . '" ';
+        }
+
         $buffy_icon = '';
         if ( !empty( $icon ) ) {
-            $buffy_icon .= '<i class="' . $icon . '"></i>';
+            if( base64_encode( base64_decode( $icon ) ) == $icon ) {
+                $buffy_icon .= '<span class="tdm-btn-icon tdm-btn-icon-svg">' . base64_decode( $icon ) . '</span>';
+            } else {
+                $buffy_icon .= '<i class="tdm-btn-icon ' . $icon . '"></i>';
+            }
         }
 
         /**
@@ -384,9 +537,9 @@ class tds_button6 extends td_style {
             }
         }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' td-fix-index">';
-            $buffy .= '<a href="' . $button_url . '" class="' . self::get_class_style(__CLASS__) . ' tdm-btn ' . $this->get_shortcode_att('button_size', $this->index_style) . ' ' . $this->unique_style_class . '" ' . $target . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '>';
+            $buffy .= '<a href="' . $button_url . '" class="' . self::get_class_style(__CLASS__) . ' tdm-btn ' . $this->get_shortcode_att('button_size', $this->index_style) . ' ' . $this->unique_style_class . '" ' . $td_link_rel . $target . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '>';
                 if ( $icon_position == 'icon-before' ) {
                     $buffy .= $buffy_icon;
                 }

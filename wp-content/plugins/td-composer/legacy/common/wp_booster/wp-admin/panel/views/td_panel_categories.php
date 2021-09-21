@@ -19,8 +19,9 @@ if ( td_global::is_tdb_registered() ) {
         foreach ( $wp_query_templates->posts as $post ) {
 
             $tdb_template_type = get_post_meta( $post->ID, 'tdb_template_type', true );
+            $meta_is_mobile_template = get_post_meta($post->ID, 'tdc_is_mobile_template', true);
 
-            if ( $tdb_template_type === 'category' ) {
+            if ( $tdb_template_type === 'category' && (empty($meta_is_mobile_template) || '0' === $meta_is_mobile_template)) {
                 $tdb_category_template_type_values [] = array(
                     'text' => $post->post_title,
                     'val' => 'tdb_template_' . $post->ID
@@ -47,9 +48,21 @@ if ( td_global::is_tdb_registered() ) {
 
         <?php
 
+        $option_id = 'tdb_category_template';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
         echo td_panel_generator::dropdown(array(
             'ds' => 'td_option',
-            'option_id' => 'tdb_category_template',
+            'option_id' => $option_id,
             'values' => array_merge(
                 array(
                     array('text' => '- No Template -' , 'val' => ''),

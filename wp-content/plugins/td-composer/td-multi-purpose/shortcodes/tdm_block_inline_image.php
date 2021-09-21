@@ -9,23 +9,60 @@ class tdm_block_inline_image extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $unique_block_modal_class = $this->block_uid . '_m';
 
         $raw_css =
             "<style>
 
+                /* @style_general_inline_image */
+                .tdm_block.tdm_block_inline_image {
+                  position: relative;
+                  margin-bottom: 0;
+                  line-height: 0;
+                }
+                .tdm_block.tdm_block_inline_image .tdm-inline-image-wrap {
+                  position: relative;
+                  display: inline-block;
+                }
+                .tdm_block.tdm_block_inline_image .td-image-video-modal {
+                  cursor: pointer;
+                }
+                .tdm_block.tdm_block_inline_image .tdm-caption {
+                  width: 100%;
+                  font-family: Verdana, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif;
+                  padding-top: 6px;
+                  padding-bottom: 6px;
+                  font-size: 12px;
+                  font-style: italic;
+                  font-weight: normal;
+                  line-height: 17px;
+                  color: #444;
+                }
+                .tdm_block.tdm_block_inline_image.tdm-caption-over-image .tdm-caption {
+                  position: absolute;
+                  left: 0;
+                  bottom: 0;
+                  margin-top: 0;
+                  padding-left: 10px;
+                  padding-right: 10px;
+                  width: 100%;
+                  background: rgba(0, 0, 0, 0.7);
+                  color: #fff;
+                }
+                
                 /* @caption_text_color */
-                body .tdm_block.tdm_block_inline_image.$unique_block_class .tdm-caption {
+                body .td-theme-wrap .$unique_block_class .tdm-caption {
                     color: @caption_text_color;
                 }
                 /* @caption_background_color */
-                body .tdm_block.tdm_block_inline_image.$unique_block_class .tdm-caption {
+                body .td-theme-wrap .$unique_block_class .tdm-caption {
                     padding-left: 10px;
                     padding-right: 10px;
                     background-color: @caption_background_color;
                 }
                 /* @caption_background_gradient */
-                body .tdm_block.tdm_block_inline_image.$unique_block_class .tdm-caption {
+                body .td-theme-wrap .$unique_block_class .tdm-caption {
                     padding-left: 10px;
                     padding-right: 10px;
                     @caption_background_gradient
@@ -61,7 +98,7 @@ class tdm_block_inline_image extends td_block {
 				    box-shadow: @shadow;
 				}
 				/* @f_caption */
-				.tdm_block.$unique_block_class .tdm-caption {
+				body .$unique_block_class .tdm-caption {
 					@f_caption
 				}
 				
@@ -134,6 +171,34 @@ class tdm_block_inline_image extends td_block {
                         filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
                     }
                 }
+                
+                
+                /* @video_icon_size */
+				.$unique_block_class .td-video-play-ico {
+					width: @video_icon_size;
+					height: @video_icon_size;
+					font-size: @video_icon_size;
+				}
+                /* @video_rec_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-rec-title {
+				    color: @video_rec_color;
+				}
+				/* @video_bg_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    background-color: @video_bg_color;
+				}
+				/* @video_bg_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    @video_bg_gradient
+				}
+				/* @video_overlay_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_color;
+				}
+				/* @video_overlay_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_gradient;
+				}
 
 			</style>";
 
@@ -153,6 +218,9 @@ class tdm_block_inline_image extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_inline_image', 1 );
+
+        /*-- IMAGE -- */
         // image width
         $img_width = $res_ctx->get_shortcode_att( 'img_width' );
         $res_ctx->load_settings_raw( 'img_width', $img_width );
@@ -162,29 +230,40 @@ class tdm_block_inline_image extends td_block {
             }
         }
 
+
+
+        /*-- VIDEO MODAL -- */
+        // video icon size
+        $video_icon_size = $res_ctx->get_shortcode_att('video_icon_size');
+        if ( $video_icon_size != '' && is_numeric( $video_icon_size ) ) {
+            $res_ctx->load_settings_raw( 'video_icon_size', $video_icon_size . 'px' );
+        }
+
+
+
+        /*-- COLORS -- */
         // shadow
         $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow' );
-
-
-
-        /*-- OVERLAY -- */
         // overlay color
         $res_ctx->load_color_settings( 'overlay_color', 'overlay_color', 'overlay_color_gradient', '', '');
-
-
-
-        /*-- CAPTION -- */
         // caption text color
         $res_ctx->load_settings_raw( 'caption_text_color', $res_ctx->get_shortcode_att( 'caption_text_color' ) );
-
         // caption background color
         $res_ctx->load_color_settings( 'caption_background_color', 'caption_background_color', 'caption_background_gradient', '', '');
+
+        // video modal
+        $res_ctx->load_settings_raw( 'video_rec_color', $res_ctx->get_shortcode_att('video_rec_color') );
+        $res_ctx->load_color_settings( 'video_bg', 'video_bg_color', 'video_bg_gradient', '', '' );
+        $res_ctx->load_color_settings( 'video_overlay', 'video_overlay_color', 'video_overlay_gradient', '', '' );
 
 
 
         /*-- FONTS -- */
         $res_ctx->load_font_settings( 'f_caption' );
 
+
+
+        /*-- EFFECTS -- */
         // mix blend
         $mix_type = $res_ctx->get_shortcode_att('mix_type');
         if ( $mix_type != '' ) {
@@ -198,9 +277,8 @@ class tdm_block_inline_image extends td_block {
         } else {
             $res_ctx->load_settings_raw('mix_type_off', 1);
         }
-        $res_ctx->load_color_settings( 'mix_color_h', 'color_h', 'mix_gradient_h', '', '' );
 
-        // effects
+        $res_ctx->load_color_settings( 'mix_color_h', 'color_h', 'mix_gradient_h', '', '' );
         $res_ctx->load_settings_raw('fe_brightness', 'brightness(1)');
         $res_ctx->load_settings_raw('fe_contrast', 'contrast(1)');
         $res_ctx->load_settings_raw('fe_saturate', 'saturate(1)');
@@ -268,19 +346,32 @@ class tdm_block_inline_image extends td_block {
         $modal_image = $this->get_shortcode_att( 'modal_image' );
         $display_inline = $this->get_shortcode_att( 'display_inline' );
 
-	    if ( '' !== $image ) {
+        $image_info = '';
+        $image_width_html = '';
+        $image_height_html = '';
+        if ( '' !== $image ) {
 			$image_info = tdc_util::get_image($atts);
+            if (is_array($image_info)) {
+                $image_width_html = ' width="' . $image_info ["width"] . '"';
+                $image_height_html = ' height="' . $image_info["height"] . '"';
+            }
 	    }
+
 	    $image_title = '';
-	    if( $image_info['title'] !== '' ) {
-            $image_title = 'title="' . $image_info['title'] .  '"';
+	    if( isset($image_info['title']) && $image_info['title'] !== '' ) {
+            $image_title = ' title="' . $image_info['title'] .  '"';
         }
         $image_alt = '';
-        if( $image_info['alt'] != '' ) {
-            $image_alt = 'alt="' . $image_info['alt'] .  '"';
+        if( isset($image_info['alt']) && $image_info['alt'] != '' ) {
+            $image_alt = ' alt="' . $image_info['alt'] .  '"';
         }
 
         $additional_classes = array();
+
+        $tds_animation_stack = td_util::get_option('tds_animation_stack');
+        if ( empty($tds_animation_stack) ) { //lazyload animation is ON
+            $additional_classes[] = 'td-animation-stack';
+        }
 
         // display inline
         if( !empty ( $display_inline ) ) {
@@ -298,6 +389,42 @@ class tdm_block_inline_image extends td_block {
             $additional_classes[] = 'tdm-' . $content_align_horizontal;
         }
 
+        // video pop-up
+        $video_popup = $this->get_att( 'video_popup' );
+        $video_url = $this->get_att( 'video_url' );
+        $video_popup_class = '';
+        $video_popup_data = '';
+
+        if( $video_popup != '' ) {
+
+            if( $video_url != '' ) {
+                $video_source = td_video_support::detect_video_service($video_url);
+
+                $video_popup_class = 'td-image-video-modal';
+                $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url ) . '"';
+
+                $video_rec = '';
+                if( $this->get_att( 'video_rec' ) != '' ) {
+                    $video_rec = rawurldecode( base64_decode( strip_tags( $this->get_att( 'video_rec' ) ) ) );
+                }
+                $video_rec_title = '';
+                if( $this->get_att( 'video_rec_title' ) != '' ) {
+                    $video_rec_title = $this->get_att( 'video_rec_title' );
+                }
+
+                $video_popup_ad = array(
+                    'code' => $video_rec,
+                    'title' => $video_rec_title
+                );
+
+                if( $video_popup_ad['code'] != '' ) {
+                    $video_popup_data .= ' data-video-rec="' . base64_encode( json_encode($video_popup_ad) ) . '"';
+                }
+            }
+
+        }
+
+
 	    $buffy = '<div class="tdm_block ' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
 
 	    if ( empty( $image_info['url'] ) ) {
@@ -306,13 +433,20 @@ class tdm_block_inline_image extends td_block {
 		    //get the block css
 		    $buffy .= $this->get_block_css();
 
-		    $buffy .= '<div class="tdm-inline-image-wrap">';
-                if( !empty( $modal_image ) ) {
+		    $buffy .= '<div class="tdm-inline-image-wrap ' . $video_popup_class . '" ' . $video_popup_data . '>';
+                if( !empty( $modal_image ) && ( $video_popup == '' || $video_url == '' ) ) {
                     $buffy .= '<a href="' . $image_info['url'] . '">';
-                        $buffy .= '<img class="tdm-image td-fix-index td-modal-image" src="' . $image_info['url'] . '" ' . $image_title . ' ' . $image_alt . '>';
+                        $buffy .= '<img class="tdm-image td-fix-index td-modal-image" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
                     $buffy .= '</a>';
                 } else {
-                    $buffy .= '<img class="tdm-image td-fix-index" src="' . $image_info['url'] . '" ' . $image_title . ' ' . $image_alt . '>';
+                    if( $video_popup != '' && $video_url != '' ) {
+                        $buffy .= '<span class="td-video-play-ico"><i class="td-icon-video-thumb-play"></i></span>';
+                    }
+                    if ( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                        $buffy .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
+                    }else {
+                        $buffy .= '<img class="tdm-image td-fix-index" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
+                    }
                 }
             $buffy .= '</div>';
 

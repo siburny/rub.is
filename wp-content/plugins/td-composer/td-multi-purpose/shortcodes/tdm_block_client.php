@@ -8,10 +8,21 @@ class tdm_block_client extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
+
+				/* @style_general_client */
+				.tdm_block_client .tdm-client-name {
+                  margin-bottom: 13px;
+                  font-size: 15px;
+                  line-height: 17px;
+                }
+                .tdm_block_client .tdm-client-image {
+                  -webkit-transition: all 0.4s;
+                  transition: all 0.4s;
+                }
 
 				/* @name_color */
 				.$unique_block_class .tdm-client-name {
@@ -56,6 +67,8 @@ class tdm_block_client extends td_block {
      * @param $atts
      */
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_client', 1 );
 
         // block width
         $block_width = $res_ctx->get_shortcode_att( 'block_width' );
@@ -102,6 +115,29 @@ class tdm_block_client extends td_block {
         $display_inline = $this->get_shortcode_att( 'display_inline' );
 	    $content_align_horizontal = $this->get_shortcode_att( 'content_align_horizontal' );
 
+        $image_info = '';
+        $image_title = '';
+        $image_alt = ' alt="client-image"';
+        $image_width = '';
+        $image_height = '';
+
+        if ( '' !== $image ) {
+            $image_info = tdc_util::get_image($atts);
+
+            if ( isset($image_info['title']) && $image_info['title'] !== '' ) {
+                $image_title = ' title="' . $image_info['title'] . '"';
+            }
+            if ( isset($image_info['alt']) && $image_info['alt'] != '' ) {
+                $image_alt = ' alt="' . $image_info['alt'] . '"';
+            }
+            if ( isset($image_info['width']) && $image_info['width'] != '' ) {
+                $image_width = ' width="' . $image_info['width'] . '"';
+            }
+            if (isset($image_info['height']) && $image_info['height'] != '' ) {
+                $image_height = ' height="' . $image_info['height'] . '"';
+            }
+        }
+
         $additional_classes = array();
 
         // name tag
@@ -114,6 +150,12 @@ class tdm_block_client extends td_block {
             $target = ' target="_blank" ';
         }
 
+        // url rel
+        $url_rel = '';
+        if( $this->get_shortcode_att('url_rel') != '' ) {
+            $url_rel = ' rel="' . $this->get_shortcode_att('url_rel') . '" ';
+        }
+
         // display inline
         if( !empty ( $display_inline ) ) {
             $additional_classes[] = 'tdm-inline-block';
@@ -122,6 +164,11 @@ class tdm_block_client extends td_block {
         // content align horizontal
         if ( ! empty( $content_align_horizontal ) ) {
             $additional_classes[] = 'tdm-' . $content_align_horizontal;
+        }
+
+        $tds_animation_stack = td_util::get_option('tds_animation_stack');
+        if ( empty($tds_animation_stack) ) { //lazyload animation is ON
+            $additional_classes[] = 'td-animation-stack';
         }
 
         $buffy = '';
@@ -136,13 +183,18 @@ class tdm_block_client extends td_block {
             if ( ! empty( $name ) ) {
                 $buffy_client .= '<' . $name_tag . ' class="tdm-title tdm-title-xxsm tdm-client-name td-fix-index">' . $name . '</' . $name_tag . '>';
             }
-            if ( ! empty( $image ) ) {
-                $buffy_client .= '<img class="tdm-client-image td-fix-index" src="'. tdc_util::get_image_or_placeholder( $image ) . '">';
+            if (empty($tds_animation_stack) && !td_util::tdc_is_live_editor_ajax() && !td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp()) {
+                if (!empty($image)) {
+                    $buffy_client .= '<img class="tdm-client-image td-lazy-img td-fix-index" data-type="image_tag" data-img-url="' . tdc_util::get_image_or_placeholder($image) . '" ' . $image_title . $image_alt . $image_width . $image_height . '>';
+                }
+            } else {
+                if (!empty($image)) {
+                    $buffy_client .= '<img class="tdm-client-image td-fix-index" src="' . tdc_util::get_image_or_placeholder($image) . '" ' . $image_title . $image_alt . $image_width . $image_height . '>';
+                }
             }
 
-
             if ( !empty( $url ) ) {
-                $buffy .= '<a href="' . $url . '" ' . $target . '>';
+                $buffy .= '<a href="' . $url . '" ' . $target . $url_rel . '>';
                     $buffy .= $buffy_client;
                 $buffy .= '</a>';
             } else {

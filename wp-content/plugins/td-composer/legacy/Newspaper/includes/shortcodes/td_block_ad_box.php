@@ -5,7 +5,7 @@ class td_block_ad_box extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
@@ -293,6 +293,7 @@ class td_block_ad_box extends td_block {
         $this->atts = shortcode_atts(
             array(
                 'spot_id' => '', //header / sidebar etc
+                'spot_hide' => '',
                 'spot_img_all' => '',
                 'spot_img_tl' => '',
                 'spot_img_tp' => '',
@@ -300,6 +301,15 @@ class td_block_ad_box extends td_block {
                 'spot_url' => '',
                 'spot_url_rel' => '',
                 'spot_url_window' => '',
+                'spot_img_all_height_attribute' => '',
+                'spot_img_all_width_attribute' => '',
+                'spot_img_tp_height_attribute' => '',
+                'spot_img_tp_width_attribute' => '',
+                'spot_img_tl_height_attribute' => '',
+                'spot_img_tl_width_attribute' => '',
+                'spot_img_mob_height_attribute' => '',
+                'spot_img_mob_width_attribute' => '',
+                'spot_img_alt_attribute' => '',
                 'spot_img_all_hide' => '',
                 'spot_img_tl_hide' => '',
                 'spot_img_tp_hide' => '',
@@ -314,9 +324,16 @@ class td_block_ad_box extends td_block {
             ), $atts);
 
         $spot_id        = $this->atts['spot_id'];
+        $spot_hide      = $this->atts['spot_hide'];
         $spot_code      = rawurldecode( base64_decode( strip_tags( $this->atts['spot_code'] ) ) );
         $custom_title   = $this->atts['custom_title'];
         $spot_title     = $this->atts['spot_title'];
+
+        // hide spot for admins/editors
+        $spot_hide_bool = false;
+        if( $spot_hide != '' && ( current_user_can('administrator') || current_user_can('editor') ) ) {
+            $spot_hide_bool = true;
+        }
 
         // rec title
         $rec_title = '';
@@ -328,6 +345,13 @@ class td_block_ad_box extends td_block {
         }
 
         if(!empty($spot_title)) {
+
+            //we need to decode the square bracket case
+            if ( strpos( $spot_title, 'td_encval' ) === 0 ) {
+                $spot_title = str_replace('td_encval', '', $spot_title);
+                $spot_title = base64_decode( $spot_title );
+            }
+
             $rec_title .= '<span class="td-adspot-title">' . $spot_title . '</span>';
         }
 
@@ -366,6 +390,12 @@ class td_block_ad_box extends td_block {
             $spot_url_rel = ' rel="' . $this->atts['spot_url_rel'] . '" ';
         }
 
+        // custom ad images <img> alt attribute
+	    $spot_img_alt_attribute = ' alt="spot_img"';
+        if( $this->atts['spot_img_alt_attribute'] != '' ) {
+	        $spot_img_alt_attribute = ' alt="' . esc_attr( $this->atts['spot_img_alt_attribute'] ) . '" ';
+        }
+
 
         // For tagDiv composer add a placeholder element
         if (td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) {
@@ -381,20 +411,13 @@ class td_block_ad_box extends td_block {
                 // 'tdc-placeholder-title' is to style de placeholder
                 // block_uid is necessary to have a unique html template returned to the composer (without it the html change event doesn't trigger, and because of this the loader image is still preset)
 
-                $block_template_id = $this->get_att('block_template_id');
-
-                if (empty($block_template_id)) {
-                    $block_template_id = td_options::get('tds_global_block_template', 'td_block_template_1');
-                }
-
                 if( $spot_code != '' ) {
                     $spot_id_class = 'custom_ad_code';
                 } else {
                     $spot_id_class = $spot_id;
                 }
-                $ad_classes = $block_template_id . ' td-spot-id-' . $spot_id_class . ' ' . $this->block_uid . ' '. $this->get_wrapper_class();
 
-                return  '<div class="' . $ad_classes . '">' . $this->get_block_css() . $rec_title . '<div class="tdc-placeholder-title"></div></div>';
+                return $this->get_placeholder_block($spot_id_class, $rec_title);
             }
         }
 
@@ -429,22 +452,42 @@ class td_block_ad_box extends td_block {
                 }
 
                 foreach ($spot_imgs as $key => $spot_img) {
+
+	                // <img> width attribute
+	                $width_attribute = '';
+	                if( $this->atts[$key . '_width_attribute'] != '' ) {
+		                $width_attribute = ' width="' . esc_attr($this->atts[$key . '_width_attribute']) . '" ';
+	                }
+
+	                // <img> height attribute
+	                $height_attribute = '';
+	                if( $this->atts[$key . '_height_attribute'] != '' ) {
+		                $height_attribute = ' height="' . esc_attr($this->atts[$key . '_height_attribute']) . '" ';
+	                }
+
                     $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
-                    $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" alt="" />';
+                    $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" ' . $spot_img_alt_attribute . $width_attribute . $height_attribute .  ' />';
                     $buffy .= '</a>';
                 }
                 $buffy .= '</div>';
             $buffy .= '</div>';
         } else if( $spot_code != '' ) {
+            if( $spot_hide_bool ) {
+                return $this->get_placeholder_block('custom_ad_code', $rec_title);
+            }
+
             $buffy .= '<div class="td-block td-a-rec td-a-rec-id-custom-spot ' . $this->get_ad_css_class( $atts ) . '">';
-            //get the block css
-            $buffy .= $this->get_block_css();
+                //get the block css
+                $buffy .= $this->get_block_css();
 
-            $buffy .= $rec_title;
+                $buffy .= $rec_title;
 
-            $buffy .= do_shortcode( stripslashes( $spot_code ) );
+                $buffy .= do_shortcode( stripslashes( $spot_code ) );
             $buffy .= '</div>';
         } else if (!empty($ad_array[$spot_id]['current_ad_type'])) {
+            if( $spot_hide_bool || ( !empty( $ad_array[$spot_id]['disable_for_admins'] ) && $ad_array[$spot_id]['disable_for_admins'] == 'yes' ) ) {
+                return $this->get_placeholder_block($spot_id, $rec_title);
+            }
 
             switch ($ad_array[$spot_id]['current_ad_type']) {
 
@@ -884,60 +927,85 @@ class td_block_ad_box extends td_block {
         $buffy .= '<script type="text/javascript">' . "\n";
 
 
-        //$buffy .= 'var td_a_g_custom_size = ' . json_encode($default_ad_sizes[$spot_id]) . ';' . "\n";
-
-        //$buffy .= 'var td_screen_width = document.body.clientWidth;' . "\n";
-
         //fix for adsense custom ad size settings not loading right when having the speedbooster active
         $buffy .= 'var td_screen_width = window.innerWidth;' . "\n";
 
 
+
         if ($default_ad_sizes[$spot_id]['disable_m'] == false and !empty($default_ad_sizes[$spot_id]['m_w']) and !empty($default_ad_sizes[$spot_id]['m_h'])) {
-            $buffy .= '
-                    if ( td_screen_width >= 1140 ) {
-                        /* large monitors */
-                        document.write(\'' . $rec_title . '<ins class="adsbygoogle" style="display:inline-block;width:' . $default_ad_sizes[$spot_id]['m_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['m_h'] . 'px" data-ad-client="' . $ad_array['g_data_ad_client'] . '" data-ad-slot="' . $ad_array['g_data_ad_slot'] . '"></ins>\');
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    }
-            ';
+            $buffy .= 'window.addEventListener("load", function(){            
+	            var placeAdEl = document.getElementById("td-ad-placeholder");
+			    if ( null !== placeAdEl && td_screen_width >= 1140 ) {
+			        
+			        /* large monitors */
+			        var adEl = document.createElement("ins");
+		            placeAdEl.replaceWith(adEl);	
+		            adEl.setAttribute("class", "adsbygoogle");
+		            adEl.setAttribute("style", "display:inline-block;width:' . $default_ad_sizes[$spot_id]['m_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['m_h'] . 'px");	            		                
+		            adEl.setAttribute("data-ad-client", "' .  $ad_array['g_data_ad_client'] . '");
+		            adEl.setAttribute("data-ad-slot", "' .  $ad_array['g_data_ad_slot'] . '");	            
+			        (adsbygoogle = window.adsbygoogle || []).push({});
+			    }
+			});';
         }
 
 
         if ($default_ad_sizes[$spot_id]['disable_tl'] == false and !empty($default_ad_sizes[$spot_id]['tl_w']) and !empty($default_ad_sizes[$spot_id]['tl_h'])) {
-            $buffy .= '
-	                    if ( td_screen_width >= 1019  && td_screen_width < 1140 ) {
-	                        /* landscape tablets */
-                        document.write(\'' . $rec_title . '<ins class="adsbygoogle" style="display:inline-block;width:' . $default_ad_sizes[$spot_id]['tl_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['tl_h'] . 'px" data-ad-client="' . $ad_array['g_data_ad_client'] . '" data-ad-slot="' . $ad_array['g_data_ad_slot'] . '"></ins>\');
-	                        (adsbygoogle = window.adsbygoogle || []).push({});
-	                    }
-	                ';
+	        $buffy .= 'window.addEventListener("load", function(){            
+	            var placeAdEl = document.getElementById("td-ad-placeholder");
+			    if ( null !== placeAdEl && td_screen_width >= 1019  && td_screen_width < 1140 ) {
+			    
+			        /* landscape tablets */
+			        var adEl = document.createElement("ins");
+		            placeAdEl.replaceWith(adEl);	
+		            adEl.setAttribute("class", "adsbygoogle");
+		            adEl.setAttribute("style", "display:inline-block;width:' . $default_ad_sizes[$spot_id]['tl_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['tl_h'] . 'px");	            		                
+		            adEl.setAttribute("data-ad-client", "' .  $ad_array['g_data_ad_client'] . '");
+		            adEl.setAttribute("data-ad-slot", "' .  $ad_array['g_data_ad_slot'] . '");	            
+			        (adsbygoogle = window.adsbygoogle || []).push({});
+			    }
+			});';
         }
 
 
         if ($default_ad_sizes[$spot_id]['disable_tp'] == false and !empty($default_ad_sizes[$spot_id]['tp_w']) and !empty($default_ad_sizes[$spot_id]['tp_h'])) {
-            $buffy .= '
-                    if ( td_screen_width >= 768  && td_screen_width < 1019 ) {
-                        /* portrait tablets */
-                        document.write(\'' . $rec_title . '<ins class="adsbygoogle" style="display:inline-block;width:' . $default_ad_sizes[$spot_id]['tp_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['tp_h'] . 'px" data-ad-client="' . $ad_array['g_data_ad_client'] . '" data-ad-slot="' . $ad_array['g_data_ad_slot'] . '"></ins>\');
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    }
-                ';
+	        $buffy .= 'window.addEventListener("load", function(){            
+	            var placeAdEl = document.getElementById("td-ad-placeholder");
+			    if ( null !== placeAdEl && td_screen_width >= 768  && td_screen_width < 1019 ) {
+			    
+			        /* portrait tablets */
+			        var adEl = document.createElement("ins");
+		            placeAdEl.replaceWith(adEl);	
+		            adEl.setAttribute("class", "adsbygoogle");
+		            adEl.setAttribute("style", "display:inline-block;width:' . $default_ad_sizes[$spot_id]['tp_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['tp_h'] . 'px");	            		                
+		            adEl.setAttribute("data-ad-client", "' .  $ad_array['g_data_ad_client'] . '");
+		            adEl.setAttribute("data-ad-slot", "' .  $ad_array['g_data_ad_slot'] . '");	            
+			        (adsbygoogle = window.adsbygoogle || []).push({});
+			    }
+			});';
         }
 
         if ($default_ad_sizes[$spot_id]['disable_p'] == false and !empty($default_ad_sizes[$spot_id]['p_w']) and !empty($default_ad_sizes[$spot_id]['p_h'])) {
-            $buffy .= '
-                    if ( td_screen_width < 768 ) {
-                        /* Phones */
-                        document.write(\'' . $rec_title . '<ins class="adsbygoogle" style="display:inline-block;width:' . $default_ad_sizes[$spot_id]['p_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['p_h'] . 'px" data-ad-client="' . $ad_array['g_data_ad_client'] . '" data-ad-slot="' . $ad_array['g_data_ad_slot'] . '"></ins>\');
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    }
-                ';
+	        $buffy .= 'window.addEventListener("load", function(){            
+	            var placeAdEl = document.getElementById("td-ad-placeholder");
+			    if ( null !== placeAdEl && td_screen_width < 768 ) {
+			    
+			        /* Phones */
+			        var adEl = document.createElement("ins");
+		            placeAdEl.replaceWith(adEl);	
+		            adEl.setAttribute("class", "adsbygoogle");
+		            adEl.setAttribute("style", "display:inline-block;width:' . $default_ad_sizes[$spot_id]['p_w'] . 'px;height:' . $default_ad_sizes[$spot_id]['p_h'] . 'px");	            		                
+		            adEl.setAttribute("data-ad-client", "' .  $ad_array['g_data_ad_client'] . '");
+		            adEl.setAttribute("data-ad-slot", "' .  $ad_array['g_data_ad_slot'] . '");	            
+			        (adsbygoogle = window.adsbygoogle || []).push({});
+			    }
+			});';
         }
 
-
-        //$buffy .= 'console.log(td_a_g_custom_size)';
-
         $buffy .= '</script>' . "\n";
+
+        $buffy .= $rec_title;
+        $buffy .= '<noscript id="td-ad-placeholder"></noscript>';
 
         $buffy .= '</div>' . "\n";
         $buffy .= "\n <!-- end A --> \n\n";
@@ -1065,6 +1133,19 @@ class td_block_ad_box extends td_block {
 
 
         return implode(' ', $block_classes);
+    }
+
+
+    function get_placeholder_block($spot_id_class, $rec_title) {
+        $block_template_id = $this->get_att('block_template_id');
+
+        if (empty($block_template_id)) {
+            $block_template_id = td_options::get('tds_global_block_template', 'td_block_template_1');
+        }
+
+        $ad_classes = $block_template_id . ' td-spot-id-' . $spot_id_class . ' ' . $this->block_uid . ' '. $this->get_wrapper_class();
+
+        return  '<div class="' . $ad_classes . '">' . $this->get_block_css() . $rec_title . '<div class="tdc-placeholder-title"></div></div>';
     }
 
 }

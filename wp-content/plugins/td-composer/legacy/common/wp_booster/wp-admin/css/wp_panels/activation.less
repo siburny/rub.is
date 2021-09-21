@@ -6,12 +6,9 @@
 
 .td-activate-wrap {
   background-color: #fff;
-  max-width: 672px;
-  margin-top: 48px;
-  margin-left: 16px;
   padding: 48px;
-  font-family: 'Open Sans', arial, sans-serif;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08); -webkit-box-sizing: border-box;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 
@@ -151,21 +148,18 @@
   }
 
   .td-activate-subtitle {
-    font-size: 28px;
+    font-size: 24px;
+    font-weight: 700;
     margin-top: -11px;
     margin-bottom: 12px;
     line-height: 30px;
   }
 
   .td-activate-description {
-    width: 100%;
-    font-size: 14px;
-    line-height: 24px;
     margin-bottom: 36px;
 
     @media (max-width: 400px) {
       margin-bottom: 25px;
-      font-size: 13px;
     }
   }
 }
@@ -174,7 +168,7 @@
 .td-envato-code-info {
   display: inline-block;
   padding-left: 22px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 17px;
 
   a {
@@ -208,7 +202,7 @@
 .td-input-title {
   margin-bottom: 10px;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   text-transform: uppercase;
   color: #000;
 
@@ -222,13 +216,15 @@
   text-decoration: none;
   margin-top: 5px;
   margin-bottom: 2px;
-  padding: 12px 20px 9px;
+  padding: 10px 20px 9px;
   display: inline-block;
   position: relative;
   text-transform: uppercase;
   font-size: 12px;
   opacity: 0.8;
   cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
   .transition(all 0.4s ease-out);
   border: none;
   background: transparent;
@@ -282,5 +278,88 @@
   ul {
     list-style-type: disc;
     margin-left: 45px;
+  }
+}
+
+
+.td-error-activate {
+  margin: 25px 20px 0 2px;
+
+  .td-wp-admin-button {
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 1px 22px 3px;
+    margin-top: 5px;
+  }
+  b, strong {
+    font-weight: 700;
+  }
+  .td-wp-admin-top {
+    width: 100%;
+    align-items: stretch;
+
+    &:before {
+      display: none;
+    }
+  }
+  .td-wp-admin-header {
+    margin: 0;
+    max-width: 1080px;
+    width: 100%;
+  }
+  .td-wp-admin-theme {
+    padding: 20px 30px 15px;
+    flex: 1;
+  }
+  .td-tagdiv-gradient {
+    position: absolute;
+    top: -142px;
+    left: -79px;
+    width: 500px;
+    -webkit-animation: fullrotate 5s infinite ease-out;
+    animation: fullrotate 5s infinite ease-out;
+
+    @media (max-width: 767px) {
+      top: -200px;
+      left: -280px;
+      width: 200%;
+    }
+  }
+  .td-tagdiv-brand-wrap {
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+  }
+
+  a {
+    font-size: 12px;
+  }
+  p {
+    font-size: 14px;
+  }
+}
+
+@-webkit-keyframes fullrotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0)
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes fullrotate {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0)
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg)
   }
 }

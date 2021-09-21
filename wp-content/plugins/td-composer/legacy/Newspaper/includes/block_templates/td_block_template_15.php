@@ -20,6 +20,90 @@ class td_block_template_15 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+            
+            /* @style_general_template_15 */
+            .td_block_template_15.widget > ul > li {
+                margin-left: 0 !important;
+            }
+            .td_block_template_15 .td-related-title a {
+                margin: 0 12px !important;
+                font-size: 14px;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_15 .td-related-title a {
+                    margin: 0 8px !important;
+                }
+            }
+            .td_block_template_15 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            .td_block_template_15 .td-block-title {
+                font-size: 17px;
+                font-weight: 500;
+                margin-top: 0;
+                margin-bottom: 26px;
+                padding: 15px 0;
+                line-height: 1;
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                background-color: #fff;
+            }
+            .td_block_template_15 .td-block-title:before {
+                content: '';
+                width: 100%;
+                height: 2px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: #4db2ec;
+                z-index: 1;
+            }
+            .td_block_template_15 .td-block-title:after {
+                content: '';
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: 1px solid #ededed;
+                z-index: 0;
+                pointer-events: none;
+            }
+            .td_block_template_15 .td-block-title > * {
+                margin: 0 18px;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter {
+                background-color: transparent !important;
+                display: inline-block;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option {
+                height: 100%;
+                display: table;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option i {
+                margin-right: 16px;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option .td-pulldown-filter-list {
+                border-width: 0 1px 1px;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option .td-pulldown-filter-link {
+                padding-right: 32px;
+            }
+            .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option .td-pulldown-more {
+                vertical-align: middle;
+                display: table-cell;
+                padding: 0;
+                opacity: 0.8;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_15 .td-block-title-wrap .td-wrapper-pulldown-filter .td-pulldown-filter-display-option .td-pulldown-more span {
+                    display: none;
+                }
+            }
+            
+            
+            
             /* @header_text_color */
             .$unique_block_class .td-block-title > *,
             .$unique_block_class .td-pulldown-filter-display-option,
@@ -74,7 +158,17 @@ class td_block_template_15 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_15', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+        }
+
         $td_css_compiler->load_setting_raw('header_color', $this->get_att('header_color'));
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('border_color', $this->get_att('border_color'));
@@ -103,7 +197,7 @@ class td_block_template_15 extends td_block_template {
         if(!empty($block_title_tag)) {
             $title_tag = $block_title_tag ;
         }
-        
+
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {

@@ -255,7 +255,7 @@ class tds_title3 extends td_style {
             $subtitle_position_class = 'tdm-subtitle-above';
         }
 
-		$buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+		$buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' ' . $subtitle_position_class . ' td-fix-index ' . $this->unique_style_class . '">';
             if ( !empty( $subtitle_position ) ) {

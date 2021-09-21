@@ -20,8 +20,9 @@ if ( td_global::is_tdb_registered() ) {
         foreach ( $wp_query_templates->posts as $post ) {
 
             $tdb_template_type = get_post_meta( $post->ID, 'tdb_template_type', true );
+            $meta_is_mobile_template = get_post_meta($post->ID, 'tdc_is_mobile_template', true);
 
-            if ( $tdb_template_type === 'header' ) {
+            if ( $tdb_template_type === 'header' && (empty($meta_is_mobile_template) || '0' === $meta_is_mobile_template)) {
                 $tdb_header_templates[] = array(
                     'text' => $post->post_title,
                     'val' => 'tdb_template_' . $post->ID
@@ -55,9 +56,11 @@ if ( td_global::is_tdb_registered() ) {
         if (class_exists('SitePress', false)) {
             global $sitepress;
             $sitepress_settings = $sitepress->get_settings();
-            $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-            if ( 1 === $translation_mode ) {
-                $option_id .= $sitepress->get_current_language();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
             }
         }
 

@@ -477,6 +477,71 @@
       select {
         margin-top: 10px;
       }
+
+      .tdb-form-check {
+        margin-top: 15px;
+        line-height: 1;
+
+        input[type='radio'],
+        input[type='checkbox'] {
+          display: none;
+
+          + label {
+            display: inline-block;
+            margin-bottom: 0;
+            cursor: pointer;
+
+            .tdb-check {
+              position: relative;
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              background-color: #fff;
+              cursor: pointer;
+              vertical-align: middle;
+              border-radius: 3px;
+              transition: all .3s ease-in-out;
+              box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+
+              &:after {
+                content: '\e9db';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                margin: auto;
+                font-family: 'newspaper';
+                font-size: 9px;
+                line-height: 1;
+                color: #fff;
+                opacity: 0;
+                transition: all .3s ease;
+                pointer-events: none;
+              }
+            }
+
+            .tdb-check-title {
+              position: relative;
+              padding-left: 6px;
+              user-select: none;
+              -webkit-user-select: none;
+              font-size: 11px;
+            }
+          }
+
+          &:checked {
+            + label {
+              .tdb-check {
+                background-color: #1a9a75;
+
+                &:after {
+                  opacity: 1;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -568,5 +633,56 @@
   .td-confirm-info{
     height: 288px !important;
     overflow-y: scroll;
+  }
+}
+
+// backup panel settings - diff panel
+.td-theme-settings-diff {
+  display: block;
+  margin-top: 4px;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.td-theme-settings-diff-info {
+  position: absolute;
+  width: 805px;
+  max-height: 150px;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  overflow-y: auto;
+  .box-shadow(0px 0px 20px 1px rgba(0, 0, 0, 0.15));
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .td-diff-wrap {
+    display: flex;
+    border-bottom: 1px solid #e6e6e6;
+
+    > div {
+      padding: 6px 12px;
+      border-right: 1px solid #efefef;
+      word-break: break-all;
+    }
+  }
+
+  .td-diff-head-wrap {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .td-diff-wrap:not(.td-diff-head-wrap) {
+    font-size: 11px;
+  }
+
+  .td-diff-title {
+    width: 30%;
+  }
+
+  .td-diff-val1,
+  .td-diff-val2 {
+    width: 35%;
   }
 }

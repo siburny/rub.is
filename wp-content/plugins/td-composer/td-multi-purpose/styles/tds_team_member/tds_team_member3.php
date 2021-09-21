@@ -35,8 +35,8 @@ class tds_team_member3 extends td_style {
 					background-size: @image_size;
 				}
 				/* @image_alignment */
-				.$unique_style_class .td-member-image {
-					background-position: @image_alignment;
+				.$unique_style_class .tdm-member-image {
+					background-position: center @image_alignment;
 				}
 				/* @img_width */
 				.$unique_style_class .tdm-member-image-wrap {
@@ -210,17 +210,24 @@ class tds_team_member3 extends td_style {
         $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
         $vertical_align = 'tdm-team-' . $this->get_style_att( 'content_align_vertical' );
 
+
         // name tag
         if ( empty($name_tag ) ) {
             $name_tag = 'h3';
         }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $tds_animation_stack = td_util::get_option('tds_animation_stack');
+
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-team-member-wrap ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . ' ' . $vertical_align . '">';
             if ( ! empty( $image ) ) {
                 $buffy .= '<div class="tdm-member-image-wrap">';
-                    $buffy .= '<div class="tdm-member-image td-fix-index" style="background-image: url(' . tdc_util::get_image_or_placeholder( $image ) . ');"></div>';
+                if( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                    $buffy .= '<div class="tdm-member-image td-lazy-img td-fix-index" data-type="css_image" data-img-url="' . tdc_util::get_image_or_placeholder($image) . '"></div>';
+                } else {
+                    $buffy .= '<div class="tdm-member-image td-fix-index" style="background-image: url(' . tdc_util::get_image_or_placeholder($image) . ');"></div>';
+                }
                 $buffy .= '</div>';
             }
 

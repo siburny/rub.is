@@ -123,7 +123,7 @@ abstract class td_module {
 	function get_author_photo() {
 		$buffy = '';
 
-		$buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '" class="td-author-photo">' . get_avatar( $this->post->post_author, '96' ) . '</a>';
+		$buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '" aria-label="author-photo" class="td-author-photo">' . get_avatar( $this->post->post_author, '96' ) . '</a>';
 
 		return $buffy;
 	}
@@ -149,7 +149,7 @@ abstract class td_module {
     }
 
 
-    function get_date($modified_date = '', $show_when_review = false) {
+    function get_date($modified_date = '', $show_when_review = false, $time_ago = '', $time_ago_add_txt = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_m_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -185,10 +185,40 @@ abstract class td_module {
                 $buffy .= '<span class="td-post-date">';
 
                 if ($modified_date == 'yes' || td_util::get_option('tds_m_show_modified_date') == 'yes') {
-                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_modified_date . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option('date_format'), $this->post->ID) . '</time>';
+                    $display_modified_date = get_the_modified_date(get_option('date_format'), $this->post->ID);
+
+                    if( $time_ago != '' ) {
+                        $current_time = current_time( 'timestamp' );
+                        $post_time_u  = get_the_modified_date('U', $this->post->ID );
+                        $diff = (int) abs( $current_time - $post_time_u );
+
+                        if ( $diff < WEEK_IN_SECONDS ) {
+                            $display_modified_date = human_time_diff( $post_time_u, $current_time );
+                            if( $time_ago_add_txt != '' ) {
+                                $display_modified_date .= ' ' . $time_ago_add_txt;
+                            }
+                        }
+                    }
+
+                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_modified_date . '" >' . $display_modified_date . '</time>';
                 }
                 else {
-                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_date . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                    $display_date = get_the_time(get_option('date_format'), $this->post->ID);
+
+                    if( $time_ago != '' ) {
+                        $current_time = current_time( 'timestamp' );
+                        $post_time_u  = get_the_time('U', $this->post->ID );
+                        $diff = (int) abs( $current_time - $post_time_u );
+
+                        if ( $diff < WEEK_IN_SECONDS ) {
+                            $display_date = human_time_diff( $post_time_u, $current_time );
+                            if( $time_ago_add_txt != '' ) {
+                                $display_date .= ' ' . $time_ago_add_txt;
+                            }
+                        }
+                    }
+
+                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_date . '" >' . $display_date . '</time>';
                 }
 
                 $buffy .= '</span>';
@@ -385,7 +415,7 @@ abstract class td_module {
                 //general video modal used on Newsmag
                 if ( TD_THEME_NAME == 'Newsmag' && $td_global_video_modal == '' ){
                         $td_show_video_modal = true;
-                    
+
                 } else { //when it is set on shortcode
                     if ( isset($this->module_atts['video_popup' . $video_popup_param_no]) && $this->module_atts['video_popup' . $video_popup_param_no] != '' ) {
                         $td_show_video_modal = true;
@@ -402,7 +432,7 @@ abstract class td_module {
                         $video_source = td_video_support::detect_video_service($video_url[0]['td_video']);
 
                         $video_popup_class = 'td-module-video-modal';
-                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. $video_url[0]['td_video'] . '"';
+                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url[0]['td_video'] ) . '"';
 
                         $video_rec = '';
                         if( isset($this->module_atts['video_rec' . $video_popup_param_no]) ) {
@@ -412,10 +442,17 @@ abstract class td_module {
                         if( isset($this->module_atts['video_rec_title' . $video_popup_param_no]) ) {
                             $video_rec_title = $this->module_atts['video_rec_title' . $video_popup_param_no];
                         }
+                        $video_rec_disable = false;
+                        if( isset($this->module_atts['video_rec_disable' . $video_popup_param_no]) && ( current_user_can('administrator') || current_user_can('editor') ) ) {
+                            if( $this->module_atts['video_rec_disable' . $video_popup_param_no] != '' ) {
+                                $video_rec_disable = true;
+                            }
+                        }
 
                         $video_popup_ad = array(
                             'code' => $video_rec,
-                            'title' => $video_rec_title
+                            'title' => $video_rec_title,
+                            'disable' => $video_rec_disable,
                         );
 
                         if( $video_popup_ad['code'] == '' ) {
@@ -423,6 +460,11 @@ abstract class td_module {
                         }
                         if( $video_popup_ad['title'] == '' ) {
                             $video_popup_ad['title'] = td_options::get( 'tds_modal_video_ad_title');
+                        }
+                        if( !$video_popup_ad['disable'] && ( current_user_can('administrator') || current_user_can('editor') ) ) {
+                            if( td_options::get( 'tds_modal_video_ad_disable') != '' ) {
+                                $video_popup_ad['disable'] = true;
+                            }
                         }
 
                         if( $video_popup_ad['code'] != '' ) {
@@ -495,7 +537,7 @@ abstract class td_module {
                                         <style>
                                               @media ( -webkit-max-device-pixel-ratio: 2 ) {
                                                   .td-thumb-css.' . $retina_uuid . ' {
-                                                      background-image: url(' . $retina_url[0] . ');
+                                                      background-image: url("' . $retina_url[0] . '");
                                                   }
                                               }
                                         </style>
@@ -503,7 +545,7 @@ abstract class td_module {
                                 }
                             }
 
-                            $buffy .= '<span class="entry-thumb td-thumb-css ' . $retina_uuid . '" style="background-image: url(' . $td_temp_image_url[0] . ')" ></span>';
+                            $buffy .= '<span class="entry-thumb td-thumb-css ' . $retina_uuid . '" style="background-image: url(\'' . $td_temp_image_url[0] . '\')" ></span>';
 
                         // normal image
                         } else {
@@ -540,7 +582,7 @@ abstract class td_module {
 
         return $buffy;
     }
-    
+
 
 
      /**
@@ -558,13 +600,20 @@ abstract class td_module {
     /**
      * This function returns the title with the appropriate markup.
      * @param string $cut_at - if provided, the method will just cut at that point
+     * @param string $title_tag - if provided, will change the default h3 tag on article title
      * and it will cut after that. If not setting is in the database the function will cut at the default value
      * @return string
      */
 
-    function get_title($cut_at = '') {
+    function get_title($cut_at = '', $title_tag = '' ) {
+
+        $module_title_tag = 'h3';
+        if ( $title_tag != '' ) {
+            $module_title_tag = $title_tag;
+        }
+
         $buffy = '';
-        $buffy .= '<h3 class="entry-title td-module-title">';
+        $buffy .= '<' . $module_title_tag . ' class="entry-title td-module-title">';
         $buffy .='<a href="' . $this->href . '" rel="bookmark" title="' . $this->title_attribute . '">';
 
         //see if we have to cut the title and if we have the title lenght in the panel for ex: td_module_6__title_excerpt
@@ -596,7 +645,7 @@ abstract class td_module {
 
         }
         $buffy .='</a>';
-        $buffy .= '</h3>';
+        $buffy .= '</' . $module_title_tag . '>';
         return $buffy;
     }
 
@@ -881,9 +930,10 @@ abstract class td_module {
     /**
      * Gets a shortcode att but only if the module received them
      * @param $att_name
+     * @param $default_value
      * @return mixed|string
      */
-    function get_shortcode_att($att_name) {
+    function get_shortcode_att($att_name, $default_value = '') {
         // returns '' if not set - for loops and other places where modules are not in blocks
 
         if (empty($this->module_atts)) {
@@ -891,9 +941,18 @@ abstract class td_module {
         }
         if (!isset($this->module_atts[$att_name])) {
             td_util::error(__FILE__, $att_name . ' - Is not mapped in the shortcode that uses this module ( <strong>' . get_class($this) . '</strong>)', $this->module_atts);
-            die;
+
+            //die;
+            return $default_value;
         }
 
-        return $this->module_atts[$att_name];
+        //we need to decode the square bracket case
+        $attr_value = $this->module_atts[$att_name];
+        if (strpos($attr_value, 'td_encval') === 0) {
+            $attr_value = str_replace('td_encval', '', $attr_value);
+            $attr_value = base64_decode($attr_value);
+        }
+
+        return $attr_value;
     }
 }

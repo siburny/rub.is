@@ -1009,7 +1009,6 @@ class td_page_generator {
         if($larger_end_page_end > $max_page) {
             $larger_end_page_end = $max_page;
         }
-
         if($max_page > 1 || intval($pagenavi_options['always_show']) == 1) {
             $pages_text = str_replace("%CURRENT_PAGE%", number_format_i18n($paged), $pagenavi_options['pages_text']);
             $pages_text = str_replace("%TOTAL_PAGES%", number_format_i18n($max_page), $pages_text);

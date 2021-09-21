@@ -98,7 +98,56 @@ class td_css_buffer {
 	static function on_wp_header_render_header_css() {
 		self::$css_header_buffer_has_rendered = true;
 
-		if (trim(self::$css_header_buffer) != '') {
+		$is_mobile = false;
+
+		global $post;
+		if ( !empty($post)) {
+
+			if (is_page()) {
+				$ref_id = $post->ID;
+
+			} else if (is_single() || is_category()) {
+
+				$template_id = td_util::get_template_id();
+
+	            if (empty($template_id)) {
+	                $ref_id = $post->ID;
+	            } else {
+	                $ref_id = $template_id;
+	            }
+			}
+
+			if ( class_exists( 'Mobile_Detect' ) ) {
+				$mobile_detect = new Mobile_Detect();
+				if ( $mobile_detect->isMobile() ) {
+
+					$is_mobile = true;
+
+					if ( ! empty( $ref_id ) ) {
+						$new_ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+						if ( !empty( $new_ref_id ) ) {
+							$ref_id = $new_ref_id;
+						}
+					}
+				}
+			}
+		}
+
+		$show_css_header_buffer = false;
+		if ( '' !== trim(self::$css_header_buffer) ) {
+			$show_css_header_buffer = true;
+		}
+
+		if ( ! $is_mobile || ! $show_css_header_buffer ) {
+			if ( ! empty( $ref_id ) ) {
+				$tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+				if ( ! empty( $tda_essential_css ) ) {
+					$show_css_header_buffer = false;
+				}
+			}
+		}
+
+		if ($show_css_header_buffer) {
 			self::$css_header_buffer = "\n<!-- Header style compiled by theme -->" . "\n\n<style>\n    " . self::$css_header_buffer . "\n</style>\n\n";
 			echo self::$css_header_buffer; // echo out the buffer
 		}
@@ -110,7 +159,51 @@ class td_css_buffer {
 	 */
 	static function on_wp_footer_render_footer_css() {
 		self::$css_footer_buffer_has_rendered = true;
-		if (trim(self::$css_footer_buffer) != '') {
+
+		$show_css_footer_buffer = false;
+		if ( trim( self::$css_footer_buffer ) != '' ) {
+			$show_css_footer_buffer = true;
+		}
+
+		global $post;
+		if (is_page()) {
+			if ( ! empty( $post->ID ) ) {
+				$tda_essential_css = get_post_meta( $post->ID, 'tda_essential_css', true );
+
+				if ( !empty( $tda_essential_css ) ) {
+					$show_css_footer_buffer = false;
+				}
+			}
+
+		} else if (is_single() || is_category()) {
+
+			$template_id = td_util::get_template_id();
+
+			if ( empty( $template_id ) ) {
+				$ref_id = $post->ID;
+			} else {
+				$ref_id = $template_id;
+			}
+
+			if ( class_exists( 'Mobile_Detect' ) ) {
+				$mobile_detect = new Mobile_Detect();
+				if ( $mobile_detect->isMobile() ) {
+
+					$new_ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+					if ( ! empty( $new_ref_id ) ) {
+						$ref_id = $new_ref_id;
+					}
+				}
+			}
+
+			$tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+
+			if ( ! empty( $tda_essential_css ) ) {
+				$show_css_footer_buffer = false;
+			}
+        }
+
+		if ( $show_css_footer_buffer ) {
 			self::$css_footer_buffer = "\n<!-- Footer style compiled by theme -->" . "\n\n<style>\n    " . self::$css_footer_buffer . "\n</style>\n\n";
 			echo self::$css_footer_buffer; // echo out the buffer
 		}

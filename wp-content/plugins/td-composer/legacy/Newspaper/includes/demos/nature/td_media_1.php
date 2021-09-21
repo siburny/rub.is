@@ -15,6 +15,3 @@ td_demo_media::add_image_to_media_gallery('tst3',                       "http://
 
 //campaign images
 td_demo_media::add_image_to_media_gallery('c1',                         "http://demo_content.tagdiv.com/Newspaper_multi/nature/c1.jpg");
-td_demo_media::add_image_to_media_gallery('c2',                         "http://demo_content.tagdiv.com/Newspaper_multi/nature/c2.jpg");
-td_demo_media::add_image_to_media_gallery('c3',                         "http://demo_content.tagdiv.com/Newspaper_multi/nature/c3.jpg");
-td_demo_media::add_image_to_media_gallery('c4',                         "http://demo_content.tagdiv.com/Newspaper_multi/nature/c4.jpg");

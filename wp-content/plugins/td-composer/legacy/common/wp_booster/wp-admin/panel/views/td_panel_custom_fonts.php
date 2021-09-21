@@ -232,13 +232,13 @@
 
 
 <!-- typekit.com fonts -->
-<?php echo td_panel_generator::box_start('Typekit.com Fonts', false); ?>
+<?php echo td_panel_generator::box_start('Adobe/Typekit Fonts', false); ?>
 
 <!-- javascript from typekit.com-->
 <div class="td-box-row">
 	<div class="td-box-description">
-		<span class="td-box-title">Javascript Code</span>
-		<p>Copy the javascript code from typekit.com and paste it here</p>
+		<span class="td-box-title">Embed Code</span>
+		<p>Copy the embed code from fonts.adobe.com and paste it here</p>
 	</div>
 	<div class="td-box-control-full td-panel-input-wide">
 		<?php
@@ -318,6 +318,23 @@
         echo td_panel_generator::checkbox(array(
             'ds' => 'td_option',
             'option_id' => 'g_use_google_fonts',
+            'true_value' => '',
+            'false_value' => 'disabled'
+        ));
+        ?>
+    </div>
+</div>
+
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">USE GOOGLE FONTS ON MOBILE</span>
+        <p>Disable the use of google fonts on mobile</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'g_mob_use_google_fonts',
             'true_value' => '',
             'false_value' => 'disabled'
         ));

@@ -24,6 +24,30 @@ class td_block_widget extends WP_Widget {
 		// read our map_array
 		$this->map_array = td_api_block::get_by_id( $this->td_block_id );
 
+		$has_block_template = false;
+
+		foreach ($this->map_array['params'] as $param) {
+		    if ( 'block_template_id' === $param['param_name']) {
+		        $has_block_template = true;
+		        break;
+            }
+        }
+
+        if ( $has_block_template ) {
+            $tds_block_templates = td_api_block_template::_helper_generate_block_templates();
+            foreach ( $tds_block_templates as $block_template) {
+                $block_template_id = $block_template['val'];
+                if (empty($block_template_id)) {
+                    $block_template_id = 'td_block_template_1';
+                }
+                $block_template_map_array = td_api_block_template::get_by_id($block_template_id);
+                foreach ($block_template_map_array['params'] as $block_template_param) {
+                    $this->map_array['params'][] = $block_template_param;
+                }
+            }
+        }
+
+
 
 	    $widget_ops = array('classname' => 'td_pb_widget', 'description' => '[tagDiv] ' . $this->map_array['name']);
 
@@ -108,7 +132,10 @@ class td_block_widget extends WP_Widget {
 
 
 				<div class="td-wpa-info">
-					<?php echo esc_textarea($param['description']) ?>
+					<?php
+					if (isset($param['description'])) {
+						echo esc_textarea($param['description']);
+					} ?>
 				</div>
 
 				</p>
@@ -135,8 +162,10 @@ class td_block_widget extends WP_Widget {
 						   value="<?php echo esc_attr($instance[$param['param_name']]) ?>"/>
 
 				<div class="td-wpa-info">
-					<!--						removed esc_textarea(), it displays html code on some widgets eg. weather -->
-					<?php echo esc_textarea($param['description']) ?>
+					<?php
+					if (isset($param['description'])) {
+						echo esc_textarea($param['description']);
+					} ?>
 				</div>
 
 				</p>
@@ -168,16 +197,44 @@ class td_block_widget extends WP_Widget {
                     <label for="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>"><?php printf( '%1$s', $param['heading'] ) ?></label>
                     <select name="<?php echo esc_attr( $this->get_field_name($param['param_name'])) ?>" id="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>" class="widefat">
                         <?php
-                        foreach ($param['value'] as $param_name => $param_value) {
-                            ?>
-                            <option value="<?php echo esc_attr( $param_value ) ?>"<?php selected($instance[$param['param_name']], $param_value); ?>><?php printf( '%1$s', $param_name ) ?></option>
-                        <?php
+
+                        if ( 'category_id' === $param['param_name']) {
+                            $categories = get_categories( array(
+                                'orderby' => 'name',
+                                'parent'  => 0
+                            ) );
+
+                            foreach ( $categories as $category ) {
+                                ?>
+                                <option value="<?php echo esc_attr( $category->term_id ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $category->term_id ); ?>><?php printf( '%1$s', $category->name ) ?></option>
+		                        <?php
+                            }
+
+                        } else if ('block_template_id' === $param['param_name']) {
+
+                            $tds_block_templates = td_api_block_template::_helper_generate_block_templates();
+
+                            foreach ( $tds_block_templates as $block_template) {
+                                ?>
+                                <option value="<?php echo esc_attr( $block_template['val'] ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $block_template['val'] ); ?>><?php printf( '%1$s', $block_template['text'] ) ?></option>
+		                        <?php
+                            }
+
+                        } else {
+	                        foreach ( $param[ 'value' ] as $param_name => $param_value ) {
+		                        ?>
+                                <option value="<?php echo esc_attr( $param_value ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $param_value ); ?>><?php printf( '%1$s', $param_name ) ?></option>
+		                        <?php
+	                        }
                         }
                         ?>
                     </select>
 
                     <div class="td-wpa-info">
-                        <?php echo esc_textarea( $param['description'] ) ?>
+                        <?php
+						if (isset($param['description'])) {
+							echo esc_textarea($param['description']);
+						} ?>
                     </div>
                 </p>
                 <?php
@@ -216,7 +273,7 @@ class td_block_widget extends WP_Widget {
 
 
 			case 'attach_image':
-				$backgroundImage = get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/no_img.png';
+				$backgroundImage = TDC_URL . '/assets/images/sidebar/no_img.png';
 				$hideRemoveButton = 'td-hidden-button';
 
 				if ( ! empty( $instance[$param['param_name']] ) ) {
@@ -298,6 +355,12 @@ class td_block_widget extends WP_Widget {
 				    case 'Ajax filter':
 					    $newValue['show_name'] = 'Ajax';
 					    break;
+                    case 'Image ad':
+                    case 'Custom ad':
+                        if ( !td_util::tdc_is_installed()) {
+	                        unset( $newValue );
+                        }
+                        break;
 				    default:
 					    $newValue['show_name'] = $groupName;
 			    }
@@ -343,7 +406,9 @@ class td_block_widget extends WP_Widget {
 			    $buffer .= '<div class="tdc-tab-content tdc-tab-widget tdc-tab-' . strtolower($groupName['show_name']) . ' ' . $class_tab_content_visible . ' ' . $class_tab_design . '"' . $data_tdc_css . '>';
 			    $class_tab_content_visible = '';
 
-			    $block_template_id = $instance['block_template_id'];
+			    if (isset($instance['block_template_id'])) {
+                    $block_template_id = $instance['block_template_id'];
+                }
 
 			    if (empty($block_template_id)) {
 					// global block template id

@@ -4,13 +4,56 @@ class td_block_categories_tags extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
 
+                /* @style_general_categories_tags */
+                .td_block_categories_tags .td-ct-item {
+                  display: block;
+                  position: relative;
+                  padding: 0 10px 0 12px;
+                  line-height: 30px;
+                  color: #111;
+                  -webkit-transform: translateZ(0);
+                  transform: translateZ(0);
+                }
+                .td_block_categories_tags .td-ct-item:hover {
+                  color: #4db2ec;
+                }
+                .td_block_categories_tags .td-ct-item:before {
+                  content: '';
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  z-index: -1;
+                }
+                .td_block_categories_tags .td-ct-item-no {
+                  float: right;
+                }
+                .td_block_categories_tags .td-ct-item-sep {
+                  position: relative;
+                }
+                .td_block_categories_tags .td-ct-item:last-of-type .td-ct-text-sep,
+                .td_block_categories_tags .td-ct-item-sep:last-child {
+                  display: none;
+                }
+                .td_block_categories_tags .td-ct-item-sep-svg {
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+                .td_block_categories_tags .td-ct-item-sep-svg svg {
+                  height: auto;
+                }
+
+                
                 /* @display */
 				.$unique_block_class .td-ct-item {
 					display: @display;
@@ -61,6 +104,10 @@ class td_block_categories_tags extends td_block {
 				.$unique_block_class .td-ct-item-sep {
 					font-size: @icon_size;
 				}
+                /* @icon_svg_size */
+				.$unique_block_class .td-ct-item-sep svg {
+					width: @icon_svg_size;
+				}
                 /* @icon_space */
 				.$unique_block_class .td-ct-item-sep {
 					margin: 0  @icon_space;
@@ -91,6 +138,10 @@ class td_block_categories_tags extends td_block {
                 /* @i_color */
 				.$unique_block_class .td-ct-item-sep {
 					color: @i_color;
+				}
+				.$unique_block_class .td-ct-item-sep svg,
+				.$unique_block_class .td-ct-item-sep svg * {
+					fill: @i_color;
 				}
                 /* @bg_color_h */
 				.$unique_block_class .td-ct-item:hover:before {
@@ -135,6 +186,8 @@ class td_block_categories_tags extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_categories_tags', 1 );
 
         // inline list elements
         $display = $res_ctx->get_shortcode_att('inline');
@@ -182,9 +235,14 @@ class td_block_categories_tags extends td_block {
         }
 
         // icon_size
+        $icon = $res_ctx->get_icon_att('tdicon');
         $icon_size = $res_ctx->get_shortcode_att('icon_size');
         if ( $icon_size != 0 || !empty($icon_size) ) {
-            $res_ctx->load_settings_raw( 'icon_size', $icon_size . 'px' );
+            if( base64_encode( base64_decode( $icon ) ) == $icon ) {
+                $res_ctx->load_settings_raw( 'icon_svg_size', $icon_size . 'px' );
+            } else {
+                $res_ctx->load_settings_raw( 'icon_size', $icon_size . 'px' );
+            }
         }
         // icon_space
         $icon_space = $res_ctx->get_shortcode_att('icon_space');
@@ -302,9 +360,13 @@ class td_block_categories_tags extends td_block {
 
         // icon separator
         $tdicon_html = '';
-        $tdicon = $this->get_att( 'tdicon' );
+        $tdicon = $this->get_icon_att( 'tdicon' );
         if( $tdicon != '' ) {
-            $tdicon_html = '<i class="' . $tdicon . ' td-ct-item-sep"></i>';
+            if( base64_encode( base64_decode( $tdicon ) ) == $tdicon ) {
+                $tdicon_html = '<span class="td-ct-item-sep td-ct-item-sep-svg">' . base64_decode( $tdicon ) . '</span>';
+            } else {
+                $tdicon_html = '<i class="' . $tdicon . ' td-ct-item-sep"></i>';
+            }
         }
 
 

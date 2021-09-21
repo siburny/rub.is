@@ -37,6 +37,24 @@ td_api_ad::helper_display_ads();
 		?>
 	</div>
 </div>
+
+<!-- Disable the ad for admins/editors -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Disable for admins/editors</span>
+        <p></p>
+    </div>
+    <div class="td-box-control-full td-panel-input-wide">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_modal_video_ad_disable',
+            'true_value' => 'yes',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
 <?php echo td_panel_generator::box_end();?>
 
 

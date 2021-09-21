@@ -69,7 +69,7 @@
   }
 }
 .td-wedding .td-newspaper-ad .small-title {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 20px;
   line-height: 1;
   color: #444;
@@ -99,7 +99,7 @@
   opacity: 0.8;
 }
 .td-wedding .td-newspaper-ad .after-title {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 20px;
   line-height: 1;
   color: #333;

@@ -2,16 +2,82 @@
 class tdm_block_hero extends td_block {
 
 	protected $shortcode_atts = array(); //the atts used for rendering the current block
+    private $unique_block_class;
 
 	public function get_custom_css() {
 
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
+                /* @style_general_hero */
+                .tdm_block_hero {
+                  -webkit-transform: translateZ(0);
+                  transform: translateZ(0);
+                }
+                .tdm_block_hero:after {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  z-index: -1;
+                }
+                .tdm_block_hero .td-block-row {
+                  position: relative;
+                  height: 600px;
+                }
+                @media (max-width: 767px) {
+                  .tdm_block_hero .td-block-row .tdm-col {
+                    float: none;
+                  }
+                }
+                .tdm_block_hero.tdm-full-height .td-block-row {
+                  height: 100vh !important;
+                }
+                .tdm_block_hero .tdm-text-wrap {
+                  margin: 40px 0;
+                }
+                .tdm_block_hero .tdm-descr {
+                  margin-bottom: 0;
+                }
+                .tdm_block_hero .tdm-buttons-wrap {
+                  margin: 31px -10px 0;
+                }
+                .tdm_block_hero .tds-button {
+                  display: inline-block;
+                  margin-bottom: 10px;
+                }
+                .tdm_block_hero .td-block-span12 {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                }
+                .tdm_block_hero .tdm-title {
+                  margin-top: 0;
+                }
+                .tdm_block_hero.tdm-content-vert-center .td-block-span12 {
+                  top: 50%;
+                  -webkit-transform: translateY(-50%);
+                  transform: translateY(-50%);
+                }
+                .tdm_block_hero.tdm-content-vert-bottom .td-block-span12 {
+                  top: auto;
+                  bottom: 0;
+                }
+                .tdm_block_hero .tdm-btn {
+                  margin-left: 10px;
+                  margin-right: 10px;
+                  -webkit-transform: none;
+                  transform: none;
+                }
+                
+                
                 /* @block_width */
                 .$unique_block_class .td-block-width {
                     max-width: @block_width;
@@ -103,6 +169,8 @@ class tdm_block_hero extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_hero', 1 );
+
         // block width
         $block_width = $res_ctx->get_shortcode_att( 'block_width' );
         $res_ctx->load_settings_raw( 'block_width', $block_width );
@@ -173,6 +241,8 @@ class tdm_block_hero extends td_block {
 	function render($atts, $content = null) {
 		parent::render($atts);
 
+        $this->unique_block_class = $this->block_uid;
+
 		$this->shortcode_atts = shortcode_atts(
 			array_merge(
 				td_api_multi_purpose::get_mapped_atts( __CLASS__ ),
@@ -238,7 +308,7 @@ class tdm_block_hero extends td_block {
                                     if (empty($tds_button)) {
                                         $tds_button = td_util::get_option('tds_button', 'tds_button1');
                                     }
-                                    $tds_button_instance = new $tds_button($this->shortcode_atts);
+                                    $tds_button_instance = new $tds_button($this->shortcode_atts, '', $this->unique_block_class );
                                     $buffy .= $tds_button_instance->render();
                                 }
 
@@ -248,7 +318,7 @@ class tdm_block_hero extends td_block {
                                     if (empty($tds_button1)) {
                                         $tds_button1 = td_util::get_option('tds_button', 'tds_button1');
                                     }
-                                    $tds_button_instance1 = new $tds_button1($this->shortcode_atts, 1);
+                                    $tds_button_instance1 = new $tds_button1($this->shortcode_atts, 1, $this->unique_block_class );
                                     $buffy .= $tds_button_instance1->render(1);
                                 }
                             $buffy .= '</div>';

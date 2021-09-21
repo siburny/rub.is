@@ -463,11 +463,11 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 
     // memory limit
     $memory_limit = td_system_status::wp_memory_notation_to_number(WP_MEMORY_LIMIT);
-    if ( $memory_limit < 134217728 ) {
+    if ( $memory_limit < 268435456 ) {
         td_system_status::add('WordPress and plugins', array(
             'check_name' => 'WP Memory Limit',
-            'tooltip' => 'By default in WordPress the PHP memory limit is set to 40MB. With some plugins this limit may be reached and this affects your website functionality. To avoid this increase the memory limit to at least 128MB.',
-            'value' => size_format( $memory_limit ) . '/request <span class="td-status-small-text">- We recommend setting memory to at least 128MB. The theme is well tested with a 40MB/request limit, but if you are using multiple plugins that may not be enough. See: <a target="_blank" href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP">Increasing memory allocated to PHP</a>. You can also check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'tooltip' => 'By default in WordPress the PHP memory limit is set to 40MB. With some plugins this limit may be reached and this affects your website functionality. To avoid this increase the memory limit to at least 256MB.',
+            'value' => size_format( $memory_limit ) . '/request <span class="td-status-small-text">- We recommend setting memory to at least 256MB. See: <a target="_blank" href="https://wordpress.org/support/article/editing-wp-config-php/#increasing-memory-allocated-to-php">Increasing memory allocated to PHP</a>. You can also check <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">Our Guide</a>.</span>',
             'status' => 'yellow'
         ));
     } else {
@@ -514,6 +514,10 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
         ),
         'wp-fastest-cache/wpFastestCache.php' => array(
             'name' => 'WP Fastest Cache - <span class="td-status-small-text">we recommend <a target="_blank" href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
+            'status' => 'yellow',
+        ),
+        'wp-rocket/wp-rocket.php' => array(
+            'name' => 'WP Rocket - <span class="td-status-small-text">we recommend <a target="_blank" href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
             'status' => 'yellow',
         ),
     );
@@ -593,6 +597,20 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
     }
 
     // Clear the covid19 data cache - only if the reset button is used
+    if(!empty($_REQUEST['clear_flickr_cache']) && $_REQUEST['clear_flickr_cache'] == 1) {
+        update_option('td_flickr_user_id', '');
+        update_option('td_flickr_album_id', '');
+        update_option('td_flickr_user_albums', '');
+
+        update_option('flickr_photo_pool', '');
+        ?>
+
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-flickr-cache-table';?>");</script>
+        <?php
+    }
+
+    // Clear the covid19 data cache - only if the reset button is used
     if(!empty($_REQUEST['clear_covid19_cache']) && $_REQUEST['clear_covid19_cache'] == 1) {
         update_option('td_covid19_data', '');
         ?>
@@ -657,6 +675,9 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 
         //td video playlist data
         td_system_status::render_td_video_playlists();
+
+        //td video playlist data
+        td_system_status::render_td_flickr_data();
 
         //covid19 statistical data
         td_system_status::render_td_covid19_cached_data();
@@ -1274,6 +1295,43 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
            <?php } ?>
 
            <?php
+       }
+
+       static function render_td_flickr_data() {
+
+           $td_flkr_user_photos = get_option('td_flickr_user_id');
+           if( !is_array( $td_flkr_user_photos ) ) {
+               $td_flkr_user_photos = array();
+           }
+           $td_flk_album_ids = get_option('td_flickr_album_id');
+           if( !is_array( $td_flk_album_ids ) ) {
+               $td_flk_album_ids = array();
+           }
+           $td_flk_user_albums = get_option('td_flickr_user_albums');
+           if( !is_array( $td_flk_user_albums ) ) {
+               $td_flk_user_albums = array();
+           }
+           $flickr_photo_pool = get_option('flickr_photo_pool');
+           if( !is_array( $flickr_photo_pool ) ) {
+               $flickr_photo_pool = array();
+           }
+
+           if( !empty( $td_flkr_user_photos ) || !empty( $td_flk_album_ids ) || !empty( $td_flk_user_albums ) || !empty( $flickr_photo_pool ) ) {
+               ?>
+               <table id="td-flickr-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                   <thead>
+                   <tr>
+                       <th colspan="2" style="border-right: 1px solid #dadada;">Flickr data cache</th>
+                       <th colspan="3">Cache reset:<a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_flickr_cache=1">Clear the cached data</a></th>
+                   </tr>
+                   </thead>
+               </table>
+           <?php } else { ?>
+               <!-- video playlists no data -->
+               <table id="td-flickr-cache-table" class="widefat td-system-status-table td-remote-cache-table" cellspacing="0">
+                   <?php echo '<tr><td>There is no cached Flickr data!</td></tr>'; ?>
+               </table>
+           <?php }
        }
 
        static function render_td_covid19_cached_data() {

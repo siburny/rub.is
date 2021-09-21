@@ -196,6 +196,11 @@ class td_panel_generator {
         $control_uniq_id = td_global::td_generate_unique_id();
         $input_hidden_value = $checkbox_array['false_value'];
         $class_buton_active = $class_control_active ='';
+        
+        $class_button = '';
+        if (!empty($checkbox_array['class'])) {
+	        $class_button = $checkbox_array[ 'class' ];
+        }
 
         //check for user saved data
         $user_data = td_panel_data_source::read($checkbox_array);
@@ -208,7 +213,7 @@ class td_panel_generator {
         }
 
         //building the control
-        $buffy = '<div class="td-checkbox ' . $class_control_active . '" data-uid="' . $control_uniq_id . '" data-val-true="' . $checkbox_array['true_value'] . '" data-val-false="' . $checkbox_array['false_value'] . '">
+        $buffy = '<div class="td-checkbox ' . $class_button . ' ' . $class_control_active . '" data-uid="' . $control_uniq_id . '" data-val-true="' . $checkbox_array['true_value'] . '" data-val-false="' . $checkbox_array['false_value'] . '">
                     <div class="td-checbox-buton ' . $class_buton_active . '"></div>
                   </div>
                   <input type="hidden" name="' . self::generate_name($checkbox_array) . '" id="' . $control_uniq_id . '" value="' . $input_hidden_value . '">';
@@ -504,7 +509,7 @@ class td_panel_generator {
         if (!empty($control_value)) {
             $class_hidden = '';
         }
-        
+
         $buffy = '
             <div class="td_wrapper_upload_control">
                 <div class="td_upload_font_controls">

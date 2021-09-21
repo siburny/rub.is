@@ -3,12 +3,13 @@
 class td_instagram {
 
     private static $caching_time = 10800;  // 3 hours
-    private static $instagram_connected_account = array();
+    private static $instagram_connected_account = array(); // saved ig personal/business connected accounts
+    private static $instagram_media_data_limit = 10; // the graph instagram api media feeds limit - get the first 10 feeds by default @note this is overwritten by block's attributes @see self::render_generic
 
     public static function render_generic($atts) {
 
+        // demo
         $demo_array = self::render_demo($atts);
-
         if ( $demo_array['status'] === 'ok' && !empty( $demo_array['buffy'] ) ) {
             // render the HTML
             $buffy = '<!-- td instagram source: DEMO -->';
@@ -19,52 +20,134 @@ class td_instagram {
             return $buffy;
         }
 
-        // get db saved inst account settings
-	    $instagram_access_settings = td_options::get_array( 'td_instagram_connected_account');
+	    // get saved ig personal connected account
+	    $td_instagram_personal_account = td_options::get_array( 'td_instagram_connected_account');
 
-	    self::$instagram_connected_account = isset( $instagram_access_settings['connected_account'] ) ? $instagram_access_settings['connected_account'] : array();
+	    // get saved ig business connected accounts
+	    $td_instagram_business_accounts = td_options::get_array( 'td_instagram_business_accounts');
 
-        // if we don't have an Instagram id set.. check to see if we have a connected account before returnign a block error
+        //return td_util::get_block_error('Instagram Gallery',
+        //    '<br><br><b>instagram_account_source:</b> ' . '<pre style="margin: 0; white-space: pre-wrap; word-break: break-all;"> ' . print_r( $atts['instagram_account_source'], true) . ' </pre>' .
+        //    '<br><br><b>Atts:</b> ' . '<pre style="margin: 0; white-space: pre-wrap; word-break: break-all;"> ' . print_r( $atts, true) . ' </pre>' .
+        //    '<br><br><b>saved ig personal account:</b> ' . '<pre style="margin: 0; white-space: pre-wrap; word-break: break-all;"> ' . print_r( $td_instagram_personal_account, true) . ' </pre>' .
+        //    '<br><br><b>saved ig business accounts:</b> ' . '<pre style="margin: 0; white-space: pre-wrap; word-break: break-all;"> ' . print_r( $td_instagram_business_accounts, true) . ' </pre>'
+        //);
+
+	    //$atts['instagram_account_source'] = '';
+
+        // instagram_account_source .. set $instagram_connected_account
+	    if ( !empty( $atts['instagram_account_source'] ) ) {
+
+	        switch ( $atts['instagram_account_source'] ) {
+                case 'ig_id':
+	                if ( empty( $atts['instagram_id'] ) ) {
+		                return td_util::get_block_error(
+			                'Instagram Gallery',
+			                'Block Render Failed - Please set the <b>Instagram ID</b> or configure the Instagram block to pull data from your personal or one of your business accounts.'
+		                );
+	                }
+                    break;
+                case 'ig_personal':
+	                // saved ig personal connected account
+	                if ( !empty( $td_instagram_personal_account ) && isset( $td_instagram_personal_account['connected_account'] ) ) {
+		                self::$instagram_connected_account = $td_instagram_personal_account['connected_account'];
+                    } else {
+		                return td_util::get_block_error(
+			                'Instagram Gallery',
+			                'Block Render Failed - Personal Instagram Account not found ! Please <a href="' . admin_url('admin.php?page=td_theme_panel#td-panel-social-networks') . '" target="_blank">connect your Personal Instagram Account</a>.'
+		                );
+                    }
+
+                    break;
+                case ( strpos( $atts['instagram_account_source'], 'ig_business_' ) !== false ):
+	                // saved ig business connected accounts
+	                $account_username = str_replace( 'ig_business_', '', $atts['instagram_account_source'] );
+	                if ( !empty( $td_instagram_business_accounts ) && is_array( $td_instagram_business_accounts ) ) {
+	                    foreach ( $td_instagram_business_accounts as $ig_business_account ) {
+	                        if ( isset( $ig_business_account['username'] ) && $ig_business_account['username'] === $account_username ) {
+		                        self::$instagram_connected_account = $ig_business_account;
+		                        break;
+                            }
+                        }
+
+	                    // if ig account was not set return block error
+	                    if ( empty(self::$instagram_connected_account) ) {
+		                    return td_util::get_block_error(
+			                    'Instagram Gallery',
+			                    'Block Render Failed - Instagram Business Account: <b>' . $account_username . '</b> not found! Please <a href="' . admin_url('admin.php?page=td_theme_panel#td-panel-social-networks') . '" target="_blank">connect your Business Instagram Account</a>.'
+		                    );
+                        }
+
+	                } else {
+		                return td_util::get_block_error(
+			                'Instagram Gallery',
+			                'Block Render Failed - There are no Instagram Business accounts connected! Please <a href="' . admin_url('admin.php?page=td_theme_panel#td-panel-social-networks') . '" target="_blank">connect your <b>' . $account_username . '</b> Business Instagram Account</a>.'
+		                );
+	                }
+                    break;
+            }
+
+        } else {
+
+	        // if no ig account source check for.. & load the personal connected account
+		    self::$instagram_connected_account = $td_instagram_personal_account['connected_account'] ?? array();
+
+        }
+
+	    // number of images per row - by default display 3 images
+	    $images_per_row = 3;
+	    if ( !empty( $atts['instagram_images_per_row'] ) ) {
+		    $images_per_row = $atts['instagram_images_per_row'];
+	    }
+
+	    // number of rows
+	    $number_of_rows = 1;
+	    if ( !empty( $atts['instagram_number_of_rows'] ) ) {
+		    $number_of_rows = $atts['instagram_number_of_rows'];
+	    }
+
+	    // number of total images displayed - images_row x number_of_rows
+	    self::$instagram_media_data_limit = $images_per_row * $number_of_rows;
+
+        // if we don't have an ig id set.. check to see if we have a connected account before returning a block error
         if ( empty( $atts['instagram_id'] ) ) {
             if ( empty( self::$instagram_connected_account ) ) {
 	            return td_util::get_block_error(
 		            'Instagram Gallery',
-		            'Block Render failed - no data received, please check the Instagram ID <a href="' . admin_url('admin.php?page=td_theme_panel') . '" target="_blank">connect to your Instagram Account</a>.'
+		            'Block Render failed - no data received, please check the Instagram ID or connect & configure <a href="' . admin_url('admin.php?page=td_theme_panel#td-panel-social-networks') . '" target="_blank">your Instagram Personal or a Business Account</a>.'
                 );
             }
         }
 
         // prepare the data
-        $instragram_data = array(
+        $instagram_data = array(
             'user' => '',
         );
 
         // get instagram data
-	    if ( ! empty( $atts['instagram_id'] ) ) {
+	    if ( !empty( $atts['instagram_id'] ) ) {
 	        
-		    // if we have an Insta ID set try to get the data the traditional way
-		    $instagram_data_status = self::get_instagram_data_with_user( $atts, $instragram_data );
+		    // if we have an ig id set try to get the data the traditional way
+		    $instagram_data_status = self::get_instagram_data_with_user( $atts, $instagram_data );
 		    
-	    } elseif( ! empty( self::$instagram_connected_account ) ) {
+	    } elseif ( !empty( self::$instagram_connected_account ) ) {
 	        
-		    // if we have an account connected we can try to get the data using the accunt access token
-		    $instagram_data_status = self::get_instagram_data_with_token( self::$instagram_connected_account, $instragram_data);
+		    // if we have an account connected we can try to get the data using the account access token
+		    $instagram_data_status = self::get_instagram_data_with_token( self::$instagram_connected_account, $instagram_data );
 		    
 	    } else {
 		    return td_util::get_block_error(
 			    'Instagram',
-			    'Render failed - no data is received, please check the ID or go to <a href="' . admin_url('admin.php?page=td_theme_panel') . '" target="_blank">Theme\'s Panel</a> Social Networks > Instagram Account Access Configuration to connect to your Instagram acoount.' );
+			    'Render failed - no data is received, please check the ID or go to <a href="' . admin_url('admin.php?page=td_theme_panel') . '" target="_blank">Theme\'s Panel</a> Social Networks > Instagram Account Access Configuration to connect to your Instagram account.' );
         }
 
 	    // if we miss the cache and traditional instagram data request fails..
         // check if we have an account connected so we can get the data using a token
 	    if ( $instagram_data_status === 'instagram_fail_cache_miss' ) {
-		    if ( ! empty( self::$instagram_connected_account ) ) {
-		        
-			    // if we have an account connected go ahead and try to retrive its feeds using the connected account access token
-			    $instagram_data_status = self::get_instagram_data_with_token( self::$instagram_connected_account, $instragram_data);
+		    if ( !empty( self::$instagram_connected_account ) ) {
+			    // if we have an account connected go ahead and try to retrieve its feeds using the connected account access token
+			    $instagram_data_status = self::get_instagram_data_with_token( self::$instagram_connected_account, $instagram_data);
 		    } else {
-
 		        // if no account is connected direct the theme user/website owner to theme's instagram account panel config section
 			    return td_util::get_block_error(
 			            'Instagram',
@@ -84,7 +167,7 @@ class td_instagram {
         $buffy = '<!-- td instagram source: ' . $instagram_data_status . ' -->';
 
         // renders the block template
-        $buffy .= self::render_block_template($atts, $instragram_data);
+        $buffy .= self::render_block_template($atts, $instagram_data);
 
         return $buffy;
     }
@@ -126,9 +209,17 @@ class td_instagram {
             $image_gap = ' td-image-gap-' . $atts['instagram_margin'];
         }
 
+        // link rel
+        $rel = '';
+        if ( !empty( $atts['instagram_rel'] ) ) {
+            $rel = ' rel="' . $atts['instagram_rel'] . '"';
+        }
+
         // profile picture
         $instagram_profile_picture = '';
-        if ( isset( $instagram_data['user']['profile_pic_url'] ) ) {
+        if( isset($atts['instagram_user_photo']) && $atts['instagram_user_photo'] != '' ) {
+            $instagram_profile_picture = tdc_util::get_image_or_placeholder($atts['instagram_user_photo']);
+        } else if ( isset( $instagram_data['user']['profile_pic_url'] ) ) {
             $instagram_profile_picture = $instagram_data['user']['profile_pic_url'];
         }
 
@@ -138,47 +229,91 @@ class td_instagram {
             $instagram_followers = $instagram_data['user']['edge_followed_by']['count'];
         }
 
-        // instagram followers - check followers count data type
-        $instagram_followers_type = gettype($instagram_followers);
-        if ( $instagram_followers_type == 'string' ) {
-            // retrieve number from string
-            $number_from_string = self::get_number_from_string($instagram_followers);
-            if ($number_from_string !== false) {
-                $instagram_followers = $number_from_string;
-            } else {
-                td_log::log(__FILE__, __FUNCTION__, 'Instagram followers is a string with no numbers included', $instagram_followers);
-                $instagram_followers = 0;
-            }
-        } elseif ( $instagram_followers_type == 'integer' ) {
-            // do nothing, integer is ok
-        } else {
-            // for other types return 0
-            td_log::log(__FILE__, __FUNCTION__, 'Instagram followers has an unsupported type', $instagram_followers);
-            $instagram_followers = 0;
-        }
+        if ( ! empty( $instagram_followers ) ) {
 
-        // instagram followers - format the followers number (the number is not rounded because it may return unrealistic values)
-        if ( $instagram_followers >= 1000000 ) {
-            // display 1.100.000 as 1.1m
-            $instagram_followers = number_format_i18n($instagram_followers / 1000000, 1) . 'm';
-        } elseif ( $instagram_followers >= 10000 ) {
-            // display 10.100 as 10.1k
-            $instagram_followers = number_format_i18n($instagram_followers / 1000, 1) . 'k';
-        } else {
-            // default
-            $instagram_followers = number_format_i18n($instagram_followers);
+	        // instagram followers - check followers count data type
+	        $instagram_followers_type = gettype($instagram_followers);
+	        if ( $instagram_followers_type == 'string' ) {
+		        // retrieve number from string
+		        $number_from_string = self::get_number_from_string($instagram_followers);
+		        if ($number_from_string !== false) {
+			        $instagram_followers = $number_from_string;
+		        } else {
+			        td_log::log(__FILE__, __FUNCTION__, 'Instagram followers is a string with no numbers included', $instagram_followers);
+			        $instagram_followers = 0;
+		        }
+	        } elseif ( $instagram_followers_type == 'integer' ) {
+		        // do nothing, integer is ok
+	        } else {
+		        // for other types return 0
+		        td_log::log(__FILE__, __FUNCTION__, 'Instagram followers has an unsupported type', $instagram_followers);
+		        $instagram_followers = 0;
+	        }
+
+	        // instagram followers - format the followers number (the number is not rounded because it may return unrealistic values)
+	        if ( $instagram_followers >= 1000000 ) {
+		        // display 1.100.000 as 1.1m
+		        $instagram_followers = number_format_i18n($instagram_followers / 1000000, 1) . 'm';
+	        } elseif ( $instagram_followers >= 10000 ) {
+		        // display 10.100 as 10.1k
+		        $instagram_followers = number_format_i18n($instagram_followers / 1000, 1) . 'k';
+	        } else {
+		        // default
+		        $instagram_followers = number_format_i18n($instagram_followers);
+	        }
+
         }
 
         ?>
         <!-- header section -->
         <?php
-        if ( empty($atts['instagram_header'] ) ) {
+        if ( empty( $atts['instagram_header'] ) ) {
             ?>
             <div class="td-instagram-header">
-                <div class="td-instagram-profile-image"><img src="<?php echo $instagram_profile_picture ?>"/></div>
+                <div class="td-instagram-profile-image">
+                    <!-- profile img -->
+                    <?php
+                    if ( ! empty( $instagram_profile_picture ) ) {
+                    ?>
+                        <div class="td-instagram-profile-image-elem" style="background-image: url(<?php echo $instagram_profile_picture ?>)"></div>
+                    <?php
+                    } else {
+                    ?>
+                        <svg class="sbi_new_logo fa-instagram fa-w-14"
+                             aria-hidden="true"
+                             data-fa-processed=""
+                             aria-label="Instagram"
+                             data-prefix="fab"
+                             data-icon="instagram"
+                             role="img"
+                             viewBox="0 0 448 512"
+                             style="
+                                position: absolute;
+                                top: 49%;
+                                left: 52%;
+                                margin-top: -14px;
+                                margin-left: -16px;
+                                width: 30px;
+                                height: 30px;
+                                font-size: 30px;
+                             "
+                        >
+                            <path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path>
+                        </svg>
+                    <?php
+                    }
+                    ?>
+                </div>
                 <div class="td-instagram-meta">
                     <div class="td-instagram-user"><a href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" target="_blank">@<?php echo self::strip_instagram_user($instagram_user) ?></a></div>
-                    <div class="td-instagram-followers"><span><?php echo $instagram_followers . '</span> ' .  __td('Followers', TD_THEME_NAME); ?></div>
+                    <!-- followers -->
+	                <?php
+	                if ( ! empty( $instagram_followers ) ) {
+		                ?>
+                        <div class="td-instagram-followers"><span><?php echo $instagram_followers . '</span> ' .  __td('Followers', TD_THEME_NAME); ?></div>
+		                <?php
+	                }
+	                ?>
                     <a class="td-instagram-button" href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" target="_blank"><?php echo __td('Follow', TD_THEME_NAME); ?></a>
                     <div class="clearfix"></div>
                 </div>
@@ -190,7 +325,7 @@ class td_instagram {
         <!-- user shared images -->
         <?php
 
-        if( $instagram_data['user']['with_access_token'] ){
+        if( $instagram_data['user']['with_access_token'] ) {
 	        $user_feeds = $instagram_data['user']['feeds'];
 
 	        if ( isset( $user_feeds ) and is_array( $user_feeds ) ) {
@@ -198,20 +333,37 @@ class td_instagram {
                 <div class="td-instagram-main td-images-on-row-<?php echo $images_per_row . $image_gap; ?>">
 			        <?php
 			        $feed_count = 0;
-			        foreach ( $user_feeds as $feed ){
+			        foreach ( $user_feeds as $feed ) {
+
+			            $media_type = strtolower( str_replace( '_ALBUM','', $feed['media_type'] ) );
+			            $image_size = ( isset( $atts['instagram_images_size'] ) && $atts['instagram_images_size'] != '' ) ? $atts['instagram_images_size'] : 'full';
+			            $feed_attachment_id = isset( $feed['attachment_id'] ) ? $feed['attachment_id'] : '';
+
+			            if ( ! empty( $feed_attachment_id ) ) {
+				            $media_url = wp_get_attachment_image_url( $feed_attachment_id, $image_size );
+			            } else {
+				            $media_url = $media_type === 'video' ? $feed['thumbnail_url'] : $feed['media_url'];
+			            }
+
 				        ?>
                         <div class="td-instagram-element">
                             <!-- image -->
-                            <a class="td-instagram-image" href="<?php echo $feed['link'] ?>" target="_blank" style="background-image: url(<?php echo $feed['images']['standard_resolution']['url'] ?>)">
+                            <a class="td-instagram-image" href="<?php echo $feed['permalink'] ?>" <?php echo $rel ?> aria-label="instagram-image" target="_blank" style="background-image: url(<?php echo $media_url ?>)">
                             </a>
                             <!-- video icon -->
 					        <?php
-					        if ( $feed['type'] === 'video' ) {
+					        if ( $media_type === 'video' ) {
 						        ?>
                                 <span class="td-video-play-ico">
                                     <i class="td-icon-video-thumb-play"></i>
                                 </span>
 						        <?php
+					        } elseif ( $media_type === 'carousel' ) {
+					            ?>
+                                <span class="td-video-play-ico td-insta-carousel-ico">
+                                    <i class="td-icon-insta-carousel"></i>
+                                </span>
+                                <?php
 					        }
 					        ?>
                         </div>
@@ -239,11 +391,14 @@ class td_instagram {
 			        foreach ( $user_shared_images as $image ) {
 				        // display only if the code and thumbnail are set
 				        if ( isset( $image['node']['shortcode'] ) && isset( $image['node']['thumbnail_src'] ) ) {
+				            if ( isset($image['node']['edge_media_to_caption']['edges'][0]['node']['text']) ) {
+				                $image_alt = ' alt="' . $image['node']['edge_media_to_caption']['edges'][0]['node']['text'] . '"';
+                            }
 					        ?>
                             <div class="td-instagram-element">
                                 <!-- image -->
-                                <a href="https://www.instagram.com/p/<?php echo $image['node']['shortcode'] ?>" target="_blank">
-                                    <img class="td-instagram-image" src="<?php echo $image['node']['thumbnail_src'] ?>"/>
+                                <a href="https://www.instagram.com/p/<?php echo $image['node']['shortcode'] ?>" aria-label="instagram-image" target="_blank" <?php echo $rel ?>>
+                                    <img class="td-instagram-image" src="<?php echo $image['node']['thumbnail_src'] ?>" <?php echo $image_alt ?>/>
                                 </a>
                                 <!-- video icon -->
 						        <?php
@@ -307,35 +462,33 @@ class td_instagram {
 
     /**
      * @param $atts
-     * @param $instragram_data - the precomputed instagram data
+     * @param $instagram_data - the precomputed instagram data
      * @return bool|string
-     *  - bool:true - we have the $instragram_data (from cache or from a real request)
+     *  - bool:true - we have the $instagram_data (from cache or from a real request)
      *  - string - error message
      */
-    private static function get_instagram_data_with_user($atts, &$instragram_data) {
+    private static function get_instagram_data_with_user($atts, &$instagram_data) {
 
-//        print_r(__FUNCTION__);
-
-	    $cache_key = 'td_instragram_' . strtolower( isset( $atts['instagram_id'] ) ? $atts['instagram_id'] : '' );
+	    $cache_key = 'td_instagram_' . strtolower( isset( $atts['instagram_id'] ) ? $atts['instagram_id'] : '' );
 
 	    // check the cache
 	    if ( td_remote_cache::is_expired(__CLASS__, $cache_key) === true ) {
 
             // cache is expired - do a request
-            $instagram_get_data = self::instagram_get_json($atts, $instragram_data);
+            $instagram_get_data = self::instagram_get_json($atts, $instagram_data);
 
             // check the call response
             if ( $instagram_get_data !== true ) {
 
                 // we have an error in the data retrieval process
-                $instragram_data = td_remote_cache::get(__CLASS__, $cache_key);
+                $instagram_data = td_remote_cache::get(__CLASS__, $cache_key);
 
 	            // no cache data .. log this step and return.. we will try the token method after this.. !! if we have an account connected !!
-                if ( $instragram_data === false ) {   
+                if ( $instagram_data === false ) {
 	                td_log::log(
 	                        __FILE__,
                             __FUNCTION__,
-                            '<span style="color: orangered;">The old instagram data retrival proccess failed!</span>' . $atts['instagram_id']
+                            '<span style="color: orangered;">The old instagram data retrieval process failed!</span>' . $atts['instagram_id']
                     );
                     return 'instagram_fail_cache_miss';
                 }
@@ -346,13 +499,13 @@ class td_instagram {
             }
 
 		    // we have a reply and we set it in the cache
-            td_remote_cache::set(__CLASS__, $cache_key, $instragram_data, self::$caching_time); 
+            td_remote_cache::set(__CLASS__, $cache_key, $instagram_data, self::$caching_time);
             return 'instagram_cache_updated';
 
         } else {
 
             // cache is valid
-            $instragram_data = td_remote_cache::get(__CLASS__, $cache_key);
+            $instagram_data = td_remote_cache::get(__CLASS__, $cache_key);
             return 'instagram_cache';
         }
     }
@@ -382,7 +535,7 @@ class td_instagram {
 
 	    // current instagram data is not set
         if (!isset($instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user'])) {
-            return 'Instagram data is not set, plese check the ID';
+            return 'Instagram data is not set, please check the ID';
         }
 
         $instagram_data['user'] = $instagram_json['entry_data']['ProfilePage'][0]["graphql"]['user'];
@@ -448,32 +601,56 @@ class td_instagram {
 
 	/**
 	 * @param $connected_account - the Instagram account connected from theme's panel > social nteworks
-	 * @param $instragram_data
+	 * @param $instagram_data
 	 *
 	 * @return string - the data retrieval status
 	 */
-	private static function get_instagram_data_with_token( $connected_account, &$instragram_data ) {
+	private static function get_instagram_data_with_token( $connected_account, &$instagram_data ) {
 
-		$cache_key = 'td_instragram_tk_' . strtolower( $connected_account['username'] );
+		$cache_key = 'td_instagram_tk_' . strtolower( $connected_account['username'] );
 
-		//echo '<pre>';
-		//var_dump($instragram_data);
-		//var_dump($connected_account);
-		//echo '</pre>';
-
-		$td_instagram_access_tk = td_instagram_access_tk::get_instance();
-		$access_token = $td_instagram_access_tk->td_maybe_clean( $connected_account['access_token'] );
-		$user_id = $connected_account['user_id'];
+		$instagram_cached_data_feeds_limit = self::$instagram_media_data_limit;
+		$instagram_cached_data = td_remote_cache::get(__CLASS__, $cache_key );
+		if ( $instagram_cached_data !== false ) {
+			$instagram_cached_data_feeds_limit = $instagram_cached_data['user']['api_media_request_limit'];
+        }
 
 		// check the cache
-		if ( td_remote_cache::is_expired(__CLASS__, $cache_key ) === true ) {
+		if (
+		     td_remote_cache::is_expired(__CLASS__, $cache_key ) === true ||
+             (int) $instagram_cached_data_feeds_limit < self::$instagram_media_data_limit
+        ) {
+
+		    // account type
+			$account_type = isset( $connected_account['account_type'] ) ? $connected_account['account_type'] : 'basic';
+
+			// api access token
+			$access_token = $account_type === 'business' ? $connected_account['page_access_token'] : $connected_account['access_token'];
+
+			// api account id
+			$account_id = $account_type === 'business' ? $connected_account['id'] : $connected_account['user_id'];
+
+		    // api base url
+            if ( $account_type === 'business' ) {
+	            $api_base_url = 'graph.facebook.com';
+            } else {
+	            $api_base_url = 'graph.instagram.com';
+            }
+
+            // media fields array
+            $media_fields = 'media_url,thumbnail_url,caption,id,media_type,timestamp,username,comments_count,like_count,permalink,children{media_url,id,media_type,timestamp,permalink,thumbnail_url}';
+
+            // limit
+            $limit = self::$instagram_media_data_limit;
 
 			// cache is expired - do a request
-			$instagram_get_media_data = td_remote_http::get_page('https://api.instagram.com/v1/users/' . $user_id . '/media/recent?access_token=' . $access_token . '&count=33', __CLASS__ );
-            $instagram_get_user_data = td_remote_http::get_page('https://api.instagram.com/v1/users/' . $user_id . '?access_token=' . $access_token, __CLASS__ );
+			$instagram_get_media_data = td_remote_http::get_page(
+                'https://' . $api_base_url . '/' . $account_id . '/media?fields=' . $media_fields . '&limit=' . $limit . '&access_token=' . $access_token,
+                __CLASS__
+            );
 
 			// check the call response
-			if ( $instagram_get_media_data === false || $instagram_get_user_data === false ) {
+			if ( $instagram_get_media_data === false ) {
 
 			    // check the cache and return the last stored data even if it's expired
 				$instagram_data = td_remote_cache::get(__CLASS__, $cache_key );
@@ -482,11 +659,11 @@ class td_instagram {
 					td_log::log(
 						__FILE__,
 						__FUNCTION__,
-						'Instagram access token api account data cannot be retrieved for the connnected account: ' . $connected_account['username']
+						'Instagram access token api account data cannot be retrieved for the connected account: ' . $connected_account['username']
 					);
 				}
 
-				// extend the cache valability for now.. will try to get the data again when the chache expires 
+				// extend the cache valability for now.. will try to get the data again when the cache expires
 				td_remote_cache::extend(__CLASS__, $cache_key, self::$caching_time );
 				return 'instagram_fail_cache';
 				
@@ -494,28 +671,26 @@ class td_instagram {
 
 			// try to decode the json
 			$instagram_media_json = json_decode( $instagram_get_media_data, true );
-            $instagram_user_json = json_decode( $instagram_get_user_data, true );
 
-			if ( ( $instagram_media_json === null || $instagram_user_json === null ) and json_last_error() !== JSON_ERROR_NONE ) {
+			if ( ( $instagram_media_json === null ) and json_last_error() !== JSON_ERROR_NONE ) {
 				td_log::log(__FILE__, __FUNCTION__, 'Error decoding the instagram API json', $instagram_media_json );
-                td_log::log(__FILE__, __FUNCTION__, 'Error decoding the instagram API json', $instagram_user_json );
                 return 'Error decoding the Instagram API json';
 			}
 
 			// current instagram data is not set
-			if ( ! isset( $instagram_media_json['data'] ) || ! isset( $instagram_user_json['data'] ) ) {
+			if ( !isset( $instagram_media_json['data'] ) ) {
 
 			    $error_message = '';
 
-			    if ( isset( $instagram_media_json['meta'] ) ) {
+			    if ( isset( $instagram_media_json['error'] ) ) {
 
-			        // if we have an error message like an invalid access token, if the access token is over the rate limit..etc set a specific message to let the user know that
-			        if ( isset( $instagram_media_json['meta']['error_message'] ) ) {
-
-			            if ( $instagram_media_json['meta']['error_type'] === 'OAuthRateLimitException' ) {
+			        // if we have an error message like an invalid access token, if the access token is over the rate limit..etc
+                    // ..set a specific message to let the user know that
+			        if ( isset( $instagram_media_json['error']['message'] ) ) {
+			            if ( $instagram_media_json['error']['type'] === 'OAuthRateLimitException' ) {
 				            $error_message = 'Block Render Failed - This account\'s access token is currently over the rate limit. Please try removing this account and wait at leats an hour before reconnecting it.';
 			            } else {
-				            $error_message = 'Block Render Failed - ' . $instagram_media_json['meta']['error_message'];
+				            $error_message = 'Block Render Failed - ' . $instagram_media_json['error']['message'];
 			            }
                     }
                 }
@@ -525,20 +700,25 @@ class td_instagram {
 				return td_util::get_block_error('Instagram Gallery', $error_message );
 			}
 
-            $instragram_data['user'] = array();
-            $instragram_data['user']['with_access_token'] = true;
-            $instragram_data['user']['profile_pic_url'] = $instagram_user_json['data']['profile_picture'];
-            $instragram_data['user']['instagram_id'] = $instagram_user_json['data']['username'];
-            $instragram_data['user']['edge_followed_by']['count'] = $instagram_user_json['data']['counts']['followed_by'];
-			$instragram_data['user']['feeds'] = $instagram_media_json['data'];
+            $instagram_data['user'] = array();
+            $instagram_data['user']['with_access_token'] = true;
 
-			td_remote_cache::set(__CLASS__, $cache_key, $instragram_data, self::$caching_time); //we have a reply and we set it
+			// business account data
+            //if ( $account_type === 'business' ) {} else {}
+
+            $instagram_data['user']['profile_pic_url'] = isset( $connected_account['profile_picture'] ) ? $connected_account['profile_picture'] : '';
+            $instagram_data['user']['instagram_id'] = $connected_account['username'];
+            $instagram_data['user']['edge_followed_by']['count'] = isset( $connected_account['followers'] ) ? $connected_account['followers'] : '';
+			$instagram_data['user']['feeds'] = $instagram_media_json['data'];
+			$instagram_data['user']['api_media_request_limit'] = self::$instagram_media_data_limit;
+
+			td_remote_cache::set(__CLASS__, $cache_key, $instagram_data, self::$caching_time); // we have a reply and we set it
 			return 'instagram_cache_updated';
 
 		} else {
 
 			// cache is valid
-			$instragram_data = td_remote_cache::get(__CLASS__, $cache_key );
+			$instagram_data = td_remote_cache::get(__CLASS__, $cache_key );
 			return 'instagram_cache';
 		}
 
@@ -597,11 +777,11 @@ class td_instagram {
             if ( empty($block_atts['instagram_header'] ) ) {
                 ?>
                 <div class="td-instagram-header">
-                    <div class="td-instagram-profile-image"><img src="<?php echo $instagram_profile_picture ?>"/></div>
+                    <div class="td-instagram-profile-image"><img src="<?php echo $instagram_profile_picture ?>" width="100" height="100" alt="profile picture"/></div>
                     <div class="td-instagram-meta">
-                        <div class="td-instagram-user"><a href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" target="_blank">@<?php echo self::strip_instagram_user($instagram_user) ?></a></div>
+                        <div class="td-instagram-user"><a href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" aria-label="instagram-user-image" rel="noopener" target="_blank">@<?php echo self::strip_instagram_user($instagram_user) ?></a></div>
                         <div class="td-instagram-followers"><span><?php echo $instagram_followers . '</span> ' .  __td('Followers', TD_THEME_NAME); ?></div>
-                        <a class="td-instagram-button" href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" target="_blank"><?php echo __td('Follow', TD_THEME_NAME); ?></a>
+                        <a class="td-instagram-button" href="https://www.instagram.com/<?php echo self::strip_instagram_user($instagram_user) ?>" target="_blank" rel="noopener"><?php echo __td('Follow', TD_THEME_NAME); ?></a>
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -618,7 +798,7 @@ class td_instagram {
                     $image_url = wp_get_attachment_image_url($image_id, 'td_696x0');
                     ?>
                     <div class="td-instagram-element">
-                        <a class="td-instagram-image" href="#"
+                        <a class="td-instagram-image" href="#" aria-label="instagram-image"
                            style="background-image: url(<?php echo $image_url ?>)">
                         </a>
                     </div>

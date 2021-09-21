@@ -13,6 +13,7 @@ class td_social_icons {
         'evernote' => 'Evernote',
         'facebook' => 'Facebook',
         'flickr' => 'Flickr',
+        'flipboard' => 'Flipboard',
         'forrst' => 'Forrst',
         'grooveshark' => 'Grooveshark',
         'instagram' => 'Instagram',
@@ -22,6 +23,7 @@ class td_social_icons {
         'stumbleupon' => 'Mix',
         'myspace' => 'Myspace',
         'naver' => 'Naver',
+        'discord' => 'Discord',
         'path' => 'Path',
         'paypal' => 'Paypal',
         'pinterest' => 'Pinterest',
@@ -34,6 +36,7 @@ class td_social_icons {
         'stackoverflow' => 'Stackoverflow',
         'steam' => 'Steam',
         'telegram' => 'Telegram',
+        'tiktok' => 'TikTok',
         'tumblr' => 'Tumblr',
         'twitch' => 'Twitch',
         'twitter' => 'Twitter',
@@ -42,6 +45,7 @@ class td_social_icons {
         'windows' => 'Windows',
         'wordpress' => 'WordPress',
         'yahoo' => 'Yahoo',
+        'yandex' => 'Yandex',
         'youtube' => 'Youtube',
         'xing' => 'Xing'
     );

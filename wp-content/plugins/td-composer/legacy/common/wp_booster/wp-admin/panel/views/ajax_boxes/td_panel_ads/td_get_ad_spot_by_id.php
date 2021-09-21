@@ -183,6 +183,36 @@ if (!isset($ad_fields['ad_field_advantage_usage']) || (isset($ad_fields['ad_fiel
 }
 
 
+if( TD_THEME_NAME == 'Newspaper' && ( !isset($ad_fields['ad_field_hide_for_admins']) || ( isset($ad_fields['ad_field_hide_for_admins']) && $ad_fields['ad_field_hide_for_admins'] !== false ) ) ){
+    ?>
+
+    <!-- disable ad for admins/editors -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title td-title-on-row">DISABLE FOR ADMINS/EDITORS</span>
+
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <span>
+            <?php
+            echo td_panel_generator::checkbox( array(
+                'ds'          => 'td_ads',
+                'item_id'     => $ad_spot_id,
+                'option_id'   => 'disable_for_admins',
+                'true_value'  => 'yes',
+                'false_value' => ''
+            ) );
+            ?>
+            </span>
+
+        </div>
+    </div>
+
+<?php
+}
+
+
 if (!isset($ad_fields['ad_field_desktop']) || (isset($ad_fields['ad_field_desktop']) && $ad_fields['ad_field_desktop'] !== false)) {
 	?>
 

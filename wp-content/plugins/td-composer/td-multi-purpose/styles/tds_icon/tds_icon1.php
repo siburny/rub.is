@@ -262,11 +262,19 @@ class tds_icon1 extends td_style {
         }
 	    $this->unique_style_class = td_global::td_generate_unique_id();
 
-        $svg_code = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('svg_code') ) ) );
+        // icon
+        $icon = $this->get_icon_att('tdicon_id');
 
-	    $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $svg_code = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('svg_code') ) ) );
+        if( $svg_code == '' ) {
+            if( base64_encode( base64_decode( $icon ) ) == $icon ) {
+                $svg_code = base64_decode( $icon );
+            }
+        }
+
+	    $buffy = $this->get_style($this->get_css());
 	    if( $svg_code == '' ) {
-            $buffy .= '<i class="' . self::get_group_style( __CLASS__ ) . ' ' . $this->get_shortcode_att('tdicon_id') . ' ' . $this->unique_style_class . ' td-fix-index"></i>';
+            $buffy .= '<i class="' . self::get_group_style( __CLASS__ ) . ' ' . $icon . ' ' . $this->unique_style_class . ' td-fix-index"></i>';
         } else {
 	        $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' tds-icon-svg-wrap ' . $this->unique_style_class . ' td-fix-index"><div class="tds-icon-svg">' . $svg_code . '</div></div>';
         }

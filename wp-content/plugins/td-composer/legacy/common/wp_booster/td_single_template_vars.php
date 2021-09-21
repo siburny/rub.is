@@ -80,10 +80,12 @@ td_page_views::update_page_views($post->ID);
 $option_id = 'td_default_site_post_template';
 if (class_exists('SitePress', false )) {
     global $sitepress;
-	$sitepress_settings = $sitepress->get_settings();
-	$translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-	if ( 1 === $translation_mode ) {
-		$option_id .= $sitepress->get_current_language();
+    $sitepress_settings = $sitepress->get_settings();
+	if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+		$translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+		if (1 === $translation_mode) {
+			$option_id .= $sitepress->get_current_language();
+		}
 	}
 }
 $td_default_site_post_template = td_util::get_option($option_id);

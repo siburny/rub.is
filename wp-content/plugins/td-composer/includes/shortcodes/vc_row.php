@@ -20,24 +20,60 @@ class vc_row extends tdc_composer_block {
 
 		$raw_css =
 			"<style>
+                /* @style_general_is_sticky */
+                body .tdc-row.tdc-rist-top-active,
+                body .tdc-row.tdc-rist-bottom-active {
+                  position: fixed;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  z-index: 10000;
+                }
+                body .tdc-row.tdc-rist-top-active.td-stretch-content,
+                body .tdc-row.tdc-rist-bottom-active.td-stretch-content {
+                  width: 100% !important;
+                }
+                body .tdc-row.tdc-rist-top-active {
+                  top: 0;
+                }
+                body .tdc-row.tdc-rist-absolute {
+                  position: absolute;
+                }
+                body .tdc-row.tdc-rist-bottom-active {
+                  bottom: 0;
+                }
+                @media (min-width: 767px) {
+                  body.admin-bar .tdc-row.tdc-rist-top-active {
+                    top: 32px;
+                  }
+                }
+                
                 /* @gap */
                 @media (min-width: 768px) {
 	                .$unique_block_class {
 	                    margin-left: -@gap;
 	                    margin-right: -@gap;
 	                }
+	                .$unique_block_class .tdc-row-video-background-error,
 	                .$unique_block_class .vc_column {
 	                    padding-left: @gap;
 	                    padding-right: @gap;
 	                }
                 }
+                
+                /* @row_height */
+                .$unique_block_class,
+                .$unique_block_class .tdc-columns {
+                    min-height: @row_height;
+                }
 
                 /* @row_full_height */
-                .$unique_block_class {
+                .$unique_block_class,
+                .$unique_block_class .tdc-columns {
                     min-height: 100vh;
                 }
                 /* @row_auto_height */
-                .$unique_block_class {
+                .$unique_block_class,
+                .$unique_block_class .tdc-columns {
                     min-height: 0;
                 }
                 
@@ -93,6 +129,48 @@ class vc_row extends tdc_composer_block {
                     left: 50%;
                     transform: translateX(-50%);
                     box-shadow: @row_shadow;
+                    z-index: 20;
+                    pointer-events: none;
+                    top: 0;
+                }
+                
+                /* @row_bg_solid_s */
+                 #$unique_block_id.tdc-rist-top-active .$unique_block_class > .td-element-style:after,
+                 #$unique_block_id.tdc-rist-bottom-active .$unique_block_class > .td-element-style:after {
+                    content: '' !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    position: absolute !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    z-index: 0 !important;
+                    display: block !important;
+                    background: @row_bg_solid_s !important;
+                }
+                /* @row_bg_gradient_s */
+                #$unique_block_id.tdc-rist-top-active .$unique_block_class > .td-element-style:after,
+                #$unique_block_id.tdc-rist-bottom-active .$unique_block_class > .td-element-style:after {
+                    content: '' !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    position: absolute !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    z-index: 0 !important;
+                    display: block !important;
+                    @row_bg_gradient_s
+                }
+                
+                /* @row_shadow_s */
+                #$unique_block_id.tdc-rist-top-active .$unique_block_class:before,
+                #$unique_block_id.tdc-rist-bottom-active .$unique_block_class:before {
+                    display: block;
+                    width: 100vw; 
+                    height: 100%;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    box-shadow: @row_shadow_s;
                     z-index: 20;
                     pointer-events: none;
                     top: 0;
@@ -213,6 +291,63 @@ class vc_row extends tdc_composer_block {
 				.$unique_block_class .tdc-row-divider-bottom {
 				    bottom: @space_bottom;
 				}
+				
+				
+				/* @flex_display */
+				.$unique_block_class,
+				.$unique_block_class .tdc-columns {
+				    display: @flex_display;
+				}
+				.$unique_block_class .tdc-columns {
+				    width: 100%;
+				}
+				/* @flex_layout */
+				.$unique_block_class,
+				.$unique_block_class .tdc-columns {
+				    flex-direction: @flex_layout;
+				}
+				/* @flex_wrap */
+				.$unique_block_class,
+				.$unique_block_class .tdc-columns {
+				    flex-wrap: @flex_wrap;
+				}
+				/* @flex_horiz_align */
+				.$unique_block_class,
+				.$unique_block_class .tdc-columns {
+				    justify-content: @flex_horiz_align;
+				}
+				/* @flex_vert_align */
+				.$unique_block_class,
+				.$unique_block_class .tdc-columns {
+				    align-items: @flex_vert_align;
+				}
+				/* @flex_order_0 */
+				.td-main-content-wrap .tdc_zone {
+				    display: flex;
+				    flex-direction: column;
+				}
+				#$unique_block_class {
+				    order: 0;
+				}
+				.td-main-content-wrap .tdc_zone .td-stretch-content {
+				    width: 100% !important;
+				}
+				/* @flex_order */
+				.td-main-content-wrap .tdc_zone {
+				    display: flex;
+				    flex-direction: column;
+				}
+				#$unique_block_id {
+				    order: @flex_order;
+				}
+				.td-main-content-wrap .tdc_zone .td-stretch-content {
+				    width: 100% !important;
+				}
+				/* @flex_width */
+				#$unique_block_id {
+				    max-width: @flex_width !important;
+				}
+				
 
 			</style>";
 
@@ -239,12 +374,24 @@ class vc_row extends tdc_composer_block {
             $res_ctx->load_settings_raw('content_align_vertical', $content_align_vertical);
         }
 
+
+
         // full height
         $full_height = $res_ctx->get_shortcode_att('row_full_height');
         if( $full_height != '' ) {
             $res_ctx->load_settings_raw( 'row_full_height', 1 );
         } else {
-            $res_ctx->load_settings_raw( 'row_auto_height', 1 );
+            // custom height
+            $row_height = $res_ctx->get_shortcode_att('row_height');
+            if( $row_height != '' ) {
+                if( is_numeric( $row_height ) ) {
+                    $res_ctx->load_settings_raw( 'row_height', $row_height . 'px' );
+                } else {
+                    $res_ctx->load_settings_raw( 'row_height', $row_height );
+                }
+            } else {
+                $res_ctx->load_settings_raw( 'row_auto_height', 1 );
+            }
         }
 
         // fixed background image
@@ -255,6 +402,12 @@ class vc_row extends tdc_composer_block {
 
         // shadow
         $res_ctx->load_shadow_settings( 0, 0, 6, 0, 'rgba(0, 0, 0, 0.08)', 'row_shadow' );
+
+        // sticky row background gradient
+        $res_ctx->load_color_settings( 'row_bg_gradient_s', 'row_bg_solid_s', 'row_bg_gradient_s', '', '' );
+
+        // sticky row shadow
+        $res_ctx->load_shadow_settings( 0, 0, 4, 0, 'rgba(0, 0, 0, 0.09)', 'row_shadow_s' );
 
         // stretch row off
         $res_ctx->load_settings_raw( 'stretch_off', $res_ctx->get_shortcode_att('stretch_off') );
@@ -296,7 +449,7 @@ class vc_row extends tdc_composer_block {
             $res_ctx->load_settings_raw( 'svg_background_color_top', $res_ctx->get_shortcode_att('svg_background_color_top') );
 
             // shadow
-            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_top' );
+            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_top', '', true  );
         }
 
 
@@ -331,7 +484,78 @@ class vc_row extends tdc_composer_block {
             $res_ctx->load_settings_raw( 'svg_background_color_bottom', $res_ctx->get_shortcode_att('svg_background_color_bottom') );
 
             // shadow
-            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_bot' );
+            $res_ctx->load_shadow_settings( 0, 0, 2, 0, 'rgba(0, 0, 0, 0.1)', 'shadow_bot', '', true );
+        }
+
+
+
+        /*-- FLEX SETTINGS -- */
+        if( 'Newspaper' === TD_THEME_NAME ) {
+            $flex_layout = $res_ctx->get_shortcode_att('flex_layout');
+
+            if ($flex_layout != 'block') {
+
+                $res_ctx->load_settings_raw('flex_display', 'flex');
+
+                // layout reverse
+                $flex_layout_reverse = $res_ctx->get_shortcode_att('flex_layout_reverse');
+                if ($flex_layout_reverse != '') {
+                    if ($flex_layout == 'row') {
+                        $res_ctx->load_settings_raw('flex_layout', 'row-reverse');
+                    } else if ($flex_layout == 'column') {
+                        $res_ctx->load_settings_raw('flex_layout', 'column-reverse');
+                    }
+                } else {
+                    if ($flex_layout == 'row') {
+                        $res_ctx->load_settings_raw('flex_layout', 'row');
+                    } else if ($flex_layout == 'column') {
+                        $res_ctx->load_settings_raw('flex_layout', 'column');
+                    }
+                }
+
+                // flex wrap
+                $flex_wrap = $res_ctx->get_shortcode_att('flex_wrap');
+                if ($flex_wrap == '') {
+                    $res_ctx->load_settings_raw('flex_wrap', 'nowrap');
+                } else {
+                    $res_ctx->load_settings_raw('flex_wrap', 'wrap');
+                }
+
+
+                // horizontal align
+                $flex_horizontal_align = $res_ctx->get_shortcode_att('flex_horiz_align');
+                $res_ctx->load_settings_raw('flex_horiz_align', $flex_horizontal_align);
+
+                // vertical align
+                $flex_vertical_align = $res_ctx->get_shortcode_att('flex_vert_align');
+                $res_ctx->load_settings_raw('flex_vert_align', $flex_vertical_align);
+
+            } else {
+                $res_ctx->load_settings_raw('flex_display', 'block');
+            }
+
+            // order
+            $flex_order = $res_ctx->get_shortcode_att('flex_order');
+            if ($flex_order != '' && is_numeric($flex_order)) {
+                if ($flex_order == '0') {
+                    $res_ctx->load_settings_raw('flex_order_0', 1);
+                } else {
+                    $res_ctx->load_settings_raw('flex_order', $flex_order);
+                }
+            }
+
+            // width
+            $flex_width = $res_ctx->get_shortcode_att('flex_width');
+            $res_ctx->load_settings_raw('flex_width', $flex_width);
+            if ($flex_width != '' && is_numeric($flex_width)) {
+                $res_ctx->load_settings_raw('flex_width', $flex_width . 'px');
+            }
+        }
+
+        // is_sticky
+        $is_sticky = $res_ctx->get_shortcode_att( 'is_sticky' );
+        if( $is_sticky != '' ) {
+            $res_ctx->load_settings_raw('style_general_is_sticky', 1);
         }
 
     }
@@ -344,6 +568,7 @@ class vc_row extends tdc_composer_block {
 
 			'full_width' => '',
 			'gap' => '',
+			'row_height' => '',
 			'row_full_height' => '',
 			'row_hide_on_pagination' => '',
 			'row_parallax' => '',
@@ -357,7 +582,8 @@ class vc_row extends tdc_composer_block {
 			'row_shadow_shadow_color' => '',
 			'content_align_vertical' => '',
 			'video_background' => '',
-			'video_scale' => '',
+            'video_start' => '2',
+            'video_scale' => '',
 			'video_opacity' => '',
 			'stretch_off' => '',
 			'row_divider_bottom' => '',
@@ -375,6 +601,14 @@ class vc_row extends tdc_composer_block {
 			'svg_width_top' => '',
 			'svg_flip_top' => '',
 			'svg_background_color_top' => '',
+            'is_sticky' => '',
+            'sticky_position' => '',
+            'row_bg_gradient_s' => '',
+            'row_shadow_s_shadow_size' => '',
+            'row_shadow_s_shadow_offset_horizontal' => '',
+            'row_shadow_s_shadow_offset_vertical' => '',
+            'row_shadow_s_shadow_spread' => '',
+            'row_shadow_s_shadow_color' => '',
 			'shadow_top_shadow_size' => '',
 			'shadow_top_shadow_color' => '',
 			'shadow_top_shadow_offset_horizontal' => '0',
@@ -383,6 +617,14 @@ class vc_row extends tdc_composer_block {
 			'space_top' => '',
 			'space_bottom' => '',
 			'svg_z_index' => '',
+
+            'flex_layout' => 'block',
+            'flex_layout_reverse' => '',
+            'flex_wrap' => '',
+            'flex_horiz_align' => 'flex-start',
+            'flex_vert_align' => 'flex-start',
+            'flex_order' => '',
+            'flex_width' => '',
 
 		), $atts);
 
@@ -395,6 +637,18 @@ class vc_row extends tdc_composer_block {
 		td_global::set_in_row(true);
 
 		$buffy = '';
+
+        if ( ! empty( $this->atts['is_sticky'] ) ) {
+
+            $row_class .= ' tdc-row-is-sticky';
+
+            if( $this->atts['sticky_position'] == '' ) {
+                $row_class .= ' tdc-rist-top';
+            } if( $this->atts['sticky_position'] == 'bottom' ) {
+                $row_class .= ' tdc-rist-bottom';
+            }
+
+        }
 
 		$block_classes = array('wpb_row', 'td-pb-row');
 
@@ -452,217 +706,292 @@ class vc_row extends tdc_composer_block {
 
                 $output = '';
 
-                $videos_info = td_remote_video::api_get_videos_info( array( $this->atts['video_background'] ), 'youtube');
+                if( td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' ) {
+                    if ( is_user_logged_in() ) {
+                        ob_start();
+                        ?>
 
-                if ( is_array( $videos_info ) && count( $videos_info ) ) {
-                    $row_class .= ' tdc-row-video-background';
+                        <style>
 
-                    ob_start();
-                    ?>
+                            .tdc-row-video-background-error {
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                width: 100%;
+                                pointer-events: none;
+                                z-index: 1000;
+                            }
+                            @media (min-width: 1140px) {
+                                .tdc-row-video-background-error {
+                                    padding-right: 24px;
+                                    padding-left: 24px;
+                                }
+                            }
 
-                    <style>
+                            .tdc-row-video-background-error .td-block-missing-settings {
+                                background-color: rgba(255, 255, 255, .85);
+                            }
 
-                        .tdc-row-video-background {
-                            position: relative;
-                        }
-                        .tdc-video-outer-wrapper {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            overflow: hidden;
-                            left: 0;
-                            right: 0;
-                            pointer-events: none;
-                            top: 0;
-                        }
-                        .tdc-video-thumb-on-mobile {
-                            display: none;
-                            background-size: cover;
-                            background-position: center top;
-                            width: 100%;
-                            height: 100%;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                        }
-                        @media (max-width: 767px) {
+                        </style>
+
+                        <?php
+                        $output = ob_get_clean();
+
+
+                        $output .= '<div class="tdc-row-video-background-error">';
+                            $output .= td_util::get_block_error('Row video background', '<strong>A YouTube API key</strong> has not been provided. Go to <strong>Theme Panel > Social Networks > YouTube API Configuration</strong>');
+                        $output .= '</div>';
+                    }
+                } else {
+                    $videos_info = td_remote_video::api_get_videos_info( array( $this->atts['video_background'] ), 'youtube');
+
+                    if ( is_array( $videos_info ) && count( $videos_info ) ) {
+                        $row_class .= ' tdc-row-video-background';
+
+                        ob_start();
+                        ?>
+
+                        <style>
+
+                            .tdc-row-video-background {
+                                position: relative;
+                            }
                             .tdc-video-outer-wrapper {
+                                position: absolute;
+                                width: 100%;
+                                height: 100%;
+                                overflow: hidden;
+                                left: 0;
+                                right: 0;
+                                pointer-events: none;
+                                top: 0;
+                            }
+                            .tdc-video-thumb-on-mobile {
+                                display: none;
+                                background-size: cover;
+                                background-position: center top;
+                                width: 100%;
+                                height: 100%;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                            }
+                            @media (max-width: 767px) {
+                                .tdc-video-outer-wrapper {
+                                    width: 100vw;
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    -webkit-transform: translateX(-50%);
+                                }
+                            }
+
+                            .tdc-video-parallax-wrapper,
+                            .tdc-video-inner-wrapper {
+                                position: absolute;
+                                width: 100%;
+                                height: 100%;
+                                left: 0;
+                                right: 0;
+                            }
+
+                            .tdc-video-inner-wrapper iframe {
+                                opacity: 0;
+                                transition: opacity 0.4s;
+                                position: absolute;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate3d(-50%, -50%, 0);
+                                -webkit-transform: translate3d(-50%, -50%, 0);
+                                -moz-transform: translate3d(-50%, -50%, 0);
+                                -ms-transform: translate3d(-50%, -50%, 0);
+                                -o-transform: translate3d(-50%, -50%, 0);
+                            }
+
+                            .tdc-video-inner-wrapper iframe.tdc-video-background-visible {
+                                opacity: 1 !important;
+                            }
+
+                            .tdc-row[class*="stretch_row"] .tdc-video-outer-wrapper {
                                 width: 100vw;
                                 left: 50%;
                                 transform: translateX(-50%);
                                 -webkit-transform: translateX(-50%);
+                                -moz-transform: translateX(-50%);
+                                -ms-transform: translateX(-50%);
+                                -o-transform: translateX(-50%);
                             }
+
+                        </style>
+
+                        <?php
+                        $output = ob_get_clean();
+
+                        $output .= '<div class="tdc-video-outer-wrapper">';
+                        $output .= '<div class="tdc-video-parallax-wrapper">';
+                        $output .= '<div class="tdc-video-inner-wrapper" data-video-scale="' . $this->atts['video_scale'] . '" data-video-opacity="' . $this->atts['video_opacity'] . '">';
+
+                        foreach ( $videos_info as $video_id => $video_info ) {
+                            $output .= $videos_info[ $video_id ]['embedHtml'];
+                            $output .= '<div class="tdc-video-thumb-on-mobile" style="background-image:url(' . $video_info['standard'] . ');"></div>';
+                            break;
                         }
 
-                        .tdc-video-parallax-wrapper,
-                        .tdc-video-inner-wrapper {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            left: 0;
-                            right: 0;
-                        }
+                        $output .= '</div>';
+                        $output .= '</div>';
+                        $output .= '</div>';
+                        ob_start();
+                        ?>
 
-                        .tdc-video-inner-wrapper iframe {
-                            opacity: 0;
-                            transition: opacity 0.4s;
-                            position: absolute;
-                            left: 50%;
-                            top: 50%;
-                            transform: translate3d(-50%, -50%, 0);
-                            -webkit-transform: translate3d(-50%, -50%, 0);
-                            -moz-transform: translate3d(-50%, -50%, 0);
-                            -ms-transform: translate3d(-50%, -50%, 0);
-                            -o-transform: translate3d(-50%, -50%, 0);
-                        }
+                        <script>
 
-                        .tdc-video-inner-wrapper iframe.tdc-video-background-visible {
-                            opacity: 1 !important;
-                        }
+                            jQuery(window).ready(function () {
 
-                        .tdc-row[class*="stretch_row"] .tdc-video-outer-wrapper {
-                            width: 100vw;
-                            left: 50%;
-                            transform: translateX(-50%);
-                            -webkit-transform: translateX(-50%);
-                            -moz-transform: translateX(-50%);
-                            -ms-transform: translateX(-50%);
-                            -o-transform: translateX(-50%);
-                        }
+                                // We need timeout because the content must be rendered and interpreted on client
+                                setTimeout(function() {
 
-                    </style>
+                                    var $content = jQuery('body').find('#tdc-live-iframe'),
+                                        refWindow = undefined;
 
-                    <?php
-                    $output = ob_get_clean();
+                                    if ($content.length) {
+                                        $content = $content.contents();
+                                        refWindow = document.getElementById( 'tdc-live-iframe' ).contentWindow || document.getElementById( 'tdc-live-iframe' ).contentDocument;
 
-                    $output .= '<div class="tdc-video-outer-wrapper">';
-                    $output .= '<div class="tdc-video-parallax-wrapper">';
-                    $output .= '<div class="tdc-video-inner-wrapper" data-video-scale="' . $this->atts['video_scale'] . '" data-video-opacity="' . $this->atts['video_opacity'] . '">';
-
-                    foreach ( $videos_info as $video_id => $video_info ) {
-                        $output .= $videos_info[ $video_id ]['embedHtml'];
-                        $output .= '<div class="tdc-video-thumb-on-mobile" style="background-image:url(' . $video_info['standard'] . ');"></div>';
-                        break;
-                    }
-
-                    $output .= '</div>';
-                    $output .= '</div>';
-                    $output .= '</div>';
-
-                    ob_start();
-                    ?>
-
-                    <script>
-
-                        jQuery(window).ready(function () {
-
-                            // We need timeout because the content must be rendered and interpreted on client
-                            setTimeout(function() {
-
-                                var $content = jQuery('body').find('#tdc-live-iframe'),
-                                    refWindow = undefined;
-
-                                if ($content.length) {
-                                    $content = $content.contents();
-                                    refWindow = document.getElementById( 'tdc-live-iframe' ).contentWindow || document.getElementById( 'tdc-live-iframe' ).contentDocument;
-
-                                } else {
-                                    $content = jQuery('body');
-                                    refWindow = window;
-                                }
-
-                                var $tdcVideoInnerWrappers = $content.find('#<?php echo $this->block_uid ?> .tdc-video-inner-wrapper:first');
-
-                                if ( tdDetect.isMobileDevice ) {
-                                    $content.find('.tdc-video-parallax-wrapper iframe').remove();
-                                    $content.find('.tdc-video-thumb-on-mobile').show();
-
-                                }
-
-
-                                $tdcVideoInnerWrappers.each(function() {
-                                    var $wrapper = jQuery(this);
-
-                                    var $iframe = $wrapper.find('iframe');
-
-                                    if ('undefined' !== typeof $wrapper.data('video-scale')) {
-                                        $wrapper.css({
-                                            transform: 'scale(' + $wrapper.data('video-scale') + ')'
-                                        });
-                                    }
-                                    if ('undefined' !== typeof $wrapper.data('video-opacity')) {
-                                        $wrapper.css({
-                                            opacity: $wrapper.data('video-opacity')
-                                        });
+                                    } else {
+                                        $content = jQuery('body');
+                                        refWindow = window;
                                     }
 
-                                    if ( $iframe.length ) {
+                                    var $tdcVideoInnerWrappers = $content.find('#<?php echo $this->block_uid ?> .tdc-video-inner-wrapper:first');
 
-                                        if ('undefined' === typeof $iframe.data('src-src')) {
-                                            $iframe.data('api-src', $iframe.attr('src'));
+                                    if ( tdDetect.isMobileDevice ) {
+                                        $content.find('.tdc-video-parallax-wrapper iframe').remove();
+                                        $content.find('.tdc-video-thumb-on-mobile').show();
+
+                                    }
+
+
+                                    $tdcVideoInnerWrappers.each(function() {
+                                        var $wrapper = jQuery(this);
+
+                                        var $iframe = $wrapper.find('iframe');
+
+                                        if ('undefined' !== typeof $wrapper.data('video-scale')) {
+                                            $wrapper.css({
+                                                transform: 'scale(' + $wrapper.data('video-scale') + ')'
+                                            });
+                                        }
+                                        if ('undefined' !== typeof $wrapper.data('video-opacity')) {
+                                            $wrapper.css({
+                                                opacity: $wrapper.data('video-opacity')
+                                            });
                                         }
 
-                                        var iframeSettingsStr = '',
-                                            iframeSettings = {
-                                                autoplay: 1,
-                                                loop: 1,
-                                                mute: 1,
-                                                showinfo: 0,
-                                                controls: 0,
-                                                start: 2,
-                                                playlist: '<?php echo $this->atts['video_background'] ?>'
-                                            };
+                                        if ( $iframe.length ) {
 
-                                        for (var prop in iframeSettings) {
-                                            iframeSettingsStr += prop + '=' + iframeSettings[prop] + '&';
-                                        }
-
-                                        $iframe.attr('src', $iframe.data('api-src') + '?' + iframeSettingsStr);
-
-                                        $iframe.load(function () {
-                                            var $iframe = jQuery(this),
-                                                iframeWidth = $iframe.width(),
-                                                iframeHeight = $iframe.height(),
-                                                iframeAspectRatio = iframeHeight / iframeWidth,
-                                                wrapperWidth = $wrapper.width(),
-                                                wrapperHeight = $wrapper.height(),
-                                                wrapperAspectRatio = wrapperHeight / wrapperWidth;
-
-                                            $iframe.attr( 'aspect-ratio', iframeAspectRatio );
-
-                                            if (iframeAspectRatio < wrapperAspectRatio) {
-                                                $iframe.css({
-                                                    width: wrapperHeight / iframeAspectRatio,
-                                                    height: wrapperHeight
-                                                });
-                                            } else if (iframeAspectRatio > wrapperAspectRatio) {
-                                                $iframe.css({
-                                                    width: '100%',
-                                                    height: iframeAspectRatio * wrapperWidth
-                                                });
+                                            if ('undefined' === typeof $iframe.data('src-src')) {
+                                                $iframe.data('api-src', $iframe.attr('src'));
                                             }
 
-                                            setTimeout(function () {
-                                                $iframe.addClass('tdc-video-background-visible');
-                                            }, 100);
+                                            var iframeSettingsStr = '',
+                                                iframeSettings = {
+                                                    autoplay: 1,
+                                                    loop: 1,
+                                                    mute: 1,
+                                                    showinfo: 0,
+                                                    controls: 0,
+                                                    start: <?php echo (int)$this->atts['video_start']; ?>,
+                                                    playlist: '<?php echo $this->atts['video_background']; ?>',
+                                                };
 
-                                        });
-                                    }
+                                            for (var prop in iframeSettings) {
+                                                iframeSettingsStr += prop + '=' + iframeSettings[prop] + '&';
+                                            }
 
-                                    return;
-                                });
+                                            $iframe.attr('src', $iframe.data('api-src') + '?' + iframeSettingsStr);
 
-                            }, 200);
-                        });
+                                            $iframe.on( 'load', function () {
+                                                var $iframe = jQuery(this),
+                                                    iframeWidth = $iframe.width(),
+                                                    iframeHeight = $iframe.height(),
+                                                    iframeAspectRatio = iframeHeight / iframeWidth,
+                                                    wrapperWidth = $wrapper.width(),
+                                                    wrapperHeight = $wrapper.height(),
+                                                    wrapperAspectRatio = wrapperHeight / wrapperWidth;
 
-                    </script>
+                                                $iframe.attr( 'aspect-ratio', iframeAspectRatio );
 
-                    <?php
+                                                if (iframeAspectRatio < wrapperAspectRatio) {
+                                                    $iframe.css({
+                                                        width: wrapperHeight / iframeAspectRatio,
+                                                        height: wrapperHeight
+                                                    });
+                                                } else if (iframeAspectRatio > wrapperAspectRatio) {
+                                                    $iframe.css({
+                                                        width: '100%',
+                                                        height: iframeAspectRatio * wrapperWidth
+                                                    });
+                                                }
 
-                    if ( defined( 'TD_SPEED_BOOSTER' ) ) {
-                        td_js_buffer::add_to_footer( td_util::remove_script_tag( ob_get_clean() ) );
+                                                setTimeout(function () {
+                                                    $iframe.addClass('tdc-video-background-visible');
+                                                }, 100);
+
+                                            });
+                                        }
+
+                                        return;
+                                    });
+
+                                }, 200);
+                            });
+
+                        </script>
+
+                        <?php
+
+                        if ( defined( 'TD_SPEED_BOOSTER' ) ) {
+                            td_js_buffer::add_to_footer( td_util::remove_script_tag( ob_get_clean() ) );
+                        } else {
+                            $output .= ob_get_clean();
+                        }
                     } else {
-                        $output .= ob_get_clean();
+                        if ( is_user_logged_in() ) {
+                            ob_start();
+                            ?>
+
+                            <style>
+
+                                .tdc-row-video-background-error {
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    width: 100%;
+                                    pointer-events: none;
+                                    z-index: 1000;
+                                }
+                                @media (min-width: 1140px) {
+                                    .tdc-row-video-background-error {
+                                        padding-right: 24px;
+                                        padding-left: 24px;
+                                    }
+                                }
+
+                                .tdc-row-video-background-error .td-block-missing-settings {
+                                    background-color: rgba(255, 255, 255, .85);
+                                }
+
+                            </style>
+
+                            <?php
+                            $output = ob_get_clean();
+
+
+                            $output .= '<div class="tdc-row-video-background-error">';
+                                $output .= td_util::get_block_error('Row video background', '<strong>YouTube API Key</strong> invalid or <strong>Video id</strong> was not found or can\'t be retrieved.');
+                            $output .= '</div>';
+                        }
                     }
                 }
 
@@ -838,7 +1167,6 @@ class vc_row extends tdc_composer_block {
 		}
 
 
-
         td_global::set_in_row(false);
 
 		// td-composer PLUGIN uses to add blockUid output param when this shortcode is retrieved with ajax (@see tdc_ajax)
@@ -850,9 +1178,10 @@ class vc_row extends tdc_composer_block {
 	/**
 	 * Safe way to read $this->atts. It makes sure that you read them when they are ready and set!
 	 * @param $att_name
+	 * @param $default_value
 	 * @return mixed
 	 */
-	public function get_custom_att($att_name) {
+	public function get_custom_att($att_name, $default_value = '') {
 		if ( !isset( $this->atts ) ) {
 		    echo 'TD Composer Internal error: The atts are not set yet(AKA: the LOCAL render method was not called yet and the system tried to read an att)';
 			die;
@@ -861,7 +1190,9 @@ class vc_row extends tdc_composer_block {
 		if ( !isset( $this->atts[$att_name] ) ) {
 			var_dump($this->atts);
 			echo 'TD Composer Internal error: The system tried to use an LOCAL att that does not exists! class_name: ' . get_class($this) . '  Att name: "' . $att_name . '" The list with available atts is in vc_row::render';
-			die;
+
+			//die;
+            return $default_value;
 		}
 		return $this->atts[$att_name];
 	}

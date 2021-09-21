@@ -115,7 +115,8 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 				global $wp_filesystem;
                 $file_data = $wp_filesystem->get_contents( $plugins_path . '/' . $plugin );
 
-                preg_match('/define\(\'' . $constant . '\',\s+\'(.*)\'\)/', $file_data, $matches);
+                preg_match('/define\s*\(\s*\'' . $constant . '\',\s*\'(.*)\'\s*\)/', $file_data, $matches);
+
 				if ( !isset($matches[1] ) || $matches[1] !==  $settings['version'] ) {
 					$td_plugins_update_list[] = $plugin;
 				}
@@ -256,26 +257,26 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 		?>
     </div>
 
-    <hr style="clear:left"/>
+    <br>
 
-    <h3>Tested Plugins:</h3>
+    <h1>Tested Plugins</h1>
     <div class="about-text">
         <p>With each theme release we provide a list of fully suported plugins. In order to make the plugins look and work better, the theme may add custom stylesheets and hook custom code to them.
             We manually inspect each plugin periodically. If we missed something, feel free to contact us!</p>
     </div>
 
     <div class="td-supported-plugin-list">
-        <div class="td-supported-plugin">WP Super Cache <span> - caching plugin</span></div>
-        <div class="td-supported-plugin">Contact form 7 <span>- used to make contact forms</span></div>
-        <div class="td-supported-plugin">bbPress <span>- forum plugin</span></div>
-        <div class="td-supported-plugin">BuddyPress<span>- social network plugin</span></div>
-        <div class="td-supported-plugin">Font Awesome 4 Menus<span>- icon pack, supported in the theme menus</span></div>
-        <div class="td-supported-plugin">Jetpack  <span>- plugin with lots of features *it may slow down your site</span></div>
-        <div class="td-supported-plugin">Orbit Fox <span> - extend your website features</span></div>
-        <div class="td-supported-plugin">WooCommerce <span>- eCommerce solution</span></div>
-        <div class="td-supported-plugin">WordPress (Yoast) SEO <span> - SEO plugin</span></div>
-        <div class="td-supported-plugin">Wp User Avatar <span> - Change users avatars</span></div>
-        <div class="td-supported-plugin">WP GDPR Compliance <span> - GDPR compliance plugin</span></div>
-        <div class="td-supported-plugin">HubSpot All-In-One Marketing - Forms, Popups, Live Chat <span> - Grow your email list, generate leads, and manage contacts</span></div>
+        <div class="td-supported-plugin"><p>WP Super Cache</p><span> - caching plugin</span></div>
+        <div class="td-supported-plugin"><p>Contact form 7</p><span>- used to make contact forms</span></div>
+        <div class="td-supported-plugin"><p>bbPress</p><span>- forum plugin</span></div>
+        <div class="td-supported-plugin"><p>BuddyPress</p><span>- social network plugin</span></div>
+		<div class="td-supported-plugin"><p>WPML</p><span> - The WordPress Multilingual Plugin</span></div>
+		<div class="td-supported-plugin"><p>Font Awesome 4 Menus</p><span>- icon pack, supported in the theme menus</span></div>
+        <div class="td-supported-plugin"><p>Jetpack</p><span>- plugin with lots of features *it may slow down your site</span></div>
+        <div class="td-supported-plugin"><p>WooCommerce</p><span>- eCommerce solution</span></div>
+        <div class="td-supported-plugin"><p>WordPress (Yoast) SEO</p><span> - SEO plugin</span></div>
+        <div class="td-supported-plugin"><p>Wp User Avatar</p><span> - Change users avatars</span></div>
+        <div class="td-supported-plugin"><p>WP GDPR Compliance</p><span> - GDPR compliance plugin</span></div>
+        <div class="td-supported-plugin"><p>HubSpot All-In-One Marketing</p><span> - Grow your email list, generate leads, and manage contacts</span></div>
     </div>
 </div>

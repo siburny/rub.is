@@ -68,15 +68,15 @@ echo td_global_blocks::get_instance('td_block_ad_box_mob')->render(array('spot_i
             $buffy .= '<div class="td-footer-wrap"><aside class="td-footer-logo">';
             if (!empty($td_footer_logo)) { // if have footer logo
                 if (empty($td_footer_retina_logo)) { // if don't have a retina footer logo load the normal logo
-                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img src="' . $td_footer_logo . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
+                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '" aria-label="Logo"><img src="' . $td_footer_logo . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
                 } else {
-                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_footer_logo . '" data-retina="' . esc_attr($td_footer_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
+                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '" aria-label="Logo"><img class="td-retina-data" src="' . $td_footer_logo . '" data-retina="' . esc_attr($td_footer_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
                 }
             } else { // if you don't have a footer logo load the top logo
                 if (empty($td_top_retina_logo)) {
-                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img src="' . $td_top_logo . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
+                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '" aria-label="Logo"><img src="' . $td_top_logo . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
                 } else {
-                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_top_logo . '" data-retina="' . esc_attr($td_top_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
+                    $buffy .= '<a href="' . esc_url(home_url( '/' )) . '" aria-label="Logo"><img class="td-retina-data" src="' . $td_top_logo . '" data-retina="' . esc_attr($td_top_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
                 }
             }
             $buffy .= '</aside></div>';

@@ -6,6 +6,9 @@ get_header();
 
 global $loop_module_id, $loop_sidebar_position, $post, $td_sidebar_position;
 
+//used if file exists in child theme
+$td_child_theme_file_path = STYLESHEETPATH . '/loop-single.php';
+
 $td_mod_single = new td_module_single($post);
 ?>
     <div class="td-main-content-wrap td-container-wrap">
@@ -23,10 +26,16 @@ $td_mod_single = new td_module_single($post);
                         <div class="td-pb-span8 td-main-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                    require_once('loop-single.php');
-                                } else {
+                                if ( defined('TD_STANDARD_PACK' ) ) {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
                                     require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                } else {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
+                                    require_once('loop-single.php');
                                 }
 
                                 comments_template('', true);
@@ -46,11 +55,18 @@ $td_mod_single = new td_module_single($post);
                         <div class="td-pb-span8 td-main-content <?php echo esc_attr($td_sidebar_position) ?>-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                    require_once('loop-single.php');
-                                } else {
+                                if ( defined('TD_STANDARD_PACK' ) ) {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
                                     require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                } else {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
+                                    require_once('loop-single.php');
                                 }
+
                                 comments_template('', true);
                                 ?>
                             </div>
@@ -69,11 +85,18 @@ $td_mod_single = new td_module_single($post);
                         <div class="td-pb-span12 td-main-content" role="main">
                             <div class="td-ss-main-content">
                                 <?php
-                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                    require_once('loop-single.php');
-                                } else {
+                                if ( defined('TD_STANDARD_PACK' ) ) {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
                                     require_once(TDSP_THEME_PATH . '/loop-single.php');
+                                } else {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
+                                    require_once('loop-single.php');
                                 }
+
                                 comments_template('', true);
                                 ?>
                             </div>

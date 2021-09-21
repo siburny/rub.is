@@ -125,6 +125,11 @@ if ( td_util::tdc_is_live_editor_iframe() || td_util::is_template_footer() ) {
 }
 
 ?>
+<style>
+    .tdc-footer-template .td-main-content-wrap {
+        padding-bottom: 0;
+    }
+</style>
 
 </div><!--close td-outer-wrap-->
 

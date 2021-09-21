@@ -110,6 +110,14 @@
             ?>
         </div>
 
+        <?php
+            if ( !empty($mb->meta['td_post_template'])) {
+                ?>
+                <input type="hidden" name="td_post_theme_settings[td_post_template]" value="<?php echo $mb->meta['td_post_template'] ?>" />
+                <?php
+            }
+        ?>
+
     </div> <!-- /post option general -->
 
 </div>

@@ -338,6 +338,22 @@ class td_panel_data_source {
 		            self::update_tdb_template($post_value, 'author');
 		            break;
 
+	            case 'tdb_woo_product_template':
+		            self::update_tdb_template($post_value, 'woo_product');
+		            break;
+
+	            case 'tdb_woo_archive_template':
+		            self::update_tdb_template($post_value, 'woo_archive');
+		            break;
+
+	            case 'tdb_woo_search_archive_template':
+		            self::update_tdb_template($post_value, 'woo_search_archive');
+		            break;
+
+	            case 'tdb_woo_shop_base_template':
+		            self::update_tdb_template($post_value, 'woo_shop_base');
+		            break;
+
                 default:
 	                // here we had aurora hooked - removed in 20 sep 2016
                     //tdx_options::set_data_to_datasource($post_data_source, $post_value);
@@ -357,6 +373,7 @@ class td_panel_data_source {
         //save all the themes settings (td_options + td_category)
 	    td_options::schedule_save();
 
+	    td_options::save_panel_history();
     }
 
 
@@ -889,22 +906,58 @@ class td_panel_data_source {
 	private static function update_tdb_author_templates($td_option_array) {
 		$td_options = &td_options::get_all_by_ref();
 
+        $option_id = 'tdb_author_templates';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
 		foreach ($td_option_array as $author_id => $tdb_template_id) {
-			$td_options['tdb_author_templates'][$author_id] = $tdb_template_id;
+			$td_options[$option_id][$author_id] = $tdb_template_id;
 		}
 	}
 
 	private static function update_tdb_tag_templates($td_option_array) {
 		$td_options = &td_options::get_all_by_ref();
 
+        $option_id = 'tdb_tag_templates';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
 		foreach ($td_option_array as $tdb_template_id => $tags) {
-			$td_options['tdb_tag_templates'][$tdb_template_id] = $tags;
+			$td_options[$option_id][$tdb_template_id] = $tags;
 		}
 	}
 
 	private static function update_tdb_template($td_option, $template_type) {
 		$td_options = &td_options::get_all_by_ref();
-        $td_options['tdb_' . $template_type . '_template'] = $td_option;
+
+        $option_id = 'tdb_' . $template_type . '_template';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+        $td_options[$option_id] = $td_option;
 	}
 
 

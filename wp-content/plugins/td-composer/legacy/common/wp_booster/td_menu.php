@@ -116,7 +116,7 @@ class td_menu {
             $td_mega_menu_cat = '';
             $td_mega_menu_page_id = '';
 
-            if ( td_util::tdc_is_installed() && ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) ) {
+            if ( td_util::tdc_is_installed() ) {
 	            //read mega menu and mega page menu settings
 	            $td_mega_menu_cat     = get_post_meta( $item->ID, 'td_mega_menu_cat', true );
 	            $td_mega_menu_page_id = get_post_meta( $item->ID, 'td_mega_menu_page_id', true );

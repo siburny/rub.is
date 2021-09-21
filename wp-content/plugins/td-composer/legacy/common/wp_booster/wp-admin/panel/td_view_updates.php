@@ -2,7 +2,6 @@
 require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header.php';
 
 if ( defined('TD_COMPOSER' ) ) {
-    if ( strpos( td_util::get_registration(), chr(42 ) ) > 0 ) {
 
         $new_update_available = false;
         $latest_version = tagdiv_util::get_option( 'theme_update_latest_version' );
@@ -38,7 +37,7 @@ if ( defined('TD_COMPOSER' ) ) {
 
             <div class=" about-wrap td-admin-wrap td-update-page" style="margin-top: 0">
                 <div class="td-white-box" style="text-align: center">
-                    <h2 style="text-align: center">New Update is Available</h2>
+                    <h1 style="text-align: center">New Update is Available</h1>
                     <p>A new version of the <b><?php echo TD_THEME_NAME ?> Theme</b> is ready to be installed. See what's new
                         here: <a href="https://tagdiv.com/<?php echo TD_THEME_NAME ?>/" target="_blank">Changelog</a></p>
                     <div class="td-version-wrap">
@@ -69,8 +68,8 @@ if ( defined('TD_COMPOSER' ) ) {
 
             <div class=" about-wrap td-admin-wrap td-update-page" style="text-align: center">
                 <div class="td-white-box">
-                    <h2>You're up to date!</h2>
-                    <?php echo TD_THEME_NAME . ' <b>' . TD_THEME_VERSION . '</b>' ?> is the newest version available.</p>
+                    <h1>You're up to date!</h1>
+                    <p><?php echo TD_THEME_NAME . ' <b>' . TD_THEME_VERSION . '</b>' ?> is the newest version available.</p>
                     <a class="button button-large button-primary td-button-updated td-panel-check-updates" href="#">Check for updates</a>
                 </div>
             </div>
@@ -81,7 +80,7 @@ if ( defined('TD_COMPOSER' ) ) {
 
         <div class=" about-wrap td-admin-wrap td-update-page" style="text-align: center">
             <div class="td-white-box">
-                <h2><?php echo TD_THEME_NAME ?> Time Machine</h2>
+                <h1><?php echo TD_THEME_NAME ?> Time Machine</h1>
                 <?php
                 $versions = td_util::get_option( 'theme_update_versions' );
 
@@ -238,18 +237,4 @@ if ( defined('TD_COMPOSER' ) ) {
         </div>
 
     <?php
-    } else {
-        ?>
-
-        <div class="about-wrap td-admin-wrap td-update-page">
-            <h1>Theme updates</h1>
-            <div class="about-text">
-                <p>The update process can't be completed because your <?php echo TD_THEME_NAME ?> Theme license key is not yet activated.</p>
-                <p> <?php echo '<strong style="color:red"> Please activate your theme! </strong> - <a class="button button-primary" href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Activate theme</a>'?></p>
-                <p>If you need help activating the theme, please follow the <a href="https://forum.tagdiv.com/newspaper-6-how-to-activate-the-theme/" target="_blank">Step-by-step Guide</a>.</p>
-            </div>
-        </div>
-
-        <?php
-    }
 }

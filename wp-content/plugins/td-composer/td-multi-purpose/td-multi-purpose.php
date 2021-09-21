@@ -95,7 +95,7 @@ class td_api_multi_purpose {
                 .tds-button6 i,
                 .tdm_block_list .tdm-list-item i,
                 .tdm_block_pricing .tdm-pricing-feature i,
-                .tdm-social-item i {
+                body .tdm-social-item i {
                     color: @theme_color;
                 }
                 .tds-button1,
@@ -318,8 +318,29 @@ class td_api_multi_purpose {
 
 		$compiled_css    = $td_css_compiler->compile_css();
 
-		$buffer = "\n<!-- Button style compiled by theme -->" . "\n\n<style>\n    " . $compiled_css . "\n</style>\n\n";
-		echo $buffer; // echo out the buffer
+        global $post;
+
+        $ref_id = !empty($post->ID) ? $post->ID : null;
+
+	    if ( class_exists('Mobile_Detect')) {
+	        $mobile_detect = new Mobile_Detect();
+	        if ( $mobile_detect->isMobile() ) {
+
+	            if ( !empty($ref_id ) ) {
+	                $ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+	                if ( empty($ref_id ) ) {
+	                    $ref_id = $post->ID;
+	                }
+	            }
+	        }
+	    }
+	    if (!empty($ref_id)) {
+		    $tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+		    if ( empty( $tda_essential_css ) ) {
+			    $buffer = "\n<!-- Button style compiled by theme -->" . "\n\n<style>\n    " . $compiled_css . "\n</style>\n\n";
+			    echo $buffer; // echo out the buffer
+		    }
+	    }
 	}
 
 
@@ -493,10 +514,11 @@ class td_api_multi_purpose {
                     "param_name" => "title_tag",
                     "type" => "dropdown",
                     "value" => array(
+                        'H3 - Default' => 'h3',
                         'H1' => 'h1',
                         'H2' => 'h2',
-                        'H3 - Default' => 'h3',
                         'H4' => 'h4',
+                        'Div' => 'div'
                     ),
                     "heading" => 'Title tag (SEO)',
                     "description" => "",
@@ -546,6 +568,20 @@ class td_api_multi_purpose {
                     "class" => ""
                 ),
                 array(
+                    "param_name" => "button_url_rel",
+                    "type" => "dropdown",
+                    "value" => array(
+                        'Disable' => '',
+                        'Nofollow' => 'nofollow',
+                        'Noopener' => 'noopener',
+                        'Noreferrer' => 'noreferrer'
+                    ),
+                    "heading" => "Set rel attribute",
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "tdc-dropdown-big"
+                ),
+                array(
                     'param_name' => 'button_tdicon',
                     'type' => 'icon',
                     'heading' => 'Button icon',
@@ -582,6 +618,17 @@ class td_api_multi_purpose {
                     'range_max' => '50',
                     'range_step' => '1',
                     'class' => 'tdc-textfield-small',
+                ),
+                array(
+                    'type' => 'range-responsive',
+                    'param_name' => 'icon_align',
+                    'value' => '0',
+                    'heading' => 'Icon alignment',
+                    'description' => '',
+                    'class' => 'tdc-textfield-small',
+                    'range_min' => '-50',
+                    'range_max' => '50',
+                    'range_step' => '1',
                 ),
                 array(
                     "param_name" => "button_size",
@@ -686,6 +733,7 @@ class td_api_multi_purpose {
                     "description" => "",
                     "holder" => "div",
                     "class" => "tdc-dropdown-big",
+                    "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                 ),
             ),
             'social_icons' => array(
@@ -742,6 +790,16 @@ class td_api_multi_purpose {
                     "description" => "",
                     "holder" => "div",
                     "class" => "tdc-dropdown-big"
+                ),
+                array(
+                    "param_name"  => "social_order",
+                    "type"        => "textfield",
+                    "value"       => '',
+                    "heading"     => 'Order social icons',
+                    "description" => "Add the social name to display them in order (use lowercase letters)",
+                    "holder"      => "div",
+                    "class"       => "tdc-textfield-extrabig",
+                    "placeholder" => 'facebook, instagram, twitter',
                 ),
                 array(
                     'param_name' => 'behance',
@@ -832,6 +890,14 @@ class td_api_multi_purpose {
                     'class' => 'tdc-textfield-extrabig',
                 ),
                 array(
+                    'param_name' => 'flipboard',
+                    'type' => 'textfield',
+                    'value' => '',
+                    'heading' => 'Flipboard',
+                    'description' => '',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
+                array(
                     'param_name' => 'forrst',
                     'type' => 'textfield',
                     'value' => '',
@@ -900,6 +966,14 @@ class td_api_multi_purpose {
                     'type' => 'textfield',
                     'value' => '',
                     'heading' => 'Naver',
+                    'description' => '',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
+                array(
+                    'param_name' => 'discord',
+                    'type' => 'textfield',
+                    'value' => '',
+                    'heading' => 'Discord',
                     'description' => '',
                     'class' => 'tdc-textfield-extrabig',
                 ),
@@ -1000,6 +1074,14 @@ class td_api_multi_purpose {
                     'class' => 'tdc-textfield-extrabig',
                 ),
                 array(
+                    'param_name' => 'tiktok',
+                    'type' => 'textfield',
+                    'value' => '',
+                    'heading' => 'TikTok',
+                    'description' => '',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
+                array(
                     'param_name' => 'tumblr',
                     'type' => 'textfield',
                     'value' => '',
@@ -1060,6 +1142,14 @@ class td_api_multi_purpose {
                     'type' => 'textfield',
                     'value' => '',
                     'heading' => 'Yahoo',
+                    'description' => '',
+                    'class' => 'tdc-textfield-extrabig',
+                ),
+                array(
+                    'param_name' => 'yandex',
+                    'type' => 'textfield',
+                    'value' => '',
+                    'heading' => 'Yandex',
                     'description' => '',
                     'class' => 'tdc-textfield-extrabig',
                 ),
@@ -1207,6 +1297,7 @@ class td_api_multi_purpose {
                 "description" => "",
                 "holder" => "div",
                 "class" => "tdc-dropdown-big",
+                "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
             ),
         );
 
@@ -1871,6 +1962,7 @@ class td_api_multi_purpose {
                                     'H2' => 'h2',
                                     'H3 - Default' => 'h3',
                                     'H4' => 'h4',
+                                    'Div' => 'div',
                                 ),
                                 "heading" => 'Title tag (SEO)',
                                 "description" => "",
@@ -2415,7 +2507,7 @@ class td_api_multi_purpose {
                         ),
                         array(
                             "param_name" => "content_align_horizontal",
-                            "type" => "dropdown",
+                            "type" => "dropdown-responsive",
                             "value" => array(
                                 'Left' => 'content-horiz-left',
                                 'Center' => 'content-horiz-center',
@@ -2573,13 +2665,87 @@ class td_api_multi_purpose {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                         ),
+
                         array(
                             "param_name" => "separator",
                             "type" => "text_separator",
-                            'heading' => 'Style',
+                            'heading' => 'Video pop-up',
                             "value" => "",
                             "class" => "",
                         ),
+                        array(
+                            "param_name"  => "video_popup",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Enable",
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => '',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
+                        ),
+                        array(
+                            "param_name"  => "video_url",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Video url',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-extrabig",
+                            "placeholder" => "",
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name" => "video_rec",
+                            "type" => "textarea_raw_html",
+                            "holder" => "div",
+                            "class" => "tdc-textarea-raw-small",
+                            "heading" => 'Ad',
+                            "value" => "",
+                            "description" => 'Paste your ad code here.',
+                            'group'      => '',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
+                        ),
+                        array(
+                            "param_name" => "spot_header",
+                            "type" => "spot_header",
+                            "value" => "",
+                            "class" => '',
+                            'group' => '',
+                        ),
+                        array(
+                            "param_name" => "video_rec_title",
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => 'Ad title',
+                            "description" => "",
+                            "placeholder" => "- Advertisement -",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
+                            'group'      => '',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "tdc-spot-controller tdc-spot-color",
+                            "heading"     => 'Ad title color',
+                            "param_name"  => "video_rec_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "",
+                        ),
+                        array(
+                            "param_name"  => "video_icon_size",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Video icon size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "",
+                        ),
+
                         array(
                             "type" => "colorpicker",
                             "holder" => "div",
@@ -2588,6 +2754,7 @@ class td_api_multi_purpose {
                             "param_name" => "caption_text_color",
                             "value" => '',
                             "description" => '',
+                            "group" => "Style"
                         ),
                         array(
                             "param_name" => "caption_background_color",
@@ -2596,6 +2763,7 @@ class td_api_multi_purpose {
                             'heading' => "Caption background color",
                             "value" => "",
                             "class" => "",
+                            "group" => "Style"
                         ),
                         array(
                             "param_name" => "overlay_color",
@@ -2604,10 +2772,42 @@ class td_api_multi_purpose {
                             'heading' => "Image overlay color",
                             "value" => "",
                             "class" => "",
+                            "group" => "Style"
                         ),
                     ),
-                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0 ),
-                    td_config_helper::get_map_block_font_array( 'f_caption', true, 'Caption text' ),
+                    td_config_helper::get_map_block_shadow_array('shadow', 'Shadow', 0, 0, 0, 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_caption', true, 'Caption text', 'Style' ),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            'heading' => 'Video pop-up',
+                            "value" => "",
+                            "class" => "",
+                            "group" => "Style"
+                        ),
+                        array(
+                            "param_name" => "video_bg",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Background color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
+                        ),
+                        array(
+                            "param_name" => "video_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Overlay color",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
+                        ),
+                    ),
+
                     td_config_helper::mix_blend('Effects'),
                     td_config_helper::image_filters('Effects'),
                     $css_tabs_params
@@ -3513,6 +3713,7 @@ class td_api_multi_purpose {
                                 'H2' => 'h2',
                                 'H3 - Default' => '',
                                 'H4' => 'h4',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Name tag (SEO)',
                             "description" => "",
@@ -3592,6 +3793,7 @@ class td_api_multi_purpose {
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             'param_name' => 'img_height',
@@ -3805,6 +4007,7 @@ class td_api_multi_purpose {
                                 'H2' => 'h2',
                                 'H3 - Default' => '',
                                 'H4' => 'h4',
+                                'Div' => 'div',
                             ),
                             "heading" => 'Name tag (SEO)',
                             "description" => "",
@@ -3975,6 +4178,7 @@ class td_api_multi_purpose {
                                 'H2' => 'h2',
                                 'H3 - Default' => '',
                                 'H4' => 'h4',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Name tag (SEO)',
                             "description" => "",
@@ -3997,6 +4201,20 @@ class td_api_multi_purpose {
                             "description" => "",
                             "holder" => "div",
                             "class" => ""
+                        ),
+                        array(
+                            "param_name" => "url_rel",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'None' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noreferrer' => 'noreferrer',
+                                'Noopener' => 'noopener'
+                            ),
+                            "heading" => 'Set rel attribute',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
                         ),
                         array(
                             "param_name" => "separator",
@@ -5487,6 +5705,7 @@ class td_api_multi_purpose {
                                 'H2' => 'h2',
                                 'H3 - Default' => 'h3',
                                 'H4' => 'h4',
+                                'Div' => 'div',
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
@@ -6127,6 +6346,7 @@ class td_api_multi_purpose {
                                 'H2' => 'h2',
                                 'H3 - Default' => 'h3',
                                 'H4' => 'h4',
+                                'Div' => 'div',
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",

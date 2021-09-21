@@ -9,8 +9,6 @@ class td_ajax {
 	 */
 	static function on_ajax_block($ajax_parameters = '') {
 
-
-
 		$isAjaxCall = false;
 
 		if (empty($ajax_parameters)) {
@@ -25,7 +23,6 @@ class td_ajax {
 				'block_type' => '',         // the type of the block / block class
 				'td_filter_value' => ''     // the id for this specific filter type. The filter type is in the td_atts
 			);
-
 
 			if (!empty($_POST['td_atts'])) {
 				$ajax_parameters['td_atts'] = json_decode(stripslashes($_POST['td_atts']), true); //current block args
@@ -52,17 +49,27 @@ class td_ajax {
 				}
 				$ajax_parameters['td_filter_value']  = $_POST['td_filter_value']; //the new id filter
 			}
+			// read request uri
+			if (!empty($_POST['td_request_uri'])) {
+				$ajax_parameters['td_request_uri'] = $_POST['td_request_uri'];
+			}
 		}
-
-
 
 		/*
 		 * HANDLES THE PULL DOWN FILTER + TABS ON RELATED POSTS
 		 * read the block atts - td filter type and overwrite the default values at runtime! (ex: the user changed the category from the dropbox, we overwrite the static default category of the block)
 		 */
-		if (!empty($ajax_parameters['td_atts']['td_ajax_filter_type'])) {
-			//dynamic filtering
-			switch ($ajax_parameters['td_atts']['td_ajax_filter_type']) {
+		if ( ! empty( $ajax_parameters['td_atts']['td_ajax_filter_type'] ) ) {
+
+			// dynamic filtering
+			switch ( $ajax_parameters['td_atts']['td_ajax_filter_type'] ) {
+
+				case 'td_products_category_ids_filter': // by product cat
+					if ( ! empty( $ajax_parameters['td_filter_value'] ) ) {
+						$ajax_parameters['td_atts']['product_categories_ids'] = $ajax_parameters['td_filter_value'];
+						unset( $ajax_parameters['td_atts']['product_cat'] );
+					}
+					break;
 
 				case 'td_category_ids_filter': // by category  - the user selected a category from the drop down. if it's empty, we show the default block atts
 					if (!empty($ajax_parameters['td_filter_value'])) {
@@ -91,20 +98,18 @@ class td_ajax {
 					}
 					break;
 
-
 				case 'td_popularity_filter_fa': // by popularity (sort)
 					if (!empty($ajax_parameters['td_filter_value'])) {
 						$ajax_parameters['td_atts']['sort'] = $ajax_parameters['td_filter_value'];
 					}
 					break;
 
-
 				/**
 				 * used by the related posts block
 				 * - if $td_atts['td_ajax_filter_type'] == td_custom_related  ( this is hardcoded in the block atts  @see td_module_single.php:764)
 				 * - overwrite the live_filter for this block - ( the default live_filter is also hardcoded in the block atts  @see td_module_single.php:764)
 				 * the default live_filter for this block is: 'live_filter' => 'cur_post_same_categories'
-				 * @var $td_filter_value comes via ajax
+				 * @var $td_filter_value - comes via ajax
 				 */
 				case 'td_custom_related':
 					if ($ajax_parameters['td_filter_value'] == 'td_related_more_from_author') {
@@ -112,13 +117,20 @@ class td_ajax {
 					}
 					break;
 			}
+
 		}
 
-
-		/**
-		 * @var WP_Query
-		 */
-		$td_query = &td_data_source::get_wp_query($ajax_parameters['td_atts'], $ajax_parameters['td_current_page']); //by ref  do the query
+		// these blocks work with products ids data type
+		$block_products_ids_data_type = array('td_woo_products_loop', 'td_woo_products_block');
+		if ( in_array( $ajax_parameters['block_type'], $block_products_ids_data_type ) ) {
+			$td_query = &td_data_source::get_wp_query($ajax_parameters['td_atts'], $ajax_parameters['td_current_page'], 'products'); // by ref do the query
+			//print_r($td_query);
+		} else {
+			/**
+			 * @var WP_Query
+			 */
+			$td_query = &td_data_source::get_wp_query($ajax_parameters['td_atts'], $ajax_parameters['td_current_page']); //by ref  do the query
+		}
 
         $block_instance = td_global_blocks::get_instance($ajax_parameters['block_type']);
 
@@ -156,37 +168,145 @@ class td_ajax {
             }
 
             $buffy = $block_instance->inner($data_array['loop_posts'], $ajax_parameters['td_column_number'], '', true);
+        } elseif ( in_array( $ajax_parameters['block_type'], $block_products_ids_data_type ) ) {
+        	//print_r($td_query);
+	        $buffy = $block_instance->inner( $td_query['ids'] );
         } elseif ( $ajax_parameters['block_type'] === 'tdb_single_related' ) {
             $buffy = $block_instance->inner($td_query->posts, $ajax_parameters['sample_posts_data'], '', true);
         } else {
             $buffy = $block_instance->inner($td_query->posts, $ajax_parameters['td_column_number'], '', true);
         }
 
-        //pagination
+        // pagination
 		$td_hide_prev = false;
 		$td_hide_next = false;
 		if ($ajax_parameters['td_current_page'] == 1) {
 			$td_hide_prev = true; //hide link on page 1
 		}
 
-		if (!empty($ajax_parameters['td_atts']['offset']) && !empty($ajax_parameters['td_atts']['limit']) && ($ajax_parameters['td_atts']['limit'] != 0)) {
-			if ($ajax_parameters['td_current_page'] >= ceil(($td_query->found_posts - $ajax_parameters['td_atts']['offset']) / $ajax_parameters['td_atts']['limit'])) {
-				$td_hide_next = true; //hide link on last page
+		if ( in_array( $ajax_parameters['block_type'], $block_products_ids_data_type ) ) {
+			if ( ! empty( $ajax_parameters['td_atts']['offset'] ) && ! empty( $ajax_parameters['td_atts']['limit'] ) && ( $ajax_parameters['td_atts']['limit'] != 0 ) ) {
+				if ( $ajax_parameters['td_current_page'] >= ceil(( $td_query['total'] - $ajax_parameters['td_atts']['offset'] ) / $ajax_parameters['td_atts']['limit'] ) ) {
+					$td_hide_next = true; // hide link on last page
+				}
+			} else if ( $ajax_parameters['td_current_page'] >= $td_query['total_pages'] ) {
+				$td_hide_next = true; // hide link on last page
 			}
-		} else if ($ajax_parameters['td_current_page'] >= $td_query->max_num_pages) {
-			$td_hide_next = true; //hide link on last page
-		}
+		} else {
 
-		//    if ($td_current_page >= $td_query->max_num_pages ) {
-		//	    $td_hide_next = true; //hide link on last page
-		//    }
+			if ( ! empty( $ajax_parameters['td_atts']['offset'] ) && ! empty( $ajax_parameters['td_atts']['limit'] ) && ( $ajax_parameters['td_atts']['limit'] != 0 ) ) {
+				if ( $ajax_parameters['td_current_page'] >= ceil(( $td_query->found_posts - $ajax_parameters['td_atts']['offset'] ) / $ajax_parameters['td_atts']['limit'] ) ) {
+					$td_hide_next = true; // hide link on last page
+				}
+			} else if ($ajax_parameters['td_current_page'] >= $td_query->max_num_pages) {
+				$td_hide_next = true; // hide link on last page
+			}
+		}
 
 		$buffyArray = array(
 			'td_data' => $buffy,
-			'td_block_id' => $ajax_parameters['td_block_id'],
+			'td_block_id' => htmlspecialchars($ajax_parameters['td_block_id']),
 			'td_hide_prev' => $td_hide_prev,
 			'td_hide_next' => $td_hide_next
 		);
+
+		if ( in_array( $ajax_parameters['block_type'], $block_products_ids_data_type ) ) {
+			$offset = !empty( $ajax_parameters['td_atts']['offset'] ) ? $ajax_parameters['td_atts']['offset'] : 0;
+			$total = intval($td_query['total']) - $offset;
+
+			$buffyArray['td_query'] = $td_query;
+			$buffyArray['total'] = $total;
+			$buffyArray['total_pages'] = $td_query['total_pages'];
+			$buffyArray['per_page'] = $td_query['per_page'];
+			$buffyArray['current_page'] = $td_query['current_page'];
+
+			// numbered pagination
+			if ( !empty($ajax_parameters['td_atts']['ajax_pagination']) && $ajax_parameters['td_atts']['ajax_pagination'] === 'numbered' ) {
+
+				/*
+				* ex of a loop_pagination data array
+				* Array
+				   (
+					   [pagenavi_options] => Array
+						   (
+							   [pages_text] => Page %CURRENT_PAGE% of %TOTAL_PAGES%
+							   [current_text] => %PAGE_NUMBER%
+							   [page_text] => %PAGE_NUMBER%
+							   [first_text] => 1
+							   [last_text] => %TOTAL_PAGES%
+							   [next_text] => <i class="page-nav-icon td-icon-menu-right"></i>
+							   [prev_text] => <i class="page-nav-icon td-icon-menu-left"></i>
+							   [dotright_text] => ...
+							   [dotleft_text] => ...
+							   [num_pages] => 3
+							   [always_show] => 1
+						   )
+					   [paged] => 1
+					   [max_page] => 2
+					   [start_page] => 1
+					   [end_page] => 3
+					   [pages_to_show] => 3
+					   [previous_posts_link] => <i class="page-nav-icon td-icon-menu-left"></i>
+					   [next_posts_link] => <i class="page-nav-icon td-icon-menu-right"></i>
+				   )
+				*
+				* */
+
+				// the list of svg icons used by the theme by default
+				$svg_list = td_global::$svg_theme_font_list;
+
+				// previous text icon
+				$prev_icon_html = '<i class="page-nav-icon td-icon-menu-left"></i>';
+				if( isset( $ajax_parameters['td_atts']['prev_tdicon'] ) ) {
+					$prev_icon = $ajax_parameters['td_atts']['prev_tdicon'];
+
+					if( array_key_exists( $prev_icon, $svg_list ) ) {
+						$prev_icon_html = '<div class="page-nav-icon page-nav-icon-svg">' . base64_decode( $svg_list[$prev_icon] ) . '</div>';
+					} else {
+						$prev_icon_html = '<i class="page-nav-icon ' . $prev_icon . '"></i>';
+					}
+				}
+
+				// next text icon
+				$next_icon_html = '<i class="page-nav-icon td-icon-menu-right"></i>';
+				if ( !empty( $ajax_parameters['td_atts']['next_tdicon'] ) ) {
+					$next_icon = $ajax_parameters['td_atts']['next_tdicon'];
+
+					if( array_key_exists( $next_icon, $svg_list ) ) {
+						$next_icon_html = '<div class="page-nav-icon page-nav-icon-svg">' . base64_decode( $svg_list[$next_icon] ) . '</div>';
+					} else {
+						$next_icon_html = '<i class="page-nav-icon ' . $next_icon . '"></i>';
+					}
+				}
+
+				$loop_pagination_data = array(
+					'pagenavi_options' => array(
+						'pages_text'    => __td( 'Page %CURRENT_PAGE% of %TOTAL_PAGES%', TD_THEME_NAME ),
+						'current_text'  => '%PAGE_NUMBER%',
+						'page_text'     => '%PAGE_NUMBER%',
+						'first_text'    => __td( '1' ),
+						'last_text'     => __td( '%TOTAL_PAGES%' ),
+						'next_text'     => $next_icon_html,
+						'prev_text'     => $prev_icon_html,
+						'dotright_text' => __td( '...' ),
+						'dotleft_text'  => __td( '...' ),
+						'num_pages'     => 3,
+						'always_show'   => true
+					),
+					'paged' => $td_query['current_page'],
+					'max_page' => $td_query['total_pages'],
+					'start_page' => 1,
+					'end_page' => 3,
+					'pages_to_show' => 3,
+					'previous_posts_link' => $prev_icon_html,
+					'next_posts_link' => $next_icon_html,
+					'base' => !empty( $ajax_parameters['td_request_uri'] ) ? $ajax_parameters['td_request_uri'] : '' // set base..
+				);
+
+				$buffyArray['td_num_pagination_data'] = $block_instance->get_numbered_pagination( $loop_pagination_data );
+			}
+
+		}
 
 		if ( true === $isAjaxCall ) {
 			die(json_encode($buffyArray));
@@ -286,23 +406,23 @@ class td_ajax {
 		die(json_encode($loopState));
 	}
 
-
 	static function on_ajax_search() {
 		$buffy = '';
 		$buffy_msg = '';
 
-		//the search string
-		if (!empty($_POST['td_string'])) {
-			$td_string = esc_html($_POST['td_string']);
+		// the search string
+		if ( ! empty( $_POST['td_string'] ) ) {
+			$td_string = stripslashes( $_POST['td_string'] );
 		} else {
 			$td_string = '';
 		}
 
-		if (!empty($_POST['module'])) {
-		    $td_module = esc_html($_POST['module']);
+		// module
+		if ( ! empty($_POST['module'] ) ) {
+		    $td_module = esc_html( $_POST['module'] );
 		    $td_results_class_prefix = 'tdb';
         } else {
-		    if ( 'Newspaper' === TD_THEME_NAME && !defined('TD_STANDARD_PACK') ) {
+		    if ( 'Newspaper' === TD_THEME_NAME && ! defined('TD_STANDARD_PACK') ) {
                 $td_module = 'td_module_flex_1';
             } else {
                 $td_module = 'td_module_mx2';
@@ -310,25 +430,38 @@ class td_ajax {
             }
         }
 
-        if (!empty($_POST['atts'])) {
-            $block_atts = json_decode(stripslashes($_POST['atts']), true);
+		// block atts
+        if ( ! empty( $_POST['atts'] ) ) {
+            $block_atts = json_decode( stripslashes( $_POST['atts'] ), true );
         } else {
             $block_atts = array();
         }
 
+        // limit
         $limit = 4;
-        if (!empty($_POST['limit'])) {
+        if ( ! empty( $_POST['limit'] ) ) {
             $limit = $_POST['limit'];
         }
 
-		//get the data
-		$td_query = &td_data_source::get_wp_query_search($td_string, $limit); //by ref  do the query
+        // query post type
+		$post_type = '';
+		if ( ! empty( $_POST['post_type'] ) ) {
+			$post_type = $_POST['post_type'];
+		}
 
-		//build the results
-		if (!empty($td_query->posts)) {
-			foreach ($td_query->posts as $post) {
-			    if( $td_module == 'td_module_mx2' || $td_module == 'td_module_flex_1' ) {
-                    $td_module_search = new $td_module($post);
+		// get the data
+		$td_query = &td_data_source::get_wp_query_search( $td_string, $limit, $post_type ); // by ref .. do the query
+
+		// build the results
+		if ( ! empty( $td_query->posts ) ) {
+			foreach ( $td_query->posts as $post ) {
+			    if( $td_module == 'td_module_mx2' || $td_module == 'td_module_flex_1' || $td_module == 'td_woo_product_module' ) {
+                    if( $td_module == 'td_woo_product_module' ) {
+			            $td_module_search = new $td_module($post, $block_atts);
+                    } else {
+                        $td_module_search = new $td_module($post);
+                    }
+
                     $buffy .= $td_module_search->render($post);
                 } else {
 			        $tdb_post = array(
@@ -350,7 +483,6 @@ class td_ajax {
                         'post_comments_link' => get_comments_link( $post->ID ),
                         'post_theme_settings' => td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' ),
                     );
-
                     $td_module_search = new $td_module($tdb_post, $block_atts);
                     $buffy .= $td_module_search->render($tdb_post);
                 }
@@ -361,7 +493,7 @@ class td_ajax {
 			//no results
 			$buffy = '<div class="result-msg no-result">' . __td('No results', TD_THEME_NAME) . '</div>';
 		} else {
-			//show the resutls
+			//show the results
 			/**
 			 * @note:
 			 * we use esc_url(home_url( '/' )) instead of the WordPress @see get_search_link function because that's what the internal
@@ -369,10 +501,19 @@ class td_ajax {
 			 *
 			 * also note that esc_url - as of today strips spaces (WTF) https://core.trac.wordpress.org/ticket/23605 so we used urlencode - to encode the query param with + instead of %20 as rawurlencode does
 			 */
+			if ( $td_module === 'td_woo_product_module' ) {
+				// home_url/?s=search_query&post_type=product
+				$search_url = home_url( '/?s=' . urlencode( $td_string ) . '&post_type=product' );
+			} else {
+				$search_url = home_url( '/?s=' . urlencode( $td_string ) );
+			}
 
-			$buffy_msg .= '<div class="result-msg"><a href="' . home_url('/?s=' . urlencode($td_string )) . '">' . __td('View all results', TD_THEME_NAME) . '</a></div>';
+			$buffy_msg .= '<div class="result-msg"><a href="' . $search_url . '">' . __td('View all results', TD_THEME_NAME ) . '</a></div>';
+
 			//add wrap
-            if( !empty($_POST['module']) ) {
+			if ( $td_module === 'td_woo_product_module' ) {
+				$buffy = '<div class="tdw-aj-search-results"><div class="tdw-aj-search-inner">' . $buffy . '</div></div>' . $buffy_msg;
+			} elseif( ! empty( $_POST['module'] ) ) {
                 $buffy = '<div class="tdb-aj-search-results"><div class="tdb-aj-search-inner">' . $buffy . '</div></div>' . $buffy_msg;
             } else {
                 $buffy = '<div class="td-aj-search-results">' . $buffy . '</div>' . $buffy_msg;
@@ -391,7 +532,6 @@ class td_ajax {
 		// Return the String
 		die(json_encode($buffyArray));
 	}
-
 
 	static function on_ajax_login() {
 		/**
@@ -685,8 +825,6 @@ class td_ajax {
 		}
 	}
 
-
-
     /**
      * retrieve translation from our server
      */
@@ -711,7 +849,6 @@ class td_ajax {
         }
     }
 
-
     /**
      * AJAX call
      * check if envato code is valid
@@ -732,16 +869,10 @@ class td_ajax {
         }
 
         //forum check url
-        $forum_check_url = 'http://192.168.0.80/tagdiv/wp-json/tagdiv/check_user/';
-        if (TD_DEPLOY_MODE != 'dev') {
-            $forum_check_url = 'http://forum.tagdiv.com/wp-json/tagdiv/check_user/';
-        }
+        $forum_check_url = 'http://forum.tagdiv.com/wp-json/tagdiv/check_user/';
 
         //td_cake url
-        $td_cake_url = 'http://192.168.0.80/td_cake/auto.php';
-        if (TD_DEPLOY_MODE != 'dev') {
-           $td_cake_url = 'http://td_cake.themesafe.com/td_cake/auto.php';
-        }
+        $td_cake_url = 'http://td_cake.themesafe.com/td_cake/auto.php';
 
         $envato_code = preg_replace('/\s+/', '', $_POST['envato_code']);
 
@@ -787,6 +918,7 @@ class td_ajax {
                     if ($api_response['envato_is_valid'] == 'valid' or $api_response['envato_is_valid'] == 'td_fake_valid') {
                         //code is valid
                         $buffy['envato_code_status'] = 'valid';
+                        td_util::update_option( 'theme_update_to_version_complete', '1' );
 
                         //check forum
                         $td_forum_response = wp_remote_post($forum_check_url, array (
@@ -860,7 +992,6 @@ class td_ajax {
         die(json_encode($buffy));
     }
 
-
     static function on_ajax_check_theme_status() {
     	$reply = array();
     	$status = false;
@@ -879,7 +1010,6 @@ class td_ajax {
 
 	    die(json_encode($reply));
     }
-
 
     /**
      * AJAX call
@@ -999,7 +1129,6 @@ class td_ajax {
         die(json_encode($buffy));
     }
 
-
     /**
      * @param $id
      * @param $ec
@@ -1013,8 +1142,6 @@ class td_ajax {
             return false;
         }
     }
-
-
 
     /**
      * AJAX call
@@ -1043,11 +1170,11 @@ class td_ajax {
         if (self::self_check($id, $ec, $ad) === true) {
             td_util::ajax_handle($ec);
             $buffy['theme_activated'] = true;
+            td_util::update_option( 'theme_update_to_version_complete', '1' );
         }
 
         die(json_encode($buffy));
     }
-
 
     /**
      * AJAX call
@@ -1092,7 +1219,6 @@ class td_ajax {
         die(json_encode($buffy));
     }
 
-
     /**
      * AJAX call
      * switch td logging on/off ( the log is turned off by default )
@@ -1124,8 +1250,6 @@ class td_ajax {
 
         die(json_encode($reply));
     }
-
-
 
     static function on_ajax_get_template_style() {
 		if ( ! current_user_can( 'edit_pages' ) ) {
@@ -1164,8 +1288,6 @@ class td_ajax {
 		die( json_encode( $parameters ) );
 	}
 
-
-
 	static function on_ajax_render_content( ) {
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
@@ -1186,7 +1308,6 @@ class td_ajax {
 
 		die( json_encode( $parameters ) );
 	}
-
 
 	static function on_ajax_change_theme_version() {
 
@@ -1237,8 +1358,6 @@ class td_ajax {
 	    die( json_encode( $reply ) );
     }
 
-
-
     static function on_ajax_check_theme_version() {
 
     	$reply = array();
@@ -1247,6 +1366,31 @@ class td_ajax {
 
 	    if ( false !== $response ) {
 	    	$reply['versions'] = $response;
+	    }
+
+	    die( json_encode( $reply ) );
+    }
+
+    static function on_ajax_backup_panel() {
+
+    	$status = $_POST['status'];    	
+
+	    $reply = array();
+
+	    if ( ! isset( $status ) ) {
+		    $reply[ 'errors' ][] = 'Invalid data';
+
+	    } else {
+
+	    	if (empty($status) || '0' === $status ) {
+	    	    tagdiv_util::update_option( TD_THEME_OPTIONS_NAME . '_settings_disabled', 0 );
+		    } else {
+	    		tagdiv_util::update_option( TD_THEME_OPTIONS_NAME . '_settings_disabled', 1 );
+	    		$delete = $_POST['delete'];
+	    		if (!empty($delete) || '!' === $delete ) {
+	    			delete_option( TD_THEME_OPTIONS_NAME . '_settings' );
+			    }
+		    }
 	    }
 
 	    die( json_encode( $reply ) );
@@ -1265,6 +1409,39 @@ class td_ajax {
 
         die( json_encode( $buffy_array ) );
 
+    }
+
+    static function on_ajax_flickr_modal() {
+
+        $response = array();
+
+        $api_key = td_flickr::get_flickr_api_key();
+
+        if( $api_key != '' ) {
+            $album_id = $_POST['td_flickr_album_id'];
+
+            if( $album_id != '' ){
+                $api_resp = td_flickr::api_get_album_photos($album_id);
+
+                if ( $api_resp != FALSE ) {
+
+                    $response = $api_resp;
+
+                }
+            }
+        }
+
+
+        die(json_encode($response));
+
+    }
+
+    static function on_ajax_dark_mode() {
+        if( !isset( $_COOKIE['td_dark_mode'] ) ) {
+            setcookie('td_dark_mode', 'on', time() + (86400 * 7), '/' );
+        } else {
+            setcookie('td_dark_mode', '', time() - 3600, '/' );
+        }
     }
 
 }

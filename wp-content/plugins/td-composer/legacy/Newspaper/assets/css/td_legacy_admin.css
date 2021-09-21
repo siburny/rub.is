@@ -504,6 +504,11 @@
   width: 40px;
   height: 24px;
 }
+.tdc-ico-td_block_flickr {
+  background-position: -555px -39px;
+  width: 40px;
+  height: 24px;
+}
 .tdc-preset-values-list .tdcp_separator {
   pointer-events: none;
   border-bottom: 1px solid #ebebeb;
@@ -1084,19 +1089,24 @@
 [id*="td_block_ad_box_widget"] a[data-tab-id*="tdc-tab-custom"] {
   display: none;
 }
-.td_panel_box_instagram_account_access_configuration .about-wrap {
+.td_panel_box_instagram_personal .td-box-description {
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+.td_panel_box_instagram_personal .about-wrap {
   margin-left: 0;
   margin-right: 15px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-title {
+.td_panel_box_instagram_personal .td-insta-acc-title {
   padding-bottom: 12px;
 }
-.td_panel_box_instagram_account_access_configuration tbody td {
+.td_panel_box_instagram_personal tbody td {
   padding-top: 12px;
   padding-bottom: 12px;
   vertical-align: middle;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-wrap {
+.td_panel_box_instagram_personal .td-insta-acc-wrap {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -1105,63 +1115,331 @@
   border: 1px solid #e5e5e5;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-wrap > div {
+.td_panel_box_instagram_personal .td-insta-acc-wrap > div {
   box-sizing: border-box;
   padding: 12px 10px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-photo {
+.td_panel_box_instagram_personal .td-insta-acc-photo {
   width: 8%;
   border-radius: 5px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-user,
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-followers {
-  width: 22%;
+.td_panel_box_instagram_personal .td-insta-acc-user {
+  width: 20%;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-user {
+.td_panel_box_instagram_personal .td-insta-acc-user {
   font-weight: 700;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg {
-  width: 35%;
+.td_panel_box_instagram_personal .td-insta-acc-token-trigg {
+  width: 30%;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check {
+.td_panel_box_instagram_personal .td-insta-acc-token-trigg .td-classic-check {
   margin-top: 1px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check {
+.td_panel_box_instagram_personal .td-insta-acc-token-trigg .td-classic-check .td-check {
   top: -1px;
   width: 16px;
   height: 16px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check:after {
+.td_panel_box_instagram_personal .td-insta-acc-token-trigg .td-classic-check .td-check:after {
   width: 8px;
   height: 8px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token-trigg .td-classic-check .td-check-title {
+.td_panel_box_instagram_personal .td-insta-acc-token-trigg .td-classic-check .td-check-title {
   font-size: 11px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-remove {
+.td_panel_box_instagram_personal .td-insta-acc-remove {
   width: 13%;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-remove a {
+.td_panel_box_instagram_personal .td-insta-acc-remove a {
   width: 100%;
   text-align: center;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token {
+.td_panel_box_instagram_personal .td-insta-acc-token {
   display: none;
   width: 100%;
   padding-top: 5px !important;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-inner {
+.td_panel_box_instagram_personal .td-insta-acc-token .td-insta-acc-token-inner {
   display: flex;
   font-size: 11px;
   border: 1px solid #eee;
   border-radius: 3px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-inner > div {
+.td_panel_box_instagram_personal .td-insta-acc-token .td-insta-acc-token-inner > div {
   padding: 5px 9px;
 }
-.td_panel_box_instagram_account_access_configuration .td-insta-acc-token .td-insta-acc-token-info {
+.td_panel_box_instagram_personal .td-insta-acc-token .td-insta-acc-token-info {
+  min-width: fit-content;
+  align-self: center;
   background-color: #fbfbfb;
   border-right: 1px solid #eee;
+}
+.td_panel_box_instagram_personal .td-insta-acc-token .td-insta-acc-token-code {
+  /*white-space: nowrap;*/
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.td_panel_box_instagram_business .td-box-description {
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+.td_panel_box_instagram_business .about-wrap {
+  margin-left: 0;
+  margin-right: 15px;
+}
+.td_panel_box_instagram_business tbody td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  vertical-align: middle;
+}
+.td_panel_box_instagram_business .td-ig-business-account-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #555;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.td_panel_box_instagram_business .td-ig-business-account-wrap > div {
+  box-sizing: border-box;
+  padding: 12px 10px;
+}
+.td_panel_box_instagram_business .td-ig-business-account-wrap .td-no-ig-business-page-message,
+.td_panel_box_instagram_business .td-ig-business-account-wrap .td-ig-business-account-error {
+  font-size: 13px;
+  padding: 10px 30px;
+}
+.td_panel_box_instagram_business .td-ig-business-account-wrap .td-ig-business-account-error {
+  color: orangered;
+  font-weight: 500;
+}
+.td_panel_box_instagram_business .td-ig-business-account-photo {
+  width: 10%;
+  border-radius: 5px;
+  font-size: 9px;
+}
+.td_panel_box_instagram_business .td-ig-business-account-expires,
+.td_panel_box_instagram_business .td-ig-business-account-followers-count,
+.td_panel_box_instagram_business .td-ig-business-account-media-count {
+  width: 13%;
+  padding: 12px 5px !important;
+  font-size: 12px;
+}
+.td_panel_box_instagram_business .td-ig-business-account-user {
+  width: 20%;
+  font-weight: 700;
+}
+.td_panel_box_instagram_business .td-access-token-trigger {
+  width: 18%;
+}
+.td_panel_box_instagram_business .td-access-token-trigger .td-classic-check {
+  margin-top: 1px;
+}
+.td_panel_box_instagram_business .td-access-token-trigger .td-classic-check .td-check {
+  top: -1px;
+  width: 16px;
+  height: 16px;
+}
+.td_panel_box_instagram_business .td-access-token-trigger .td-classic-check .td-check:after {
+  width: 8px;
+  height: 8px;
+}
+.td_panel_box_instagram_business .td-access-token-trigger .td-classic-check .td-check-title {
+  font-size: 11px;
+}
+.td_panel_box_instagram_business .td-ig-business-account-remove {
+  width: 13%;
+}
+.td_panel_box_instagram_business .td-ig-business-account-remove a {
+  width: 100%;
+  text-align: center;
+}
+.td_panel_box_instagram_business .td-access-token {
+  display: none;
+  width: 100%;
+  padding-top: 5px !important;
+}
+.td_panel_box_instagram_business .td-access-token .td-access-token-inner {
+  /*display: flex;*/
+  font-size: 11px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+}
+.td_panel_box_instagram_business .td-access-token .td-access-token-inner .td-access-token-code {
+  padding: 5px 9px;
+}
+.td_panel_box_instagram_business .td-access-token .td-access-token-info {
+  background-color: #f0f0f1;
+  border: 1px solid #eee;
+  white-space: pre;
+  padding: 7px;
+  font-weight: bold;
+}
+.td_panel_box_instagram_business .td-access-token .td-access-token-code {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.td_panel_box_facebook_account .td-box-description {
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+.td_panel_box_facebook_account .about-wrap {
+  margin-left: 0;
+  margin-right: 15px;
+}
+.td_panel_box_facebook_account .td-fb-page-wrap,
+.td_panel_box_facebook_account .td-fb-user-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #555;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.td_panel_box_facebook_account .td-fb-page-wrap > div,
+.td_panel_box_facebook_account .td-fb-user-wrap > div {
+  box-sizing: border-box;
+  padding: 12px 10px;
+}
+.td_panel_box_facebook_account .td-fb-page-wrap .td-no-fb-page-data-invalid-message,
+.td_panel_box_facebook_account .td-fb-user-wrap .td-no-fb-page-data-invalid-message {
+  font-size: 11px;
+  font-weight: 500;
+  color: orangered;
+  padding: 10px 30px;
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+  margin: 0;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-account-user-photo {
+  width: 10%;
+  border-radius: 5px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-account-user-name {
+  width: 20%;
+  font-weight: 700;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-account-remove {
+  width: 30%;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-account-remove a {
+  width: 100%;
+  text-align: center;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-user-wrap .td-access-token-trigger {
+  width: 25%;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-fb-user-wrap .td-access-token-trigger .td-classic-check .td-check-title {
+  font-size: 10px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-access-token {
+  display: none;
+  width: 100%;
+  /*padding-top: 0 !important;*/
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-access-token .td-access-token-inner {
+  font-size: 11px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  border-top-width: 0;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-access-token .td-access-token-inner .td-access-token-info {
+  /*background-color: transparent;*/
+  /*border: none;*/
+  white-space: pre;
+  padding: 7px;
+  font-weight: bold;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-access-token .td-access-token-inner .td-access-token-code {
+  padding: 5px 9px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-user .td-access-token .td-access-token-inner .td-access-token-expires-in {
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-img {
+  width: 8%;
+  border-radius: 5px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-expires,
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-followers-count,
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-likes-count {
+  width: 13%;
+  padding: 12px 5px !important;
+  font-size: 12px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-name {
+  width: 20%;
+  font-weight: 700;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token-trigger {
+  width: 20%;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token-trigger .td-classic-check {
+  margin-top: 1px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token-trigger .td-classic-check .td-check {
+  top: -1px;
+  width: 16px;
+  height: 16px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token-trigger .td-classic-check .td-check:after {
+  width: 8px;
+  height: 8px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token-trigger .td-classic-check .td-check-title {
+  font-size: 11px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-remove {
+  width: 13%;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-fb-page-remove a {
+  width: 100%;
+  text-align: center;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token {
+  display: none;
+  width: 100%;
+  padding-top: 5px !important;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token .td-access-token-inner {
+  font-size: 11px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token .td-access-token-inner .td-access-token-code {
+  padding: 5px 9px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.td_panel_box_facebook_account .td-box-control-fb-account-pages .td-access-token .td-access-token-info {
+  background-color: #f0f0f1;
+  border: 1px solid #eee;
+  white-space: pre;
+  padding: 7px;
+  font-weight: bold;
+}
+#td-fb-error,
+#td-ig-error {
+  font-weight: 500;
+  color: orangered;
+  padding: 10px;
+  margin: 10px;
+}
+#td-fb-error h3,
+#td-ig-error h3 {
+  color: orangered;
 }
 body:not(.td-standard-pack) .tdsp-hide {
   display: none;

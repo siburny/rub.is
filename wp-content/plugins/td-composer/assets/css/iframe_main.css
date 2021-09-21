@@ -356,7 +356,7 @@ body.tdc-active-helper .tdc-element:after {
   position: absolute;
   top: -2px;
   left: 5px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   line-height: 20px;
 }
 #tdc-mask-handler-structure {
@@ -550,7 +550,7 @@ body.tdc-active-helper .tdc-element:after {
 
 */
 .tdc-placeholder-title {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   height: 50px;
   border: 1px solid #ebebeb;
   text-align: center;

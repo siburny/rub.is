@@ -18,6 +18,10 @@ $td_sidebar_position = '';
 if($loop_sidebar_position == 'sidebar_left') {
 	$td_sidebar_position = 'td-sidebar-left';
 }
+
+//used if file exists in child theme
+$td_child_theme_file_path = STYLESHEETPATH . '/loop.php';
+
 ?>
 
 <div class="td-main-content-wrap td-container-wrap">
@@ -34,11 +38,18 @@ if($loop_sidebar_position == 'sidebar_left') {
                         <div class="td-pb-span8 td-main-content">
                             <div class="td-ss-main-content">
                                 <?php
-                                    if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                        require_once('loop.php');
-                                    } else {
-                                        require_once(TDSP_THEME_PATH . '/loop.php');
+                                if ( defined('TD_STANDARD_PACK' ) ) {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
                                     }
+                                    require_once(TDSP_THEME_PATH . '/loop.php');
+                                } else {
+                                    if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                        require_once($td_child_theme_file_path);
+                                    }
+                                    require_once('loop.php');
+                                }
+
                                     echo td_page_generator::get_pagination();
                                 ?>
                             </div>
@@ -56,11 +67,17 @@ if($loop_sidebar_position == 'sidebar_left') {
                     <div class="td-pb-span8 td-main-content <?php echo esc_attr($td_sidebar_position) ?>-content">
                         <div class="td-ss-main-content">
                             <?php
-                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                    require_once('loop.php');
-                                } else {
-                                    require_once(TDSP_THEME_PATH . '/loop.php');
+                            if ( defined('TD_STANDARD_PACK' ) ) {
+                                if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                    require_once($td_child_theme_file_path);
                                 }
+                                require_once(TDSP_THEME_PATH . '/loop.php');
+                            } else {
+                                if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                    require_once($td_child_theme_file_path);
+                                }
+                                require_once('loop.php');
+                            }
                                 echo td_page_generator::get_pagination();
                             ?>
                         </div>
@@ -80,11 +97,17 @@ if($loop_sidebar_position == 'sidebar_left') {
                     <div class="td-pb-span12 td-main-content">
                         <div class="td-ss-main-content">
                             <?php
-                                if( !defined('TD_STANDARD_PACK') || is_child_theme() ) {
-                                    require_once('loop.php');
-                                } else {
-                                    require_once(TDSP_THEME_PATH . '/loop.php');
+                            if ( defined('TD_STANDARD_PACK' ) ) {
+                                if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                    require_once($td_child_theme_file_path);
                                 }
+                                require_once(TDSP_THEME_PATH . '/loop.php');
+                            } else {
+                                if ( is_child_theme() && file_exists( $td_child_theme_file_path ) ) {
+                                    require_once($td_child_theme_file_path);
+                                }
+                                require_once('loop.php');
+                            }
                                 echo td_page_generator::get_pagination();
                             ?>
                         </div>

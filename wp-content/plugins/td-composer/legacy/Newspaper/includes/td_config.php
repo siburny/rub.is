@@ -4,7 +4,7 @@
  */
 
 define("TD_THEME_DEMO_URL", "https://demo.tagdiv.com/" . strtolower(TD_THEME_NAME));
-define("TD_THEME_DEMO_DOC_URL", 'http://forum.tagdiv.com/demos_introduction/');  //the url to the demo documentation
+define("TD_THEME_DEMO_DOC_URL", 'https://tagdiv.com/newspaper-theme-installing-demos/');  //the url to the demo documentation
 define("TD_PLUGINS_URL", 'https://cloud.tagdiv.com/td_plugins/');  //plugins url
 define("TD_FEATURED_CAT", "Featured"); //featured cat name
 define("TD_FEATURED_CAT_SLUG", "featured"); //featured cat slug
@@ -62,6 +62,8 @@ class td_config {
             //'tdTrendingNowCustom' =>    '/legacy/common/wp_booster/js_dev/tdTrendingNowCustom.js',
             'td_history' =>             '/legacy/common/wp_booster/js_dev/td_history.js',
             'tdSmartSidebar' =>         '/legacy/common/wp_booster/js_dev/tdSmartSidebar.js',
+            'tdStickyRow' =>            '/legacy/common/wp_booster/js_dev/tdStickyRow.js',
+            'tdScrollToClass' =>        '/legacy/common/wp_booster/js_dev/tdScrollToClass.js',
             'tdInfiniteLoader' =>       '/legacy/common/wp_booster/js_dev/tdInfiniteLoader.js',
 	        'vimeo_froogaloop' =>       '/legacy/common/wp_booster/js_dev/vimeo_froogaloop.js',
 
@@ -99,6 +101,10 @@ class td_config {
 
             'tdAjaxVideoModal' =>       '/legacy/common/wp_booster/js_dev/tdAjaxVideoModal.js',
 
+            'tdfAjaxFlickr' =>       '/legacy/common/wp_booster/js_dev/tdfAjaxFlickr.js',
+
+	        'td_confirm' => '/legacy/common/wp_booster/wp-admin/js/tdConfirm.js',
+
         );
 
 
@@ -133,23 +139,23 @@ class td_config {
 		    array(
 			    'text' => 'Fade [full]',
 			    'val' => '', // empty, as a default value
-			    'specific_selectors' => '.entry-thumb, img',
-			    'general_selectors' => '.td-animation-stack img, .td-animation-stack .entry-thumb, .post img',
+			    'specific_selectors' => '.entry-thumb, img, .td-lazy-img',
+			    'general_selectors' => '.td-animation-stack img, .td-animation-stack .entry-thumb, .post img, .td-animation-stack .td-lazy-img',
 		    ),
 
             array(
                 'text' => 'Fade & Scale',
                 'val' => 'type1',
-                'specific_selectors' => '.entry-thumb, img[class*="wp-image-"], a.td-sml-link-to-image > img',
-                'general_selectors' => '.td-animation-stack .entry-thumb, .post .entry-thumb, .post img[class*="wp-image-"], .post a.td-sml-link-to-image > img',
+                'specific_selectors' => '.entry-thumb, img[class*="wp-image-"], a.td-sml-link-to-image > img, .td-lazy-img',
+                'general_selectors' => '.td-animation-stack .entry-thumb, .post .entry-thumb, .post img[class*="wp-image-"], .post a.td-sml-link-to-image > img, .td-animation-stack .td-lazy-img',
             ),
 
 
             array(
                 'text' => 'Up fade',
                 'val' => 'type2',
-                'specific_selectors' => '.entry-thumb, img[class*="wp-image-"], a.td-sml-link-to-image > img',
-                'general_selectors' => '.td-animation-stack .entry-thumb, .post .entry-thumb, .post img[class*="wp-image-"], a.td-sml-link-to-image > img',
+                'specific_selectors' => '.entry-thumb, img[class*="wp-image-"], a.td-sml-link-to-image > img, .td-lazy-img',
+                'general_selectors' => '.td-animation-stack .entry-thumb, .post .entry-thumb, .post img[class*="wp-image-"], a.td-sml-link-to-image > img, .td-animation-stack .td-lazy-img',
             ),
 
 
@@ -194,6 +200,7 @@ class td_config {
                         "value" => '',
                         "description" => 'Optional - Choose a custom background color for this header',
                         'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
                     ),
                     array(
                         "type" => "colorpicker",
@@ -204,6 +211,7 @@ class td_config {
                         "value" => '',
                         "description" => 'Optional - Choose a custom title text color for this header',
                         'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
                     ),
                     array(
                         "type" => "colorpicker",
@@ -214,6 +222,7 @@ class td_config {
                         "value" => '',
                         "description" => 'Optional - Choose a custom accent hover color for this block',
                         'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
                     )
                 )//end generic array
             )
@@ -235,6 +244,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -245,6 +255,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -266,6 +277,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -276,6 +288,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -286,6 +299,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -307,6 +321,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -317,6 +332,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -327,6 +343,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -348,6 +365,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -358,6 +376,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -368,6 +387,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -389,6 +409,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "attach_image",
@@ -409,6 +430,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -430,6 +452,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -440,6 +463,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -450,6 +474,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            ),
 		            array(
 		                "type" => "attach_image",
@@ -481,6 +506,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -501,6 +527,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -522,6 +549,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -542,6 +570,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -563,6 +592,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -583,6 +613,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -604,6 +635,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -624,6 +656,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -645,6 +678,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -655,6 +689,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            ),
 		            array(
 		                "type" => "textfield",
@@ -696,6 +731,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -706,6 +742,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            ),
 		            array(
 		                "type" => "textfield",
@@ -767,6 +804,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -777,6 +815,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -797,6 +836,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -818,6 +858,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -828,6 +869,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -858,6 +900,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -879,6 +922,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -899,6 +943,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -920,6 +965,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom title text color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -930,6 +976,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom background color for this header',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
 		            ),
 		            array(
 		                "type" => "colorpicker",
@@ -960,6 +1007,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        )//end generic array
 		    )
@@ -1050,6 +1098,7 @@ class td_config {
 		                "value" => '',
 		                "description" => 'Optional - Choose a custom accent hover color for this block',
 		                'td_type' => 'block_template',
+                        "info_img" => "https://cloud.tagdiv.com/help/title_active.png",
 		            )
 		        ),//end generic array
 		        'premium' => true
@@ -1096,6 +1145,22 @@ class td_config {
         );
 
 
+        td_api_module::add('td_module_mega_menu',
+            array(
+                'file' => TDC_PATH_LEGACY . '/includes/modules/td_module_mega_menu.php',
+                'text' => 'Mega menu module',
+                'img' => '',
+                'used_on_blocks' => array('td_block_mega_menu'),
+                'excerpt_title' => '12',
+                'excerpt_content' => '',
+                'enabled_on_more_articles_box' => false,
+                'enabled_on_loops' => false,
+                'uses_columns' => false,                      // if the module uses columns on the page template + loop
+                'category_label' => true,
+                'class' => 'td-animation-stack',
+                'group' => '' // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
+            )
+        );
 		td_api_module::add('td_module_trending_now',
 		    array(  // this module is for internal use only
 		        'file' => TDC_PATH_LEGACY . '/includes/modules/td_module_trending_now.php',
@@ -1112,27 +1177,27 @@ class td_config {
 		        'group' => '' // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
 		    )
 		);
+        td_api_module::add( 'td_module_flex_1',
+            array(
+                'file'                         => TDC_PATH_LEGACY . '/includes/modules/td_module_flex_1.php',
+                'text'                         => 'Module Flex 1',
+                'img'                          => '',
+                'used_on_blocks'               => array( 'td_flex_block_1' ),
+                'excerpt_title'                => 25,
+                'excerpt_content'              => 25,
+                'enabled_excerpt_in_panel'     => false,
+                'enabled_on_more_articles_box' => false,
+                'enabled_on_loops'             => false,
+                'uses_columns'                 => false,
+                // if the module uses columns on the page template + loop
+                'category_label'               => false,
+                'class'                        => 'td_module_wrap td-animation-stack',
+                'group'                        => ''
+                // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
+            )
+        );
 
 
-		td_api_module::add( 'td_module_flex_1',
-		    array(
-		        'file'                         => TDC_PATH_LEGACY . '/includes/modules/td_module_flex_1.php',
-		        'text'                         => 'Module Flex 1',
-		        'img'                          => '',
-		        'used_on_blocks'               => array( 'td_flex_block_1' ),
-		        'excerpt_title'                => 25,
-		        'excerpt_content'              => 25,
-		        'enabled_excerpt_in_panel'     => false,
-		        'enabled_on_more_articles_box' => false,
-		        'enabled_on_loops'             => false,
-		        'uses_columns'                 => false,
-		        // if the module uses columns on the page template + loop
-		        'category_label'               => false,
-		        'class'                        => 'td_module_wrap td-animation-stack',
-		        'group'                        => ''
-		        // '' - main theme, 'mob' - mobile theme, 'woo' - woo theme
-		    )
-		);
 
 		td_api_module::add( 'td_module_flex_2',
 		    array(
@@ -1355,6 +1420,17 @@ class td_config {
                             "description" => 'Choose the adspot from list',
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_general_select_anim.png"
+                        ),
+                        array(
+                            "param_name" => "spot_hide",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => "Hide ads for admins/editors",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "group" => ''
                         ),
 
                         array(
@@ -1365,6 +1441,7 @@ class td_config {
                             "description" => "Optional - a title for the Ad, like - Advertisement - if you leave it blank the block will not have a title",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig",
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_general_title_anim.png"
                         ),
                         array(
                             "param_name" => "separator",
@@ -1382,6 +1459,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_general_title_color_anim.png"
                         ),
                     ),
                     td_config_helper::get_map_block_font_array( 'f_title', true, 'Ad title text' ),
@@ -1396,6 +1474,36 @@ class td_config {
                             "class" => "",
                             "group" => 'Image ad'
                         ),
+	                    array(
+		                    "param_name" => "spot_img_all_width_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Width attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_width_anim.png",
+	                    ),
+	                    array(
+		                    "param_name" => "spot_img_all_height_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Height attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad'
+	                    ),
+	                    array(
+		                    "param_name" => "separator",
+		                    "type" => "horizontal_separator",
+		                    "value" => "",
+		                    "class" => "tdc-separator-small",
+		                    "group"      => 'Image ad'
+	                    ),
                         array(
                             "param_name" => "spot_img_tl",
                             "type" => "attach_image",
@@ -1406,6 +1514,36 @@ class td_config {
                             "class" => "",
                             "group" => 'Image ad'
                         ),
+	                    array(
+		                    "param_name" => "spot_img_tl_width_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Width attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_width_anim.png",
+	                    ),
+	                    array(
+		                    "param_name" => "spot_img_tl_height_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Height attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad'
+	                    ),
+	                    array(
+		                    "param_name" => "separator",
+		                    "type" => "horizontal_separator",
+		                    "value" => "",
+		                    "class" => "tdc-separator-small",
+		                    "group"      => 'Image ad'
+	                    ),
                         array(
                             "param_name" => "spot_img_tp",
                             "type" => "attach_image",
@@ -1416,6 +1554,37 @@ class td_config {
                             "class" => "",
                             "group" => 'Image ad'
                         ),
+
+	                    array(
+		                    "param_name" => "spot_img_tp_width_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Width attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_width_anim.png",
+	                    ),
+	                    array(
+		                    "param_name" => "spot_img_tp_height_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Height attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad'
+	                    ),
+	                    array(
+		                    "param_name" => "separator",
+		                    "type" => "horizontal_separator",
+		                    "value" => "",
+		                    "class" => "tdc-separator-small",
+		                    "group"      => 'Image ad'
+	                    ),
                         array(
                             "param_name" => "spot_img_mob",
                             "type" => "attach_image",
@@ -1426,6 +1595,29 @@ class td_config {
                             "class" => "",
                             "group" => 'Image ad'
                         ),
+	                    array(
+		                    "param_name" => "spot_img_mob_width_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Width attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_width_anim.png",
+	                    ),
+	                    array(
+		                    "param_name" => "spot_img_mob_height_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Height attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+		                    "group" => 'Image ad'
+	                    ),
                         array(
                             "param_name" => "separator",
                             "type" => "horizontal_separator",
@@ -1468,6 +1660,24 @@ class td_config {
                             "class" => "tdc-dropdown-big",
                             "group" => 'Image ad'
                         ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"      => 'Image ad'
+                        ),
+	                    array(
+		                    "param_name" => "spot_img_alt_attribute",
+		                    "type" => "textfield",
+		                    "value" => "",
+		                    "placeholder" => "",
+		                    "heading" => 'Alt attribute',
+		                    "description" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-big",
+		                    "group" => 'Image ad'
+	                    ),
                         array(
                             "param_name" => "separator",
                             "type" => "horizontal_separator",
@@ -1531,7 +1741,8 @@ class td_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-textfield-small",
-                            "group" => 'Image ad'
+                            "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_width_anim.png"
                         ),
                         array(
                             "param_name" => "spot_img_horiz",
@@ -1546,7 +1757,8 @@ class td_config {
                             "holder" => "div",
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
-                            "group" => 'Image ad'
+                            "group" => 'Image ad',
+                            "info_img" => "https://cloud.tagdiv.com/help/rec_image_horizontal_anim.png"
                         ),
 
                         array(
@@ -2217,11 +2429,13 @@ class td_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H3' => 'h3',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -2246,7 +2460,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc1_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc1_el",
 		                    "type"        => "textfield",
@@ -2256,6 +2487,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		            ),
 
@@ -2281,6 +2513,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_container.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_on_row",
@@ -2302,6 +2535,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-small",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_per_row.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_gap",
@@ -2313,6 +2547,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "40",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
 		                ),
 		                array(
 		                    "param_name"  => "m_padding",
@@ -2324,6 +2559,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "all_modules_space",
@@ -2335,6 +2571,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "36",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -2353,6 +2590,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style",
@@ -2367,6 +2605,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -2377,6 +2616,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -2399,6 +2639,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -2409,6 +2650,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -2430,6 +2672,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hover_effect.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -2443,18 +2686,23 @@ class td_config {
 		                    "param_name"  => "image_size",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 696px'  => '',
-		                        'XXSmall - 218x150' => 'td_218x150',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Medium - Default - 696x0px'  => '',
+                                '-- [No crop] --' => '__',
+		                        'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+		                        '218x150px' => 'td_218x150',
+		                        '324x400px'  => 'td_324x400',
+		                        '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment',
@@ -2467,6 +2715,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height",
@@ -2478,6 +2727,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_width",
@@ -2489,6 +2739,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_floated",
@@ -2504,6 +2755,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius",
@@ -2515,6 +2767,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image",
@@ -2524,7 +2777,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -2544,6 +2798,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -2560,7 +2815,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec",
@@ -2571,6 +2827,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -2582,10 +2839,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -2599,6 +2856,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -2619,6 +2886,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin",
@@ -2630,6 +2898,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding",
@@ -2641,6 +2910,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -2659,6 +2929,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_title_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -2678,6 +2949,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
                         ),
                         array(
                             "param_name" => "video_overlay",
@@ -2687,6 +2959,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -2703,6 +2976,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_text_color.png",
                         ),
                         array(
                             "param_name" => "vid_t_bg_color",
@@ -2712,6 +2986,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_bg_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -2721,8 +2996,9 @@ class td_config {
                             "group"       => 'Layout',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_duration_title.png', '' ),
+                    self::get_map_exclusive_label_array(),
                     array(
 		                array(
 		                    "param_name" => "separator",
@@ -2746,6 +3022,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
 		                ),
 		                array(
 		                    "param_name" => "meta_info_horiz",
@@ -2762,6 +3039,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width",
@@ -2773,6 +3051,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin",
@@ -2784,6 +3063,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding",
@@ -2795,7 +3075,20 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta container space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_container_space.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -2814,66 +3107,8 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
-		                array(
-		                    "param_name"  => "art_excerpt",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "20px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "excerpt_col",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        '1'  => '1',
-		                        '2' => '2',
-		                        '3' => '3',
-		                    ),
-		                    "heading"     => 'Article excerpt columns',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-small",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "excerpt_gap",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt columns gap',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-small",
-		                    "placeholder" => "48",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            "param_name"  => "art_audio",
-                            "type"        => "textfield-responsive",
-                            "value"       => '',
-                            "heading"     => 'Audio player space',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'art_audio_size',
-                            'type'        => 'range-responsive',
-                            'value'       => '1.5',
-                            'heading'     => 'Audio player size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name"  => "art_btn",
 		                    "type"        => "textfield-responsive",
@@ -2903,6 +3138,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_border_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_info_border_style",
@@ -2917,6 +3153,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_border_style_general.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -2927,7 +3164,20 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_border_color_general.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -2949,6 +3199,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin",
@@ -2960,6 +3211,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding",
@@ -2971,6 +3223,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_cat_border",
@@ -2982,6 +3235,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius',
@@ -2994,6 +3248,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "show_cat",
@@ -3007,6 +3262,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -3028,6 +3284,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo",
@@ -3037,7 +3294,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_size",
@@ -3049,6 +3307,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space",
@@ -3060,6 +3319,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius",
@@ -3071,41 +3331,78 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
-		                array(
-		                    "param_name" => "separator",
-		                    "type"       => "text_separator",
-		                    'heading'    => 'Date / Comment / Excerpt',
-		                    "value"      => "",
-		                    "class"      => "tdc-separator-small",
-		                    "group"       => 'Layout'
-		                ),
-		                array(
-		                    "param_name"  => "show_date",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show date',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "show_review",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Date / Comment',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name"  => "show_date",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show date',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "show_com",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show comment',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Review stars',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name"  => "show_review",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
                         array(
                             'param_name'  => 'review_size',
                             'type'        => 'range-responsive',
@@ -3117,20 +3414,28 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
-		                array(
-		                    "param_name"  => "show_com",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show comment',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name"  => "review_distance",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Excerpt',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout'
+                        ),
 		                array(
                             "param_name"  => "show_custom_field",
                             "type"        => "textfield",
@@ -3141,8 +3446,9 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
-                        array(
+		                array(
 		                    "param_name"  => "show_excerpt",
 		                    "type"        => "dropdown-responsive",
 		                    "value"       => array(
@@ -3154,7 +3460,60 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
 		                ),
+                        array(
+                            "param_name"  => "art_excerpt",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Article excerpt space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "20px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "excerpt_col",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                '1'  => '1',
+                                '2' => '2',
+                                '3' => '3',
+                            ),
+                            "heading"     => 'Article excerpt columns',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-small",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_article_excerpt_columns.png",
+                        ),
+                        array(
+                            "param_name"  => "excerpt_gap",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Article excerpt columns gap',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "48",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
 		                array(
 		                    "param_name"  => "excerpt_middle",
 		                    "type"        => "checkbox",
@@ -3163,7 +3522,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_excerpt_in_middle.png",
 		                ),
 		                array(
 		                    "param_name"  => "excerpt_inline",
@@ -3173,8 +3533,17 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_inline_excerpt_title.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article audio player',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
                         array(
                             "param_name"  => "show_audio",
                             "type"        => "dropdown-responsive",
@@ -3183,32 +3552,55 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
-		                array(
-		                    "param_name"  => "meta_space",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Meta container space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "0",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "art_audio",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Audio player space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
+                        ),
+                        array(
+                            'param_name'  => 'art_audio_size',
+                            'type'        => 'range-responsive',
+                            'value'       => '1.5',
+                            'heading'     => 'Audio player size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -3229,6 +3621,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_title",
@@ -3240,6 +3633,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "Read more",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_text.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_margin",
@@ -3251,6 +3645,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 20px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_padding",
@@ -3262,6 +3657,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "10px 15px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_border_width",
@@ -3273,6 +3669,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_radius",
@@ -3284,6 +3681,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -3303,6 +3701,7 @@ class td_config {
 		                    "holder" => "div",
 		                    "class" => "tdc-textfield-small",
 		                    'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_padding",
@@ -3314,6 +3713,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_width",
@@ -3325,6 +3725,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "1",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_radius",
@@ -3336,6 +3737,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -3350,7 +3752,8 @@ class td_config {
 		                    'heading' => 'Prev icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    'param_name' => 'next_tdicon',
@@ -3358,7 +3761,8 @@ class td_config {
 		                    'heading' => 'Next icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_icons_size",
@@ -3370,6 +3774,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow_size.png",
 		                ),
 
 		                array(
@@ -3382,9 +3787,9 @@ class td_config {
 		                ),
 		            ),
 
-		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_ajax.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_load_more.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -3395,11 +3800,11 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_btn', false, 'Article read more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_btn', false, 'Article read more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_read.png', '' ),
 
 
                     td_config_helper::mix_blend(),
@@ -3432,15 +3837,17 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "color_overlay",
 		                    "holder"     => "div",
 		                    "type"       => "gradient",
-		                    'heading'    => "Module color overlay",
+		                    'heading'    => "Module image overlay",
 		                    "value"      => "",
 		                    "class"      => "",
 		                    "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -3450,7 +3857,7 @@ class td_config {
 		                    "group"       => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_shadow.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -3469,6 +3876,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3476,16 +3884,6 @@ class td_config {
 		                    "class"       => "td-colorpicker-double-b",
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover",
-		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color",
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
@@ -3500,7 +3898,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -3518,6 +3928,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3538,6 +3949,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3558,6 +3970,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3586,6 +3999,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -3603,6 +4017,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3623,6 +4038,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3633,6 +4049,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3643,6 +4060,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3653,6 +4071,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3663,6 +4082,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_color.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -3681,6 +4101,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_buttons.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -3691,6 +4112,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_time.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -3701,6 +4123,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_bar.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -3711,9 +4134,10 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_progress.png",
                         ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow_m', 'Meta info shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow_m', 'Meta info shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_meta_shadow.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -3732,6 +4156,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3752,6 +4177,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3772,6 +4198,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_border_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3800,6 +4227,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3820,6 +4248,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -3840,6 +4269,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -4285,11 +4715,13 @@ class td_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H3' => 'h3',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -4314,7 +4746,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc2_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc2_el",
 		                    "type"        => "textfield",
@@ -4324,6 +4773,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		            ),
 
@@ -4360,6 +4810,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "36",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -4432,18 +4883,23 @@ class td_config {
 		                    "param_name"  => "image_size",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Full - 1920px'  => '',
-		                        'XXSmall - 218x150' => 'td_218x150',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Large - 696px' => 'td_696x0',
-		                        'XLarge - 1068px' => 'td_1068x0'
+		                        'Full - Default - 1920x0px'  => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Medium - 696x0px'  => 'td_696x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                '-- [Other sizes] --' => '__',
+                                '218x150' => 'td_218x150px',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment',
@@ -4456,6 +4912,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius",
@@ -4467,6 +4924,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -4485,6 +4943,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_margin_right",
@@ -4524,6 +4983,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos",
@@ -4553,7 +5013,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec",
@@ -4564,6 +5025,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -4575,10 +5037,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -4592,6 +5054,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -4612,6 +5084,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin",
@@ -4623,6 +5096,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0 5px 0 0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding",
@@ -4634,6 +5108,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -4652,6 +5127,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_title_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -4671,6 +5147,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
                         ),
                         array(
                             "param_name" => "video_overlay",
@@ -4680,6 +5157,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -4696,6 +5174,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_text_color.png",
                         ),
                         array(
                             "param_name" => "vid_t_bg_color",
@@ -4705,6 +5184,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_bg_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -4714,8 +5194,9 @@ class td_config {
                             "group"       => 'Layout',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_duration_title.png', '' ),
+                    self::get_map_exclusive_label_array(),
                     array(
 		                array(
 		                    "param_name" => "separator",
@@ -4738,6 +5219,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
 		                ),
 		                array(
 		                    "param_name" => "meta_info_horiz",
@@ -4753,6 +5235,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width",
@@ -4764,6 +5247,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin",
@@ -4775,6 +5259,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding",
@@ -4786,14 +5271,28 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 40px 40px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
-		                array(
-		                    "param_name" => "separator",
-		                    "type"       => "horizontal_separator",
-		                    "value"      => "",
-		                    "class"      => "tdc-separator-small",
-		                    "group"      => "Layout",
-		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article title',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "art_title",
 		                    "type"        => "textfield-responsive",
@@ -4804,142 +5303,177 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 8px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
-		                array(
-		                    "param_name"  => "art_excerpt",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "18px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name" => "separator",
-		                    "type"       => "horizontal_separator",
-		                    "value"      => "",
-		                    "class"      => "tdc-separator-small",
-		                    "group"      => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "modules_category",
-		                    "type"        => "dropdown",
-		                    "value"       => array(
-		                        'Inline'      => '',
-		                        'Above title' => 'above',
-		                    ),
-		                    "heading"     => 'Category tag position',
-		                    "description" => "Float image",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "modules_category_margin",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Category tag spacing',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "0px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "modules_category_padding",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Category tag padding',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "3px 6px 4px",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "modules_cat_border",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Category border width',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "0px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    'param_name'  => 'modules_category_radius',
-		                    'type'        => 'range-responsive',
-		                    'value'       => '0',
-		                    'heading'     => 'Border radius',
-		                    'description' => '',
-		                    'class'       => 'tdc-textfield-small',
-		                    'range_min'   => '0',
-		                    'range_max'   => '100',
-		                    'range_step'  => '1',
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "show_cat",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show category',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name" => "separator",
-		                    "type"       => "horizontal_separator",
-		                    "value"      => "",
-		                    "class"      => "tdc-separator-small",
-		                    "group"      => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "show_author",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show author',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "show_date",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show date',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "show_review",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Category tag',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "modules_category",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Inline'      => '',
+                                'Above title' => 'above',
+                            ),
+                            "heading"     => 'Category tag position',
+                            "description" => "Float image",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
+                        ),
+                        array(
+                            "param_name"  => "modules_category_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Category tag spacing',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
+                        ),
+                        array(
+                            "param_name"  => "modules_category_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Category tag padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "3px 6px 4px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
+                        ),
+                        array(
+                            "param_name"  => "modules_cat_border",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Category border width',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
+                        ),
+                        array(
+                            'param_name'  => 'modules_category_radius',
+                            'type'        => 'range-responsive',
+                            'value'       => '0',
+                            'heading'     => 'Border radius',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '100',
+                            'range_step'  => '1',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
+                        ),
+                        array(
+                            "param_name"  => "show_cat",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show category',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Author / date / comment',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_author",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show author',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
+                        ),
+                        array(
+                            "param_name"  => "show_date",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show date',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "show_com",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show comment',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Review stars',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
                         array(
                             'param_name'  => 'review_size',
                             'type'        => 'range-responsive',
@@ -4951,20 +5485,28 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
-		                array(
-		                    "param_name"  => "show_com",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show comment',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name"  => "review_distance",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Excerpt',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
 		                array(
                             "param_name"  => "show_custom_field",
                             "type"        => "textfield",
@@ -4975,19 +5517,33 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
                         array(
-		                    "param_name"  => "show_excerpt",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show excerpt',
+                            "param_name"  => "show_excerpt",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show excerpt',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
+                        ),
+		                array(
+		                    "param_name"  => "art_excerpt",
+		                    "type"        => "textfield-responsive",
+		                    "value"       => '',
+		                    "heading"     => 'Article excerpt space',
 		                    "description" => "",
 		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
+		                    "class"       => "tdc-textfield-big",
+		                    "placeholder" => "18px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "excerpt_middle",
@@ -4997,7 +5553,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_excerpt_in_middle.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -5017,6 +5574,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_width",
@@ -5028,6 +5586,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "1",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_radius",
@@ -5039,6 +5598,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -5053,7 +5613,8 @@ class td_config {
 		                    'heading' => 'Prev icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    'param_name' => 'next_tdicon',
@@ -5061,7 +5622,8 @@ class td_config {
 		                    'heading' => 'Next icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_icons_size",
@@ -5073,6 +5635,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow_size.png",
 		                ),
 		            ),
 
@@ -5087,9 +5650,9 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_ajax.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_load_more.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -5100,10 +5663,10 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
 
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
@@ -5121,10 +5684,11 @@ class td_config {
 		                    "param_name" => "color_overlay",
 		                    "holder"     => "div",
 		                    "type"       => "gradient",
-		                    'heading'    => "Module color overlay",
+		                    'heading'    => "Module image overlay",
 		                    "value"      => "",
 		                    "class"      => "",
 		                    "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5135,6 +5699,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -5199,6 +5764,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5206,16 +5772,6 @@ class td_config {
 		                    "class"       => "td-colorpicker-double-b",
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover",
-		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color",
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
@@ -5230,7 +5786,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "horizontal_separator",
@@ -5247,6 +5815,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5267,6 +5836,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5287,6 +5857,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5314,6 +5885,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5334,6 +5906,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5344,6 +5917,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5354,6 +5928,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -5418,7 +5993,7 @@ class td_config {
 		                        "columns_gap" => "eyJsYW5kc2NhcGUiOiI0MCIsInBvcnRyYWl0IjoiMjgifQ==",
 		                        "image_width2" => "eyJwb3J0cmFpdCI6IjM1In0=",
 		                        "modules_space1" => "eyJhbGwiOiIwIiwicGhvbmUiOiIyMSJ9",
-                                "hide_audio" => "yes"
+                                "hide_audio" => "yes",
 		                    ),
 
 		                    array(
@@ -6060,11 +6635,13 @@ class td_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H3' => 'h3',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -6089,7 +6666,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc1_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc1_el",
 		                    "type"        => "textfield",
@@ -6099,6 +6693,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -6116,7 +6711,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc3_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		            ),
 
 		            self::get_map_filter_array(),
@@ -6169,6 +6781,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hover_effect.png",
 		                ),
 
 
@@ -6190,6 +6803,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -6208,6 +6822,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style1",
@@ -6222,6 +6837,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -6232,6 +6848,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6254,6 +6871,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -6264,6 +6882,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -6277,18 +6896,23 @@ class td_config {
 		                    "param_name"  => "image_size",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 696px'  => '',
-		                        'XXSmall - 218x150' => 'td_218x150',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Medium - Default - 696x0px'  => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+                                '218x150px' => 'td_218x150',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment1',
@@ -6301,6 +6925,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height1",
@@ -6312,6 +6937,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "72",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius1",
@@ -6323,6 +6949,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image",
@@ -6332,7 +6959,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -6352,6 +6980,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6368,7 +6997,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec",
@@ -6379,6 +7009,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -6390,10 +7021,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -6407,6 +7038,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -6427,6 +7068,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin",
@@ -6438,6 +7080,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding",
@@ -6449,6 +7092,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6467,6 +7111,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_title_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -6486,6 +7131,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
                         ),
                         array(
                             "param_name" => "video_overlay",
@@ -6495,6 +7141,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6511,6 +7158,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_text_color.png",
                         ),
                         array(
                             "param_name" => "vid_t_bg_color",
@@ -6520,6 +7168,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_bg_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6529,8 +7178,9 @@ class td_config {
                             "group"       => 'Layout',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_duration_title.png', '' ),
+                    self::get_map_exclusive_label_array('1', true),
                     array(
 		                array(
 		                    "param_name" => "separator",
@@ -6552,6 +7202,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
 		                ),
 		                array(
 		                    "param_name" => "meta_info_horiz1",
@@ -6567,6 +7218,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width1",
@@ -6578,6 +7230,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin1",
@@ -6589,6 +7242,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding1",
@@ -6600,7 +7254,20 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -6618,48 +7285,15 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
-		                ),
-		                array(
-		                    "param_name"  => "art_excerpt1",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "16px 0px 0px 0px",
-		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
                         array(
-                            "param_name"  => "art_audio1",
-                            "type"        => "textfield-responsive",
-                            "value"       => '',
-                            "heading"     => 'Audio player space',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
                             "group"       => "Layout",
                         ),
-                        array(
-                            'param_name'  => 'art_audio_size1',
-                            'type'        => 'range-responsive',
-                            'value'       => '1.5',
-                            'heading'     => 'Audio player size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
-		                array(
-		                    "param_name" => "separator",
-		                    "type" => "horizontal_separator",
-		                    "value" => "",
-		                    "class" => "tdc-separator-small",
-		                    "group"       => "Layout",
-		                ),
 		                array(
 		                    "param_name"  => "modules_category",
 		                    "type"        => "dropdown",
@@ -6673,6 +7307,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin1",
@@ -6684,6 +7319,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding1",
@@ -6695,6 +7331,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_cat_border1",
@@ -6706,6 +7343,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius1',
@@ -6718,6 +7356,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "show_cat1",
@@ -6731,6 +7370,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -6751,6 +7391,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo",
@@ -6760,7 +7401,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_size1",
@@ -6772,6 +7414,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space1",
@@ -6783,6 +7426,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius1",
@@ -6794,7 +7438,15 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "show_date1",
 		                    "type"        => "dropdown-responsive",
@@ -6807,32 +7459,8 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
 		                ),
-		                array(
-		                    "param_name"  => "show_review1",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            'param_name'  => 'review_size1',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name"  => "show_com1",
 		                    "type"        => "dropdown-responsive",
@@ -6845,7 +7473,73 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review1",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size1',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
                             "param_name"  => "show_custom_field",
                             "type"        => "textfield",
@@ -6856,8 +7550,9 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
-                        array(
+		                array(
 		                    "param_name"  => "show_excerpt1",
 		                    "type"        => "dropdown-responsive",
 		                    "value"       => array(
@@ -6869,7 +7564,20 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
 		                ),
+                        array(
+                            "param_name"  => "art_excerpt1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Article excerpt space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "16px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
+                        ),
 		                array(
 		                    "param_name"  => "excerpt_middle",
 		                    "type"        => "checkbox",
@@ -6878,8 +7586,17 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_excerpt_in_middle.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article audio player',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
                         array(
                             "param_name"  => "show_audio1",
                             "type"        => "dropdown-responsive",
@@ -6888,20 +7605,54 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "art_audio1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Audio player space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
+                        ),
+                        array(
+                            'param_name'  => 'art_audio_size1',
+                            'type'        => 'range-responsive',
+                            'value'       => '1.5',
+                            'heading'     => 'Audio player size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
                         ),
 
 
@@ -6923,6 +7674,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "26",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -6941,6 +7693,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style2",
@@ -6955,6 +7708,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -6965,6 +7719,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -6987,6 +7742,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -6997,6 +7753,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -7010,18 +7767,23 @@ class td_config {
 		                    "param_name"  => "image_size2",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 218x150' => '',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Medium - 696px'  => 'td_696x0',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Default - 218x150px' => '',
+                                '-- [No crop] --' => '__',
+		                        'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Medium - 696x0px'  => 'td_696x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+		                        '324x400px'  => 'td_324x400',
+		                        '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment2',
@@ -7034,6 +7796,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_width2",
@@ -7045,6 +7808,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "30",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height2",
@@ -7056,6 +7820,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius2",
@@ -7067,6 +7832,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image2",
@@ -7076,7 +7842,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -7096,6 +7863,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "20",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_popup2",
@@ -7105,7 +7873,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -7123,6 +7892,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -7134,10 +7904,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title2",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -7151,6 +7921,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -7171,6 +7951,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin2",
@@ -7182,6 +7963,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding2",
@@ -7193,7 +7975,11 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
+                    ),
+                    self::get_map_exclusive_label_array('2', true),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -7215,6 +8001,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
                         ),
 		                array(
 		                    "param_name" => "meta_info_horiz2",
@@ -7230,6 +8017,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width2",
@@ -7241,6 +8029,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin2",
@@ -7252,6 +8041,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding2",
@@ -7263,7 +8053,20 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -7281,30 +8084,8 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
-                        array(
-                            "param_name"  => "art_audio2",
-                            "type"        => "textfield-responsive",
-                            "value"       => '',
-                            "heading"     => 'Audio player space',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'art_audio_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '1',
-                            'heading'     => 'Audio player size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -7325,6 +8106,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin2",
@@ -7336,6 +8118,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding2",
@@ -7347,6 +8130,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_cat_border2",
@@ -7358,6 +8142,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius2',
@@ -7370,6 +8155,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "show_cat2",
@@ -7383,6 +8169,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -7403,6 +8190,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo2",
@@ -7424,6 +8212,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space2",
@@ -7435,6 +8224,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius2",
@@ -7446,7 +8236,15 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "show_date2",
 		                    "type"        => "dropdown-responsive",
@@ -7459,7 +8257,29 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
 		                ),
+                        array(
+                            "param_name"  => "show_com2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show comment',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "show_review2",
 		                    "type"        => "dropdown-responsive",
@@ -7472,7 +8292,20 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
 		                ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
                         array(
                             'param_name'  => 'review_size2',
                             'type'        => 'range-responsive',
@@ -7484,20 +8317,28 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
-		                array(
-		                    "param_name"  => "show_com2",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show comment',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article audio player',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
                         array(
                             "param_name"  => "show_audio2",
                             "type"        => "dropdown-responsive",
@@ -7506,20 +8347,54 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio2",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "art_audio2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Audio player space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
+                        ),
+                        array(
+                            'param_name'  => 'art_audio_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '1',
+                            'heading'     => 'Audio player size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -7539,6 +8414,7 @@ class td_config {
 		                    "holder" => "div",
 		                    "class" => "tdc-textfield-small",
 		                    'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_padding",
@@ -7550,6 +8426,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_width",
@@ -7561,6 +8438,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "1",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_radius",
@@ -7572,6 +8450,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -7586,7 +8465,8 @@ class td_config {
 		                    'heading' => 'Prev icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    'param_name' => 'next_tdicon',
@@ -7594,7 +8474,8 @@ class td_config {
 		                    'heading' => 'Next icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_icons_size",
@@ -7606,6 +8487,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow_size.png",
 		                ),
 
 
@@ -7618,9 +8500,9 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_ajax.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_load_more.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -7631,13 +8513,13 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_title1', true, 'Article title 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Article category tag 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Article meta info 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex1', false, 'Article excerpt 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_title2', false, 'Article title 2', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Article category tag 2', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Article meta info 2', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_title1', true, 'Article title 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Article category tag 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Article meta info 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex1', false, 'Article excerpt 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_title2', false, 'Article title 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Article category tag 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Article meta info 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
 
@@ -7651,7 +8533,7 @@ class td_config {
 		                    "group"      => "Style",
 		                ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_shadow.png', '' ),
 		            array(
 		                array(
 		                    "type"        => "colorpicker",
@@ -7662,6 +8544,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -7680,6 +8563,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7688,16 +8572,6 @@ class td_config {
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover",
 		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color",
-		                    "value"       => '#000',
 		                    "description" => '',
 		                    "group"       => 'Style',
 		                ),
@@ -7711,6 +8585,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
 		                array(
 		                    "param_name"  => "all_underline_height2",
@@ -7722,7 +8597,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -7740,6 +8627,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7760,6 +8648,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7780,6 +8669,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7808,6 +8698,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7828,6 +8719,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7838,6 +8730,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7848,6 +8741,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7858,6 +8752,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -7876,6 +8771,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_buttons.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -7886,6 +8782,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_time.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -7896,6 +8793,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_bar.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -7906,6 +8804,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_progress.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -7924,6 +8823,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7944,6 +8844,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7964,6 +8865,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -7987,6 +8889,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big tdc-hidden",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_text.png",
 		                ),
 		            ),
 		            self::get_map_block_pagination_array()
@@ -8701,11 +9604,13 @@ class td_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H3' => 'h3',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -8730,7 +9635,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc1_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc1_el",
 		                    "type"        => "textfield",
@@ -8740,6 +9662,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -8757,7 +9680,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc4_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc4_el",
 		                    "type"        => "textfield",
@@ -8767,6 +9707,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		            ),
 
@@ -8822,6 +9763,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hover_effect.png",
 		                ),
 
 
@@ -8843,6 +9785,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "21",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -8861,6 +9804,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style1",
@@ -8875,6 +9819,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -8885,6 +9830,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -8907,6 +9853,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -8917,6 +9864,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -8930,18 +9878,23 @@ class td_config {
 		                    "param_name"  => "image_size",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 696px'  => '',
-		                        'XXSmall - 218x150' => 'td_218x150',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Medium - Default - 696x0px'  => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+                                '218x150px' => 'td_218x150',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment1',
@@ -8954,6 +9907,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height1",
@@ -8965,6 +9919,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius1",
@@ -8976,6 +9931,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image",
@@ -8985,14 +9941,15 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
                             "type"       => "text_separator",
                             'heading'    => 'Article video',
                             "value"      => "",
-                            "class"      => "td-separator-small",
+                            "class"      => "tdc-separator-small",
                             "group"      => "Layout",
                         ),
                         array(
@@ -9005,6 +9962,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -9034,7 +9992,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec",
@@ -9045,6 +10004,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -9056,10 +10016,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -9073,6 +10033,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -9093,6 +10063,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin",
@@ -9104,6 +10075,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding",
@@ -9115,6 +10087,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -9133,6 +10106,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_title_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -9152,6 +10126,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
                         ),
                         array(
                             "param_name" => "video_overlay",
@@ -9161,6 +10136,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -9177,6 +10153,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_text_color.png",
                         ),
                         array(
                             "param_name" => "vid_t_bg_color",
@@ -9186,6 +10163,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_bg_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -9195,8 +10173,9 @@ class td_config {
                             "group"       => 'Layout',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_duration_title.png', '' ),
+                    self::get_map_exclusive_label_array('1', true),
                     array(
 		                array(
 		                    "param_name" => "separator",
@@ -9219,6 +10198,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
 		                ),
 		                array(
 		                    "param_name" => "meta_info_horiz1",
@@ -9234,6 +10214,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width1",
@@ -9245,6 +10226,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin1",
@@ -9256,6 +10238,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding1",
@@ -9267,7 +10250,20 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -9285,41 +10281,8 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
-		                array(
-		                    "param_name"  => "art_excerpt1",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "16px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            "param_name"  => "art_audio1",
-                            "type"        => "textfield-responsive",
-                            "value"       => '',
-                            "heading"     => 'Audio player space',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'art_audio_size1',
-                            'type'        => 'range-responsive',
-                            'value'       => '1.5',
-                            'heading'     => 'Audio player size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -9340,6 +10303,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin1",
@@ -9351,6 +10315,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding1",
@@ -9362,6 +10327,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_cat_border1",
@@ -9373,6 +10339,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius1',
@@ -9385,6 +10352,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "show_cat1",
@@ -9398,6 +10366,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -9418,6 +10387,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo",
@@ -9427,7 +10397,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_size1",
@@ -9439,6 +10410,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space1",
@@ -9450,6 +10422,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius1",
@@ -9461,7 +10434,15 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "show_date1",
 		                    "type"        => "dropdown-responsive",
@@ -9474,32 +10455,8 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
 		                ),
-		                array(
-		                    "param_name"  => "show_review1",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            'param_name'  => 'review_size1',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name"  => "show_com1",
 		                    "type"        => "dropdown-responsive",
@@ -9512,7 +10469,73 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review1",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size1',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
                             "param_name"  => "show_custom_field",
                             "type"        => "textfield",
@@ -9523,8 +10546,9 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
-                        array(
+		                array(
 		                    "param_name"  => "show_excerpt1",
 		                    "type"        => "dropdown-responsive",
 		                    "value"       => array(
@@ -9536,7 +10560,20 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
 		                ),
+                        array(
+                            "param_name"  => "art_excerpt1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Article excerpt space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "16px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
+                        ),
 		                array(
 		                    "param_name"  => "excerpt_middle",
 		                    "type"        => "checkbox",
@@ -9545,8 +10582,17 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_excerpt_in_middle.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article audio player',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
                         array(
                             "param_name"  => "show_audio1",
                             "type"        => "dropdown-responsive",
@@ -9555,20 +10601,54 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "art_audio1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Audio player space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
+                        ),
+                        array(
+                            'param_name'  => 'art_audio_size1',
+                            'type'        => 'range-responsive',
+                            'value'       => '1.5',
+                            'heading'     => 'Audio player size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
                         ),
 
 
@@ -9590,6 +10670,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_space2",
@@ -9601,6 +10682,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "26",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -9619,6 +10701,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style2",
@@ -9633,6 +10716,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -9643,6 +10727,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -9665,6 +10750,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -9675,6 +10761,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -9688,18 +10775,23 @@ class td_config {
 		                    "param_name"  => "image_size3",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 218x150' => '',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Medium - 696px'  => 'td_696x0',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Default - 218x150px' => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Medium - 696x0px'  => 'td_696x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment2',
@@ -9712,6 +10804,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_width2",
@@ -9723,6 +10816,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "30",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height2",
@@ -9734,6 +10828,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "70",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius2",
@@ -9745,6 +10840,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image3",
@@ -9754,14 +10850,15 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
                             "type"       => "text_separator",
                             'heading'    => 'Article video',
                             "value"      => "",
-                            "class"      => "td-separator-small",
+                            "class"      => "tdc-separator-small",
                             "group"      => "Layout",
                         ),
                         array(
@@ -9774,6 +10871,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "20",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_popup3",
@@ -9783,7 +10881,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec3",
@@ -9794,6 +10893,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -9805,10 +10905,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title3",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -9822,6 +10922,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -9842,6 +10952,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin3",
@@ -9853,6 +10964,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding3",
@@ -9864,7 +10976,11 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
+                    ),
+                    self::get_map_exclusive_label_array('2', true),
+                    array(
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -9887,6 +11003,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width2",
@@ -9898,6 +11015,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_margin2",
@@ -9909,6 +11027,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding2",
@@ -9920,7 +11039,20 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -9938,41 +11070,8 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
-		                array(
-		                    "param_name"  => "art_excerpt2",
-		                    "type"        => "textfield-responsive",
-		                    "value"       => '',
-		                    "heading"     => 'Article excerpt space',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-textfield-big",
-		                    "placeholder" => "16px 0px 0px 0px",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            "param_name"  => "art_audio2",
-                            "type"        => "textfield-responsive",
-                            "value"       => '',
-                            "heading"     => 'Audio player space',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'art_audio_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '1',
-                            'heading'     => 'Audio player size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -9993,6 +11092,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin2",
@@ -10004,6 +11104,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding2",
@@ -10015,6 +11116,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_cat_border2",
@@ -10026,6 +11128,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius2',
@@ -10038,6 +11141,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "show_cat2",
@@ -10051,6 +11155,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -10071,6 +11176,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo3",
@@ -10092,6 +11198,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space2",
@@ -10103,6 +11210,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius2",
@@ -10114,7 +11222,15 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
 		                    "param_name"  => "show_date2",
 		                    "type"        => "dropdown-responsive",
@@ -10127,32 +11243,8 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
 		                ),
-		                array(
-		                    "param_name"  => "show_review2",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name"  => "show_com2",
 		                    "type"        => "dropdown-responsive",
@@ -10165,7 +11257,73 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
 		                array(
                             "param_name"  => "show_custom_field",
                             "type"        => "textfield",
@@ -10176,8 +11334,9 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
-                        array(
+		                array(
 		                    "param_name"  => "show_excerpt2",
 		                    "type"        => "dropdown-responsive",
 		                    "value"       => array(
@@ -10189,7 +11348,20 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
 		                ),
+                        array(
+                            "param_name"  => "art_excerpt2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Article excerpt space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "16px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
+                        ),
 		                array(
 		                    "param_name"  => "excerpt_middle3",
 		                    "type"        => "checkbox",
@@ -10198,8 +11370,17 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_excerpt_in_middle.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Article audio player',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
                         array(
                             "param_name"  => "show_audio2",
                             "type"        => "dropdown-responsive",
@@ -10208,20 +11389,54 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio3",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "art_audio2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Audio player space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
+                        ),
+                        array(
+                            'param_name'  => 'art_audio_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '1',
+                            'heading'     => 'Audio player size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -10241,6 +11456,7 @@ class td_config {
 		                    "holder" => "div",
 		                    "class" => "tdc-textfield-small",
 		                    'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_padding",
@@ -10252,6 +11468,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_width",
@@ -10263,6 +11480,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "1",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_radius",
@@ -10274,6 +11492,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -10288,7 +11507,8 @@ class td_config {
 		                    'heading' => 'Prev icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    'param_name' => 'next_tdicon',
@@ -10296,7 +11516,8 @@ class td_config {
 		                    'heading' => 'Next icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_icons_size",
@@ -10308,6 +11529,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow_size.png",
 		                ),
 
 
@@ -10320,9 +11542,9 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_ajax.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_load_more.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -10333,14 +11555,14 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_title1', true, 'Article title 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Article category tag 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Article meta info 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex1', false, 'Article excerpt 1', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_title2', false, 'Article title 2', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Article category tag 2', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Article meta info 2', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex2', false, 'Article excerpt 2', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_title1', true, 'Article title 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Article category tag 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Article meta info 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex1', false, 'Article excerpt 1', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_title2', false, 'Article title 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Article category tag 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Article meta info 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex2', false, 'Article excerpt 2', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
 		            array(
@@ -10353,7 +11575,7 @@ class td_config {
 		                    "group"      => "Style",
 		                ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_shadow.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -10367,10 +11589,11 @@ class td_config {
 		                    "param_name" => "color_overlay",
 		                    "holder"     => "div",
 		                    "type"       => "gradient",
-		                    'heading'    => "Module color overlay",
+		                    'heading'    => "Module image overlay",
 		                    "value"      => "",
 		                    "class"      => "",
 		                    "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10381,6 +11604,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -10398,6 +11622,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10406,16 +11631,6 @@ class td_config {
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover",
 		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color1",
-		                    "value"       => '#000',
 		                    "description" => '',
 		                    "group"       => 'Style',
 		                ),
@@ -10429,7 +11644,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color1",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -10446,6 +11673,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10466,6 +11694,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10486,6 +11715,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10513,6 +11743,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10533,6 +11764,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10543,6 +11775,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10553,6 +11786,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10563,6 +11797,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -10580,6 +11815,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_buttons.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10590,6 +11826,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_time.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10600,6 +11837,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_bar.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10610,6 +11848,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_progress.png",
                         ),
 
 
@@ -10630,6 +11869,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -10647,6 +11887,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10655,16 +11896,6 @@ class td_config {
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover2",
 		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color2",
-		                    "value"       => '#000',
 		                    "description" => '',
 		                    "group"       => 'Style',
 		                ),
@@ -10678,7 +11909,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color2",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type" => "horizontal_separator",
@@ -10695,6 +11938,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10715,6 +11959,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10735,6 +11980,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10762,6 +12008,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10782,6 +12029,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10792,6 +12040,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10802,6 +12051,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10812,6 +12062,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -10829,6 +12080,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_buttons.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10839,6 +12091,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_time.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10849,6 +12102,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_bar.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -10859,6 +12113,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_progress.png",
                         ),
 
 
@@ -10879,6 +12134,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10899,6 +12155,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10919,6 +12176,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -10942,6 +12200,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big tdc-hidden",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_text.png",
 		                ),
 		            ),
 		            self::get_map_block_pagination_array()
@@ -11585,11 +12844,13 @@ class td_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H3' => 'h3',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -11614,7 +12875,24 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
 		                ),
+                        array(
+                            "param_name" => "mc5_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
+                        ),
 		                array(
 		                    "param_name"  => "mc5_el",
 		                    "type"        => "textfield",
@@ -11624,6 +12902,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "25",
+                            "info_img" => "https://cloud.tagdiv.com/help/excerpt_length.png",
 		                ),
 		            ),
 
@@ -11659,6 +12938,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-small",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_per_row.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_gap",
@@ -11670,6 +12950,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "40",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
 		                ),
 		                array(
 		                    "param_name"  => "m_padding",
@@ -11681,6 +12962,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "all_modules_space",
@@ -11692,6 +12974,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "36",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_bottom_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -11710,6 +12993,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_border_width.png",
                         ),
                         array(
                             "param_name"  => "modules_border_style",
@@ -11724,6 +13008,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_style.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -11734,6 +13019,7 @@ class td_config {
                             "value"       => '#eaeaea',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -11756,6 +13042,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_divider.png",
 		                ),
                         array(
                             "param_name"  => "divider_on",
@@ -11765,7 +13052,8 @@ class td_config {
                             "description" => "Display dividers on modules from the last row",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_all_dividers.png",
                         ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -11776,6 +13064,7 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_divider_color.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -11797,6 +13086,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hover_effect.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -11810,18 +13100,23 @@ class td_config {
 		                    "param_name"  => "image_size",
 		                    "type"        => "dropdown",
 		                    "value"       => array(
-		                        'Default - 696px'  => '',
-		                        'XXSmall - 218x150' => 'td_218x150',
-		                        'XSmall - 324x400px'  => 'td_324x400',
-		                        'Small - 485x360' => 'td_485x360',
-		                        'Large - 1068px' => 'td_1068x0',
-		                        'Full - 1920px'  => 'td_1920x0'
+                                'Medium - Default - 696x0px'  => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Large - 1068x0px' => 'td_1068x0',
+                                'Full - 1920x0px'  => 'td_1920x0',
+                                '-- [Other sizes] --' => '__',
+                                '218x150px' => 'td_218x150',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
 		                    ),
 		                    "heading"     => 'Image size',
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
 		                ),
 		                array(
 		                    'param_name'  => 'image_alignment',
@@ -11834,6 +13129,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_height",
@@ -11845,6 +13141,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_radius",
@@ -11856,6 +13153,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_radius.png",
 		                ),
 		                array(
 		                    "param_name"  => "image_margin",
@@ -11867,6 +13165,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_margin.png",
 		                ),
 		                array(
 		                    "param_name"  => "hide_image",
@@ -11876,7 +13175,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_hide_image.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -11896,6 +13196,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -11912,7 +13213,8 @@ class td_config {
                             "description" => "",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_enable_video_pop-up.png",
                         ),
                         array(
                             "param_name" => "video_rec",
@@ -11923,6 +13225,7 @@ class td_config {
                             "value" => "",
                             "description" => 'Paste your ad code here.',
                             'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_popup_ad.png",
                         ),
                         array(
                             "param_name" => "spot_header",
@@ -11934,10 +13237,10 @@ class td_config {
                         array(
                             "param_name" => "video_rec_title",
                             "type" => "textfield",
-                            "value" => '- Advertisement -',
+                            "value" => '',
                             "heading" => 'Ad title',
                             "description" => "",
-                            "placeholder" => "",
+                            "placeholder" => "- Advertisement -",
                             "holder" => "div",
                             "class" => "tdc-textfield-extrabig tdc-spot-controller tdc-spot-title",
                             'group'      => 'Layout',
@@ -11951,6 +13254,16 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "video_rec_disable",
+                            "type"        => "checkbox",
+                            "value"       => '',
+                            "heading"     => "Hide ADS for admins/editors",
+                            "description" => "Used to prevent fake clicks and views on ads by admins and editors",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "group"       => 'Layout'
                         ),
                         array(
                             "param_name" => "separator",
@@ -11971,6 +13284,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_show_video_duration.png",
                         ),
                         array(
                             "param_name"  => "vid_t_margin",
@@ -11982,6 +13296,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_space.png",
                         ),
                         array(
                             "param_name"  => "vid_t_padding",
@@ -11993,6 +13308,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 4px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -12011,6 +13327,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_title_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -12030,6 +13347,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_background.png",
                         ),
                         array(
                             "param_name" => "video_overlay",
@@ -12039,6 +13357,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_overlay_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -12055,6 +13374,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_text_color.png",
                         ),
                         array(
                             "param_name" => "vid_t_bg_color",
@@ -12064,6 +13384,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_video_bg_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -12073,8 +13394,9 @@ class td_config {
                             "group"       => 'Layout',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout' ),
-                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_title', true, 'Video pop-up article title', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_vid_time', false, 'Video duration text', 'Layout', '', '', 'https://cloud.tagdiv.com/help/module_video_duration_title.png', '' ),
+                    self::get_map_exclusive_label_array(),
                     array(
 		                array(
 		                    "param_name" => "separator",
@@ -12098,6 +13420,7 @@ class td_config {
 		                    'tdc_dropdown_images' => true,
 		                    "class" => "tdc-visual-selector tdc-add-class",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_width",
@@ -12109,7 +13432,32 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "100%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
 		                ),
+		                array(
+                            "param_name"  => "meta_margin",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Top info margin',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_margin.png",
+                        ),
+		                array(
+                            "param_name"  => "meta_margin2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Bottom info margin',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "13px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_bottom_margin.png",
+                        ),
 		                array(
 		                    "param_name"  => "meta_padding",
 		                    "type"        => "textfield-responsive",
@@ -12120,6 +13468,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_padding2",
@@ -12131,6 +13480,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "13px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_bottom_padding.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12150,6 +13500,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_info_border_size2",
@@ -12161,6 +13512,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_bottom_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_info_border_style",
@@ -12175,6 +13527,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_border_style.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12185,7 +13538,32 @@ class td_config {
 		                    "value"       => '#eaeaea',
 		                    "description" => '',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_border_color.png",
 		                ),
+                        array(
+                            "param_name"  => "meta_info_border_radius",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Top info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name"  => "meta_info_border_radius2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Bottom info border radius',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -12206,6 +13584,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_title_position.png",
 		                ),
 
 
@@ -12222,6 +13601,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_info_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "info_space",
@@ -12233,6 +13613,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_info_space.png",
 		                ),
 
 		                array(
@@ -12245,6 +13626,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 6px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12264,8 +13646,9 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
                         ),
-                        array(
+		                array(
 		                    "param_name"  => "show_excerpt",
 		                    "type"        => "dropdown-responsive",
 		                    "value"       => array(
@@ -12277,6 +13660,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_show_excerpt.png",
 		                ),
 		                array(
 		                    "param_name"  => "art_excerpt_pos",
@@ -12290,6 +13674,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "art_excerpt",
@@ -12301,6 +13686,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "20px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_excerpt_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "excerpt_inline",
@@ -12310,7 +13696,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_inline_excerpt_title.png",
 		                ),
 		                array(
 		                    "param_name"  => "meta_space",
@@ -12322,6 +13709,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_container_space.png",
 		                ),
                         array(
                             "param_name" => "separator",
@@ -12339,20 +13727,22 @@ class td_config {
                                 'Hidden' => 'none',
                             ),
                             "heading"     => 'Show audio player',
-                            "description" => "",
+                            "description" => "This will hide the audio player responsive",
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "hide_audio",
                             "type"        => "checkbox",
                             "value"       => '',
-                            "heading"     => "Hide audio player",
-                            "description" => "",
+                            "heading"     => "Remove audio player",
+                            "description" => "This will remove the audio player from code",
                             "holder"      => "div",
                             "class"       => "",
-                            "group"       => 'Layout'
+                            "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_show.png",
                         ),
                         array(
                             "param_name"  => "art_audio_pos",
@@ -12366,6 +13756,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_position.png",
                         ),
                         array(
                             "param_name"  => "art_audio",
@@ -12377,6 +13768,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_space.png",
                         ),
                         array(
                             'param_name'  => 'art_audio_size',
@@ -12389,6 +13781,7 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_audio_size.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -12410,6 +13803,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category",
@@ -12424,6 +13818,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_margin",
@@ -12435,6 +13830,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_padding",
@@ -12446,6 +13842,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "3px 6px 4px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "modules_category_border",
@@ -12457,6 +13854,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 0px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
 		                ),
 		                array(
 		                    'param_name'  => 'modules_category_radius',
@@ -12469,6 +13867,7 @@ class td_config {
 		                    'range_max'   => '100',
 		                    'range_step'  => '1',
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12490,6 +13889,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo",
@@ -12499,7 +13899,8 @@ class td_config {
 		                    "description" => "",
 		                    "holder"      => "div",
 		                    "class"       => "",
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_size",
@@ -12511,6 +13912,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "20",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_size.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_space",
@@ -12522,6 +13924,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "6",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "author_photo_radius",
@@ -12533,6 +13936,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "50%",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_photo_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12554,32 +13958,8 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
 		                ),
-		                array(
-		                    "param_name"  => "show_review",
-		                    "type"        => "dropdown-responsive",
-		                    "value"       => array(
-		                        'Show' => 'inline-block',
-		                        'Hide' => 'none',
-		                    ),
-		                    "heading"     => 'Show review stars',
-		                    "description" => "",
-		                    "holder"      => "div",
-		                    "class"       => "tdc-dropdown-big",
-		                    "group"       => "Layout",
-		                ),
-                        array(
-                            'param_name'  => 'review_size',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
-                        ),
 		                array(
 		                    "param_name"  => "show_com",
 		                    "type"        => "dropdown-responsive",
@@ -12592,7 +13972,67 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
 		                ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Review stars',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Layout'
+                        ),
+                        array(
+                            "param_name"  => "show_review",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -12613,6 +14053,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_show.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_pos",
@@ -12626,6 +14067,7 @@ class td_config {
 		                    "holder"      => "div",
 		                    "class"       => "tdc-dropdown-big",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_position.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_title",
@@ -12637,6 +14079,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "Read more",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_text.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_margin",
@@ -12648,6 +14091,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "0px 0px 20px 0px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_padding",
@@ -12659,6 +14103,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "10px 15px",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_border_width",
@@ -12670,6 +14115,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "btn_radius",
@@ -12681,6 +14127,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12700,6 +14147,7 @@ class td_config {
 		                    "holder" => "div",
 		                    "class" => "tdc-textfield-small",
 		                    'group'      => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_space.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_padding",
@@ -12711,6 +14159,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-big",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_padding.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_width",
@@ -12722,6 +14171,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "1",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_border_radius",
@@ -12733,6 +14183,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_border_radius.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12747,7 +14198,8 @@ class td_config {
 		                    'heading' => 'Prev icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    'param_name' => 'next_tdicon',
@@ -12755,7 +14207,8 @@ class td_config {
 		                    'heading' => 'Next icon',
 		                    'class' => 'tdc-textfield-small',
 		                    'value' => '',
-		                    "group"       => 'Layout'
+		                    "group"       => 'Layout',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow.png",
 		                ),
 		                array(
 		                    "param_name"  => "pag_icons_size",
@@ -12767,6 +14220,7 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "",
 		                    "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_arrow_size.png",
 		                ),
 
 		                array(
@@ -12778,9 +14232,9 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ajax', false, 'Ajax categories', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_ajax.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_more', false, 'Load more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_load_more.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -12791,11 +14245,11 @@ class td_config {
 		                    "group" => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style' ),
-		            td_config_helper::get_map_block_font_array( 'f_btn', false, 'Article read more button', 'Style' ),
+		            td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_ex', false, 'Article excerpt', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_excerpt.png', '' ),
+		            td_config_helper::get_map_block_font_array( 'f_btn', false, 'Article read more button', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_read.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
 
@@ -12825,6 +14279,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12834,7 +14289,7 @@ class td_config {
 		                    "group"       => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_shadow.png', '' ),
 		            array(
 		                array(
 		                    "param_name" => "separator",
@@ -12852,6 +14307,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12862,6 +14318,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -12880,6 +14337,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12888,16 +14346,6 @@ class td_config {
 		                    "heading"     => 'Article title text hover',
 		                    "param_name"  => "title_txt_hover",
 		                    "value"       => '',
-		                    "description" => '',
-		                    "group"       => 'Style',
-		                ),
-		                array(
-		                    "type"        => "colorpicker",
-		                    "holder"      => "div",
-		                    "class"       => "",
-		                    "heading"     => 'Hover underline color',
-		                    "param_name"  => "all_underline_color",
-		                    "value"       => '#000',
 		                    "description" => '',
 		                    "group"       => 'Style',
 		                ),
@@ -12911,7 +14359,19 @@ class td_config {
 		                    "class"       => "tdc-textfield-small",
 		                    "placeholder" => "0",
 		                    "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
 		                ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
+                        ),
 		                array(
 		                    "param_name" => "separator",
 		                    "type"       => "text_separator",
@@ -12929,6 +14389,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12949,6 +14410,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12969,6 +14431,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -12997,6 +14460,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13017,6 +14481,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13027,6 +14492,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_excerpt.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13037,6 +14503,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13047,6 +14514,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
 		                ),
 		                array(
 		                    "param_name" => "separator",
@@ -13056,7 +14524,7 @@ class td_config {
 		                    "group"       => 'Style',
 		                ),
 		            ),
-		            td_config_helper::get_map_block_shadow_array('shadow_m', 'Meta info shadow', 0, 0, 0, "Style" ),
+		            td_config_helper::get_map_block_shadow_array('shadow_m', 'Meta info shadow', 0, 0, 0, "Style", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_meta_shadow.png', '' ),
 		            array(
                         array(
                             "param_name" => "separator",
@@ -13075,6 +14543,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_buttons.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -13085,6 +14554,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_time.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -13095,6 +14565,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_bar.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -13105,6 +14576,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_audio_progress.png",
                         ),
 		                array(
 		                    "param_name" => "separator",
@@ -13123,6 +14595,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13143,6 +14616,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13163,6 +14637,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_border_color.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13191,6 +14666,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_text.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13211,6 +14687,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_bg.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13231,6 +14708,7 @@ class td_config {
 		                    "value"       => '',
 		                    "description" => '',
 		                    "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_pagination_color_border.png",
 		                ),
 		                array(
 		                    "type"        => "colorpicker",
@@ -13654,6 +15132,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -13685,6 +15180,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_container.png",
                         ),
                         array(
                             "param_name"  => "modules_gap",
@@ -13696,6 +15192,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "20",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -13718,6 +15215,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment',
@@ -13730,6 +15228,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_height",
@@ -13741,6 +15240,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon",
@@ -13752,6 +15252,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos",
@@ -13798,6 +15299,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -13824,6 +15326,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin",
@@ -13835,6 +15338,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding",
@@ -13846,6 +15350,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "22px 20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -13864,6 +15369,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd",
@@ -13875,6 +15381,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -13895,6 +15402,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name"  => "modules_category_margin",
@@ -13906,6 +15414,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding",
@@ -13917,6 +15426,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "modules_cat_border",
@@ -13928,6 +15438,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_border.png",
                         ),
                         array(
                             'param_name'  => 'modules_category_radius',
@@ -13940,6 +15451,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_radius.png",
                         ),
                         array(
                             "param_name"  => "show_cat",
@@ -13953,6 +15465,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -13973,6 +15486,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date",
@@ -13986,31 +15500,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding",
@@ -14025,6 +15515,64 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -14032,9 +15580,9 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title', true, 'Article title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat', false, 'Article category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta', false, 'Article meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -14119,6 +15667,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -14146,6 +15695,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14168,16 +15718,6 @@ class td_config {
                             "group"       => 'Style',
                         ),
                         array(
-                            "type"        => "colorpicker",
-                            "holder"      => "div",
-                            "class"       => "",
-                            "heading"     => 'Hover underline color',
-                            "param_name"  => "all_underline_color",
-                            "value"       => '#000',
-                            "description" => '',
-                            "group"       => 'Style',
-                        ),
-                        array(
                             "param_name"  => "all_underline_height",
                             "type"        => "textfield-responsive",
                             "value"       => '',
@@ -14187,6 +15727,18 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "0",
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
                         ),
                         array(
                             "param_name"  => "title_shadow",
@@ -14214,6 +15766,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14234,6 +15787,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14254,6 +15808,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_border.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14281,6 +15836,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14301,6 +15857,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -14679,6 +16236,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -14696,6 +16270,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -14710,6 +16301,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "4",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -14725,6 +16317,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -14763,6 +16356,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -14786,6 +16380,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -14798,6 +16393,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -14809,6 +16405,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "70",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -14820,6 +16417,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "400px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -14831,6 +16429,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -14862,6 +16461,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -14873,6 +16473,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -14884,6 +16485,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "22px 20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -14902,6 +16504,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -14913,6 +16516,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -14931,6 +16535,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -14942,6 +16547,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -14955,6 +16561,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -14975,6 +16582,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -14988,6 +16596,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -15001,6 +16628,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -15013,17 +16653,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -15048,6 +16690,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -15060,6 +16703,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -15071,6 +16715,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "30",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -15082,6 +16727,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "198px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -15093,6 +16739,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -15124,6 +16771,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -15135,6 +16783,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -15146,6 +16795,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "11px 17px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -15164,6 +16814,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -15175,6 +16826,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -15193,6 +16845,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -15204,6 +16857,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -15217,6 +16871,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -15237,6 +16892,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -15250,31 +16906,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -15289,6 +16921,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -15296,12 +16987,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -15395,6 +17086,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -15422,6 +17114,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -15444,16 +17137,6 @@ class td_config {
                             "group"       => 'Style',
                         ),
                         array(
-                            "type"        => "colorpicker",
-                            "holder"      => "div",
-                            "class"       => "",
-                            "heading"     => 'Hover underline color',
-                            "param_name"  => "all_underline_color",
-                            "value"       => '#000',
-                            "description" => '',
-                            "group"       => 'Style',
-                        ),
-                        array(
                             "param_name"  => "all_underline_height",
                             "type"        => "textfield-responsive",
                             "value"       => '',
@@ -15463,6 +17146,18 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "0",
                             "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/style_underline.png",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Hover underline color',
+                            "param_name"  => "all_underline_color",
+                            "value"       => '#000',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_underline_color.png",
                         ),
                         array(
                             "param_name"  => "title_shadow",
@@ -15490,6 +17185,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -15510,6 +17206,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -15537,6 +17234,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -15557,6 +17255,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -15930,6 +17629,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -15947,6 +17663,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -15961,6 +17694,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "4",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -15976,6 +17710,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -16014,6 +17749,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16037,6 +17773,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -16049,6 +17786,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -16060,6 +17798,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "70",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -16071,6 +17810,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "482px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -16082,6 +17822,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -16113,6 +17854,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -16124,6 +17866,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -16135,6 +17878,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "22px 20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16153,6 +17897,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -16164,6 +17909,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16182,6 +17928,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -16193,6 +17940,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -16206,6 +17954,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16226,6 +17975,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -16239,6 +17989,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -16252,6 +18021,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -16264,17 +18046,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -16299,6 +18083,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -16311,6 +18096,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -16322,6 +18108,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "30",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -16333,6 +18120,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "158px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -16344,6 +18132,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -16375,6 +18164,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -16386,6 +18176,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -16397,6 +18188,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "11px 15px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16415,6 +18207,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -16426,6 +18219,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16444,6 +18238,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -16455,6 +18250,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -16468,6 +18264,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -16488,6 +18285,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -16501,31 +18299,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -16540,6 +18314,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -16547,12 +18380,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -16637,6 +18470,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -16664,6 +18498,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -16711,6 +18546,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -16731,6 +18567,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -16758,6 +18595,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -16778,6 +18616,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -17149,6 +18988,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17166,6 +19022,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -17180,6 +19053,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "10",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -17195,6 +19069,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -17233,6 +19108,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17256,6 +19132,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -17268,6 +19145,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -17279,6 +19157,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -17290,6 +19169,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "450px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -17301,6 +19181,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -17332,6 +19213,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -17343,6 +19225,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -17354,6 +19237,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "22px 20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17372,6 +19256,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -17383,6 +19268,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17401,6 +19287,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -17412,6 +19299,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -17425,6 +19313,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17445,6 +19334,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -17458,6 +19348,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -17471,6 +19380,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -17483,17 +19405,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -17518,6 +19442,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -17530,6 +19455,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -17541,6 +19467,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -17552,6 +19479,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "220px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -17563,6 +19491,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -17594,6 +19523,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -17605,6 +19535,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -17616,6 +19547,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "16px 19px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17634,6 +19566,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -17645,6 +19578,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17663,6 +19597,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -17674,6 +19609,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -17687,6 +19623,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -17707,6 +19644,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -17720,31 +19658,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -17759,6 +19673,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -17766,12 +19739,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -17847,6 +19820,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -17874,6 +19848,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -17921,6 +19896,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -17941,6 +19917,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -17968,6 +19945,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -17988,6 +19966,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -18394,6 +20373,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18411,6 +20407,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18428,6 +20441,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf8_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -18442,6 +20472,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "4",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -18457,6 +20488,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -18495,6 +20527,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18518,6 +20551,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -18530,6 +20564,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -18541,6 +20576,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -18552,6 +20588,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "450px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -18563,6 +20600,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -18594,6 +20632,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -18605,6 +20644,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -18616,6 +20656,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "22px 20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18634,6 +20675,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -18645,6 +20687,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18663,6 +20706,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -18674,6 +20718,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -18687,6 +20732,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18707,6 +20753,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -18720,6 +20767,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -18733,6 +20799,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -18745,17 +20824,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -18780,6 +20861,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -18792,6 +20874,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -18803,6 +20886,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -18814,6 +20898,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "254px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -18825,6 +20910,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -18856,6 +20942,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -18867,6 +20954,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -18878,6 +20966,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "14px 19px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18896,6 +20985,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -18907,6 +20997,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18925,6 +21016,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -18936,6 +21028,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -18949,6 +21042,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -18969,6 +21063,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -18982,6 +21077,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review2",
@@ -18995,6 +21109,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size2',
@@ -19007,17 +21134,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding2",
+                            "param_name"  => "review_distance2",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -19042,6 +21171,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment3',
@@ -19054,6 +21184,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width3",
@@ -19065,6 +21196,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "25",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height3",
@@ -19076,6 +21208,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "192px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon3",
@@ -19087,6 +21220,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "30",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos3",
@@ -19118,6 +21252,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin3",
@@ -19129,6 +21264,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding3",
@@ -19140,6 +21276,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "11px 15px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -19158,6 +21295,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd3",
@@ -19169,6 +21307,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -19187,6 +21326,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding3",
@@ -19198,6 +21338,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat3",
@@ -19211,6 +21352,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -19231,6 +21373,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date3",
@@ -19244,6 +21387,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review3",
@@ -19257,6 +21419,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size3',
@@ -19269,17 +21444,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding3",
+                            "param_name"  => "review_distance3",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -19291,15 +21468,15 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 3 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 3 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 3 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 3 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 3 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 3 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -19384,6 +21561,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -19411,6 +21589,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -19458,6 +21637,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -19478,6 +21658,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -19505,6 +21686,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -19525,6 +21707,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -19939,6 +22122,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -19956,6 +22156,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -19970,6 +22187,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "10",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -19985,6 +22203,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -20023,6 +22242,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20046,6 +22266,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -20058,6 +22279,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -20069,6 +22291,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "25",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -20080,6 +22303,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "195px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -20091,6 +22315,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -20122,6 +22347,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -20133,6 +22359,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -20144,6 +22371,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "13px 10px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20162,6 +22390,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -20173,6 +22402,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20191,6 +22421,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -20202,6 +22433,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -20215,6 +22447,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20235,6 +22468,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -20248,6 +22482,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -20261,6 +22514,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -20273,17 +22539,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -20304,6 +22572,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "80",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height3",
@@ -20315,6 +22584,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "165px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon3",
@@ -20326,6 +22596,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos3",
@@ -20357,6 +22628,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin3",
@@ -20368,6 +22640,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding3",
@@ -20379,6 +22652,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "16px 15px 11px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20397,6 +22671,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd3",
@@ -20408,6 +22683,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20426,6 +22702,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding3",
@@ -20437,6 +22714,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat3",
@@ -20450,6 +22728,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20470,6 +22749,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date3",
@@ -20483,6 +22763,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review3",
@@ -20496,6 +22795,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size3',
@@ -20508,17 +22820,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding3",
+                            "param_name"  => "review_distance3",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -20543,6 +22857,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -20555,6 +22870,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -20566,6 +22882,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -20577,6 +22894,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "400px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -20588,6 +22906,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -20619,6 +22938,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -20630,6 +22950,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -20641,6 +22962,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20659,6 +22981,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -20670,6 +22993,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20688,6 +23012,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -20699,6 +23024,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -20712,6 +23038,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -20732,6 +23059,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -20745,31 +23073,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -20784,6 +23088,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -20791,15 +23154,15 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 1 title - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 1 category tag - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 1 meta info - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 1 title - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 1 category tag - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 1 meta info - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -20893,6 +23256,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -20920,6 +23284,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -20967,6 +23332,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -20987,6 +23353,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -21014,6 +23381,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -21034,6 +23402,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -21383,6 +23752,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21400,6 +23786,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -21414,6 +23817,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "2",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -21429,6 +23833,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -21467,6 +23872,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21490,6 +23896,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -21502,6 +23909,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -21513,6 +23921,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -21524,6 +23933,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "400px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -21535,6 +23945,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -21566,6 +23977,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -21577,6 +23989,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -21588,6 +24001,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21606,6 +24020,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -21617,6 +24032,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21635,6 +24051,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -21646,6 +24063,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -21659,6 +24077,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21679,6 +24098,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -21692,6 +24112,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -21705,6 +24144,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -21717,17 +24169,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -21752,6 +24206,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -21764,6 +24219,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -21775,6 +24231,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "25",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -21786,6 +24243,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "400px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -21797,6 +24255,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -21828,6 +24287,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -21839,6 +24299,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -21850,6 +24311,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21868,6 +24330,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -21879,6 +24342,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21897,6 +24361,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -21908,6 +24373,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -21921,6 +24387,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -21941,6 +24408,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -21954,31 +24422,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -21993,6 +24437,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -22000,12 +24503,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -22081,6 +24584,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -22108,6 +24612,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -22155,6 +24660,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -22175,6 +24681,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -22202,6 +24709,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -22222,6 +24730,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -22599,6 +25108,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -22616,6 +25142,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -22630,6 +25173,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "2",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -22645,6 +25189,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -22683,6 +25228,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -22706,6 +25252,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -22718,6 +25265,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -22729,6 +25277,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "30",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -22740,6 +25289,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "400px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -22751,6 +25301,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -22782,6 +25333,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -22793,6 +25345,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -22804,6 +25357,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px 19px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -22822,6 +25376,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -22833,6 +25388,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -22851,6 +25407,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -22862,6 +25419,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -22875,6 +25433,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -22895,6 +25454,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -22908,6 +25468,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -22921,6 +25500,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -22933,17 +25525,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -22968,6 +25562,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -22980,6 +25575,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -22991,6 +25587,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -23002,6 +25599,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "199px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -23013,6 +25611,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -23044,6 +25643,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -23055,6 +25655,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -23066,6 +25667,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "14px 19px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -23084,6 +25686,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -23095,6 +25698,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -23113,6 +25717,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 10px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -23124,6 +25729,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -23137,6 +25743,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -23157,6 +25764,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -23170,31 +25778,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -23209,6 +25793,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -23216,12 +25859,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -23306,6 +25949,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -23333,6 +25977,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -23380,6 +26025,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -23400,6 +26046,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -23427,6 +26074,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -23447,6 +26095,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -23829,6 +26478,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -23846,6 +26512,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -23860,6 +26543,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "2",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -23875,6 +26559,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -23913,6 +26598,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -23936,6 +26622,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -23948,6 +26635,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -23959,6 +26647,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "50",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -23970,6 +26659,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "370px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -23981,6 +26671,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -24012,6 +26703,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -24023,6 +26715,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -24034,6 +26727,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24052,6 +26746,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -24063,6 +26758,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24081,6 +26777,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -24092,6 +26789,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -24105,6 +26803,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24125,6 +26824,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -24138,6 +26838,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -24151,6 +26870,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -24163,17 +26895,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -24198,6 +26932,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -24210,6 +26945,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -24221,6 +26957,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "20",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -24232,6 +26969,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "150px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -24243,6 +26981,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -24274,6 +27013,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -24285,6 +27025,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -24296,6 +27037,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "10px 14px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24314,6 +27056,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -24325,6 +27068,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24343,6 +27087,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -24354,6 +27099,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "1px 5px 1px 5px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -24367,6 +27113,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -24387,6 +27134,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -24400,31 +27148,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -24439,6 +27163,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -24446,12 +27229,12 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -24545,6 +27328,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -24572,6 +27356,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -24619,6 +27404,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -24639,6 +27425,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -24666,6 +27453,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -24686,6 +27474,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -25083,6 +27872,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf6_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25100,6 +27906,23 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-textfield-small",
                             "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mf7_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::td_block_big_grid_params(),
@@ -25114,6 +27937,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "10",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_modules_gap.png",
                         ),
                         array(
                             "param_name" => "meta_info_horiz",
@@ -25129,6 +27953,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -25167,6 +27992,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_category_tag_position.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25190,6 +28016,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment1',
@@ -25202,6 +28029,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width1",
@@ -25213,6 +28041,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "33.33",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height1",
@@ -25224,6 +28053,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "230px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon1",
@@ -25235,6 +28065,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos1",
@@ -25266,6 +28097,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin1",
@@ -25277,6 +28109,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding1",
@@ -25288,6 +28121,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "20px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25306,6 +28140,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 9px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd1",
@@ -25317,6 +28152,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25335,6 +28171,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding1",
@@ -25346,6 +28183,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat1",
@@ -25359,6 +28197,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25379,6 +28218,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date1",
@@ -25392,6 +28232,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review1",
@@ -25405,6 +28264,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space1",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size1',
@@ -25417,17 +28289,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding1",
+                            "param_name"  => "review_distance1",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -25448,6 +28322,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "80",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height3",
@@ -25459,6 +28334,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "165px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon3",
@@ -25470,6 +28346,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos3",
@@ -25501,6 +28378,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin3",
@@ -25512,6 +28390,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding3",
@@ -25523,6 +28402,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "16px 15px 11px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25541,6 +28421,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd3",
@@ -25552,6 +28433,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25570,6 +28452,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 7px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding3",
@@ -25581,6 +28464,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "3px 6px 3px 6px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat3",
@@ -25594,6 +28478,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25614,6 +28499,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date3",
@@ -25627,6 +28513,25 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
+                        ),
+                        array(
+                            "param_name"  => "auth_date_padding3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Author & date padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0px 0px 0px 0px",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
                         ),
                         array(
                             "param_name"  => "show_review3",
@@ -25640,6 +28545,19 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space3",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
                         ),
                         array(
                             'param_name'  => 'review_size3',
@@ -25652,17 +28570,19 @@ class td_config {
                             'range_max'   => '10',
                             'range_step'  => '0.5',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
                         ),
                         array(
-                            "param_name"  => "auth_date_padding3",
+                            "param_name"  => "review_distance3",
                             "type"        => "textfield-responsive",
                             "value"       => '',
-                            "heading"     => 'Author & date padding',
+                            "heading"     => 'Distance between rating stars',
                             "description" => "",
                             "holder"      => "div",
-                            "class"       => "tdc-textfield-big",
-                            "placeholder" => "0px 0px 0px 0px",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
                             "group"       => "Layout",
+                            "info_img" => "",
                         ),
 
                         array(
@@ -25687,6 +28607,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment2',
@@ -25699,6 +28620,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_width2",
@@ -25710,6 +28632,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "25",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_width.png",
                         ),
                         array(
                             "param_name"  => "image_height2",
@@ -25721,6 +28644,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "175px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name"  => "video_icon2",
@@ -25732,6 +28656,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "40",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_video_icon_size.png",
                         ),
                         array(
                             "param_name"  => "video_icon_pos2",
@@ -25763,6 +28688,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "100%",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_meta_info_width.png",
                         ),
                         array(
                             "param_name"  => "meta_margin2",
@@ -25774,6 +28700,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_margin.png",
                         ),
                         array(
                             "param_name"  => "meta_padding2",
@@ -25785,6 +28712,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "10px 14px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25803,6 +28731,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name"  => "art_title_padd2",
@@ -25814,6 +28743,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 0px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_top_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25832,6 +28762,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_spacing.png",
                         ),
                         array(
                             "param_name"  => "modules_category_padding2",
@@ -25843,6 +28774,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "1px 5px 1px 5px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_padding.png",
                         ),
                         array(
                             "param_name"  => "show_cat2",
@@ -25856,6 +28788,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -25876,6 +28809,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date2",
@@ -25889,31 +28823,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
-                        ),
-                        array(
-                            "param_name"  => "show_review2",
-                            "type"        => "dropdown-responsive",
-                            "value"       => array(
-                                'Show' => 'inline-block',
-                                'Hide' => 'none',
-                            ),
-                            "heading"     => 'Show review stars',
-                            "description" => "",
-                            "holder"      => "div",
-                            "class"       => "tdc-dropdown-big",
-                            "group"       => "Layout",
-                        ),
-                        array(
-                            'param_name'  => 'review_size2',
-                            'type'        => 'range-responsive',
-                            'value'       => '2.5',
-                            'heading'     => 'Review stars size',
-                            'description' => '',
-                            'class'       => 'tdc-textfield-small',
-                            'range_min'   => '0',
-                            'range_max'   => '10',
-                            'range_step'  => '0.5',
-                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "auth_date_padding2",
@@ -25928,6 +28838,65 @@ class td_config {
                         ),
                         array(
                             "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_review2",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show review stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_show.png",
+                        ),
+                        array(
+                            "param_name"  => "review_space2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Review stars space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+                        array(
+                            'param_name'  => 'review_size2',
+                            'type'        => 'range-responsive',
+                            'value'       => '2.5',
+                            'heading'     => 'Review stars size',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '10',
+                            'range_step'  => '0.5',
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_size.png",
+                        ),
+                        array(
+                            "param_name"  => "review_distance2",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Distance between rating stars',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "0",
+                            "group"       => "Layout",
+                            "info_img" => "",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
                             "type" => "text_separator",
                             'heading' => 'Module fonts',
                             "value" => "",
@@ -25935,15 +28904,15 @@ class td_config {
                             "group" => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 1 title - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 1 category tag - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 1 meta info - mobile', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style' ),
-                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title1', true, 'Module 1 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat1', false, 'Module 1 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta1', false, 'Module 1 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title3', false, 'Module 1 title - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat3', false, 'Module 1 category tag - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta3', false, 'Module 1 meta info - mobile', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title2', false, 'Module 2 title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_cat2', false, 'Module 2 category tag', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_cat.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta2', false, 'Module 2 meta info', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_meta.png', '' ),
                     td_config_helper::mix_blend(),
                     td_config_helper::image_filters(),
                     array(
@@ -26037,6 +29006,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_background.png",
                         ),
                         array(
                             "param_name"  => "meta_shadow",
@@ -26064,6 +29034,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -26111,6 +29082,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -26131,6 +29103,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -26158,6 +29131,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -26178,6 +29152,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -26210,6 +29185,18 @@ class td_config {
         /**
          * misc blocs
          */
+        td_api_block::add('td_block_mega_menu',
+            array(
+                'map_in_visual_composer' => false,
+                'file' => TDC_PATH_LEGACY  . '/includes/shortcodes/td_block_mega_menu.php',
+
+                // key added to supply 'show_child_cat' differently for each theme
+                'render_atts' => array(
+                    'show_child_cat' => 30,
+                )
+            )
+        );
+
         td_api_block::add('td_block_trending_now',
             array(
                 'map_in_visual_composer' => true,
@@ -26266,6 +29253,16 @@ class td_config {
                             "class" => "tdc-dropdown-big"
                         ),
                         array(
+                            "param_name"  => "timer",
+                            "type"        => "textfield",
+                            "value"       => 3,
+                            "heading"     => 'Timer',
+                            "description" => "Add the time to slide (in seconds)",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '3',
+                        ),
+                        array(
                             "param_name" => "style",
                             "type" => "dropdown",
                             "value" => array('Default' => '', 'Style 2' => 'style2'),
@@ -26273,6 +29270,40 @@ class td_config {
                             "description" => "Style of the `Trending Now` box",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Content length',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name"  => "mt_tl",
+                            "type"        => "textfield",
+                            "value"       => '',
+                            "heading"     => 'Title length',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => '25',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_length.png",
+                        ),
+                        array(
+                            "param_name" => "mt_title_tag",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Default - H3' => '',
+                                'H1' => 'h1',
+                                'H2' => 'h2',
+                                'H4' => 'h4',
+                                'Paragraph' => 'p'
+                            ),
+                            "heading" => 'Title tag (SEO)',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                         ),
                     ),
                     self::get_map_filter_array(),
@@ -26285,7 +29316,8 @@ class td_config {
                             "param_name" => "header_text_color",
                             "value" => '',
                             "description" => 'Optional - Choose a custom title text color for this block',
-                            'group' => 'Style'
+                            'group' => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_text_color.png",
                         ),
                         array(
                             "type" => "colorpicker",
@@ -26295,7 +29327,8 @@ class td_config {
                             "param_name" => "header_color",
                             "value" => '',
                             "description" => 'Optional - Choose a custom title background color for this block',
-                            'group' => 'Style'
+                            'group' => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/title_background_color.png",
                         ),
                         array(
                             "type" => "colorpicker",
@@ -26345,7 +29378,7 @@ class td_config {
                             'group' => 'Style'
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_title', true, 'Block title', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_title', true, 'Block title', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_article_title.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_article', false, 'Articles title', 'Style' ),
                     array (
                         array (
@@ -27083,7 +30116,7 @@ class td_config {
                             "group"       => "",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_titles', false, 'Custom titles text' ),
                     array(
                         array(
@@ -27141,6 +30174,21 @@ class td_config {
                             "group" => 'Images'
                         ),
                         array(
+                            "param_name" => "url_rel_item0",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Disable' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noopener' => 'noopener',
+                                'Noreferrer' => 'noreferrer'
+                            ),
+                            "heading" => "Set rel attribute",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "group" => 'Images'
+                        ),
+                        array(
                             "param_name" => "horizontal_separator_item1",
                             "type" => "horizontal_separator",
                             "value" => "",
@@ -27185,6 +30233,21 @@ class td_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
+                            "group" => 'Images'
+                        ),
+                        array(
+                            "param_name" => "url_rel_item1",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Disable' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noopener' => 'noopener',
+                                'Noreferrer' => 'noreferrer'
+                            ),
+                            "heading" => "Set rel attribute",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
                             "group" => 'Images'
                         ),
                         array(
@@ -27235,6 +30298,21 @@ class td_config {
                             "group" => 'Images'
                         ),
                         array(
+                            "param_name" => "url_rel_item2",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Disable' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noopener' => 'noopener',
+                                'Noreferrer' => 'noreferrer'
+                            ),
+                            "heading" => "Set rel attribute",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "group" => 'Images'
+                        ),
+                        array(
                             "param_name" => "horizontal_separator_item3",
                             "type" => "horizontal_separator",
                             "value" => "",
@@ -27279,6 +30357,21 @@ class td_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
+                            "group" => 'Images'
+                        ),
+                        array(
+                            "param_name" => "url_rel_item3",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Disable' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noopener' => 'noopener',
+                                'Noreferrer' => 'noreferrer'
+                            ),
+                            "heading" => "Set rel attribute",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
                             "group" => 'Images'
                         ),
                         array (
@@ -27425,7 +30518,7 @@ class td_config {
                             "group"       => "",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_name', false, 'Author name' ),
                     td_config_helper::get_map_block_font_array( 'f_descr', false, 'Description text' ),
                     td_config_helper::mix_blend(),
@@ -27636,7 +30729,7 @@ class td_config {
                             "group"       => "",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_cat', false, 'Category name text' ),
                     td_config_helper::get_map_block_font_array( 'f_posts', false, 'Category posts count text' ),
                     array(
@@ -28014,7 +31107,7 @@ class td_config {
                             "group"       => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_name', false, 'Item name text', 'Style' ),
                     td_config_helper::get_map_block_font_array( 'f_posts', false, 'Item posts count text', 'Style' ),
                     array(
@@ -28305,7 +31398,7 @@ class td_config {
                             "group"       => 'Style',
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_name', false, 'Item name text', 'Style' ),
                     array(
                         array(
@@ -28425,6 +31518,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_size.png",
                         ),
                         array(
                             'param_name'  => 'image_alignment',
@@ -28437,6 +31531,7 @@ class td_config {
                             'range_max'   => '100',
                             'range_step'  => '1',
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_v_alignment.png",
                         ),
                         array(
                             "param_name"  => "image_height",
@@ -28448,6 +31543,7 @@ class td_config {
                             "class"       => "tdc-textfield-small",
                             "placeholder" => "580",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_image_height.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28471,6 +31567,7 @@ class td_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
                         ),
                         array(
                             "param_name" => "meta_info_vert",
@@ -28497,6 +31594,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "0 22px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28515,6 +31613,7 @@ class td_config {
                             "class"       => "tdc-textfield-big",
                             "placeholder" => "5px 0px 5px 0px",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_article_title_space.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28569,6 +31668,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28589,6 +31689,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_show.png",
                         ),
                         array(
                             "param_name"  => "show_date",
@@ -28602,6 +31703,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "show_com",
@@ -28615,6 +31717,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_comment_show.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28676,6 +31779,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
                         ),
                         array(
                             "param_name" => "color_overlay_h",
@@ -28685,6 +31789,7 @@ class td_config {
                             "value"      => "",
                             "class"      => "",
                             "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -28720,6 +31825,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_bg.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -28730,6 +31836,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_cat_color_text.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -28767,6 +31874,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_auth_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -28787,6 +31895,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_color.png",
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -29010,7 +32119,7 @@ class td_config {
                 ),
                 "params" => array_merge(
                     self::get_map_block_general_array(),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     array(
                         array(
                             "param_name" => "separator",
@@ -29026,11 +32135,13 @@ class td_config {
                                 'H2' => 'h2',
                                 'H3' => 'h3',
                                 'H4 - Default' => 'h4',
+                                'Div' => 'div'
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
+                            "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
                         ),
                         array(
                             "param_name" => "content_align_horizontal",
@@ -29342,14 +32453,6 @@ class td_config {
                             "description" => '',
                             "group"      => "Style"
                         ),
-                        array(
-                            "param_name" => "separator",
-                            "type"       => "text_separator",
-                            'heading'    => 'Fonts',
-                            "value"      => "",
-                            "class"      => "",
-                            "group"      => "Style"
-                        ),
                         array (
                             'param_name' => 'css',
                             'value' => '',
@@ -29613,10 +32716,42 @@ class td_config {
             )
         );
 
+		// get instagram connected personal/business accounts saved data
+	    $td_instagram_personal_account = td_options::get_array( 'td_instagram_connected_account'); // td_options personal account
+	    $td_instagram_business_accounts = td_options::get_array( 'td_instagram_business_accounts'); // td_options business accounts
 
-	    $instagram_access_settings = td_options::get_array( 'td_instagram_connected_account');
-	    $connected_account = isset( $instagram_access_settings['connected_account'] ) ? $instagram_access_settings['connected_account'] : array();
-	    $is_account_connected = isset( $instagram_access_settings['connected_account'] );
+	    // personal connected account
+	    $personal_connected_account = $td_instagram_personal_account['connected_account'] ?? array();
+
+	    // business connected accounts
+	    $business_connected_accounts = !empty($td_instagram_business_accounts) ? $td_instagram_business_accounts : array();
+	    $business_connected_accounts_list = implode( ',', array_column( $business_connected_accounts, 'name' ) );
+
+	    $is_personal_account_connected = !empty( $personal_connected_account );
+	    $are_business_accounts_connected = !empty( $business_connected_accounts );
+
+	    $instagram_account_sources = array(
+	    	'Instagram ID' => 'ig_id'
+	    );
+
+	    // personal connected account
+	    $connected_account_personal = $td_instagram_personal_account['connected_account'] ?? array();
+	    if ( !empty( $connected_account_personal ) ) {
+		    $instagram_account_sources['--personal account--'] = '__';
+		    $instagram_account_sources[$connected_account_personal['username']] = 'ig_personal';
+	    }
+
+	    // business connected accounts
+	    $connected_accounts_business = !empty($td_instagram_business_accounts) ? $td_instagram_business_accounts : array();
+	    if ( !empty( $connected_accounts_business ) ) {
+		    $instagram_account_sources['--business accounts--'] = '__';
+		    foreach ( $connected_accounts_business as $account ) {
+		    	if ( isset( $account['name'] ) && isset( $account['username'] ) ) {
+				    $instagram_account_sources[$account['name']] = 'ig_business_' . $account['username'];
+			    }
+		    }
+	    }
+
         td_api_block::add('td_block_instagram',
             array(
                 'map_in_visual_composer' => true,
@@ -29644,17 +32779,37 @@ class td_config {
 		                    "type" => "textfield",
 		                    "value" => '',
 		                    "heading" => "Instagram ID",
-		                    "description" => 'Enter the ID as it appears after the instagram url (ex. http://www.instagram.com/myID)',
+		                    "description" => 'Enter the ID as it appears after the instagram url (ex. https://www.instagram.com/myID)',
 		                    "holder" => "div",
 		                    "class" => "tdc-textfield-extrabig",
 		                    'group' => 'Instagram'
 	                    ),
                         array(
-                            "param_name" => "instagram_account",
+                            "param_name" => "instagram_account_source",
+                            "type" => "dropdown",
+                            "value" => $instagram_account_sources,
+                            "heading" => "Instagram Account Source:",
+                            "description" => 'This option sets the source type/account to be used as source to pull feeds.',
+                            "holder" => "div",
+                            "class" => "",
+                            'group' => 'Instagram'
+                        ),
+                        array(
+                            "param_name" => "instagram_account_personal",
                             "type" => "custom",
-                            "value" => $is_account_connected ? 'Connected as <b>' . $connected_account['username'] . '</b> <a href="' . admin_url('admin.php?page=td_theme_panel') . '" target="_blank">Swicth Account</a>' : 'No account connected <a href="' . admin_url('admin.php?page=td_theme_panel') . '" target="_blank">Connect Account</a>',
-                            "heading" => "Instagram Account Status:",
-                            "description" => 'Your Instagram account connection status.',
+                            "value" => $is_personal_account_connected ? 'Connected as <b>' . $personal_connected_account['username'] . '</b>' : 'No personal account connected.',
+                            "heading" => "Instagram Personal Account Status:",
+                            "description" => 'Your Instagram personal account connection status.',
+                            "holder" => "div",
+                            "class" => "",
+                            'group' => 'Instagram'
+                        ),
+                        array(
+                            "param_name" => "instagram_accounts_business",
+                            "type" => "custom",
+                            "value" => $are_business_accounts_connected ? 'Connected to <b>' . $business_connected_accounts_list . '</b>' : 'No business accounts connected.',
+                            "heading" => "Instagram Business Accounts Status:",
+                            "description" => 'Your Instagram business accounts connection status.',
                             "holder" => "div",
                             "class" => "",
                             'group' => 'Instagram'
@@ -29670,6 +32825,16 @@ class td_config {
                             "description" => 'Display or hide the Instagram header section (default: On)',
                             "holder" => "div",
                             "class" => "tdc-dropdown-small",
+                            'group' => 'Instagram'
+                        ),
+                        array(
+                            "param_name" => "instagram_user_photo",
+                            "type" => "attach_image",
+                            "value" => '',
+                            "heading" => "User photo",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
                             'group' => 'Instagram'
                         ),
                         array(
@@ -29702,6 +32867,22 @@ class td_config {
                             "class" => "tdc-dropdown-small",
                             'group' => 'Instagram'
                         ),
+	                    array(
+		                    "param_name"  => "instagram_images_size",
+		                    "type"        => "dropdown",
+		                    "value"       => array(
+			                    'Default - Full' => '',
+			                    'Small - 150px'  => 'td_150x0',
+			                    'Small - 300px'  => 'td_300x0',
+			                    'Medium - 696px' => 'td_696x0',
+			                    'Large - 1068px' => 'td_1068x0'
+		                    ),
+		                    "heading"     => 'Image size',
+		                    "description" => "",
+		                    "holder"      => "div",
+		                    "class"       => "tdc-dropdown-big",
+		                    "group"       => "Instagram",
+	                    ),
                         array(
                             "param_name" => "instagram_number_of_rows",
                             "type" => "dropdown",
@@ -29736,6 +32917,21 @@ class td_config {
                             ),
                             "heading" => "Image gap",
                             "description" => 'Set a gap between images (default: No gap)',
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            'group' => 'Instagram'
+                        ),
+                        array(
+                            "param_name" => "instagram_rel",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Disable' => '',
+                                'Nofollow' => 'nofollow',
+                                'Noopener' => 'noopener',
+                                'Noreferrer' => 'noreferrer'
+                            ),
+                            "heading" => "Set rel attribute",
+                            "description" => "",
                             "holder" => "div",
                             "class" => "tdc-dropdown-big",
                             'group' => 'Instagram'
@@ -29786,6 +32982,7 @@ class td_config {
                             "value"       => '',
                             "description" => '',
                             "group"       => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_button_border_color.png",
                         ),
                         array(
                             "param_name" => "separator",
@@ -29794,7 +32991,7 @@ class td_config {
                             "class" => ""
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_handle', false, 'Instagram handle text' ),
                     td_config_helper::get_map_block_font_array( 'f_followers', false, 'Followers count text' ),
                     td_config_helper::get_map_block_font_array( 'f_btn_text', false, 'Button text text' ),
@@ -30013,6 +33210,494 @@ class td_config {
         );
 
 
+        td_api_block::add('td_block_flickr',
+            array(
+                'map_in_visual_composer' => false,
+                'map_in_td_composer' => true,
+                "name" => 'Flickr',
+                "base" => "td_block_flickr",
+                "class" => "td_block_flickr",
+                "controls" => "full",
+                "category" => 'Blocks',
+                'tdc_category' => 'Extended',
+                'icon' => 'icon-pagebuilder-td-flickr',
+                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_flickr.php',
+                'tdc_style_params' => array(
+                    'custom_title',
+                    'custom_url',
+                    'el_class'
+                ),
+                'tdc_start_values'       => base64_encode(
+                    json_encode(
+                        array(
+                            array(
+                                "items_on_row" => "25%",
+                            ),
+                        )
+                    )
+                ),
+                "params" => array_merge(
+                    self::get_map_block_general_array(),
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Content',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "param_name" => "source",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Photo IDs' => 'photo_ids',
+                                'User photostream' => 'user_id',
+                                'User albums' => 'user_albums',
+                                'Album ID' => 'album_id'
+                            ),
+                            "heading" => "Source",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small"
+                        ),
+                        array(
+                            "param_name" => "photo_ids",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "List of flick photos id's separated by comma (ex: 25737689747, 17389487171, 20756817409, 6940287706):",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                        ),
+                        array(
+                            "param_name" => "user_id",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "User ID",
+                            "description" => "<a href='https://www.webfx.com/tools/idgettr/' target='blank'>Obtain a user id</a>",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name" => "album_id",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Gallery ID",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small"
+                        ),
+                        array(
+                            "param_name" => "limit",
+                            "type" => "textfield",
+                            "value" => "",
+                            "heading" => "Limit",
+                            "description" => "",
+                            "holder" => "div",
+                            "placeholder" => "0",
+                            "class" => "tdc-textfield-small",
+                        ),
+                        array(
+                            "param_name" => "cache",
+                            "type" => "dropdown",
+                            "value" => array('ON' => '1', 'OFF' => '0'),
+                            "heading" => "Cache ON / OFF:",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-small",
+                        ),
+                        array(
+                            "param_name" => "cache_timeout",
+                            "type" => "dropdown",
+                            "value" => array(
+                                '1 hour' => 1 * HOUR_IN_SECONDS,
+                                '3 hours' => '',
+                                '6 hours' => 6 * HOUR_IN_SECONDS,
+                                '9 hours' => 9 * HOUR_IN_SECONDS,
+                                '12 hours' => 12 * HOUR_IN_SECONDS,
+                                '1 day' => 1 * DAY_IN_SECONDS,
+                                '3 days' => 3 * DAY_IN_SECONDS
+                            ),
+                            "heading" => "Cache refresh",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                        ),
+
+                        array(
+                            "param_name"  => "items_on_row",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                '1'  => '100%',
+                                '2'  => '50%',
+                                '3'  => '33.33333333%',
+                                '4'  => '25%',
+                                '5'  => '20%',
+                                '6'  => '16.66666667%',
+                                '7'  => '14.28571428%',
+                                '8'  => '12.5%',
+                                '9'  => '11.11111111%',
+                                '10' => '10%',
+                            ),
+                            "heading"     => 'Photos per row',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-small",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "items_gap",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Photos gap',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "items_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Items bottom space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "40",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "img_height",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Image height (percent)',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "100",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Meta info',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "meta_info_align",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Bottom'  => 'bottom',
+                                'Center'  => 'center',
+                                'Top'     => 'top',
+                            ),
+                            "heading"     => 'Vertical align',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_vertical_align.png",
+                        ),
+                        array(
+                            "param_name" => "meta_info_horiz",
+                            "type" => "dropdown-responsive",
+                            "value" => array(
+                                'Left' => 'content-horiz-left',
+                                'Center' => 'content-horiz-center',
+                                'Right' => 'content-horiz-right'
+                            ),
+                            "heading" => 'Horiz. align',
+                            "description" => "",
+                            "holder" => "div",
+                            'tdc_dropdown_images' => true,
+                            "class" => "tdc-visual-selector tdc-add-class",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/layout_horiz_align.png",
+                        ),
+                        array(
+                            "param_name"  => "meta_padding",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Meta info padding',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-big",
+                            "placeholder" => "20px 15px",
+                            "group"       => "Layout",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_meta_padding.png",
+                        ),
+                        array(
+                            'param_name'  => 'meta_travel',
+                            'type'        => 'range-responsive',
+                            'value'       => '15',
+                            'heading'     => 'Hover meta vert. travel',
+                            'description' => '',
+                            'class'       => 'tdc-textfield-small',
+                            'range_min'   => '0',
+                            'range_max'   => '100',
+                            'range_step'  => '1',
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => 'Layout',
+                        ),
+                        array(
+                            "param_name"  => "title",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Title space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "4",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_no",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show photos number',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "show_views",
+                            "type"        => "dropdown-responsive",
+                            "value"       => array(
+                                'Show' => 'inline-block',
+                                'Hide' => 'none',
+                            ),
+                            "heading"     => 'Show views number',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "Layout",
+                        ),
+                        array(
+                            "param_name"  => "no_space",
+                            "type"        => "textfield-responsive",
+                            "value"       => '',
+                            "heading"     => 'Photos number right space',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-textfield-small",
+                            "placeholder" => "16",
+                            "group"       => "Layout",
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Colors',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Style",
+                        ),
+                        array(
+                            "param_name" => "color_overlay",
+                            "holder"     => "div",
+                            "type"       => "gradient",
+                            'heading'    => "Photo color overlay",
+                            "value"      => "",
+                            "class"      => "",
+                            "group"      => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_image_overlay.png",
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "horizontal_separator",
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Title text color',
+                            "param_name"  => "title_txt",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                            "info_img" => "https://cloud.tagdiv.com/help/module_color_article_title.png",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Title text hover',
+                            "param_name"  => "title_txt_hover",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-a",
+                            "heading"     => 'Meta info color',
+                            "param_name"  => "meta_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "td-colorpicker-double-b",
+                            "heading"     => 'Meta info hover color',
+                            "param_name"  => "meta_color_hover",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Modal',
+                            "value"      => "",
+                            "class"      => "",
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Title text color',
+                            "param_name"  => "m_title_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "gradient",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Overlay color',
+                            "param_name"  => "m_bg_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Close button color',
+                            "param_name"  => "m_close_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Images slider',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Active image border color',
+                            "param_name"  => "ms_border_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+                        array(
+                            "type"        => "gradient",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Background color',
+                            "param_name"  => "ms_bg_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => 'Style',
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            'heading' => 'Fonts',
+                            "value" => "",
+                            "class" => "",
+                            "group" => 'Style',
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
+                    td_config_helper::get_map_block_font_array( 'f_title', false, 'Title text', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_meta', false, 'Meta info text', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_m_title', false, 'Modal title text', 'Style' ),
+
+                    array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => ""
+                        ),
+                        array(
+                            'param_name' => 'el_class',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'Extra class',
+                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                            'class' => 'tdc-textfield-extrabig',
+                        ),
+                        array (
+                            'param_name' => 'css',
+                            'value' => '',
+                            'type' => 'css_editor',
+                            'heading' => 'Css',
+                            'group' => 'Design options',
+                        ),
+                        array (
+                            'param_name' => 'tdc_css',
+                            'value' => '',
+                            'type' => 'tdc_css_editor',
+                            'heading' => '',
+                            'group' => 'Design options',
+                        ),
+                    )
+                )
+            )
+        );
+
+
         $nav_menus = wp_get_nav_menus();
         if (empty($nav_menus)) {
             $td_block_list_menus = array('- No registered menu -' => '');
@@ -30129,7 +33814,7 @@ class td_config {
                             "group"       => "",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_list', false, 'Menu text' ),
                     array(
                         array(
@@ -30237,7 +33922,7 @@ class td_config {
                             "class"      => "",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_list', false, 'Menu text' )
                 )
             )
@@ -30620,7 +34305,7 @@ class td_config {
                             "group"      => 'Style'
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', 'Style', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_row_h', false, 'Row header text', 'Style' ),
                     td_config_helper::get_map_block_font_array( 'f_row', false, 'Row text', 'Style' ),
                     td_config_helper::get_map_block_font_array( 'f_date', false, 'Last updated text', 'Style' ),
@@ -30838,6 +34523,7 @@ class td_config {
                             "holder"      => "div",
                             "class"       => "tdc-dropdown-big",
                             "group"       => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_date_show.png",
                         ),
                         array(
                             "param_name"  => "date_space",
@@ -30905,7 +34591,7 @@ class td_config {
                             "class"      => "tdc-separator-small",
                         ),
                     ),
-                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header' ),
+                    td_config_helper::get_map_block_font_array( 'f_header', true, 'Block header', '', '', '', 'https://cloud.tagdiv.com/help/module_font_block_header.png', '' ),
                     td_config_helper::get_map_block_font_array( 'f_country', false, 'Country name text' ),
                     td_config_helper::get_map_block_font_array( 'f_count', false, 'Counter text' ),
                     td_config_helper::get_map_block_font_array( 'f_stat', false, 'Statistic name text' ),
@@ -31011,12 +34697,418 @@ class td_config {
             )
         );
 
+//        td_api_block::add('td_block_dark_mode',
+//            array(
+//                'map_in_visual_composer' => true,
+//                'map_in_td_composer' => true,
+//                "name" => 'Dark mode switch',
+//                "base" => "td_block_dark_mode",
+//                "class" => "td_block_dark_mode",
+//                "controls" => "full",
+//                "category" => 'Blocks',
+//                'tdc_category' => 'Extended',
+//                'icon' => 'icon-pagebuilder-categories',
+//                'file' => TDC_PATH_LEGACY . '/includes/shortcodes/td_block_dark_mode.php',
+//                'tdc_style_params' => array(
+//                    'inline',
+//                    'align_right',
+//                    'add_txt',
+//                    'dark_tdicon',
+//                    'light_tdicon',
+//                    'el_class'
+//                ),
+//                'tdc_start_values'       => base64_encode(
+//                    json_encode(
+//                        array(
+//                            array(
+//                                "dark_tdicon" => "td-icon-moon",
+//                                "light_tdicon" => "td-icon-sun",
+//                            )
+//                        )
+//                    )
+//                ),
+//                "params" => array_merge(
+//                    array(
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Layout',
+//                            "value"      => "",
+//                            "class"      => "",
+//                        ),
+//                        array(
+//                            "param_name" => "inline",
+//                            "type" => "checkbox",
+//                            "value" => '',
+//                            "heading" => "Make inline",
+//                            "description" => "",
+//                            "holder" => "div",
+//                            "class" => "",
+//                            "group" => ''
+//                        ),
+//                        array(
+//                            "param_name" => "align_right",
+//                            "type" => "checkbox",
+//                            "value" => '',
+//                            "heading" => "Align to right",
+//                            "description" => "",
+//                            "holder" => "div",
+//                            "class" => "",
+//                            "group" => ''
+//                        ),
+//                        array(
+//                            "param_name" => "horiz_align",
+//                            "type" => "dropdown-responsive",
+//                            "value" => array(
+//                                'Left' => 'content-horiz-left',
+//                                'Center' => 'content-horiz-center',
+//                                'Right' => 'content-horiz-right'
+//                            ),
+//                            "heading" => 'Horizontal align',
+//                            "description" => "",
+//                            "holder" => "div",
+//                            'tdc_dropdown_images' => true,
+//                            "class" => "tdc-visual-selector tdc-add-class",
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Additional text',
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            'param_name' => 'add_txt',
+//                            'type' => 'textfield',
+//                            'value' => '',
+//                            'heading' => 'Text',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-big',
+//                        ),
+//                        array(
+//                            "param_name"  => "add_txt_pos",
+//                            "type"        => "dropdown",
+//                            "value"       => array(
+//                                'Before switch'  => 'before',
+//                                'After switch'  => 'after',
+//                            ),
+//                            "heading"     => 'Position',
+//                            "description" => "",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-dropdown-big",
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            'param_name' => 'add_txt_space',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Space',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '5'
+//                        ),
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Switch',
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            'param_name' => 'sw_border',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Border size',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '0'
+//                        ),
+//                        array(
+//                            "param_name"  => "sw_border_style",
+//                            "type"        => "dropdown-responsive",
+//                            "value"       => array(
+//                                'Solid'  => 'solid',
+//                                'Dotted' => 'dotted',
+//                                'Dashed' => 'dashed',
+//                            ),
+//                            "heading"     => 'Border style',
+//                            "description" => "",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-dropdown-big",
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            'param_name' => 'sw_border_radius',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Border radius',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '100'
+//                        ),
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "horizontal_separator",
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            'param_name' => 'dark_tdicon',
+//                            'type' => 'icon',
+//                            'heading' => 'Dark version icon',
+//                            'class' => 'tdc-textfield-small',
+//                            'value' => '',
+//                            "group"       => ''
+//                        ),
+//                        array(
+//                            'param_name' => 'light_tdicon',
+//                            'type' => 'icon',
+//                            'heading' => 'Light version icon',
+//                            'class' => 'tdc-textfield-small',
+//                            'value' => '',
+//                            "group"       => ''
+//                        ),
+//                        array(
+//                            'param_name' => 'ico_size',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Icons size',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '14'
+//                        ),
+//                        array(
+//                            'param_name' => 'ico_border',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Border size',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '0'
+//                        ),
+//                        array(
+//                            "param_name"  => "ico_border_style",
+//                            "type"        => "dropdown-responsive",
+//                            "value"       => array(
+//                                'Solid'  => 'solid',
+//                                'Dotted' => 'dotted',
+//                                'Dashed' => 'dashed',
+//                            ),
+//                            "heading"     => 'Border style',
+//                            "description" => "",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-dropdown-big",
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            'param_name' => 'ico_border_radius',
+//                            'type' => 'textfield-responsive',
+//                            'value' => '',
+//                            'heading' => 'Border radius',
+//                            'description' => '',
+//                            'class' => 'tdc-textfield-small',
+//                            'placeholder' => '100%'
+//                        ),
+//
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Style',
+//                            "value"      => "",
+//                            "class"      => "",
+//                        ),
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Additional text',
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "",
+//                            "heading"     => 'Color',
+//                            "param_name"  => "add_txt_color",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                    ),
+//                    td_config_helper::get_map_block_font_array( 'f_attr', true, 'Attribute text' ),
+//                    array(
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "text_separator",
+//                            'heading'    => 'Switch',
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-a",
+//                            "heading"     => 'Background color',
+//                            "param_name"  => "switch_bg",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-b",
+//                            "heading"     => 'Background active color',
+//                            "param_name"  => "switch_bg_a",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-a",
+//                            "heading"     => 'Border color',
+//                            "param_name"  => "switch_border_col",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-b",
+//                            "heading"     => 'Border active color',
+//                            "param_name"  => "switch_border_col_a",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "param_name" => "separator",
+//                            "type"       => "horizontal_separator",
+//                            "value"      => "",
+//                            "class"      => "tdc-separator-small",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-a",
+//                            "heading"     => 'Icons color',
+//                            "param_name"  => "ico_color",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-b",
+//                            "heading"     => 'Icons active color',
+//                            "param_name"  => "ico_color_a",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-a",
+//                            "heading"     => 'Icons background color',
+//                            "param_name"  => "ico_bg",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-b",
+//                            "heading"     => 'Icons background active color',
+//                            "param_name"  => "ico_bg_a",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-a",
+//                            "heading"     => 'Icons border color',
+//                            "param_name"  => "ico_border_col",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                        array(
+//                            "type"        => "colorpicker",
+//                            "holder"      => "div",
+//                            "class"       => "tdc-colorpicker-double-b",
+//                            "heading"     => 'Icons border active color',
+//                            "param_name"  => "ico_border_col_a",
+//                            "value"       => '',
+//                            "description" => '',
+//                            "group"       => "",
+//                        ),
+//                    ),
+//                    td_config_helper::get_map_block_shadow_array('ico_shadow', 'Icons shadow', 3, 0, 1 ),
+//                    array(
+//
+//                        array(
+//                            "param_name" => "separator",
+//                            "type" => "horizontal_separator",
+//                            "value" => "",
+//                            "class" => ""
+//                        ),
+//                        array(
+//                            'param_name' => 'el_class',
+//                            'type' => 'textfield',
+//                            'value' => '',
+//                            'heading' => 'Extra class',
+//                            'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+//                            'class' => 'tdc-textfield-extrabig',
+//                        ),
+//                        array (
+//                            'param_name' => 'css',
+//                            'value' => '',
+//                            'type' => 'css_editor',
+//                            'heading' => 'Css',
+//                            'group' => 'Design options',
+//                        ),
+//                        array (
+//                            'param_name' => 'tdc_css',
+//                            'value' => '',
+//                            'type' => 'tdc_css_editor',
+//                            'heading' => '',
+//                            'group' => 'Design options',
+//                        ),
+//                    )
+//                )
+//            )
+//        );
+
 
 
         /**
 		 * the thumbs used by the  theme
 		 * Thumb id => array parameters. Wp booster only cuts if the option is set from theme panel
 		 */
+        td_api_thumb::add('td_150x0',
+            array(
+                'name' => 'td_150x0',
+                'width' => 150,
+                'height' => 0,
+                'crop' => array('center', 'top'),
+                'post_format_icon_size' => 'normal',
+                'used_on' => array(
+                    'Flex blocks 1, 2, 3, 4, 5'
+                ),
+                'no_image_path' => TDC_URL_LEGACY . '/assets',
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAB4AQMAAAAqgZlTAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAABlJREFUSMftwTEBAAAAwiD7p7bETmAAAKQOCWAAAaG6mx4AAAAASUVORK5CYII=',
+            )
+        );
+
 		td_api_thumb::add('td_218x150',
 		    array(
 		        'name' => 'td_218x150',
@@ -31033,6 +35125,21 @@ class td_config {
 		        'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAACWAQMAAACCSQSPAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAABpJREFUWMPtwQENAAAAwiD7p7bHBwwAAAAg7RD+AAGXD7BoAAAAAElFTkSuQmCC',
 		    )
 		);
+
+        td_api_thumb::add('td_300x0',
+            array(
+                'name' => 'td_300x0',
+                'width' => 300,
+                'height' => 0,
+                'crop' => array('center', 'top'),
+                'post_format_icon_size' => 'normal',
+                'used_on' => array(
+                    'Flex blocks 1, 2, 3, 4, 5'
+                ),
+                'no_image_path' => TDC_URL_LEGACY . '/assets',
+                'b64_encoded' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADIAQMAAABoEU4WAAAAA1BMVEWurq51dlI4AAAAAXRSTlMmkutdmwAAAB5JREFUWMPtwTEBAAAAwiD7pzbEXmAAAAAAAAAAEBweeAABBpYptwAAAABJRU5ErkJggg==',
+            )
+        );
 
 		td_api_thumb::add('td_324x400',
 		    array(
@@ -31649,7 +35756,7 @@ class td_config {
                         'desc' => '<p>Google AdSense requiers that you do not use big header ads on mobiles!</p>',
                     ),
                     'ad_field_position_content' => false,
-                    'ad_field_after_paragraph' => false,
+                    'ad_field_after_paragraph' => false,0
                 )
             )
         );
@@ -32501,6 +36608,12 @@ class td_config {
                     'type' => 'default',
                 ),
             ),
+            'WooCommerce default templates' => array(
+                'woo_general' => array(
+                    'text' => 'General font',
+                    'type' => 'default',
+                ),
+            ),
         ); // end td_global::$typography_settings_list
 
 
@@ -32584,6 +36697,10 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
             'black_pro' => array(
                 'text' => 'Black Version PRO',
@@ -32595,169 +36712,244 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
-            'medicine_pro' => array(
-                'text' => 'Coronavirus Medicine PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/medicine_pro/',
-                'img' => TDC_URL_DEMO . '/medicine_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_medicine_pro/',
+            'crypto_news_pro' => array(
+                'text' => 'Crypto News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/crypto_news_pro/',
+                'img' => TDC_URL_DEMO . '/crypto_news_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_crypto_news_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'covid_dark_pro' => array(
-                'text' => 'Covid Dark PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_dark_pro/',
-                'img' => TDC_URL_DEMO  . '/covid_dark_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_dark_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
+                    'tagDiv Opt-In Builder',
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'magazine'
                 ),
             ),
-            'cov19_italy_report_pro' => array(
-                'text' => 'COV-19 Italy Report PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/cov19_italy_report_pro/',
-                'img' => TDC_URL_DEMO . '/cov19_italy_report_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid19_news_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                ),
-            ),
-            'covid_stats_pro' => array(
-                'text' => 'Covid Stats PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_stats_pro/',
-                'img' => TDC_URL_DEMO  . '/covid_stats_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_stats_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                ),
-            ),
-            'pandemic_pro' => array(
-                'text' => 'Covid Pandemic PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/pandemic_pro/',
-                'img' => TDC_URL_DEMO . '/pandemic_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_pandemic_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'london_news_pro' => array(
-                'text' => 'London News PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/london_news_pro/',
-                'img' => TDC_URL_DEMO . '/london_news_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_london_news_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                ),
-            ),
-            'amberlight_pro' => array(
-                'text' => 'Amberlight PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/amberlight_pro/',
-                'img' => TDC_URL_DEMO . '/amberlight_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_amberlight_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'baby_pro' => array(
-                'text' => 'Baby PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/baby_pro/',
-                'img' => TDC_URL_DEMO . '/baby_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_baby_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'estates_pro' => array(
-                'text' => 'Estates PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/estates_pro/',
-                'img' => TDC_URL_DEMO . '/estates_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_estates_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'royal_pub_pro' => array(
-                'text' => 'Royal Pub PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/royal_pub_pro/',
-                'img' => TDC_URL_DEMO  . '/royal_pub_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_royal_pub_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'zodiac_pro' => array(
-                'text' => 'Zodiac PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/zodiac_pro/',
-                'img' => TDC_URL_DEMO . '/zodiac_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_zodiac_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
-                ),
-            ),
-            'gourmet_pro' => array(
-                'text' => 'Gourmet PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/gourmet_pro/',
-                'img' => TDC_URL_DEMO . '/gourmet_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_gourmet_pro/',
+            'parenting' => array(
+                'text' => 'Parenting',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/parenting/',
+                'img' => TDC_URL_DEMO . '/parenting/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_parenting/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
+                    'tagDiv Opt-In Builder',
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'magazine'
                 ),
             ),
-            'gossip_pro' => array(
-                'text' => 'Gossip PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/gossip_pro/',
-                'img' => TDC_URL_DEMO . '/gossip_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_gossip_pro/',
+            'revenant' => array(
+                'text' => 'Revenant',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/revenant/',
+                'img' => TDC_URL_DEMO . '/revenant/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_revenant/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Opt-In Builder'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                ),
+            ),
+		    'shop_kids_store' => array(
+			    'text' => 'Shop Kids Store',
+			    'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_kids_store/',
+			    'img' => TDC_URL_DEMO . '/shop_kids_store/screenshot.png',
+			    'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_kids_store/',
+			    'td_css_generator_demo' => false,
+			    'uses_custom_style_css' => false,
+			    'required_plugins' => array(
+				    'tagDiv Cloud Library',
+				    'tagDiv Shop',
+				    'tagDiv Newsletter',
+				    'tagDiv Social Counter',
+				    'WooCommerce'
+			    ),
+			    'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+		    ),
+            'shop_audio' => array(
+                'text' => 'Shop Audio',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_audio/',
+                'img' => TDC_URL_DEMO . '/shop_audio/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_audio/',
+                'td_css_generator_demo' => false,
+                'uses_custom_style_css' => false,
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_watches_store' => array(
+                'text' => 'Shop Watches Store',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_watches_store/',
+                'img' => TDC_URL_DEMO . '/shop_watches_store/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_watches_store/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'tagDiv Newsletter',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_vintage_choppers_store' => array(
+                'text' => 'Shop Vintage Choppers Store',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_vintage_choppers_store/',
+                'img' => TDC_URL_DEMO . '/shop_vintage_choppers_store/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_vintage_choppers_store/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_makeup' => array(
+                'text' => 'Shop Makeup',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_makeup/',
+                'img' => TDC_URL_DEMO . '/shop_makeup/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_makeup/',
+                'td_css_generator_demo' => false,
+                'uses_custom_style_css' => false,
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'tagDiv Newsletter',
+                    'tagDiv Social Counter',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_apocryph_pro' => array(
+                'text' => 'Shop Apocryph',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_apocryph_pro/',
+                'img' => TDC_URL_DEMO . '/shop_vaness_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_apocryph/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'tagDiv Newsletter',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_vaness_pro' => array(
+                'text' => 'Shop Vaness',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_vaness_pro/',
+                'img' => TDC_URL_DEMO . '/shop_vaness_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_vaness/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'tagDiv Newsletter',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'shop_blog_gadgets' => array(
+                'text' => 'Shop Blog Gadgets',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/shop_blog_gadgets/',
+                'img' => TDC_URL_DEMO . '/shop_blog_gadgets/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_shop_blog_gadgets/',
+                'td_css_generator_demo' => false,
+                'uses_custom_style_css' => false,
+                'required_plugins' => array(
+                    'tagDiv Cloud Library',
+                    'tagDiv Shop',
+                    'tagDiv Newsletter',
+                    'tagDiv Social Counter',
+                    'WooCommerce'
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'shop'
+                ),
+            ),
+            'art_blog_pro' => array(
+                'text' => 'Art Blog PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/art_blog_pro/',
+                'img' => TDC_URL_DEMO . '/art_blog_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_art_blog_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'blog'
+                ),
             ),
-            'life_news' => array(
-                'text' => 'Life News PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/life_news/',
-                'img' => TDC_URL_DEMO . '/life_news/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_life_news/',
+            'magazine_pro' => array(
+                'text' => 'Magazine PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/magazine_pro/',
+                'img' => TDC_URL_DEMO . '/magazine_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_magazine_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'pulses_pro' => array(
@@ -32771,17 +36963,89 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
-            'gadgets_pro' => array(
-                'text' => 'Gadgets PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/gadgets_pro/',
-                'img' => TDC_URL_DEMO . '/gadgets_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_gadgets_pro/',
+            'london_news_pro' => array(
+                'text' => 'London News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/london_news_pro/',
+                'img' => TDC_URL_DEMO . '/london_news_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_london_news_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'city_pro' => array(
+                'text' => 'City PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/city_pro/',
+                'img' => TDC_URL_DEMO  . '/city_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_city_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
+                    // required plugins for the demo to work properly
+                    'tagDiv Newsletter',
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'school_pro' => array(
+                'text' => 'School PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/school_pro/',
+                'img' => TDC_URL_DEMO  . '/school_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_school_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(
+                    // required plugins for the demo to work properly
+                    'tagDiv Newsletter',
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'cov19_italy_report_pro' => array(
+                'text' => 'COV-19 Italy Report PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/cov19_italy_report_pro/',
+                'img' => TDC_URL_DEMO . '/cov19_italy_report_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid19_news_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'gossip_pro' => array(
+                'text' => 'Gossip PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gossip_pro/',
+                'img' => TDC_URL_DEMO . '/gossip_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gossip_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'tech_pro' => array(
@@ -32795,29 +37059,40 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
-            'travel_pro' => array(
-                'text' => 'Travel Memories PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/travel_pro/',
-                'img' => TDC_URL_DEMO . '/travel_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_travel_pro/',
+            'life_news' => array(
+                'text' => 'Life News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/life_news/',
+                'img' => TDC_URL_DEMO . '/life_news/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_life_news/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'gadgets_pro' => array(
+                'text' => 'Gadgets PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gadgets_pro/',
+                'img' => TDC_URL_DEMO . '/gadgets_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gadgets_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                     // required plugins for the demo to work properly
+                'required_plugins' => array(
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
-            ),
-            'video_pro' => array(
-                'text' => 'Video News PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/video_pro/',
-                'img' => TDC_URL_DEMO . '/video_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_video_news_pro/',
-                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
-                    'tagDiv Newsletter',
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'romania_news' => array(
@@ -32831,16 +37106,230 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
-            'animals_pro' => array(
-                'text' => 'Animals Magazine PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/animals_pro/',
-                'img' => TDC_URL_DEMO . '/animals_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_animals_pro/',
+            'classic_pro' => array(
+                'text' => 'Classic Blog PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/classic_pro/',
+                'img' => TDC_URL_DEMO  . '/classic_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_classic_pro/',
+                'td_css_generator_demo' => true,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'blog'
+                ),
+            ),
+            'lifestyle_pro' => array(
+                'text' => 'Lifestyle PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/lifestyle_pro/',
+                'img' => TDC_URL_DEMO . '/lifestyle_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_lifestyle_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'medicine_pro' => array(
+                'text' => 'Coronavirus Medicine PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/medicine_pro/',
+                'img' => TDC_URL_DEMO . '/medicine_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_medicine_pro/',
                 'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
                 'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'covid_dark_pro' => array(
+                'text' => 'Covid Dark PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_dark_pro/',
+                'img' => TDC_URL_DEMO  . '/covid_dark_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_dark_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'covid_stats_pro' => array(
+                'text' => 'Covid Stats PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/covid_stats_pro/',
+                'img' => TDC_URL_DEMO  . '/covid_stats_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_covid_stats_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'pandemic_pro' => array(
+                'text' => 'Covid Pandemic PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/pandemic_pro/',
+                'img' => TDC_URL_DEMO . '/pandemic_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_pandemic_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'artist_pro' => array(
+                'text' => 'Artist PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/artist_pro/',
+                'img' => TDC_URL_DEMO . '/artist_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_artist_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'arette_pro' => array(
+                'text' => 'Arette PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/arette_pro/',
+                'img' => TDC_URL_DEMO . '/arette_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_arette_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'scuba_pro' => array(
+                'text' => 'Scuba Diving PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/scuba_pro/',
+                'img' => TDC_URL_DEMO . '/scuba_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_scuba_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'garden_pro' => array(
+                'text' => 'Garden PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/garden_pro/',
+                'img' => TDC_URL_DEMO . '/garden_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_garden_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'estates_pro' => array(
+                'text' => 'Estates PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/estates_pro/',
+                'img' => TDC_URL_DEMO . '/estates_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_estates_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'mintyside_pro' => array(
+                'text' => 'Mintyside PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/mintyside_pro/',
+                'img' => TDC_URL_DEMO . '/mintyside_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_mintyside_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'retro_blog_pro' => array(
+                'text' => 'Retro Blog PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/retro_blog_pro/',
+                'img' => TDC_URL_DEMO . '/retro_blog_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_retro_blog_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'blog'
+                ),
+            ),
+            'gourmet_pro' => array(
+                'text' => 'Gourmet PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/gourmet_pro/',
+                'img' => TDC_URL_DEMO . '/gourmet_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_gourmet_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'style_pro' => array(
@@ -32854,16 +37343,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
-            ),
-            'classic_pro' => array(
-                'text' => 'Classic Blog PRO',
-                'folder' => TDC_PATH_LEGACY . '/includes/demos/classic_pro/',
-                'img' => TDC_URL_DEMO  . '/classic_pro/screenshot.png',
-                'demo_url' => 'https://demo.tagdiv.com/newspaper_classic_pro/',
-                'td_css_generator_demo' => true,                // must have a td_css_generator_demo.php in demo's folder
-                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
-                'required_plugins' => array(                    // required plugins for the demo to work properly
-                    'tagDiv Cloud Library',
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'influencer' => array(
@@ -32877,6 +37359,121 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'travel_pro' => array(
+                'text' => 'Travel Memories PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/travel_pro/',
+                'img' => TDC_URL_DEMO . '/travel_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_travel_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'blog'
+                ),
+            ),
+            'video_pro' => array(
+                'text' => 'Video News PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/video_pro/',
+                'img' => TDC_URL_DEMO . '/video_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_video_news_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'animals_pro' => array(
+                'text' => 'Animals Magazine PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/animals_pro/',
+                'img' => TDC_URL_DEMO . '/animals_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_animals_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'royal_pub_pro' => array(
+                'text' => 'Royal Pub PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/royal_pub_pro/',
+                'img' => TDC_URL_DEMO  . '/royal_pub_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_royal_pub_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'amberlight_pro' => array(
+                'text' => 'Amberlight PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/amberlight_pro/',
+                'img' => TDC_URL_DEMO . '/amberlight_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_amberlight_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'baby_pro' => array(
+                'text' => 'Baby PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/baby_pro/',
+                'img' => TDC_URL_DEMO . '/baby_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_baby_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                     // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
+            ),
+            'zodiac_pro' => array(
+                'text' => 'Zodiac PRO',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/zodiac_pro/',
+                'img' => TDC_URL_DEMO . '/zodiac_pro/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_zodiac_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
             'the_critic' => array(
                 'text' => 'The Critic PRO',
@@ -32888,6 +37485,10 @@ class td_config {
                 'required_plugins' => array(
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'blog'
                 ),
             ),
             'podcasts' => array(
@@ -32901,6 +37502,10 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
             'fashion_pro' => array(
                 'text' => 'La Mode PRO',
@@ -32912,6 +37517,10 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
             'sports_pro' => array(
                 'text' => 'Sports PRO',
@@ -32922,6 +37531,10 @@ class td_config {
                 'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'fitness_pro' => array(
@@ -32935,6 +37548,10 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'blog'
+                ),
             ),
             'history_pro' => array(
                 'text' => 'L\'Histoire PRO',
@@ -32946,6 +37563,10 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
+                ),
+                'type' => array(
+                    'pro',
+                    'magazine'
                 ),
             ),
             'art_pro' => array(
@@ -32959,6 +37580,10 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
             'beauty_pro' => array(
                 'text' => 'Beauty PRO',
@@ -32971,7 +37596,12 @@ class td_config {
                     'tagDiv Newsletter',
                     'tagDiv Cloud Library',
                 ),
+                'type' => array(
+                    'pro',
+                    'magazine'
+                ),
             ),
+
             'default' => array(
                 'text' => 'Default',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/default/',
@@ -32981,6 +37611,9 @@ class td_config {
                 'uses_custom_style_css' => false,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
+                ),
+                'type' => array(
+                    'magazine'
                 ),
             ),
             'black' => array(
@@ -32992,6 +37625,9 @@ class td_config {
                 'uses_custom_style_css' => true,                // load a custom demo_style.less - must also be added to td_less_style.css.php
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
+                ),
+                'type' => array(
+                    'magazine'
                 ),
             ),
             'gossip' => array(
@@ -33005,6 +37641,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                ),
             ),
             'blog_food' => array(
                 'text' => 'Food Blog',
@@ -33017,6 +37656,9 @@ class td_config {
 	                'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'racing' => array(
                 'text' => 'Racing Mag',
@@ -33029,6 +37671,9 @@ class td_config {
 	                'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'nomad' => array(
                 'text' => 'Nomad',
@@ -33041,6 +37686,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'decor' => array(
                 'text' => 'Home Decor',
@@ -33052,6 +37700,9 @@ class td_config {
                 'required_plugins' => array(                     // required plugins for the demo to work properly
                     'tagDiv Cloud Library',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_lifestyle' => array(
                 'text' => 'Lifestyle Blog',
@@ -33064,6 +37715,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'living_mag' => array(
                 'text' => 'LivingMag',
@@ -33077,6 +37731,9 @@ class td_config {
                     'tagDiv Newsletter',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'fast' => array(
                 'text' => 'Fast News',
@@ -33089,6 +37746,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'crypto' => array(
                 'text' => 'Crypto News',
@@ -33100,6 +37760,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'craft_ideas' => array(
                 'text' => 'Craft Ideas',
@@ -33111,6 +37774,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'classy' => array(
                 'text' => 'Classy Magazine',
@@ -33123,6 +37789,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'journal' => array(
                 'text' => 'Journal',
@@ -33135,6 +37804,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'dentist' => array(
                 'text' => 'Dental Studio',
@@ -33146,6 +37818,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'gaming' => array(
                 'text' => 'Gaming',
@@ -33159,6 +37834,9 @@ class td_config {
                     'tagDiv Newsletter',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'entertainment' => array(
                 'text' => 'Entertainment',
@@ -33171,6 +37849,9 @@ class td_config {
                     'tagDiv Cloud Library',
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_coffee' => array(
                 'text' => 'Coffee Blog',
@@ -33182,6 +37863,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'nature' => array(
                 'text' => 'Nature Love',
@@ -33193,6 +37877,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'wine' => array(
                 'text' => 'Wine Aroma',
@@ -33204,6 +37891,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'city_news' => array(
                 'text' => 'City News',
@@ -33215,6 +37905,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'smart_app' => array(
                 'text' => 'Smart APP',
@@ -33226,6 +37919,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'lifestyle' => array(
                 'text' => 'Lifestyle Magazine',
@@ -33237,6 +37933,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'gadgets' => array(
                 'text' => 'Gadgets',
@@ -33248,6 +37947,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'wildlife' => array(
                 'text' => 'Raw & Wild',
@@ -33259,6 +37961,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'business' => array(
                 'text' => 'Business',
@@ -33270,6 +37975,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'construction' => array(
                 'text' => 'Construction',
@@ -33281,6 +37989,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'recipes' => array(
                 'text' => 'Recipes',
@@ -33292,6 +38003,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'week' => array(
                 'text' => 'News Week',
@@ -33303,6 +38017,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'ink' => array(
                 'text' => 'Ink Parlor',
@@ -33314,6 +38031,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'what' => array(
                 'text' => 'Say What?',
@@ -33325,6 +38045,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'book_club' => array(
                 'text' => 'Book Club',
@@ -33337,6 +38060,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'law_firm' => array(
                 'text' => 'Law Firm',
@@ -33348,6 +38074,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'tech' => array(
                 'text' => 'Tech News',
@@ -33359,6 +38088,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'spa' => array(
                 'text' => 'Spa Heaven',
@@ -33370,6 +38102,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'travel' => array(
                 'text' => 'Travel Guides',
@@ -33382,6 +38117,9 @@ class td_config {
                     'tagDiv Standard Pack',
                     'tagDiv Newsletter',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'retro' => array(
                 'text' => 'Retro',
@@ -33393,6 +38131,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_architecture' => array(
                 'text' => 'Architecture',
@@ -33404,6 +38145,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'blog_fitness' => array(
                 'text' => 'Blog Fitness',
@@ -33415,6 +38159,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'magazine' => array(
                 'text' => 'News Magazine',
@@ -33426,6 +38173,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'voice' => array(
                 'text' => 'Voice Report',
@@ -33437,6 +38187,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'technology' => array(
                 'text' => 'Technology',
@@ -33448,6 +38201,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'art_creek' => array(
                 'text' => 'Art Creek',
@@ -33459,6 +38215,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'sound_radar' => array(
                 'text' => 'Sound Radar',
@@ -33470,6 +38229,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_travel' => array(
                 'text' => 'Travel Blog',
@@ -33482,6 +38244,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'church' => array(
                 'text' => 'Church',
@@ -33493,6 +38258,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_beauty' => array(
                 'text' => 'Beauty Blog',
@@ -33504,6 +38272,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'restro' => array(
                 'text' => 'Restro',
@@ -33515,6 +38286,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'showcase' => array(
                 'text' => 'Showcase',
@@ -33526,6 +38300,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'multipurpose'
+                )
             ),
             'old_fashioned' => array(
                 'text' => 'Old Fashioned',
@@ -33537,6 +38314,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'photography' => array(
                 'text' => 'Photography',
@@ -33548,6 +38328,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'blog_baby' => array(
                 'text' => 'Baby Blog',
@@ -33559,6 +38342,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'cafe' => array(
                 'text' => 'News Cafe',
@@ -33570,6 +38356,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'sport' => array(
                 'text' => 'Sport News',
@@ -33581,6 +38370,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'local_news' => array(
                 'text' => 'Local News',
@@ -33592,6 +38384,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_cars' => array(
                 'text' => 'Cars Blog',
@@ -33604,6 +38399,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'medicine' => array(
                 'text' => 'Global Medicine',
@@ -33615,6 +38413,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog_health' => array(
                 'text' => 'Health Blog',
@@ -33626,6 +38427,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'wedding' => array(
                 'text' => 'Wedding News',
@@ -33638,6 +38442,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'animals' => array(
                 'text' => 'Animal News',
@@ -33649,6 +38456,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'politics' => array(
                 'text' => 'Politics',
@@ -33661,6 +38471,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'blog' => array(
                 'text' => 'Classic Blog',
@@ -33672,6 +38485,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'blog'
+                )
             ),
             'college' => array(
                 'text' => 'College News',
@@ -33683,6 +38499,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
             'cars' => array(
                 'text' => 'Car Enthusiast',
@@ -33694,6 +38513,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
 		    'health' => array(
 			    'text' => 'Health & Fitness',
@@ -33705,6 +38527,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
 		    ),
 		    'video' => array(
 			    'text' => 'Video News',
@@ -33716,6 +38541,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
     	    ),
             'fashion' => array(
                 'text' => 'Fashion',
@@ -33727,6 +38555,9 @@ class td_config {
                 'required_plugins' => array(                    // required plugins for the demo to work properly
                     'tagDiv Standard Pack',
                 ),
+                'type' => array(
+                    'magazine'
+                )
             ),
 	    );
 
@@ -33775,13 +38606,13 @@ class td_config {
 	        if ( TDC_DEPLOY_MODE == 'dev' ) {
 	            wp_enqueue_style( 'td-legacy-framework-front-style-less', TDC_URL_LEGACY . '/td_less_style.css.php?part=style.css_td_legacy_newspaper_v1&theme_name=' . TD_THEME_NAME, false, TD_COMPOSER );
 
-                if ( class_exists('WooCommerce', false) ) {
+                if ( class_exists('WooCommerce', false) && !defined( 'TD_WOO' ) ) {
                     wp_enqueue_style( 'td-legacy-framework-woo-style-less', TDC_URL_LEGACY . '/td_less_style.css.php?part=woocommerce', false, TD_COMPOSER );
                 }
 	        } else {
 	            wp_enqueue_style( 'td-legacy-framework-front-style', TDC_URL_LEGACY . '/assets/css/td_legacy_main.css', false, TD_COMPOSER );
 
-                if ( class_exists('WooCommerce', false) ) {
+                if ( class_exists('WooCommerce', false) && !defined( 'TD_WOO' ) ) {
                     wp_enqueue_style('td-legacy-framework-woo-style', TDC_URL_LEGACY . '/assets/css/td_legacy_woocommerce.css' );
                 }
 	        }
@@ -34055,6 +38886,8 @@ class td_config {
 		   global $td_translation_map;
 
 			$td_translation_map = array(
+			    'EXCLUSIVE' => __('EXCLUSIVE', 'newspaper'),
+
 			    //top bar
 			    'Tel:' => __('Tel:', 'newspaper'),
 			    'Email:' => __('Email:', 'newspaper'),
@@ -34097,6 +38930,7 @@ class td_config {
 			    'Continue' => __('Continue', 'newspaper'),
 			    'Read more' => __('Read more', 'newspaper'),
 			    'views' => __('views', 'newspaper'),
+			    'Print' => __('Print', 'newspaper'),
 
 
 			    //comments
@@ -34121,6 +38955,7 @@ class td_config {
 			    'Logged in as %s. Edit your profile.' => __('Logged in as %s. Edit your profile.', 'newspaper'),
 			    'Edit' => __('Edit', 'newspaper'),
                 'At' => __('At', 'newspaper'),
+                'Comments are closed.' => __('Comments are closed.', 'newspaper'),
 
 
 			    //review
@@ -34300,7 +39135,19 @@ class td_config {
 
 			    'Save my name, email, and website in this browser for the next time I comment.' => __('Save my name, email, and website in this browser for the next time I comment.', 'newspaper'),
 			    'Privacy Policy' => 'Privacy Policy',
-                'Print' => __('Print', 'newspaper'),
+
+
+
+
+                // woocommerce
+                'My account' => __('My account', 'newspaper'),
+                'Orders' => __('Orders', 'newspaper'),
+                'Addresses' => __('Addresses', 'newspaper'),
+                'Account settings' => __('Account settings', 'newspaper'),
+                'Hello' => __('Hello', 'newspaper'),
+                'No products in the cart.' => __('No products in the cart.', 'newspaper'),
+                'Product categories' => __('Product categories', 'newspaper'),
+                'Product tags' => __('Product tags', 'newspaper'),
 
 			);
 		}, 11);
@@ -34330,6 +39177,7 @@ class td_config {
             "description" => "Optional - a title for this block, if you leave it blank the block will not have a title",
             "holder" => "div",
             "class" => "tdc-textfield-extrabig",
+            "info_img" => "https://cloud.tagdiv.com/help/custom_title.png",
         );
         $map_block_general_array[] = array(
             "param_name" => "custom_url",
@@ -34353,7 +39201,8 @@ class td_config {
             "heading" => 'Header template:',
             "description" => "Header template used by the current block",
             "holder" => "div",
-            "class" => "tdc-dropdown-big"
+            "class" => "tdc-dropdown-big",
+            "info_img" => "https://cloud.tagdiv.com/help/header_template.png",
         );
 
         return $map_block_general_array;
@@ -34366,7 +39215,7 @@ class td_config {
      * @return array
      */
     static function get_map_filter_array ($group = 'Filter') {
-        return array(
+        $filter_array = array(
             array(
                 "param_name" => "separator",
                 "type"       => "text_separator",
@@ -34497,62 +39346,93 @@ class td_config {
                     'Random Posts' => 'random_posts',
                     'Random posts Today' => 'random_today' ,
                     'Random posts from last 7 Day' => 'random_7_day' ,
-                    'Most Commented' => 'comment_count',
-                    'By Rank' => 'by_rank'
+                    'Most Commented' => 'comment_count'
                 ),
                 "heading" => 'Sort order:',
                 "description" => "How to sort the posts. Notice that Popular (last 7 days) option is affected by caching plugins and CDNs. For popular posts we recommend the jetpack (24-48hrs) method",
                 "holder" => "div",
                 "class" => "tdc-dropdown-big",
                 'group' => $group
-            ),
-
-            // this are added to the main group
-            array(
-                "param_name" => "separator",
-                "type"       => "text_separator",
-                'heading'    => 'Extra',
-                "value"      => "",
-                "class"      => "",
-            ),
-            array(
-                "param_name" => "limit",
-                "type" => "textfield",
-                "value" => '5',
-                "heading" => 'Limit post number:',
-                "description" => "If the field is empty the limit post number will be the number from Wordpress settings -> Reading",
-                "holder" => "div",
-                "class" => "tdc-textfield-small",
-            ),
-            array(
-                "param_name" => "offset",
-                "type" => "textfield",
-                "value" => '',
-                "heading" => 'Offset posts:',
-                "description" => "Start the count with an offset. If you have a block that shows 5 posts before this one, you can make this one start from the 6'th post (by using offset 5)",
-                "holder" => "div",
-                "class" => "tdc-textfield-small",
-            ),
-            array(
-                "param_name"  => "show_modified_date",
-                "type"        => "checkbox",
-                "value"       => '',
-                "heading"     => "Show modified date",
-                "description" => "Show last modified date of the article instead of published date",
-                "holder"      => "div",
-                "class"       => "",
-            ),
-            array(
-                'param_name' => 'el_class',
-                'type' => 'textfield',
-                'value' => '',
-                'heading' => 'Extra class',
-                'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
-                'class' => 'tdc-textfield-extrabig',
             )
+        );
 
-        );//end generic array
-    }//end get_map function
+	    $filter_array = apply_filters( 'td_composer_map_filter_array', $filter_array, $group );
+
+        $filter_array = array_merge(
+            $filter_array,
+            array(
+                // this are added to the main group
+                array(
+                    "param_name" => "separator",
+                    "type"       => "text_separator",
+                    'heading'    => 'Extra',
+                    "value"      => "",
+                    "class"      => "",
+                ),
+                array(
+                    "param_name" => "limit",
+                    "type" => "textfield",
+                    "value" => '5',
+                    "heading" => 'Limit post number:',
+                    "description" => "If the field is empty the limit post number will be the number from Wordpress settings -> Reading",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-small",
+                    "info_img" => "https://cloud.tagdiv.com/help/limit_post_number.png",
+                ),
+                array(
+                    "param_name" => "offset",
+                    "type" => "textfield",
+                    "value" => '',
+                    "heading" => 'Offset posts:',
+                    "description" => "Start the count with an offset. If you have a block that shows 5 posts before this one, you can make this one start from the 6'th post (by using offset 5)",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-small",
+                    "info_img" => "https://cloud.tagdiv.com/help/offset_posts.png",
+                ),
+                array(
+                    "param_name"  => "show_modified_date",
+                    "type"        => "checkbox",
+                    "value"       => '',
+                    "heading"     => "Show modified date",
+                    "description" => "Show last modified date of the article instead of published date",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "info_img" => "https://cloud.tagdiv.com/help/show_modified_date.png",
+                ),
+                array(
+                    "param_name" => "time_ago",
+                    "type" => "checkbox",
+                    "value" => '',
+                    "heading" => 'Enable time ago',
+                    "description" => "Applicable only for posts newer than 7 days",
+                    "holder" => "div",
+                    "class" => "",
+                    "info_img" => "https://cloud.tagdiv.com/help/module_time_ago.png",
+                ),
+                array(
+                    "param_name" => "time_ago_add_txt",
+                    "type" => "textfield",
+                    "value" => 'ago',
+                    "heading" => 'Time ago add. text',
+                    "description" => "",
+                    "placeholder" => "",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-big",
+                    "info_img" => "https://cloud.tagdiv.com/help/module_ago_text.png",
+                ),
+                array(
+                    'param_name' => 'el_class',
+                    'type' => 'textfield',
+                    'value' => '',
+                    'heading' => 'Extra class',
+                    'description' => 'Style particular content element differently - add a class name and refer to it in custom CSS',
+                    'class' => 'tdc-textfield-extrabig',
+                )
+            )
+        );
+
+        return $filter_array;
+    } // end get_map function
 
 
 
@@ -34616,6 +39496,17 @@ class td_config {
     }
 
 
+    static function get_map_exclusive_label_array($index = '', $sep_small = false, $group = 'Layout') {
+
+        $label_array = array();
+
+        $label_array = apply_filters( 'td_composer_map_exclusive_label_array', $label_array, $index, $sep_small, $group );
+
+        return $label_array;
+
+    }
+
+
 
     static function get_map_block_pagination_array() {
         return array (
@@ -34635,7 +39526,8 @@ class td_config {
                 "description" => "Our blocks support pagination.",
                 "holder" => "div",
                 "class" => "tdc-dropdown-big",
-                'group' => 'Filter'
+                'group' => 'Filter',
+                "info_img" => "https://cloud.tagdiv.com/help/module_pagination.png",
             ),
 
             array(
@@ -36198,6 +41090,22 @@ class td_config {
             $map_block_array,
             array(
                 array(
+                    "param_name" => "title_tag",
+                    "type" => "dropdown",
+                    "value" => array(
+                        'Default - H4' => '',
+                        'H1' => 'h1',
+                        'H2' => 'h2',
+                        'H3' => 'h3',
+                        'Div' => 'div'
+                    ),
+                    "heading" => 'Title tag (SEO)',
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "tdc-dropdown-big",
+                    "info_img" => "https://cloud.tagdiv.com/help/title_seo.png",
+                ),
+                array(
                     "param_name" => "autoplay",
                     "type" => "textfield",
                     "value" => '',
@@ -36205,6 +41113,22 @@ class td_config {
                     "description" => "Leave empty do disable autoplay",
                     "holder" => "div",
                     "class" => "tdc-textfield-small"
+                ),
+                array(
+                    "param_name" => "ms_title_tag",
+                    "type" => "dropdown",
+                    "value" => array(
+                        'Default - H3' => '',
+                        'H1' => 'h1',
+                        'H2' => 'h2',
+                        'H4' => 'h4',
+                        'Paragraph' => 'p'
+                    ),
+                    "heading" => 'Article title tag (SEO)',
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "tdc-dropdown-big",
+                    "info_img" => "https://cloud.tagdiv.com/help/module_title_seo.png",
                 )
             ),
             self::get_map_filter_array()

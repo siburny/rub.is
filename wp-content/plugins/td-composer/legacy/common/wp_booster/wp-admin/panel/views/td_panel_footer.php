@@ -54,9 +54,11 @@ if ( td_global::is_tdb_registered() ) {
         if (class_exists('SitePress', false)) {
             global $sitepress;
             $sitepress_settings = $sitepress->get_settings();
-            $translation_mode = (int) $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'];
-            if ( 1 === $translation_mode ) {
-                $option_id .= $sitepress->get_current_language();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
             }
         }
 
@@ -307,6 +309,29 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
                     array('text' => '3', 'val' => 3),
                     array('text' => '4', 'val' => 4),
                     array('text' => '5', 'val' => 5)
+                )
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- size of images -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Image size:</span>
+            <p>Set the size of the images ( by default the full image size will be used )</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_footer_instagram_image_size',
+                'values' => array(
+                    array('text' => '- Default - Full -', 'val' => ''),
+                    array('text' => 'Small - 150px', 'val' => 'td_150x0'),
+                    array('text' => 'Small - 300px', 'val' => 'td_300x0'),
+                    array('text' => 'Medium - 696px', 'val' => 'td_696x0'),
+                    array('text' => 'Large - 1068px', 'val' => 'td_1068x0')
                 )
             ));
             ?>

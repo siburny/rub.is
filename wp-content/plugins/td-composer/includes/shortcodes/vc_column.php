@@ -23,6 +23,75 @@ class vc_column extends tdc_composer_block {
                 .$unique_block_class {
                     vertical-align: @vertical_align;
                 }
+                
+                /* @column_height */
+                .$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+                    min-height: @column_height;
+                }
+				
+				
+				/* @flex_display */
+				.$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    display: @flex_display;
+				}
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    width: 100%;
+				}
+				.$unique_block_class > .wpb_wrapper > .vc_row_inner {
+				    width: auto;
+				}
+				/* @flex_layout */
+				.$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    flex-direction: @flex_layout;
+				}
+				/* @flex_full_height */
+				.$unique_block_class > .wpb_wrapper {
+				    width: 100%;
+				    height: 100%;
+				}
+				/* @flex_auto_height */
+				.$unique_block_class > .wpb_wrapper {
+				    width: auto;
+				    height: auto;
+				}
+				/* @flex_wrap */
+				.$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    flex-wrap: @flex_wrap;
+				}
+				/* @flex_horiz_align */
+				.$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    justify-content: @flex_horiz_align;
+				}
+				/* @flex_vert_align */
+				.$unique_block_class > .wpb_wrapper,
+				.$unique_block_class > .wpb_wrapper > .tdc-elements {
+				    align-items: @flex_vert_align;
+				}
+				/* @flex_order_0 */
+				.$unique_block_class {
+				    order: 0;
+				}
+				/* @flex_order */
+				.$unique_block_class {
+				    order: @flex_order;
+				}
+				/* @flex_width */
+				div.$unique_block_class {
+				    width: @flex_width !important;
+				}
+				/* @flex_grow_enable */
+				.$unique_block_class {
+				    flex-grow: 1;
+				}
+				/* @flex_grow_disable */
+				.$unique_block_class {
+				    flex-grow: 0;
+				}
 
 			</style>";
 
@@ -43,6 +112,91 @@ class vc_column extends tdc_composer_block {
             $res_ctx->load_settings_raw('vertical_align', $vertical_align);
         }
 
+        // height
+        $column_height = $res_ctx->get_shortcode_att('column_height');
+        $res_ctx->load_settings_raw( 'column_height', $column_height );
+        if( $column_height != '' && is_numeric( $column_height ) ) {
+            $res_ctx->load_settings_raw( 'column_height', $column_height . 'px' );
+        }
+
+
+
+        /*-- FLEX SETTINGS -- */
+        if( 'Newspaper' === TD_THEME_NAME ) {
+            $flex_layout = $res_ctx->get_shortcode_att('flex_layout');
+            if ($flex_layout != 'block') {
+                $res_ctx->load_settings_raw('flex_full_height', 1);
+            } else {
+                $res_ctx->load_settings_raw('flex_auto_height', 1);
+            }
+
+            if ($flex_layout != 'block') {
+
+                $res_ctx->load_settings_raw('flex_display', 'flex');
+
+                // layout reverse
+                $flex_layout_reverse = $res_ctx->get_shortcode_att('flex_layout_reverse');
+                if ($flex_layout_reverse != '') {
+                    if ($flex_layout == 'row') {
+                        $res_ctx->load_settings_raw('flex_layout', 'row-reverse');
+                    } else if ($flex_layout == 'column') {
+                        $res_ctx->load_settings_raw('flex_layout', 'column-reverse');
+                    }
+                } else {
+                    if ($flex_layout == 'row') {
+                        $res_ctx->load_settings_raw('flex_layout', 'row');
+                    } else if ($flex_layout == 'column') {
+                        $res_ctx->load_settings_raw('flex_layout', 'column');
+                    }
+                }
+
+                // flex wrap
+                $flex_wrap = $res_ctx->get_shortcode_att('flex_wrap');
+                if ($flex_wrap == '') {
+                    $res_ctx->load_settings_raw('flex_wrap', 'nowrap');
+                } else {
+                    $res_ctx->load_settings_raw('flex_wrap', 'wrap');
+                }
+
+
+                // horizontal align
+                $flex_horizontal_align = $res_ctx->get_shortcode_att('flex_horiz_align');
+                $res_ctx->load_settings_raw('flex_horiz_align', $flex_horizontal_align);
+
+                // vertical align
+                $flex_vertical_align = $res_ctx->get_shortcode_att('flex_vert_align');
+                $res_ctx->load_settings_raw('flex_vert_align', $flex_vertical_align);
+
+            } else {
+                $res_ctx->load_settings_raw('flex_display', 'block');
+            }
+
+            // order
+            $flex_order = $res_ctx->get_shortcode_att('flex_order');
+            if ($flex_order != '' && is_numeric($flex_order)) {
+                if ($flex_order == '0') {
+                    $res_ctx->load_settings_raw('flex_order_0', 1);
+                } else {
+                    $res_ctx->load_settings_raw('flex_order', $flex_order);
+                }
+            }
+
+            // width
+            $flex_width = $res_ctx->get_shortcode_att('flex_width');
+            $res_ctx->load_settings_raw('flex_width', $flex_width);
+            if ($flex_width != '' && is_numeric($flex_width)) {
+                $res_ctx->load_settings_raw('flex_width', $flex_width . 'px');
+            }
+
+            // grow
+            $flex_grow = $res_ctx->get_shortcode_att('flex_grow');
+            if ($flex_grow == 'on') {
+                $res_ctx->load_settings_raw('flex_grow_enable', 1);
+            } else if ($flex_grow == 'off') {
+                $res_ctx->load_settings_raw('flex_grow_disable', 1);
+            }
+        }
+
     }
 
 	function render($atts, $content = null) {
@@ -52,6 +206,16 @@ class vc_column extends tdc_composer_block {
 			'width' => '1/1',
 			'is_sticky' => '',
             'vertical_align' => '',
+            'column_height' => '',
+
+            'flex_layout' => 'block',
+            'flex_layout_reverse' => '',
+            'flex_wrap' => '',
+            'flex_horiz_align' => 'flex-start',
+            'flex_vert_align' => 'flex-start',
+            'flex_order' => '',
+            'flex_width' => '',
+            'flex_grow' => ''
 		), $atts);
 
 

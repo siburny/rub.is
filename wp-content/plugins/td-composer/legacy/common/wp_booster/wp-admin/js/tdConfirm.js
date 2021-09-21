@@ -44,6 +44,10 @@ var tdConfirm;
             tdConfirm._$body.append( tdConfirm._$content );
         },
 
+        close: function() {
+            tb_remove();
+        },
+
         /**
          * OK modal
          * @param args

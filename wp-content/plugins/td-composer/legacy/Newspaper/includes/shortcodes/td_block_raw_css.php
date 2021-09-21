@@ -34,7 +34,11 @@ class td_block_raw_css extends td_block {
                     $buffy .= '<div class="tdc-placeholder-title"></div>';
                 }
 
-                if ( $css_content != '' ) {
+                global $post;
+                if ( ! empty( $post->ID ) ) {
+                    $tda_essential_css = get_post_meta($post->ID, 'tda_essential_css', true);
+                }
+                if ( empty( $tda_essential_css ) && $css_content != '' ) {
                     $buffy .= '<style>' . $css_content . '</style>';
                 }
 

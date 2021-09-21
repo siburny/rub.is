@@ -13,6 +13,7 @@ td_api_autoload::add('td_pinterest', TDC_PATH . '/legacy/common/wp_booster/td_pi
 td_api_autoload::add('td_exchange', TDC_PATH . '/legacy/common/wp_booster/td_exchange.php');
 td_api_autoload::add('td_instagram', TDC_PATH . '/legacy/common/wp_booster/td_instagram.php');
 td_api_autoload::add('td_covid19', TDC_PATH . '/legacy/common/wp_booster/td_covid19.php');
+td_api_autoload::add('td_flickr', TDC_PATH . '/legacy/common/wp_booster/td_flickr.php');
 
 
 /* ----------------------------------------------------------------------------

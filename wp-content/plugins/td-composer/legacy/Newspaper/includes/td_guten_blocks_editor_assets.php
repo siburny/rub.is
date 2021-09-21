@@ -83,23 +83,24 @@ function td_guten_blocks_assets() {
 
 // Hook: Blocks Editor Assets.
 add_action( 'enqueue_block_editor_assets', 'td_guten_blocks_assets' );
+remove_filter( 'admin_head', 'wp_check_widget_editor_deps' );
 
 // Hook: Gutenberg Blocks Categories: adds a new gut blocks editor > blocks category
-add_filter( 'block_categories', function ( $categories, $post ){
-	if ( $post->post_type !== 'post' ) {
-		return $categories;
-	}
-	return array_merge(
-		$categories,
-		array(
-			array(
-				'slug' => 'td-category',
-				'title' => __( 'tagDiv Blocks', TD_THEME_NAME ),
-				'icon'  => 'wordpress',
-			),
-		)
-	);
-}, 10, 2 );
+//add_filter( 'block_categories', function ( $categories, $post ){
+//	if ( $post->post_type !== 'post' ) {
+//		return $categories;
+//	}
+//	return array_merge(
+//		$categories,
+//		array(
+//			array(
+//				'slug' => 'td-category',
+//				'title' => __( 'tagDiv Blocks', TD_THEME_NAME ),
+//				'icon'  => 'wordpress',
+//			),
+//		)
+//	);
+//}, 10, 2 );
 
 
 

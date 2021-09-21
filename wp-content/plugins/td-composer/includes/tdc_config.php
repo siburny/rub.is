@@ -13,6 +13,7 @@ class tdc_config {
 		'tdcShortcodeParser'    => '/assets/js/tdcShortcodeParser.js',
 		'tdcInit'               => '/assets/js/wp-admin/tdcInit.js',  //@todo this should load only on edit post in wp-admin
 		'tdcDebug'              => '/assets/js/tdcDebug.js',  //inject tdcDebug in the iframe also
+		'tdcStore'              => '/assets/js/tdcStore.js',
 	);
 
 	static $js_files_for_wrapper = array (
@@ -22,6 +23,7 @@ class tdc_config {
 		'tdcRecycle'            => '/assets/js/tdcRecycle.js',
 
 		'tdcState'              => '/assets/js/tdcState.js',
+		'tdcStore'              => '/assets/js/tdcStore.js',
 
 		'tdcSavePost'           => '/assets/js/tdcSavePost.js',
 		'tdcShortcodeParser'    => '/assets/js/tdcShortcodeParser.js',
@@ -102,6 +104,10 @@ class tdc_config {
 
 	static $js_files_for_plugin_live_css = array(
 		'td_live_css_main'                      => '/css-live/assets/js/tdLiveCssMain.js',
+	);
+
+	static $js_files_for_plugin_analyze_css = array(
+		'td_analyze_css_main'                      => '/css-analyze/assets/js/tdAnalyzeCssMain.js',
 	);
 
 	static $font_settings = array(

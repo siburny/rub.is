@@ -12,7 +12,7 @@
     .transition(all 0.3s);
   }
 
-  i {
+  .tdm-btn-icon {
     pointer-events: none;
     vertical-align: middle;
     line-height: 1;
@@ -23,6 +23,17 @@
     }
     &:last-child {
       margin-left: 14px;
+    }
+  }
+
+  .tdm-btn-icon-svg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      height: auto;
+      .transition(all 0.3s);
     }
   }
 }
@@ -63,6 +74,10 @@
   line-height: 29px; //31px;
   height: 31px;
   padding: 0 16px;
+
+  svg {
+    width: 13px;
+  }
 }
 // Medium
 .tdm-btn-md {
@@ -70,6 +85,10 @@
   line-height: 39px;
   height: 41px;
   padding: 0 24px;
+
+  svg {
+    width: 13px;
+  }
 
   /* responsive portrait phone */
   @media (max-width: @responsive_p_phone_max) {
@@ -86,6 +105,10 @@
   height: 55px;
   padding: 0 36px;
 
+  svg {
+    width: 15px;
+  }
+
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
     line-height: 52px;
@@ -99,6 +122,10 @@
     line-height: 50px;
     height: 50px;
     padding: 0 30px;
+
+    svg {
+      width: 14px;
+    }
   }
 }
 // X-Large
@@ -108,6 +135,10 @@
   line-height: 68px; //75px;
   height: 75px;
   padding: 0 50px;
+
+  svg {
+    width: 17px;
+  }
 }
 
 
@@ -118,6 +149,11 @@
   color: #fff;
   .transition(all 0.3s ease);
   .transform(translateZ(0));
+
+  svg,
+  svg * {
+    fill: #fff;
+  }
 
   &:before {
     content: '';
@@ -136,6 +172,9 @@
     opacity: 1;
   }
 }
+.td-scroll-in-view .tds-button1:before {
+  opacity: 1;
+}
 
 
 // Style 2, 6 & 7 - bordered
@@ -149,11 +188,33 @@
   i {
     color: @td_theme_color;
   }
+  svg,
+  svg * {
+    fill: @td_theme_color;
+  }
 
   &:hover {
     .tdm-btn-text,
     i {
       color: #222;
+    }
+    svg,
+    svg * {
+      fill: #222;
+    }
+  }
+}
+.td-scroll-in-view {
+  .tds-button2,
+  .tds-button6,
+  .tds-button7 {
+    .tdm-btn-text,
+    i {
+      color: #222;
+    }
+    svg,
+    svg * {
+      fill: #222;
     }
   }
 }
@@ -173,6 +234,14 @@
   }
 
   &:hover {
+    &:before {
+      border-color: #222;
+    }
+  }
+}
+.td-scroll-in-view {
+  .tds-button2,
+  .tds-button6 {
     &:before {
       border-color: #222;
     }
@@ -221,6 +290,11 @@
     left: 0;
     width: 100%;
     height: 100%;
+  }
+
+  svg,
+  svg * {
+    fill: #fff;
   }
 
   // XLarge
@@ -313,6 +387,46 @@
     display: block;
   }
 }
+.td-scroll-in-view {
+  .tds-button4 {
+    // XLarge
+    &.tdm-btn-xlg-wrap {
+      .tdm-button-a {
+        transform: rotateX(-90deg) translateZ(38px);
+      }
+      .tdm-button-b {
+        transform: rotateX(-0deg) translateZ(38px);
+      }
+    }
+    // Large
+    &.tdm-btn-lg-wrap {
+      .tdm-button-a {
+        transform: rotateX(-90deg) translateZ(27px);
+      }
+      .tdm-button-b {
+        transform: rotateX(-0deg) translateZ(27px);
+      }
+    }
+    // Medium
+    &.tdm-btn-md-wrap {
+      .tdm-button-a {
+        transform: rotateX(-90deg) translateZ(20px);
+      }
+      .tdm-button-b {
+        transform: rotateX(-0deg) translateZ(20px);
+      }
+    }
+    // Small
+    &.tdm-btn-sm-wrap {
+      .tdm-button-a {
+        transform: rotateX(-90deg) translateZ(15px);
+      }
+      .tdm-button-b {
+        transform: rotateX(-0deg) translateZ(15px);
+      }
+    }
+  }
+}
 
 // Styles 5 - Text
 .tds-button5 {
@@ -327,12 +441,30 @@
   i {
     color: #000;
   }
+  svg,
+  svg * {
+    fill: #000;
+  }
 
   &:hover {
     .tdm-btn-text,
     i {
       color: @td_theme_color;
     }
+    svg,
+    svg * {
+      fill: @td_theme_color;
+    }
+  }
+}
+.td-scroll-in-view .tds-button5 {
+  .tdm-btn-text,
+  i {
+    color: @td_theme_color;
+  }
+  svg,
+  svg * {
+    fill: @td_theme_color;
   }
 }
 
@@ -350,6 +482,12 @@
   }
 
   &:hover:after {
+    top: 0;
+    left: 0;
+  }
+}
+.td-scroll-in-view .tds-button6 {
+  &:after {
     top: 0;
     left: 0;
   }
@@ -398,6 +536,16 @@
     &:before {
       opacity: 1;
     }
+  }
+}
+.td-scroll-in-view .tds-button7 {
+  .tdm-btn-border-top,
+  .tdm-btn-border-bottom {
+    background-color: #222;
+  }
+
+  &:before {
+    opacity: 1;
   }
 }
 

@@ -625,9 +625,18 @@ function td_upload_image_font(id_upload_field) {
         jQuery('.media-menu .media-menu-item:nth-of-type(4)').addClass('hidden');
 
         window.send_to_editor = function(html) {
+
+            if (-1 !== html.indexOf('[caption')) {
+                var result = /\[caption(.*)\](.*)\[\/caption\]/g.exec(html);
+                if ( 3 === result.length ) {
+                    html = result[2];
+                }
+            }
+            
             img_link = jQuery('img', html).attr('src');
             if(typeof img_link == 'undefined') {
-                img_link = jQuery(html).attr('src');
+                var $html = jQuery(html),
+                img_link = $html.attr('src');
             }
             if(typeof img_link == 'undefined') {
                 img_link = jQuery(html).attr('href'); //used on font files (woff)
@@ -2031,4 +2040,36 @@ function tdFooterPageSelection() {
             $viewFooterPage.attr( 'href', editUrl  );
         }
     });
+}
+
+/**
+ * this function is used to auto navigate to specific panel sections using panel id
+ * data_panel_id - the panel id
+ */
+function panel_navigate(data_panel_id) {
+
+    if( jQuery( '#' + data_panel_id ).length === 0 ) {
+        // panel id not found
+        return;
+    }
+
+    var dataPanelIdSelector = "[data-panel='" + data_panel_id + "']";
+    var currentPanel = jQuery('.td-panel-menu').find(dataPanelIdSelector);
+
+    if ( currentPanel.length ) {
+        currentPanel.trigger('click');
+    }
+
+}
+
+/**
+ * used to get query param value by param name from url
+ * @param name - query param name
+ * @return {string} - the query param value
+ */
+function get_param_by_name(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(window.location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }

@@ -30,17 +30,20 @@
                     <?php
                     $post_type = get_post_type();
                     $td_taxonomies = get_object_taxonomies($post_type);
-                    $td_taxonomy_terms = get_terms($td_taxonomies);
-                    //                    print_r($td_taxonomy_terms);
-                    //                    die;
-                    foreach ($td_taxonomy_terms as $td_term) {
+                    if ( !empty($td_taxonomies) ) {
+                        $td_taxonomy_terms = get_terms($td_taxonomies);
 
-                        $td_term_name = $td_term->name;
-                        $td_term_id = $td_term->term_id;
+                        foreach ($td_taxonomy_terms as $td_term) {
 
-                        ?>
-                        <option value="<?php echo $td_term_id?>"<?php $mb->the_select_state($td_term_id); ?>><?php echo $td_term_name?></option>
-                        <?php
+                            $td_term_name = $td_term->name;
+                            $td_term_id = $td_term->term_id;
+
+                            ?>
+                            <option
+                                value="<?php echo $td_term_id ?>"<?php $mb->the_select_state($td_term_id); ?>><?php echo $td_term_name ?></option>
+                            <?php
+
+                        }
 
                     }?>
                 </select>

@@ -214,7 +214,7 @@ class tds_testimonial4 extends td_style {
             $name_tag = 'h3';
         }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
         $buffy .= '<div class="tdm-testimonial-wrap td-fix-index ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             if ( ! empty( $image ) ) {
                 $buffy .= '<div class="tdm-testimonial-image" style="background-image: url(' . tdc_util::get_image_or_placeholder( $image ) . ');"></div>';

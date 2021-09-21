@@ -14,7 +14,7 @@ class td_video_playlist_render {
 	 *
 	 * @return string the playlist HTML
 	 */
-    static function render_generic($atts, $list_type, $block_uid = '', $block_css = '') {
+    static function render_generic($atts, $list_type, $get_wrapper_class, $block_uid = '', $block_css = '') {
         if ( $block_uid == '' ) {
             $block_uid = td_global::td_generate_unique_id(); //update unique class on each render
         }
@@ -29,7 +29,7 @@ class td_video_playlist_render {
             $playlist_source = $atts['playlist_source'];
         }
 
-        $buffy .= '<div class="td_block_wrap td_block_video_playlist ' . $el_class . $block_uid . '">';
+        $buffy .= '<div class="td_block_video_playlist ' . $get_wrapper_class . ' ' . $el_class . ' ' .  $block_uid . '">';
             $buffy .= $block_css;
 
 	        $buffy .= '<div class="td_block_inner">';
@@ -418,8 +418,7 @@ class td_video_playlist_render {
                     if ( td_global::$http_or_https === 'https' && strpos( $video_data['thumb'], 'https://' ) === false ) {
                         $video_data['thumb'] = str_replace( 'http://', 'https://', $video_data['thumb'] );
                     }
-
-                    $playlist_structure_thumb = '<div class="td_video_thumb"><img src="' . $video_data['thumb'] . '" alt="Video thumbnail" /></div>';
+                    $playlist_structure_thumb = '<div class="td_video_thumb"><img src="' . $video_data['thumb'] . '" alt="Video thumbnail" width="72px" height="40px" /></div>';
                     //$video_data_propeties .= 'thumb:"' . $video_data['thumb'] . '",';
                 }
 

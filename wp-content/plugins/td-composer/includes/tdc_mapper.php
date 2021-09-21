@@ -30,6 +30,55 @@ class tdc_mapper {
 		    echo 'Shortcode ' . $attributes['base'] . ' already mapped, please use the update method to update it!';
 		}
 
+		if (tdc_state::get_start_composer_for_mobile()) {
+
+			if (!empty($attributes['tdc_start_values'])) {
+				$tdc_start_values = json_decode( base64_decode($attributes['tdc_start_values']), true);
+
+				$changed = false;
+
+				if (!empty($tdc_start_values) && count($tdc_start_values)) {
+
+					foreach ($tdc_start_values[0] as $prop_name => &$prop_value) {
+
+						if ( base64_decode( $prop_value, true ) && base64_encode( base64_decode( $prop_value, true ) ) === $prop_value && mb_detect_encoding( base64_decode( $prop_value, true ) ) === mb_detect_encoding( $prop_value ) ) {
+
+							$decoded_values = base64_decode( $prop_value, true );
+							$values         = json_decode( $decoded_values, true );
+
+							if ( isset( $values[ 'type' ] ) && 'gradient' === $values[ 'type' ] ) {
+								continue;
+							}
+
+							$final_values = [];
+
+							if ( ! isset( $values[ 'phone' ] ) && isset( $values[ 'all' ] ) ) {
+								$final_values[ 'phone' ] = $values[ 'all' ];
+							}
+
+							if ( isset( $values[ 'portrait' ] ) ) {
+								$final_values[ 'all' ] = $values[ 'portrait' ];
+							} else if ( isset( $values[ 'all' ] ) ) {
+								$final_values[ 'all' ] = $values[ 'all' ];
+							}
+
+							if ( isset( $values[ 'phone' ] ) ) {
+								$final_values[ 'phone' ] = $values[ 'phone' ];
+							}
+
+							$prop_value = base64_encode( json_encode( $final_values ) );
+
+							$changed = true;
+						}
+					}
+				}
+
+				if ( $changed ) {
+					$attributes[ 'tdc_start_values' ] = base64_encode( json_encode( $tdc_start_values ) );
+				}
+			}
+		}
+
 		self::$mapped_shortcodes[$attributes['base']] = $attributes;
 	}
 
