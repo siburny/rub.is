@@ -3,10 +3,8 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.1
+ * Version: 4.3.1
  */
-
-use function PHPSTORM_META\map;
 
 require_once 'Numword.php';
 require_once 'load_csv.php';
@@ -510,7 +508,7 @@ function datecalc_func($atts)
         $ret = $all_data['birthday'][$date->format('n/j/Y')];
 
         $count = 3;
-        if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+        if (array_key_exists('show', $atts) && is_numeric($atts['show'])) {
             $count = 0 + $atts['show'];
         }
 
@@ -534,7 +532,7 @@ function datecalc_func($atts)
         $ret = $all_data['event'][$date->format('n/j')];
 
         $count = 3;
-        if (!array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+        if (array_key_exists('show', $atts) && is_numeric($atts['show'])) {
             $count = 0 + $atts['show'];
         }
 
@@ -835,7 +833,7 @@ function datecalc_func($atts)
         $f2->setTextAttribute(NumberFormatter::DEFAULT_RULESET, '%spellout- nal');
 
         $ret = $date->format('F') . ' ' . $f2->format($date->format('j')) . ', ' . $f1->format(substr($date->format('Y'), 0, 2)) . ' ' . $f1->format(substr($date->format('Y'), 2, 2));
-    } else if (count($atts) == 2 && !array_key_exists('display', $atts)) {
+    } else if (count($atts) >= 2 && !array_key_exists('display', $atts)) {
 
         // DYNAMIC CSV
 
@@ -868,17 +866,45 @@ function datecalc_func($atts)
             return '';
         }
 
-        if (count($ret) == 1) {
-            $ret = $ret[0];
+        $count = 100;
+        if (array_key_exists('show', $atts) && is_numeric($atts['show'])) {
+            $count = 0 + $atts['show'];
         }
 
-        if (array_key_exists('output', $ret)) {
-            return $ret['output'];
-        } else if (array_key_exists('name', $ret)) {
-            return $ret['name'];
-        } else {
-            return '';
+        $filters = array();
+        if (array_key_exists('filter', $atts)) {
+            $filters = array_map(function ($input) {
+                return array_map('trim', explode('|', $input));
+            }, array_map('trim', explode(',', $atts['filter'])));
         }
+
+        $str = array();
+        $i = 0;
+        foreach ($ret as $key => $value) {
+            if ($i++ < $count) {
+
+                $match = true;
+
+                if (count($filters)) {
+                    foreach ($filters as $filter) {
+                        if (!(array_key_exists($filter[0], $value) && strtolower($value[$filter[0]]) == strtolower($filter[1]))) {
+                            $match = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($match) {
+                    if (array_key_exists('output', $value)) {
+                        $str[] = $value['output'];
+                    } else if (array_key_exists('name', $value)) {
+                        $str[] = $value['name'];
+                    }
+                }
+            }
+        }
+
+        $ret = implode("<br />", $str);
     } else {
         $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
 
@@ -1086,6 +1112,13 @@ function date_calc_settings_page()
 {
     global $all_data;
 
+    if (isset($_GET['clear'])) {
+        delete_transient('date-calc-cache-' . sanitize_title_with_dashes($_GET['clear']));
+
+        print '<script>window.location = "' . admin_url('options-general.php?page=date-calc-settings&complete=' . time()) . ';";</script>';
+        exit;
+    }
+
     if (isset($_GET['tab'])) {
         $active_tab = $_GET['tab'];
     } else {
@@ -1161,7 +1194,7 @@ function date_calc_settings_page()
                     <ul>
                         <?php
                         foreach ($all_data as $key => $value) {
-                            print '<li>' . $key . ': <b>' . count($value) . '</b> record(s)</li>';
+                            print '<li>' . $key . ': <b>' . count($value) . '</b> record(s) [<a href="' . admin_url('options-general.php?page=date-calc-settings&clear=' . $key . '&complete=' . time()) . '" style="font-weight:bold;">CLEAR</a>]</li>';
                         }
                         ?>
                     </ul>

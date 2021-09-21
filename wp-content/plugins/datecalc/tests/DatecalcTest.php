@@ -562,6 +562,36 @@ final class DatecalcTest extends TestCase
                 '344,000,000 miles',
                 '06/25/2021'
             ],
+
+            // Movies
+            [
+                '[datecalc date="9/3/2021" netflix="true"]',
+                'Kid Cosmic<br />Kid Cosmic 2',
+            ],
+            [
+                '[datecalc date="9/6/2021" netflix="true"]',
+                'The Circle<br />Into the Night<br />Into the Night 2',
+            ],
+            [
+                '[datecalc date="9/6/2021" netflix="true" show="2"]',
+                'The Circle<br />Into the Night',
+            ],
+            [
+                '[datecalc date="9/3/2021" netflix="true" day="-1"]',
+                'What Is Life Worth',
+            ],
+            [
+                '[datecalc date="9/7/2021" netflix="true" filter="rank|popular"]',
+                '4<br />5',
+            ],
+            [
+                '[datecalc date="9/7/2021" netflix="true" filter="rank|popular,type|Netflix Original"]',
+                '4<br />5',
+            ],
+            [
+                '[datecalc date="9/7/2021" netflix="true" filter="type|"]',
+                '1<br />2',
+            ],
         ];
     }
 
