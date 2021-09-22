@@ -3,7 +3,7 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.4.0
+ * Version: 4.4.1
  */
 
 require_once 'Numword.php';

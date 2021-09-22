@@ -34,10 +34,12 @@ foreach ($csvs as $url) {
         }
 
         if (!empty($file)) {
+            $file = array_map('trim', $file);
             $input = array_map('str_getcsv', $file);
         } else {
             $file = @file($url . '?t=' . time());
             if (!empty($file)) {
+                $file = array_map('trim', $file);
                 $input = array_map('str_getcsv', $file);
             } else {
                 $input = null;
@@ -54,13 +56,20 @@ foreach ($csvs as $url) {
             $c = strtolower($c);
         });
 
+        $key = 0;
+        if (in_array('date', $input[0])) {
+            $key = array_search('date', $input[0]);
+        } else if (in_array('year', $input[0])) {
+            $key = array_search('date', $input[0]);
+        }
+
         $skip = true;
-        array_walk($input, function ($a) use (&$all_data, $name, $input, &$skip) {
+        array_walk($input, function ($a) use (&$all_data, $name, $input, &$skip, $key) {
             if (!$skip) {
-                if (!array_key_exists($a[0], $all_data[$name])) {
-                    $all_data[$name][$a[0]] = array();
+                if (!array_key_exists($a[$key], $all_data[$name])) {
+                    $all_data[$name][$a[$key]] = array();
                 }
-                $all_data[$name][$a[0]][] = array_combine($input[0], $a);
+                $all_data[$name][$a[$key]][] = array_combine($input[0], $a);
             }
             $skip = false;
         });
