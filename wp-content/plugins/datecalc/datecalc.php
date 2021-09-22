@@ -3,11 +3,18 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.3.1
+ * Version: 4.4.0
  */
 
 require_once 'Numword.php';
 require_once 'load_csv.php';
+
+function count_mine($array)
+{
+    return array_reduce($array, function ($carry, $item) {
+        return  $carry + count($item);
+    }, 0);
+}
 
 function number_format_nozero($nbr, $precision = 0)
 {
@@ -878,6 +885,10 @@ function datecalc_func($atts)
             }, array_map('trim', explode(',', $atts['filter'])));
         }
 
+        if (array_key_exists('order', $atts) && $atts['order'] == 'random') {
+            shuffle($ret);
+        }
+
         $str = array();
         $i = 0;
         foreach ($ret as $key => $value) {
@@ -1113,7 +1124,20 @@ function date_calc_settings_page()
     global $all_data;
 
     if (isset($_GET['clear'])) {
-        delete_transient('date-calc-cache-' . sanitize_title_with_dashes($_GET['clear']));
+        if ($_GET['clear'] == 'all') {
+            global $wpdb;
+
+            $transients = $wpdb->get_results(
+                "SELECT option_name AS name FROM $wpdb->options 
+              WHERE option_name LIKE '_transient_date-calc-cache-%'"
+            );
+
+            foreach ($transients as $tran) {
+                delete_transient(str_replace('_transient_', '', $tran->name));
+            }
+        } else {
+            delete_transient('date-calc-cache-' . sanitize_title_with_dashes($_GET['clear']));
+        }
 
         print '<script>window.location = "' . admin_url('options-general.php?page=date-calc-settings&complete=' . time()) . ';";</script>';
         exit;
@@ -1190,11 +1214,11 @@ function date_calc_settings_page()
                         </tr>
                     </table>
 
-                    <h3>Cache Statistics</h3>
+                    <h3>Cache Statistics [<a href="<?php echo admin_url('options-general.php?page=date-calc-settings&clear=all&complete=' . time()) ?>" style="font-weight:bold;">CLEAR ALL</a>]</h3>
                     <ul>
                         <?php
                         foreach ($all_data as $key => $value) {
-                            print '<li>' . $key . ': <b>' . count($value) . '</b> record(s) [<a href="' . admin_url('options-general.php?page=date-calc-settings&clear=' . $key . '&complete=' . time()) . '" style="font-weight:bold;">CLEAR</a>]</li>';
+                            print '<li><b>' . $key . '</b>: <b>' . count_mine($value) . '</b> record(s) fetched on <b>' . get_transient('date-calc-cache-' . $key . '_saved') . '</b> - [<a href="' . admin_url('options-general.php?page=date-calc-settings&clear=all&complete=' . time()) . '" style="font-weight:bold;">CLEAR</a>]</li>';
                         }
                         ?>
                     </ul>

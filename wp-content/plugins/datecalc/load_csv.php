@@ -36,7 +36,7 @@ foreach ($csvs as $url) {
         if (!empty($file)) {
             $input = array_map('str_getcsv', $file);
         } else {
-            $file = @file($url);
+            $file = @file($url . '?t=' . time());
             if (!empty($file)) {
                 $input = array_map('str_getcsv', $file);
             } else {
@@ -46,6 +46,7 @@ foreach ($csvs as $url) {
 
         if (empty($input)) {
             set_transient('date-calc-cache-' . $name, chunk_split(base64_encode(serialize(array())), 76, "\r\n"), 1 * HOUR_IN_SECONDS);
+            set_transient('date-calc-cache-' . $name . '_saved', 'N/A', 1 * HOUR_IN_SECONDS);
             continue;
         }
 
@@ -64,7 +65,10 @@ foreach ($csvs as $url) {
             $skip = false;
         });
 
-        set_transient('date-calc-cache-' . $name, chunk_split(base64_encode(serialize($all_data[$name])), 76, "\r\n"), random_int(12, 25) * HOUR_IN_SECONDS);
+        $expiration = random_int(12, 25) * HOUR_IN_SECONDS;
+        $date = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+        set_transient('date-calc-cache-' . $name, chunk_split(base64_encode(serialize($all_data[$name])), 76, "\r\n"), $expiration);
+        set_transient('date-calc-cache-' . $name . '_saved', $date->format(DATE_RFC2822), $expiration);
     }
 }
 
