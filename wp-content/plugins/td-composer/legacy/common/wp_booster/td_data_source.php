@@ -316,11 +316,19 @@ class td_data_source {
         }
 
 		// custom field 1
+        $short_months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
+        $long_months = array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
+
 		if (!empty($post_custom_field_name) && !empty($post_custom_field_value)) {
-			if($post_custom_field_value == 'today') {
-				$date = date('m/d/');
-			} else if($post_custom_field_value == 'tomorrow' || $post_custom_field_value == 'yesterday') {
-				$date = date('m/d/', strtotime($post_custom_field_value));
+			if($post_custom_field_value == 'today' || $post_custom_field_value == 'tomorrow' || $post_custom_field_value == 'yesterday') {
+                $time = new DateTime($post_custom_field_value, new DateTimeZone(get_option('timezone_string')));
+				$date = '0?'.$time->format('n').'/0?'.$time->format('j').'/';
+            } else if(in_array(strtolower($post_custom_field_value), $short_months)) {
+                $month = array_search(strtolower($post_custom_field_value), $short_months) + 1;
+                $date = '0?'.$month.'/';
+            } else if(in_array(strtolower($post_custom_field_value), $long_months)) {
+                $month = array_search(strtolower($post_custom_field_value), $long_months) + 1;
+                $date = '0?'.$month.'/';
 			} else {
 				$date = explode('/', $post_custom_field_value);
 				
@@ -328,10 +336,9 @@ class td_data_source {
 					$date = $post_custom_field_value.'/';
 				} else if(count($date) == 1 && is_numeric($post_custom_field_value)) {
 					if($post_custom_field_value > 999) {
-						$date = '/'.$post_custom_field_value;
-						$wp_query_args['meta_value'] = preg_quote($date).'$';
+						$date = '.*/'.$post_custom_field_value.'$';
 					} else {
-						$date = $post_custom_field_value.'/';
+						$date = '0?'.$post_custom_field_value.'/';
 					}
 				} else {
 					$date = $post_custom_field_value;
@@ -340,7 +347,7 @@ class td_data_source {
             
             $wp_query_args['meta_query'][] = array(
                 'key' => $post_custom_field_name,
-                'value' => '^'.preg_quote($date),
+                'value' => '^'.$date,
                 'compare' => 'RLIKE',
             );
 		}
