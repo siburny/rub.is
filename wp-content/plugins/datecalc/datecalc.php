@@ -3,7 +3,7 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.4.1
+ * Version: 4.4.2
  */
 
 require_once 'Numword.php';
@@ -881,7 +881,7 @@ function datecalc_func($atts)
         $filters = array();
         if (array_key_exists('filter', $atts)) {
             $filters = array_map(function ($input) {
-                return array_map('trim', explode('|', $input));
+                return array_map('strtolower', array_map('trim', explode('|', $input)));
             }, array_map('trim', explode(',', $atts['filter'])));
         }
 
@@ -892,7 +892,7 @@ function datecalc_func($atts)
         $str = array();
         $i = 0;
         foreach ($ret as $key => $value) {
-            if ($i++ < $count) {
+            if ($i < $count) {
 
                 $match = true;
 
@@ -906,6 +906,7 @@ function datecalc_func($atts)
                 }
 
                 if ($match) {
+                    $i++;
                     if (array_key_exists('output', $value)) {
                         $str[] = $value['output'];
                     } else if (array_key_exists('name', $value)) {
