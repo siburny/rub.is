@@ -98,7 +98,8 @@
   background-color: #b40000;
   cursor: pointer;
 }
-#tdw-css-writer header {
+#tdw-css-writer header,
+#tdw-css-analyze header {
   cursor: pointer;
 }
 #tdw-css-writer footer {
@@ -144,4 +145,36 @@
   background-repeat: no-repeat;
   background-position: -105px 0;
   cursor: nw-resize;
+}
+#tdw-css-analyze .tda-essential-css {
+  display: inline-block;
+  background-color: #4ea0ec;
+  padding: 10px 10px;
+  color: white;
+  margin: 3px 0 3px 15px;
+  position: relative;
+}
+#tdw-css-analyze footer {
+  position: relative;
+}
+#tdw-css-analyze footer .tda-critical-css {
+  display: inline-block;
+  background-color: #4ea0ec;
+  padding: 10px 10px;
+  color: white;
+  margin: 3px 0 3px 15px;
+  position: relative;
+}
+#tdw-css-analyze footer .tdw-resize {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: #000000;
+  background: url(../images/css-live-sprite.png);
+  background-repeat: no-repeat;
+  background-position: -105px 0;
+  cursor: nw-resize;
+  z-index: 100;
 }

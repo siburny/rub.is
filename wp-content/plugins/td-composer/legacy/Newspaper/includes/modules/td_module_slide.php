@@ -23,6 +23,9 @@ class td_module_slide extends td_module {
     function render($td_column_number, $td_post_count, $td_unique_id_slide) {
         $image_size = $this->get_shortcode_att('image_size');
         $modified_date = $this->get_shortcode_att('show_modified_date');
+        $time_ago = $this->get_shortcode_att('time_ago');
+        $time_ago_add_txt = $this->get_shortcode_att('time_ago_add_txt');
+        $title_tag = $this->get_shortcode_att('ms_title_tag');
 
 
         $buffy = '';
@@ -52,10 +55,10 @@ class td_module_slide extends td_module {
                 $buffy .= '<span class="slide-meta-cat">';
                     $buffy .= $this->get_category();
                 $buffy .= '</span>';
-                $buffy .=  $this->get_title();//$this->get_title_main();
+                $buffy .=  $this->get_title('', $title_tag);//$this->get_title_main();
                 $buffy .= '<div class="td-module-meta-info">';
                     $buffy .= $this->get_author();
-                    $buffy .= $this->get_date($modified_date);
+                    $buffy .= $this->get_date($modified_date, false, $time_ago, $time_ago_add_txt);
                     $buffy .= $this->get_comments();
                 $buffy .= '</div>';
             $buffy .= '</div>';

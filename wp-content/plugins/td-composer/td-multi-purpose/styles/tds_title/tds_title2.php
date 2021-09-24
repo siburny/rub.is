@@ -209,7 +209,7 @@ class tds_title2 extends td_style {
 		$title_size = $this->get_shortcode_att( 'title_size' );
 		$title_text = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'title_text' ) ) ) );
 
-		$buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+		$buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' td-fix-index ' . $this->unique_style_class . '">';
             $buffy .= '<' . $title_tag . ' class="tdm-title ' . $title_size . '">' . $title_text . '</' . $title_tag . '>';

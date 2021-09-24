@@ -5,13 +5,65 @@ class tdm_block_socials extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
                 
+                /* @style_general_socials */
+                .tdm_block.tdm_block_socials {
+                  margin-bottom: 0;
+                }
+                .tdm-social-wrapper {
+                  *zoom: 1;
+                }
+                .tdm-social-wrapper:before,
+                .tdm-social-wrapper:after {
+                  display: table;
+                  content: '';
+                  line-height: 0;
+                }
+                .tdm-social-wrapper:after {
+                  clear: both;
+                }
+                .tdm-social-item-wrap {
+                  display: inline-block;
+                }
+                .tdm-social-item {
+                  position: relative;
+                  display: inline-block;
+                  vertical-align: middle;
+                  -webkit-transition: all 0.2s;
+                  transition: all 0.2s;
+                  text-align: center;
+                  -webkit-transform: translateZ(0);
+                  transform: translateZ(0);
+                }
+                .tdm-social-item i {
+                  font-size: 14px;
+                  color: #4db2ec;
+                  -webkit-transition: all 0.2s;
+                  transition: all 0.2s;
+                }
+                .tdm-social-text {
+                  display: none;
+                  margin-top: -1px;
+                  vertical-align: middle;
+                  font-size: 13px;
+                  color: #4db2ec;
+                  -webkit-transition: all 0.2s;
+                  transition: all 0.2s;
+                }
+                .tdm-social-item-wrap:hover i,
+                .tdm-social-item-wrap:hover .tdm-social-text {
+                  color: #000;
+                }
+                .tdm-social-item-wrap:last-child .tdm-social-text {
+                  margin-right: 0 !important;
+                }
+
                 /* @float_right */
                 .$unique_block_class {
                     float: right;
@@ -29,6 +81,8 @@ class tdm_block_socials extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_socials', 1 );
 
         // make inline
         $res_ctx->load_settings_raw('float_right', $res_ctx->get_shortcode_att('float_right'));

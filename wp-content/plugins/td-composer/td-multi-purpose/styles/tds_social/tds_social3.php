@@ -21,11 +21,23 @@ class tds_social3 extends td_style {
 
         $compiled_css = '';
 
-        $unique_style_class = $this->unique_style_class;
+        $general_style_class = (td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? '.tdc-row' : '';
+        $unique_style_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .tdc-column .' : '') . $this->unique_style_class;
 
         $raw_css =
             "<style>
 
+                /* @style_general_social3 */
+                $general_style_class .tds-social3 .tdm-social-item {
+                  background-color: #4db2ec;
+                }
+                $general_style_class .tds-social3 .tdm-social-item:hover {
+                  background-color: #000;
+                }
+                $general_style_class .tds-social3 .tdm-social-item i {
+                  color: #fff;
+                }
+                
                 /* @icons_size */
 				.$unique_style_class .tdm-social-item i {
 					font-size: @icons_size;
@@ -133,6 +145,8 @@ class tds_social3 extends td_style {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_social3', 1 );
+
         /*-- BACKGROUND -- */
         // icons background color
         $res_ctx->load_color_settings( 'icons_background_color', 'icons_background_color', 'icons_background_color_gradient', '', '', __CLASS__ );
@@ -235,36 +249,44 @@ class tds_social3 extends td_style {
             $target = ' target="_blank" ';
         }
 
+        //set rel on link
+        $td_social_rel = '';
+        if ('' !== $this->get_shortcode_att('social_rel')) {
+            $td_social_rel = ' rel="' . $this->get_shortcode_att('social_rel') . '" ';
+        }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        //socials in order of input
+        $social_ordered_array = array();
+        if( '' !== $this->get_shortcode_att('social_order') ) {
+            $social_ordered_array = array_map( 'trim', explode( ',' , $this->get_shortcode_att('social_order') ) );
+        }
 
-            $buffy .= '<div class="tdm-social-wrapper ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
+        $buffy = $this->get_style($this->get_css());
+        $buffy .= '<div class="tdm-social-wrapper ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
+
             $social_array = array();
-            $social_array['behance']    = array( $this->get_shortcode_att( 'behance' ), 'Behance' );
-            $social_array['blogger']    = array( $this->get_shortcode_att( 'blogger' ), 'Blogger' );
-            $social_array['dribbble']   = array( $this->get_shortcode_att( 'dribbble' ), 'Dribbble' );
-            $social_array['facebook']   = array( $this->get_shortcode_att( 'facebook' ), 'Facebook' );
-            $social_array['flickr']     = array( $this->get_shortcode_att( 'flickr' ), 'Flickr' );
-            $social_array['instagram']  = array( $this->get_shortcode_att( 'instagram' ), 'Instagram' );
-            $social_array['lastfm']     = array( $this->get_shortcode_att( 'lastfm' ), 'Lastfm' );
-            $social_array['linkedin']   = array( $this->get_shortcode_att( 'linkedin' ), 'LinkedIn' );
-            $social_array['pinterest']  = array( $this->get_shortcode_att( 'pinterest' ), 'Pinterest' );
-            $social_array['rss']        = array( $this->get_shortcode_att( 'rss' ), 'RSS' );
-            $social_array['soundcloud'] = array( $this->get_shortcode_att( 'soundcloud' ), 'Soundcloud' );
-            $social_array['tumblr']     = array( $this->get_shortcode_att( 'tumblr' ), 'Tumblr' );
-            $social_array['twitter']    = array( $this->get_shortcode_att( 'twitter' ), 'Twitter' );
-            $social_array['vimeo']      = array( $this->get_shortcode_att( 'vimeo' ), 'Vimeo' );
-            $social_array['youtube']    = array( $this->get_shortcode_att( 'youtube' ), 'Youtube' );
-            $social_array['vk']         = array( $this->get_shortcode_att( 'vk' ), 'VKontakte' );
 
+            //in order of input
+            if ( !empty($social_ordered_array) ) {
+                foreach ( $social_ordered_array as $index => $social_id ) {
+                    if ( array_key_exists ( strtolower($social_id), td_social_icons::$td_social_icons_array ) ) {
+                        $social_array[$social_id] = array($this->get_shortcode_att(strtolower($social_id)), ucfirst($social_id));
+                    }                }
+            } else { //get all
+                foreach ( td_social_icons::$td_social_icons_array as $social_id => $social_name ) {
+                    $social_array[$social_id] = array( $this->get_shortcode_att( $social_id ), $social_name );
+                }
+            }
+
+            //display only the socials with url
             foreach ( $social_array as $social_key => $social_value ) {
                 if( !empty( $social_value[0] ) ) {
                     $buffy .= '<div class="tdm-social-item-wrap">';
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . 'class="tdm-social-item">';
-                            $buffy .= '<i class="td-icon-font td-icon-' . $social_key . '"></i>';
+                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
+                            $buffy .= '<i class="td-icon-font td-icon-' . strtolower($social_key) . '"></i>';
                         $buffy .= '</a>';
 
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . 'class="tdm-social-text">' . $social_value[1] . '</a>';
+                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
                     $buffy .= '</div>';
                 }
             }

@@ -136,7 +136,7 @@ Travel blog demo
   text-align: center;
 }
 .td-blog-travel .td-sidebar-about p {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 14px;
   line-height: 22px;
   color: #777;

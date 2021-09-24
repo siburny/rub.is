@@ -1,4 +1,12 @@
-<?php get_header(); ?>
+<?php
+
+if (!defined('ABSPATH')) {
+    die('No direct access allowed');
+}
+
+get_header(); 
+
+?>
 
 <div class="td-main-content-wrap td-container-wrap">
     <div class="td-container td-blog-index">

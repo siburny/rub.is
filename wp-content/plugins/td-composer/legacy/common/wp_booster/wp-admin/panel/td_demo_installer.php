@@ -29,7 +29,7 @@ class td_demo_installer {
         }
 
         // try to extend the time limit
-        @set_time_limit(240);
+        @set_time_limit(300);
 
 
         $td_demo_action = td_util::get_http_post_val('td_demo_action');
@@ -47,6 +47,11 @@ class td_demo_installer {
             td_demo_category::remove();
             td_demo_menus::remove();
             td_demo_widgets::remove();
+
+            // woo
+	        td_woo_demo_product_category::remove();
+	        td_woo_demo_product_tag::remove();
+	        td_woo_demo_product_attribute::remove();
 
             // restore all settings to the state before a demo was loaded
             $td_demo_history = new td_demo_history();
@@ -158,39 +163,55 @@ class td_demo_installer {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_6.php');
         }
+        else if ($td_demo_action == 'td_media_7') {
+            // load the media import script
+            require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_7.php');
+        }
+        else if ($td_demo_action == 'td_media_8') {
+            // load the media import script
+            require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_8.php');
+        }
+        else if ($td_demo_action == 'td_media_9') {
+            // load the media import script
+            require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_9.php');
+        }
+        else if ($td_demo_action == 'td_media_10') {
+            // load the media import script
+            require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_10.php');
+        }
         else if ($td_demo_action == 'td_import')  {
-
-        	//$api_url = 'http://demo_content.tagdiv.com/Newspaper_6/romania_news/td_settings.txt';
 
 	        $api_url = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
 	        $api_index_url = $api_url . 'index';
 
-            $api_response = td_remote_http::get_page( $api_index_url, __CLASS__);
+	        $api_response = td_remote_http::get_page( $api_index_url, __CLASS__);
 
-            //check response
-            if ($api_response === false) {
+	        //check response
+	        if ($api_response === false) {
 
-                td_log::log(__FILE__, __FUNCTION__, 'Failed to get demo settings', $api_index_url);
+		        td_log::log(__FILE__, __FUNCTION__, 'Failed to get demo settings', $api_index_url);
 
-            } else {
+	        } else {
 
-	            $template_files = explode( "\n", $api_response );
+		        $template_files = explode( "\n", $api_response );
 
-	            foreach ( $template_files as $template_file ) {
-	            	$template_file = trim( $template_file );
-		            $current_url      = $api_url . $template_file;
+		        foreach ( $template_files as $template_file ) {
+			        $template_file = trim( $template_file );
+			        $current_url      = $api_url . $template_file;
 
-		            $current_response = td_remote_http::get_page( $current_url, __CLASS__ );
+			        $current_response = td_remote_http::get_page( $current_url, __CLASS__ );
 
-		            if ( $current_response === false ) {
-			            td_log::log( __FILE__, __FUNCTION__, 'Failed to get demo settings', $current_url );
-		            } else {
-		            	$this->templates[$template_file] = $current_response;
-		            }
-	            }
-            }
+			        if ( $current_response === false ) {
+				        td_log::log( __FILE__, __FUNCTION__, 'Failed to get demo settings', $current_url );
+			        } else {
+				        $this->templates[$template_file] = $current_response;
+			        }
+		        }
+	        }
 
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_import.php');
+
+	        $this->register_demo($td_demo_id);
 
         } else if ( file_exists(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php')) {
 
@@ -223,11 +244,22 @@ class td_demo_installer {
 				        }
 			        }
 		        }
+
+		        $this->register_demo($td_demo_id);
 	        }
 
         	require_once(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php');
         }
+    }
 
+
+    private function register_demo( $demo_id ) {
+
+    	$server_addr = "https://cloud.tagdiv.com";
+    	$token = td_remote_http::get_page( $server_addr . "/wp-json/td-register-install-demo/get_token/", __CLASS__);
+        if ( ! empty( $token )) {
+            td_remote_http::get_page( $server_addr . "/wp-json/td-register-install-demo/install_demo/?theme_name=" . TD_THEME_NAME . "&version=" . TD_THEME_VERSION . "&demo_id=$demo_id&_nonce=" . $token . "&host=" . $_SERVER['HTTP_HOST'], __CLASS__);
+        }
     }
 
 
@@ -247,8 +279,18 @@ class td_demo_installer {
             'category_options',
             'td_ads',
             'sidebars'
-            
+
         );
+
+        $not_touchable = array(
+        	'theme_update_versions' => '',
+	        'theme_update_to_version' => '',
+	        'theme_update_latest_version' => ''
+        );
+
+        foreach ( $not_touchable as $key => $value) {
+        	$not_touchable[$key] = td_util::get_option($key);
+        }
 
 
         //read the settings file
@@ -263,7 +305,7 @@ class td_demo_installer {
         $dbk = td_handle::get_var($dbks[1]);
         $dbm = td_handle::get_var($dbks[0]);
         $file_settings[$dbm] = td_options::get($dbm);
-        
+
         $file_settings[$dbk] = td_util::get_option_('td_cake_status');
         $file_settings[$dbk . 'tp'] = td_util::get_option_('td_cake_status_time');
         $file_settings[$dbk . 'ta'] = td_util::get_option_('td_cake_lp_status');
@@ -288,6 +330,10 @@ class td_demo_installer {
 	                $td_options[$setting_id] = $setting_value;
                 }
             }
+        }
+
+        foreach ( $not_touchable as $key => $value) {
+        	$td_options[$key] = $value;
         }
 
         $generated_css = td_css_generator();

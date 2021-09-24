@@ -1,6 +1,88 @@
 <!-- FOOTER SETTINGS -->
-<?php echo td_panel_generator::box_start('Footer settings', true);
-if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+<?php
+
+$tdb_footer_template_is_set = false;
+
+if ( td_global::is_tdb_registered() ) {
+
+    $tdb_footer_templates = array();
+
+    // read the tdb category templates
+    $wp_query_templates = new WP_Query( array(
+            'post_type' => 'tdb_templates',
+		    'posts_per_page' => -1
+	    )
+    );
+
+    if ( !empty( $wp_query_templates->posts ) ) {
+
+        foreach ( $wp_query_templates->posts as $post ) {
+
+            $tdb_template_type = get_post_meta( $post->ID, 'tdb_template_type', true );
+
+            if ( $tdb_template_type === 'footer' ) {
+                $tdb_footer_templates[] = array(
+                    'text' => $post->post_title,
+                    'val' => 'tdb_template_' . $post->ID
+                );
+            }
+
+            $tdb_footer_template = td_options::get( 'tdb_footer_template' );
+
+            if ( $tdb_template_type === 'footer' && $tdb_footer_template === 'tdb_template_' . $post->ID ) {
+                $tdb_footer_template_is_set = true;
+            }
+        }
+    }
+
+
+?>
+
+<!-- Cloud Library Category template -->
+<?php echo td_panel_generator::box_start(); ?>
+
+    <div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Cloud Library Template</span>
+        <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=footer#/' ) ?>" target="_blank">Cloud Library</a> footer template for all website.</p>
+    </div>
+    <div class="td-box-control-full">
+
+        <?php
+
+        $option_id = 'tdb_footer_template';
+        if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
+        echo td_panel_generator::dropdown(array(
+            'ds' => 'td_option',
+            'option_id' => $option_id,
+            'values' => array_merge(
+                array(
+                    array('text' => '- No Template -' , 'val' => ''),
+                ),
+                $tdb_footer_templates
+            )
+        ));
+
+        ?>
+
+    </div>
+</div>
+<?php echo td_panel_generator::box_end();?>
+<hr>
+<?php } ?>
+<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+    echo td_panel_generator::box_start('Footer settings', true, 'tdb-hide');
+    ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
@@ -54,7 +136,7 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
 
 
 <!-- PAGE FOOTER -->
-<?php if ('Newspaper' == TD_THEME_NAME ) { ?>
+<?php if ('Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK')) { ?>
 <div class="td-box-row">
     <div class="td-box-description">
         <span class="td-box-title">Footer page</span>
@@ -107,12 +189,16 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
 </div>
 <?php } ?>
 
-<?php echo td_panel_generator::box_end();?>
+<?php
+if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
+	echo td_panel_generator::box_end();
+}
+?>
 
 
 <!-- FOOTER INSTAGRAM SETTINGS -->
 <?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) {
-    echo td_panel_generator::box_start('Instagram settings', false); ?>
+    echo td_panel_generator::box_start('Instagram settings', false, 'tdb-hide'); ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
@@ -229,6 +315,29 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
         </div>
     </div>
 
+    <!-- size of images -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Image size:</span>
+            <p>Set the size of the images ( by default the full image size will be used )</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_footer_instagram_image_size',
+                'values' => array(
+                    array('text' => '- Default - Full -', 'val' => ''),
+                    array('text' => 'Small - 150px', 'val' => 'td_150x0'),
+                    array('text' => 'Small - 300px', 'val' => 'td_300x0'),
+                    array('text' => 'Medium - 696px', 'val' => 'td_696x0'),
+                    array('text' => 'Large - 1068px', 'val' => 'td_1068x0')
+                )
+            ));
+            ?>
+        </div>
+    </div>
+
     <!-- image gap -->
     <div class="td-box-row">
         <div class="td-box-description">
@@ -255,7 +364,7 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
 
 
     <!-- FOOTER PREDEFINED CONTENT -->
-    <?php echo td_panel_generator::box_start('Footer info content', false); ?>
+    <?php echo td_panel_generator::box_start('Footer info content', false, 'tdb-hide'); ?>
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
@@ -422,7 +531,7 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
 
 
     <!-- FOOTER BACKGROUND -->
-    <?php echo td_panel_generator::box_start('Footer background', false); ?>
+    <?php echo td_panel_generator::box_start('Footer background', false, 'tdb-hide'); ?>
 
     <!-- BACKGROUND UPLOAD -->
     <div class="td-box-row">
@@ -526,7 +635,7 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
 
 
     <!-- SUB-FOOTER SETTINGS -->
-    <?php echo td_panel_generator::box_start('Sub footer settings', false); ?>
+    <?php echo td_panel_generator::box_start('Sub footer settings', false, 'tdb-hide'); ?>
 
 
     <!-- text -->

@@ -3,7 +3,7 @@
  * Plugin Name: Transients Manager
  * Plugin URI: http://pippinsplugins.com/transients-manager
  * Description: Provides a UI to manage your site's transients. You can view, search, edit, and delete transients at will.
- * Version: 1.8
+ * Version: 1.8.1
  * Author: Pippin Williamson
  * Author URI: http://pippinsplugins.com
  * Contributors: mordauk
@@ -99,7 +99,7 @@ class PW_Transients_Manager {
 				<?php $transient = $this->get_transient_by_id( absint( $_GET['trans_id'] ) ); ?>
 
 				<form method="post">
-					<table class="form-table">
+					<table class="form-table striped">
 						<tbody>
 							<tr>
 								<th><?php _e( 'Name', 'transients-manager' ); ?></th>
@@ -117,9 +117,11 @@ class PW_Transients_Manager {
 					<input type="hidden" name="transient" value="<?php echo esc_attr( $this->get_transient_name( $transient ) ); ?>"/>
 					<input type="hidden" name="action" value="update_transient"/>
 					<?php wp_nonce_field( 'transient_manager' ); ?>
-					<?php submit_button(); ?>
+					<p class="submit">
+						<?php submit_button('','primary', '', false ); ?>
+						<?php submit_button( __( 'Cancel', 'pw-transients-manager' ), 'delete', '', false, array( 'onclick' => 'history.back();', ) ); ?>
+					</p>
 				</form>
-				<button class="button-secondary" onclick="history.back();"><?php _e( 'Cancel', 'transients-manager' ); ?></button>
 
 			<?php else : ?>
 
@@ -171,7 +173,7 @@ class PW_Transients_Manager {
 						</div>
 						<br class="clear">
 					</div>
-					<table class="wp-list-table widefat fixed posts">
+					<table class="wp-list-table widefat fixed posts striped">
 						<thead>
 							<tr>
 								<td id="cb" class="manage-column column-cb check-column">

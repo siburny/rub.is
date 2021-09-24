@@ -12,7 +12,7 @@ class td_log {
 	/**
 	 * Logs a message to the theme's log system. The message is always logged
 	 * @param $file string - Usually is __FILE__ - the file that generated the log.
-	 * @param $function string- Usually is __FUNCTION__ - the function that generated the log
+	 * @param $function string - Usually is __FUNCTION__ - the function that generated the log
 	 * @param $msg string - the log message
 	 * @param $more_data string|object|array  - more data, it can be string, object or array
 	 */

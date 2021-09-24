@@ -24,17 +24,22 @@ class td_page_generator_mob extends td_page_generator {
 		$paged = intval(get_query_var('paged'));
 		$numposts = $wp_query->found_posts;
 		$max_page = $wp_query->max_num_pages;
+		$tdm_grids_posts_limit = td_util::get_option('tdm_grids_posts_limit');
+		$tdm_category_grid = td_util::get_option('tdm_category_grid');
 
 
 
 		// hack for category pages - pagination
 		// we also have to check for page-pagebuilder-latest.php template because we are running there in a FAKE loop and if the category
 		// filter is active for that loop, WordPress believes that we are on a category
-		if(!is_admin() and td_global::$current_template != 'page-homepage-loop' and is_category()) {
-			$posts_shown_in_loop = td_api_category_top_posts_style::get_key('td_category_top_posts_style_mob_1', 'posts_shown_in_the_loop');
-
-			$numposts = $wp_query->found_posts - $posts_shown_in_loop; // fix the pagination, we have x less posts because the rest are in the top posts loop
+		if(!is_admin() and td_global::get_current_template() != 'page-homepage-loop' and is_category()) {
+			$posts_shown_in_loop = ( !empty( $tdm_grids_posts_limit ) ? $tdm_grids_posts_limit : td_api_category_top_posts_style::get_key( 'td_category_top_posts_style_mob_1', 'posts_shown_in_the_loop' ) );
+			if ( $tdm_category_grid === 'hide' ) {
+				$posts_shown_in_loop = 0;
+			}
+			$numposts = $wp_query->found_posts - (int)$posts_shown_in_loop; // fix the pagination, we have x less posts because the rest are in the top posts loop
 			$max_page = ceil($numposts / $posts_per_page);
+
 		}
 
 

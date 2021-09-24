@@ -52,7 +52,7 @@ Medicine demo
 .td-medicine .td-trending-now-title {
   font-size: 13px;
   line-height: 20px;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
 }
 @media (max-width: 767px) {
   .td-medicine .td-trending-now-wrapper {

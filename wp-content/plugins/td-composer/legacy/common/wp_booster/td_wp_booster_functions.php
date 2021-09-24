@@ -162,8 +162,33 @@ add_action('wp_ajax_td_ajax_get_template_style',        array('td_ajax', 'on_aja
 add_action('wp_ajax_nopriv_td_render_content', array('td_ajax', 'on_ajax_render_content'));
 add_action('wp_ajax_td_render_content',        array('td_ajax', 'on_ajax_render_content'));
 
-//ajax: instagram feeds with access token implementation
-require_once( 'td_instagram_access_tk.php' );
+add_action('wp_ajax_nopriv_td_ajax_change_theme_version', array('td_ajax', 'on_ajax_change_theme_version'));
+add_action('wp_ajax_td_ajax_change_theme_version',        array('td_ajax', 'on_ajax_change_theme_version'));
+
+add_action('wp_ajax_nopriv_td_ajax_check_theme_version', array('td_ajax', 'on_ajax_check_theme_version'));
+add_action('wp_ajax_td_ajax_check_theme_version',        array('td_ajax', 'on_ajax_check_theme_version'));
+
+add_action('wp_ajax_nopriv_td_ajax_backup_panel', array('td_ajax', 'on_ajax_backup_panel'));
+add_action('wp_ajax_td_ajax_backup_panel',        array('td_ajax', 'on_ajax_backup_panel'));
+
+// ajax: module video modal
+add_action('wp_ajax_nopriv_td_ajax_video_modal', array('td_ajax', 'on_ajax_video_modal'));
+add_action('wp_ajax_td_ajax_video_modal',        array('td_ajax', 'on_ajax_video_modal'));
+
+
+// ajax: flickr album modal
+add_action('wp_ajax_nopriv_td_ajax_flickr_modal', array('td_ajax', 'on_ajax_flickr_modal'));
+add_action('wp_ajax_td_ajax_flickr_modal',        array('td_ajax', 'on_ajax_flickr_modal'));
+
+
+// ajax: dark mode
+add_action('wp_ajax_nopriv_td_ajax_dark_mode', array('td_ajax', 'on_ajax_dark_mode'));
+add_action('wp_ajax_td_ajax_dark_mode',        array('td_ajax', 'on_ajax_dark_mode'));
+
+
+// ajax: facebook/instagram with access token
+require_once( 'td_ig_personal.php' ); // instagram personal account
+require_once( 'td_fb_ig_business.php' ); // facebook/instagram business accounts
 
 
 /**
@@ -342,9 +367,11 @@ function load_front_css() {
 		wp_enqueue_style('td-theme', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=style.css_v2&theme_name=' . TD_THEME_NAME,  '', TD_THEME_VERSION, 'all' );
 
 		// load WooCommerce LESS only when needed
-		if (td_global::$is_woocommerce_installed === true ) {
-			wp_enqueue_style('td-theme-woo', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=woocommerce', '', TD_THEME_VERSION, 'all');
-		}
+        if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && !defined( 'TD_WOO' ) ) ) {
+            if ( td_global::$is_woocommerce_installed === true ) {
+                wp_enqueue_style('td-theme-woo', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=woocommerce', '', TD_THEME_VERSION, 'all');
+            }
+        }
 		// load Bbpress LESS only when needed
 		if (td_global::$is_bbpress_installed === true ) {
 			wp_enqueue_style('td-theme-bbpress', td_global::$get_template_directory_uri . '/td_less_style.css.php?part=bbpress', '', TD_THEME_VERSION, 'all');
@@ -353,10 +380,12 @@ function load_front_css() {
 	} else {
 		wp_enqueue_style('td-theme', get_stylesheet_uri(), '', TD_THEME_VERSION, 'all' );
 
-		// load the WooCommerce CSS only when needed
-		if (td_global::$is_woocommerce_installed === true ) {
-			wp_enqueue_style('td-theme-woo', td_global::$get_template_directory_uri . '/style-woocommerce.css',  '', TD_THEME_VERSION, 'all' );
-		}
+        if( TD_THEME_NAME == 'Newsmag' || ( TD_THEME_NAME == 'Newspaper' && !defined( 'TD_WOO' ) ) ) {
+            // load the WooCommerce CSS only when needed
+            if ( td_global::$is_woocommerce_installed === true ) {
+                wp_enqueue_style('td-theme-woo', td_global::$get_template_directory_uri . '/style-woocommerce.css', '', TD_THEME_VERSION, 'all');
+            }
+        }
 
 		// load the Bbpress CSS only when needed
 		if (td_global::$is_bbpress_installed === true ) {
@@ -383,6 +412,203 @@ function load_front_css() {
     $custom_style = td_util::remove_style_tag(ob_get_clean());
 
 	wp_add_inline_style( 'td-theme', $custom_style );
+}
+
+
+
+
+add_action('wp_enqueue_scripts', function() {
+
+    global $post;
+
+    if ( is_page() || 'tdb_templates' === get_post_type()) {
+
+        $ref_id = !empty($post) ? $post->ID : null;
+
+    } else {
+
+        if (is_single() || is_category()) {
+	        $template_id = td_util::get_template_id();
+
+	        if (empty($template_id)) {
+                $ref_id = $post->ID;
+            } else {
+                $ref_id = $template_id;
+            }
+        }
+    }
+
+    if ( ! empty( $ref_id ) ) {
+
+        if ( class_exists( 'Mobile_Detect' ) ) {
+		    $mobile_detect = new Mobile_Detect();
+		    if ( $mobile_detect->isMobile() ) {
+
+                $new_ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+                if ( !empty( $new_ref_id ) ) {
+                    $ref_id = $new_ref_id;
+                }
+		    }
+	    }
+
+        $tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+        $tda_critical_css  = get_post_meta( $ref_id, 'tda_critical_css', true );
+
+        if ( ! empty( $tda_essential_css ) && ! empty( $tda_critical_css ) && defined( 'TD_ANALYZE_CSS_CACHE_DIR' ) ) {
+
+            wp_enqueue_style( 'td-critical', TD_ANALYZE_CSS_CACHE_URL . $ref_id . '-tda-critical-css-' . $tda_essential_css . '.css', false, TD_COMPOSER, 'all' );
+            ob_start();
+            ?>
+            .td-md-is-ios .tdc-row[class*="stretch_row"] > .td-pb-row > .td-element-style,
+            .td-md-is-ios .tdc-row-composer[class*="stretch_row"] > .td-pb-row > .td-element-style {
+            width: calc(100vw + 1px) !important;
+            }
+            @media (max-width: 767px) {
+            .td-md-is-ios .td-pb-row > .td-element-style {
+            width: calc(100vw + 1px) !important;
+            }
+            }
+            .td-element-style {
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            }
+            .tdb-logo-text-title,
+            .tdb-logo-text-tagline,
+            .tdm-title {
+            -webkit-background-clip: text;
+            }
+            button,
+            html input[type="button"],
+            input[type="reset"],
+            input[type="submit"] {
+            -webkit-appearance: button;
+            }
+            *:before,
+            *:after {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            }
+
+            <?php
+
+            wp_add_inline_style( 'td-critical', ob_get_clean() );
+        }
+    }
+});
+
+add_action('get_footer', function () {
+
+    global $post;
+
+    if ( is_page() || 'tdb_templates' === get_post_type()) {
+
+	    $ref_id = ! empty( $post ) ? $post->ID : null;
+
+    } else {
+
+        if (is_single() || is_category()) {
+	        $template_id = td_util::get_template_id();
+
+	        if (!empty($template_id)) {
+	            $ref_id = $template_id;
+            }
+        }
+    }
+
+    if ( class_exists('Mobile_Detect')) {
+        $mobile_detect = new Mobile_Detect();
+        if ( $mobile_detect->isMobile() ) {
+
+            if ( !empty($ref_id ) ) {
+                $new_ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+                if ( !empty($new_ref_id ) ) {
+                    $ref_id = $new_ref_id;
+                }
+            }
+        }
+    }
+
+    if ( ! empty( $ref_id ) ) {
+        $tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+	    if ( ! empty( $tda_essential_css ) && defined( 'TD_ANALYZE_CSS_CACHE_DIR' ) ) {
+
+		    wp_enqueue_style( 'td-rest', TD_ANALYZE_CSS_CACHE_URL . $ref_id . '-tda-rest-css-' . $tda_essential_css . '.css', array(), TDC_PATH, 'all' );
+	    }
+    }
+});
+
+
+add_action('wp_enqueue_scripts', 'load_front_css_remove', 10000);
+function load_front_css_remove() {
+
+    global $post;
+
+    if ( is_page() || 'tdb_templates' === get_post_type()) {
+
+	    $ref_id = ! empty( $post ) ? $post->ID : null;
+
+    } else {
+
+        if (is_single() || is_category()) {
+	        $template_id = td_util::get_template_id();
+
+	        if (empty($template_id)) {
+                $ref_id = $post->ID;
+            } else {
+                $ref_id = $template_id;
+            }
+        }
+    }
+
+    if (!empty($ref_id)) {
+
+        if ( class_exists( 'Mobile_Detect' ) ) {
+		    $mobile_detect = new Mobile_Detect();
+		    if ( $mobile_detect->isMobile() ) {
+
+                $new_ref_id = get_post_meta( $ref_id, 'tdc_mobile_template_id', true );
+                if ( !empty( $new_ref_id ) ) {
+                    $ref_id = $new_ref_id;
+                }
+		    }
+	    }
+
+	    $dequeue_styles = ['wp-block-library',
+            'td-plugin-multi-purpose',
+            'td-theme',
+            'td-multipurpose',
+            'td-standard-pack-framework-front-style-less',
+            'tdb_front_style',
+            'td-legacy-framework-front-style-less',
+            'td-legacy-framework-front-style'];
+
+        $td_page = get_query_var('page') ? get_query_var('page') : 1; //rewrite the global var
+        $td_paged = get_query_var('paged') ? get_query_var('paged') : 1; //rewrite the global var
+
+        //paged works on single pages, page - works on homepage
+        $paged = max( $td_page, $td_paged );
+
+        if ( 1 === $paged) {
+
+	        $tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+	        if ( ! empty( $tda_essential_css ) ) {
+
+		        foreach ( $dequeue_styles as $dequeue_style ) {
+			        wp_dequeue_style( $dequeue_style );
+		        }
+	        }
+
+	        $tda_goup_ids = get_post_meta( $ref_id, 'tda_group_ids', true );
+	        if ( ! empty( $tda_goup_ids ) ) {
+		        $tda_goup_ids = json_decode( $tda_goup_ids, true );
+		        foreach ( $tda_goup_ids as $group_id ) {
+			        wp_dequeue_style( str_replace( '-css', '', $group_id ) );
+		        }
+	        }
+        }
+    }
 }
 
 
@@ -419,66 +645,182 @@ function td_load_css_fonts() {
 
     td_util::check_header();
 
-	$cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+    td_util::check_footer();
 
-	$unique_google_fonts_ids = array();
-
-	//filter the google fonts used by user
-	if (!empty($cur_td_fonts)) {
-
-		foreach ( $cur_td_fonts as $section_font_settings ) {
-			if ( isset( $section_font_settings['font_family'] ) ) {
-				$explode_font_family = explode( '_', $section_font_settings['font_family'] );
-				if ( $explode_font_family[0] == 'g' ) {
-					$unique_google_fonts_ids[] = $explode_font_family[1];
-				}
-			}
-		}
-	}
-
-	$extra_google_fonts_ids = array();
-
-	// Filter used to modify the post checked for icon fonts
+    // Filter used to modify the post checked for icon fonts
 	$post_id = apply_filters( 'td_filter_google_fonts_post_id', get_the_ID() );
 
-	$tds_footer_page = td_util::get_option('tds_footer_page');
-	if ( intval($tds_footer_page) !== $post_id ) {
-		$footer_page = get_post( $tds_footer_page );
-		if ( $footer_page instanceof WP_Post ) {
-			$footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
-			if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
-				foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
-					$extra_google_fonts_ids[] = $footer_google_fonts_id;
-				}
-			}
-		}
-	}
+	$new_meta_exists = metadata_exists( 'post', $post_id, 'tdc_google_fonts_settings' );
 
-	// 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
-	$extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
+	if ( $new_meta_exists || is_archive() || is_search() || is_404() || is_front_page() || is_home() ||
+         ( td_global::$is_woocommerce_installed && is_product() ) ||
+         ( td_global::$is_bbpress_installed && td_global::get_current_template() === 'bbpress' ) ) {
 
-	$post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts', true );
-	if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
-		foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
-			$extra_google_fonts_ids[] = $post_google_fonts_id;
-		}
-	}
+	    // new method to get all used google fonts
 
-	// remove duplicated font ids
-	$unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
+        $cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+
+        $unique_google_fonts_ids = array();
+
+        //filter the google fonts used by user
+        if (!empty($cur_td_fonts)) {
+
+            foreach ( $cur_td_fonts as $section_font_settings ) {
+                if ( isset( $section_font_settings['font_family'] ) ) {
+                    $explode_font_family = explode( '_', $section_font_settings['font_family'] );
+                    if ( $explode_font_family[0] == 'g' ) {
+                        $unique_google_fonts_ids[] = $explode_font_family[1];
+                    }
+                }
+            }
+        }
+
+        $panel_fonts_names = td_fonts::get_google_fonts_names( $unique_google_fonts_ids );
+
+        $google_fonts_ids = array();
+
+        $tds_footer_page = td_util::get_option('tds_footer_page');
+        if ( intval($tds_footer_page) !== $post_id ) {
+            $footer_page = get_post( $tds_footer_page );
+
+            if ( $footer_page instanceof WP_Post ) {
+
+                $footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts_settings', true );
+                if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
+                    foreach ( $footer_google_fonts_ids as $footer_google_fonts_id => $font_weights ) {
+                        $google_fonts_ids[ $footer_google_fonts_id ] = $font_weights;
+                    }
+                }
+            }
+        }
+
+        $extra_google_fonts_ids = array();
+
+        // 'td_filter_google_fonts_settings' - custom hook used to add google fonts from extra source
+        $extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts_settings', $extra_google_fonts_ids );
+
+        $post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts_settings', true );
+
+        if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
+            foreach ( $post_google_fonts_ids as $post_google_fonts_id => $font_weights ) {
+                if ( array_key_exists( $post_google_fonts_id, $extra_google_fonts_ids ) && is_array( $extra_google_fonts_ids[ $post_google_fonts_id ] ) ) {
+                    $extra_google_fonts_ids[ $post_google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $post_google_fonts_id ], $post_google_fonts_ids[ $post_google_fonts_id ] ) );
+                } else {
+                    $extra_google_fonts_ids[ $post_google_fonts_id ] = $font_weights;
+                }
+            }
+        }
+
+        foreach ( $extra_google_fonts_ids as $google_fonts_id => $font_weights ) {
+            if ( array_key_exists( $google_fonts_id, $google_fonts_ids ) && is_array( $extra_google_fonts_ids[ $google_fonts_id ] ) ) {
+                $google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+            } else {
+                $google_fonts_ids[ $google_fonts_id ] = $font_weights;
+            }
+        }
+
+        $google_fonts_names = td_fonts::get_google_fonts_for_url( $google_fonts_ids );
+
+        $final_fonts_names = '';
+
+        if ( ! empty( $panel_fonts_names )) {
+            $final_fonts_names = $panel_fonts_names;
+        }
+
+        if ( ! empty( $google_fonts_names )) {
+            if ( empty( $final_fonts_names )) {
+                $final_fonts_names = $google_fonts_names;
+            } else {
+                $final_fonts_names .= '|' . $google_fonts_names;
+            }
+        }
+
+        if ( ! empty( $final_fonts_names )) {
+            //used to pull fonts from google
+            $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . $final_fonts_names . '&display=swap';
+        }
 
 
-	//used to pull fonts from google
-	$td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . td_fonts::get_google_fonts_subset_query() . '&display=swap';
 
-	/*
+    } else {
+
+
+	    // old method to get all used google fonts
+
+        $cur_td_fonts = td_options::get_array('td_fonts'); // get the google fonts used by user
+
+        $unique_google_fonts_ids = array();
+
+        //filter the google fonts used by user
+        if (!empty($cur_td_fonts)) {
+
+            foreach ( $cur_td_fonts as $section_font_settings ) {
+                if ( isset( $section_font_settings['font_family'] ) ) {
+                    $explode_font_family = explode( '_', $section_font_settings['font_family'] );
+                    if ( $explode_font_family[0] == 'g' ) {
+                        $unique_google_fonts_ids[] = $explode_font_family[1];
+                    }
+                }
+            }
+        }
+
+        $extra_google_fonts_ids = array();
+
+        $tds_footer_page = td_util::get_option('tds_footer_page');
+        if ( intval($tds_footer_page) !== $post_id ) {
+            $footer_page = get_post( $tds_footer_page );
+            if ( $footer_page instanceof WP_Post ) {
+                $footer_google_fonts_ids = get_post_meta( $footer_page->ID, 'tdc_google_fonts', true );
+                if ( ! empty( $footer_google_fonts_ids ) && is_array( $footer_google_fonts_ids ) ) {
+                    foreach ( $footer_google_fonts_ids as $footer_google_fonts_id ) {
+                        $extra_google_fonts_ids[] = $footer_google_fonts_id;
+                    }
+                }
+            }
+        }
+
+        // 'td_filter_google_fonts' - custom hook used to add google fonts from extra source
+        $extra_google_fonts_ids = apply_filters( 'td_filter_google_fonts', $extra_google_fonts_ids );
+
+        $post_google_fonts_ids = get_post_meta( $post_id, 'tdc_google_fonts', true );
+        if ( ! empty( $post_google_fonts_ids ) && is_array( $post_google_fonts_ids ) ) {
+            foreach ( $post_google_fonts_ids as $post_google_fonts_id ) {
+                $extra_google_fonts_ids[] = $post_google_fonts_id;
+            }
+        }
+
+        // remove duplicated font ids
+        $unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ));
+
+
+        //used to pull fonts from google
+        $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . '&display=swap';
+
+    }
+
+
+    /*
 	 * add the google link for fonts used by user
 	 * td_fonts_css_files: holds the link to fonts.googleapis.com built above
 	 * this section will appear in the header of the source of the page
 	 */
-	if(!empty($td_fonts_css_files) && td_options::get('g_use_google_fonts') !== 'disabled') {
-		wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
-	}
+    $add_not_mobile_google_fonts = true;
+    if ( class_exists('Mobile_Detect')) {
+	    $mobile_detect = new Mobile_Detect();
+	    if ( $mobile_detect->isMobile() ) {
+
+	        if( !empty($td_fonts_css_files) && td_options::get('g_mob_use_google_fonts') !== 'disabled' ) {
+                wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
+            }
+
+            $add_not_mobile_google_fonts = false;
+
+	    }
+    }
+
+    if ( $add_not_mobile_google_fonts && !empty($td_fonts_css_files) && td_options::get('g_use_google_fonts') !== 'disabled' ) {
+        wp_enqueue_style( 'google-fonts-style', td_global::$http_or_https . $td_fonts_css_files, array(), TD_THEME_VERSION );
+    }
 }
 
 
@@ -516,6 +858,10 @@ function load_front_js() {
 	//add the comments reply to script on single pages
 	if (is_singular()) {
 		wp_enqueue_script('comment-reply');
+	}
+
+	if (is_user_logged_in()) {
+		add_thickbox();
 	}
 }
 
@@ -657,7 +1003,7 @@ function td_on_wp_head_canonical(){
 
 		if (class_exists('WPSEO_Frontend')) {
 			// Remove the canonical action of the Yoast SEO plugin
-			remove_action( 'wpseo_head', array( WPSEO_Frontend::get_instance(), 'canonical' ), 20 );
+			add_filter( 'wpseo_canonical', '__return_false' );
 		}
 
 		echo '<link rel="canonical" href="' . get_pagenum_link($paged) . '"/>';
@@ -692,6 +1038,11 @@ function hook_wp_head() {
 //		}
 //	}
 
+
+    // Important!
+    // This 'reset' is necessary for plugins who make pre requests for our shortcodes (like Yoast or All in One SEO), because these requests affects our common style generated by shortcodes.
+    td_global::reset_theme_settings();
+
 	// fav icon support
 	$tds_favicon_upload = td_util::get_option('tds_favicon_upload');
 	if (!empty($tds_favicon_upload)) {
@@ -707,23 +1058,23 @@ function hook_wp_head() {
 	$tds_ios_144 = td_util::get_option('tds_ios_icon_144');
 
 	if(!empty($tds_ios_76)) {
-		echo '<link rel="apple-touch-icon-precomposed" sizes="76x76" href="' . $tds_ios_76 . '"/>';
+		echo '<link rel="apple-touch-icon" sizes="76x76" href="' . $tds_ios_76 . '"/>';
 	}
 
 	if(!empty($tds_ios_120)) {
-		echo '<link rel="apple-touch-icon-precomposed" sizes="120x120" href="' . $tds_ios_120 . '"/>';
+		echo '<link rel="apple-touch-icon" sizes="120x120" href="' . $tds_ios_120 . '"/>';
 	}
 
 	if(!empty($tds_ios_152)) {
-		echo '<link rel="apple-touch-icon-precomposed" sizes="152x152" href="' . $tds_ios_152 . '"/>';
+		echo '<link rel="apple-touch-icon" sizes="152x152" href="' . $tds_ios_152 . '"/>';
 	}
 
 	if(!empty($tds_ios_114)) {
-		echo '<link rel="apple-touch-icon-precomposed" sizes="114x114" href="' . $tds_ios_114 . '"/>';
+		echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $tds_ios_114 . '"/>';
 	}
 
 	if(!empty($tds_ios_144)) {
-		echo '<link rel="apple-touch-icon-precomposed" sizes="144x144" href="' . $tds_ios_144 . '"/>';
+		echo '<link rel="apple-touch-icon" sizes="144x144" href="' . $tds_ios_144 . '"/>';
 	}
 
 
@@ -770,9 +1121,53 @@ function hook_wp_head() {
 	}
 
 	$tds_general_modal_image = td_util::get_option('tds_general_modal_image');
-
 	if (!empty($tds_general_modal_image)) {
 		td_js_buffer::add_variable('tds_general_modal_image', $tds_general_modal_image);
+	}
+
+	$tds_video_scroll = td_util::get_option('tds_video_scroll');
+	if (!empty($tds_video_scroll)) {
+		td_js_buffer::add_variable('tds_video_scroll', $tds_video_scroll);
+	}
+
+	$tds_video_position_h = td_util::get_option('tds_video_position_h');
+	if (!empty($tds_video_position_h)) {
+		td_js_buffer::add_variable('tds_video_position_h', $tds_video_position_h);
+	}
+
+	$tds_video_distance_h = td_util::get_option('tds_video_distance_h');
+	if (!empty($tds_video_distance_h)) {
+		td_js_buffer::add_variable('tds_video_distance_h', $tds_video_distance_h);
+	}
+
+	$tds_video_position_v = td_util::get_option('tds_video_position_v');
+	if (!empty($tds_video_position_v)) {
+		td_js_buffer::add_variable('tds_video_position_v', $tds_video_position_v);
+	}
+
+	$tds_video_distance_v = td_util::get_option('tds_video_distance_v');
+	if (!empty($tds_video_distance_v)) {
+		td_js_buffer::add_variable('tds_video_distance_v', $tds_video_distance_v);
+	}
+
+	$tds_video_width = td_util::get_option('tds_video_width');
+	if (!empty($tds_video_width)) {
+		td_js_buffer::add_variable('tds_video_width', $tds_video_width);
+	}
+
+	$tds_video_playing_one = td_util::get_option('tds_video_playing_one');
+	if (!empty($tds_video_playing_one)) {
+		td_js_buffer::add_variable('tds_video_playing_one', $tds_video_playing_one);
+	}
+
+	$tds_video_pause_hidden = td_util::get_option('tds_video_pause_hidden');
+	if (!empty($tds_video_pause_hidden)) {
+		td_js_buffer::add_variable('tds_video_pause_hidden', $tds_video_pause_hidden);
+	}
+
+	$tds_video_lazy = td_util::get_option('tds_video_lazy');
+	if (!empty($tds_video_lazy)) {
+		td_js_buffer::add_variable('tds_video_lazy', $tds_video_lazy);
 	}
 }
 
@@ -892,9 +1287,11 @@ function td_wpseo_title($seo_title) {
 add_filter('wpseo_json_ld_output', 'td_remove_yoast_json', 10, 1);
 function td_remove_yoast_json($data){
 	global $post;
-	$td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
-	if (isset($td_post_theme_settings['has_review'])) {
-		$data = array();
+	if (is_single()) {
+		$td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
+		if (isset($td_post_theme_settings['has_review'])) {
+			$data = array();
+		}
 	}
 	return $data;
 }
@@ -982,7 +1379,7 @@ function td_bottom_code() {
 
     <!--
 
-        Theme: ' . TD_THEME_NAME .' by tagDiv.com 2019
+        Theme: ' . TD_THEME_NAME .' by tagDiv.com 2021
         Version: ' . TD_THEME_VERSION . ' (rara)
         Deploy mode: ' . TD_DEPLOY_MODE . '
         ' . $speed_booster . '
@@ -1261,6 +1658,26 @@ function td_vc_kill_welcome() {
 	remove_action('vc_activation_hook', 'vc_page_welcome_set_redirect');
 }
 
+/**
+ * Remove any transient flag used for updating theme. Without composer the theme update can't complete!
+ */
+register_deactivation_hook( 'td-composer/td-composer.php', function() {
+    // clear any flag about wp theme update
+    delete_site_transient( 'update_themes' );
+
+     // clear flag to update theme
+    delete_transient( 'td_update_theme_' . TD_THEME_NAME );
+
+    // clear flag to update theme to latest version
+    delete_transient( 'td_update_theme_latest_version_' . TD_THEME_NAME );
+
+    // clear flag to update theme to specific version
+    delete_transient( 'td_update_theme_to_version_' . TD_THEME_NAME );
+
+    // clear flag to update to a specific version
+    tagdiv_util::update_option( 'theme_update_to_version', '' );
+});
+
 
 /**
  * visual composer rewrite classes
@@ -1325,9 +1742,18 @@ function td_vc_init() {
 }
 
 
-
-
-
+//deregister Visual Composer backend js files from live editor
+add_action( 'admin_print_scripts', 'td_deregister_vc_backend_scripts', 100 );
+function td_deregister_vc_backend_scripts() {
+	if ( td_util::is_vc_installed() && ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
+		wp_deregister_script('vc-backend-min-js');
+		wp_deregister_script('vc_accordion_script');
+		wp_deregister_script('wpb_php_js');
+		wp_deregister_script('wpb_json-js');
+		wp_deregister_script('ace-editor');
+		wp_deregister_script('webfont');
+	}
+}
 
 
 /* ----------------------------------------------------------------------------
@@ -1447,13 +1873,13 @@ function td_change_backbone_js_hook() {
                 '</div>';
 
 			//inject our settings in the template - before <div class="setting align">
-			td_template_content = td_template_content.replace('<div class="setting align">', td_our_content + '<div class="setting align">');
+			td_template_content = td_template_content.replace('<fieldset class="setting-group">', td_our_content + '<fieldset class="setting-group">');
 
 			//save the template
 			jQuery('#tmpl-image-details').html(td_template_content);
 
 			//modal off - click event
-			jQuery(".td-modal-image-on").live( "click", function() {
+			jQuery(document).on( "click", ".td-modal-image-on", function() {
 				if (jQuery(this).hasClass('active')) {
 					return;
 				}
@@ -1464,7 +1890,7 @@ function td_change_backbone_js_hook() {
 			});
 
 			//modal on - click event
-			jQuery(".td-modal-image-off").live( "click", function() {
+			jQuery(document).on( "click", ".td-modal-image-off", function() {
 				if (jQuery(this).hasClass('active')) {
 					return;
 				}
@@ -1476,7 +1902,7 @@ function td_change_backbone_js_hook() {
 			});
 
 			// select change event
-			jQuery(".td-wp-image-style").live( "change", function() {
+			jQuery(document).on( "change", ".td-wp-image-style", function() {
 				switch (jQuery( ".td-wp-image-style").val()) {
 
 					<?php printf( '%1$s', $image_styles_buffer_for_switch) ?>
@@ -1567,7 +1993,7 @@ if (td_api_features::is_enabled('tagdiv_slide_gallery') === true) {
  * @param bool $content
  * @return mixed
  */
-function td_gallery_shortcode($output = '', $atts, $content = false) {
+function td_gallery_shortcode($output = '', $atts = [], $content = false) {
 
 	global $loop_sidebar_position;
 	global $post;
@@ -1933,7 +2359,18 @@ function td_add_single_template_class($classes) {
 			$active_single_template = $td_post_theme_settings['td_post_template'];
 		} else {
 			// we may have a global post template form td panel
-			$td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+            $option_id = 'td_default_site_post_template';
+            if (class_exists('SitePress', false )) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+			$td_default_site_post_template = td_util::get_option($option_id);
 			if(!empty($td_default_site_post_template)) {
 				$active_single_template = $td_default_site_post_template;
 			}
@@ -2320,14 +2757,23 @@ if (is_admin()) {
 
 	add_action('admin_enqueue_scripts', function ($hook_suffix){
 
-	    if ( 'newspaper_page_td_theme_panel' === $hook_suffix ) {
+		$theme = strtolower(TD_THEME_NAME);
+
+	    if ( $theme . '_page_td_theme_panel' === $hook_suffix ) {
 			wp_enqueue_script(
-				'td-instagram-access',
-				TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdInstagramAccess.js',
+				'td-instagram-personal',
+				TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/td_wp_admin_panel_ig_personal.js',
 				false,
 				TD_THEME_VERSION,
 				'all'
 			);
+		    wp_enqueue_script(
+			    'td-fb-ig-business',
+			    TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/td_wp_admin_panel_fb_ig_business.js',
+			    false,
+			    TD_THEME_VERSION,
+			    'all'
+		    );
         }
 	});
 
@@ -2520,6 +2966,13 @@ function td_add_amp_plugin_action_link_filters_on_init() {
         }
 
         if ( $plugin_data['Title'] === 'AMP' ) {
+
+			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			//don't display notice when both plugins are active
+			if ( is_plugin_active('amp/amp.php') && is_plugin_active('td-mobile-plugin/td-mobile-plugin.php') ) {
+				return;
+			}
+
             add_action( 'after_plugin_row_' . $plugin_slug, function ($plugin_file, $plugin_data, $status){
                 echo '
                     <tr class="td-amp-plugin-warning plugin-update-tr">
@@ -2615,8 +3068,41 @@ function td_template_include_filter( $wordpress_template_path ) {
             }
         }
 
+        // Get primary category - post template settings
+        td_global::load_single_post($post);
+        $td_primary_category = td_global::get_primary_category_id();
+
+        if ( ! empty( $td_primary_category ) ) {
+
+            $post_category_template = td_util::get_category_option( $td_primary_category, 'tdb_post_category_template' );
+
+            // make sure the template exists, maybe it was deleted or something
+            if ( td_global::is_tdb_template( $post_category_template, true ) ) {
+
+                $tdb_template_id = td_global::tdb_get_template_id($post_category_template);
+
+                // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                if ( $td_single_override != $tdb_template_id ) {
+                    return $td_single_override;
+                }
+            }
+        }
+
         // read the global setting
-        $default_template_id = td_util::get_option('td_default_site_post_template');
+        $option_id = 'td_default_site_post_template';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+        $default_template_id = td_util::get_option($option_id);
 
         // STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
         if ( td_global::is_tdb_template( $default_template_id ) ) {
@@ -2693,4 +3179,29 @@ add_filter( 'comments_template', function (){
 
 
 
-
+//wp_oembed_add_provider( '#https?://(www\.)?tiktok\.com/.*/video/.*#i', 'https://www.tiktok.com/oembed', true );
+//
+//
+//function td_tiktok_embed_video( $attributes ) {
+//    if ( ! empty($attributes['url'])) {
+//	    $url = trim( $attributes[ 'url' ] );
+//	    if ( empty( $url ) || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+//		    $content = '<p>' . esc_html( 'Please insert a TikTok valid URL in sidebar block attribute.' ) . '</p>';
+//	    } else {
+//		    $content = filter_var( $url, FILTER_VALIDATE_URL );
+//	    }
+//    }
+//	return apply_filters( 'the_content', $content );
+//}
+//
+//
+//add_action( 'init', function () {
+//	register_block_type('td-tiktok-embed-video/video',
+//        array(
+//		    'render_callback' => 'td_tiktok_embed_video',
+//		    'attributes'      => array(
+//			    'url' => array( 'type' => 'string' ),
+//		    ),
+//	    )
+//    );
+//});

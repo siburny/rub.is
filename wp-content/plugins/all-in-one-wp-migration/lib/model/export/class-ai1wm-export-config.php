@@ -54,13 +54,13 @@ class Ai1wm_Export_Config {
 		$config['HomeURL'] = home_url();
 
 		// Set internal site URL
-		if ( isset( $options['siteurl'] ) && ( untrailingslashit( $options['siteurl'] ) !== site_url() ) ) {
-			$config['InternalSiteURL'] = untrailingslashit( $options['siteurl'] );
+		if ( isset( $options['siteurl'] ) ) {
+			$config['InternalSiteURL'] = $options['siteurl'];
 		}
 
 		// Set internal home URL
-		if ( isset( $options['home'] ) && ( untrailingslashit( $options['home'] ) !== home_url() ) ) {
-			$config['InternalHomeURL'] = untrailingslashit( $options['home'] );
+		if ( isset( $options['home'] ) ) {
+			$config['InternalHomeURL'] = $options['home'];
 		}
 
 		// Set replace old and new values
@@ -132,7 +132,7 @@ class Ai1wm_Export_Config {
 		$config['Plugin'] = array( 'Version' => AI1WM_VERSION );
 
 		// Set WordPress version and content
-		$config['WordPress'] = array( 'Version' => $wp_version, 'Content' => WP_CONTENT_DIR, 'Plugins' => WP_PLUGIN_DIR, 'Themes' => get_theme_root(), 'Uploads' => ai1wm_get_uploads_dir(), 'UploadsURL' => ai1wm_get_uploads_url() );
+		$config['WordPress'] = array( 'Version' => $wp_version, 'Content' => WP_CONTENT_DIR, 'Plugins' => ai1wm_get_plugins_dir(), 'Themes' => ai1wm_get_themes_dirs(), 'Uploads' => ai1wm_get_uploads_dir(), 'UploadsURL' => ai1wm_get_uploads_url() );
 
 		// Set database version
 		$config['Database'] = array( 'Version' => $mysql->version(), 'Charset' => DB_CHARSET, 'Collate' => DB_COLLATE, 'Prefix' => $table_prefix );
@@ -154,6 +154,9 @@ class Ai1wm_Export_Config {
 
 		// Set upload URL path
 		$config['UploadsURL'] = get_option( 'upload_url_path' );
+
+		// Set server info
+		$config['Server'] = array( '.htaccess' => base64_encode( ai1wm_get_htaccess() ), 'web.config' => base64_encode( ai1wm_get_webconfig() ) );
 
 		// Save package.json file
 		$handle = ai1wm_open( ai1wm_package_path( $params ), 'w' );

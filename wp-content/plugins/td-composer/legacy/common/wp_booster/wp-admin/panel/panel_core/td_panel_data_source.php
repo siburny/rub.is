@@ -106,6 +106,13 @@ class td_panel_data_source {
                 }
                 break;
 
+            case 'td_fonts_default':
+                $fonts_default = td_options::get_array('td_fonts_default');
+                if(!empty($fonts_default[$read_array['option_id']])) {
+                    return $fonts_default[$read_array['option_id']];
+                }
+                break;
+
 
             case 'td_fonts':
                 $fonts_user_inserted = td_options::get_array('td_fonts');
@@ -279,6 +286,10 @@ class td_panel_data_source {
                     self::update_td_fonts_user_insert($post_value);
                     break;
 
+                case 'td_fonts_default':
+                	self::update_td_fonts_default($post_value);
+	                break;
+
                 case 'td_fonts':
                     self::update_td_fonts($post_value);
                     break;
@@ -319,8 +330,28 @@ class td_panel_data_source {
 		            self::update_tdb_template($post_value, 'tag');
 		            break;
 
+	            case 'tdb_tag_templates';
+	                self::update_tdb_tag_templates($post_value);
+	                break;
+
 	            case 'tdb_author_template':
 		            self::update_tdb_template($post_value, 'author');
+		            break;
+
+	            case 'tdb_woo_product_template':
+		            self::update_tdb_template($post_value, 'woo_product');
+		            break;
+
+	            case 'tdb_woo_archive_template':
+		            self::update_tdb_template($post_value, 'woo_archive');
+		            break;
+
+	            case 'tdb_woo_search_archive_template':
+		            self::update_tdb_template($post_value, 'woo_search_archive');
+		            break;
+
+	            case 'tdb_woo_shop_base_template':
+		            self::update_tdb_template($post_value, 'woo_shop_base');
 		            break;
 
                 default:
@@ -342,6 +373,7 @@ class td_panel_data_source {
         //save all the themes settings (td_options + td_category)
 	    td_options::schedule_save();
 
+	    td_options::save_panel_history();
     }
 
 
@@ -734,6 +766,22 @@ class td_panel_data_source {
 
     }
 
+
+//	                $fonts_user_inserted = td_options::get_array('td_fonts_default');
+//	                if(!empty($fonts_user_inserted[$read_array['option_id']])) {
+//	                    return $fonts_user_inserted[$read_array['option_id']];
+//	                }
+
+
+	/**
+     * @used to save the default fonts
+     */
+    private static function update_td_fonts_default($td_fonts_default_array ) {
+
+    	// save option
+	    td_options::update_array('td_fonts_default', $td_fonts_default_array );
+    }
+
     /**
      * @used to save the fonts
      */
@@ -858,14 +906,58 @@ class td_panel_data_source {
 	private static function update_tdb_author_templates($td_option_array) {
 		$td_options = &td_options::get_all_by_ref();
 
+        $option_id = 'tdb_author_templates';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
 		foreach ($td_option_array as $author_id => $tdb_template_id) {
-			$td_options['tdb_author_templates'][$author_id] = $tdb_template_id;
+			$td_options[$option_id][$author_id] = $tdb_template_id;
+		}
+	}
+
+	private static function update_tdb_tag_templates($td_option_array) {
+		$td_options = &td_options::get_all_by_ref();
+
+        $option_id = 'tdb_tag_templates';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
+		foreach ($td_option_array as $tdb_template_id => $tags) {
+			$td_options[$option_id][$tdb_template_id] = $tags;
 		}
 	}
 
 	private static function update_tdb_template($td_option, $template_type) {
 		$td_options = &td_options::get_all_by_ref();
-        $td_options['tdb_' . $template_type . '_template'] = $td_option;
+
+        $option_id = 'tdb_' . $template_type . '_template';
+        if (class_exists('SitePress', false )) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+        $td_options[$option_id] = $td_option;
 	}
 
 

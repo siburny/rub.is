@@ -9,38 +9,122 @@ class td_block_pinterest extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
+                /* @style_general_pinterest */
+                .td-pinterest-main {
+                    column-count: 1;
+                    column-gap: 0;
+                }
+                .td-pinterest-main .td-pinterest-element {
+                    display: block;
+                }
+                .td-pinterest-main .td-pinterest-element img {
+                    display: block;
+                    border-bottom: 0 solid transparent;
+                }
+                .td-pinterest-gap-2 {
+                    column-gap: 2px;
+                }
+                .td-pinterest-gap-2 .td-pinterest-element img {
+                    border-bottom-width: 2px;
+                }
+                .td-pinterest-gap-5 {
+                    column-gap: 5px;
+                }
+                .td-pinterest-gap-5 .td-pinterest-element img {
+                    border-bottom-width: 5px;
+                }
+                .td-pinterest-gap-10 {
+                    column-gap: 10px;
+                }
+                .td-pinterest-gap-10 .td-pinterest-element img {
+                    border-bottom-width: 10px;
+                }
+                .td_block_pinterest .td-pinterest-header {
+                    margin-bottom: 26px;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-profile-image {
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 60px;
+                    overflow: hidden;
+                    margin-right: 12px;
+                    float: left;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-user-meta {
+                    padding-top: 2px;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-user-meta a {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: inline-block;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
+                    max-width: 50%;
+                    margin-right: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                    color: #363636;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-user-meta .td-pinterest-board {
+                    max-width: 25%;
+                    font-size: 12px;
+                    color: #8e8e8e;
+                    line-height: 19px;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-followers {
+                    display: inline-block;
+                    font-size: 10px;
+                    line-height: 15px;
+                    position: relative;
+                    top: -10px;
+                }
+                .td_block_pinterest .td-pinterest-header .td-pinterest-followers span {
+                    font-weight: 600;
+                }
+                .td_block_pinterest .td-column-1 .td-pinterest-user-meta .td-pinterest-board {
+                    max-width: 35%;
+                }
+                .td_block_pinterest .td-column-1 .td-pinterest-user-meta a {
+                    display: block;
+                }
+                .td_block_pinterest .td-column-1 .td-pinterest-followers {
+                    top: -5px;
+                }
+  
+                
 
                 /* @username_color */
-				.$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
+				body .$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
 					color: @username_color;
 				}
                 /* @board_color */
-				.$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-board {
+				body .$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-board {
 					color: @board_color;
 				}
                 /* @followers_color */
-				.$unique_block_class .td-pinterest-followers {
+				body .$unique_block_class .td-pinterest-followers {
 					color: @followers_color;
 				}
 				
 
 
 				/* @f_user */
-				.$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
+				body .$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
 					@f_user
 				}
 				/* @f_board */
-				.$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-board {
+				body .$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-board {
 					@f_board
 				}
 				/* @f_followers */
-				.$unique_block_class .td-pinterest-followers {
+				body .$unique_block_class .td-pinterest-followers {
 					@f_followers
 				}
 				
@@ -55,6 +139,12 @@ class td_block_pinterest extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        /*-- GENERAL -- */
+        $res_ctx->load_settings_raw( 'style_general_pinterest', 1 );
+
+
+
 
         // username color
         $res_ctx->load_settings_raw( 'username_color', $res_ctx->get_shortcode_att('username_color') );

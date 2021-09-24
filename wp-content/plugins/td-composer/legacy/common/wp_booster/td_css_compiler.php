@@ -10,6 +10,8 @@ class td_css_compiler {
 
     var $css_sections; //array
 
+	private static $registered_atts = array();
+
     function __construct($raw_css) {
         $this->raw_css = $raw_css;
 
@@ -37,11 +39,22 @@ class td_css_compiler {
 
     function load_setting_raw($full_name, $value) {
 
-	    // # css values are removed!
+    	if ( ! td_util::tdc_is_live_editor_iframe() && 0 === strpos( $full_name, 'style_' ) ) {
+		    if ( in_array( $full_name, self::$registered_atts ) ) {
+			    return;
+		    } else {
+			    self::$registered_atts[] = $full_name;
+		    }
+	    }
+		// # css values are removed!
 	    if ($value !== '#') {
 			$this->settings[$full_name] = $value;
 	    }
         //print_r($this->settings) ;
+    }
+
+    static function resetRegisteredAtts() {
+    	self::$registered_atts = [];
     }
 
 

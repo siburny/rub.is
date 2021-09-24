@@ -12,14 +12,15 @@ class tagdiv_global {
 	 * @var array
 	 */
 	private static $td_plugins = array(
-		'TD_COMPOSER'       => array( 'version' => '819b7f9b02b0195f80e3eab970f44973x',         'class' => 'tdc_version_check' ),
-		'TD_CLOUD_LIBRARY'  => array( 'version' => 'c8cba5620a72d5b299fa8f62aeca6adfx',    'class' => 'tdb_version_check' ),
-		'TD_SOCIAL_COUNTER' => array( 'version' => 'ddfcdab87986f11a58920bbc29e0e1fc',   'class' => 'td_social_counter_plugin' ),
-		'TD_NEWSLETTER'     => array( 'version' => '48241bbc0aac80b2e0dc8b3d466a6b86',       'class' => 'td_newsletter_version_check' ),
-		'TD_MOBILE_PLUGIN'  => array( 'version' => '1838ac1726d2b14cc8055e6dd55bf86f',    'class' => 'td_mobile_theme' ),
+		'TD_COMPOSER'       => array( 'version' => '5496ac087ca179a9788dadb779dbc160',         'class' => 'tdc_version_check' ),
+		'TD_CLOUD_LIBRARY'  => array( 'version' => 'c19aec6a20dc470dea3def4ce71e04d5',    'class' => 'tdb_version_check' ),
+		'TD_SOCIAL_COUNTER' => array( 'version' => '72fa9334bad65b54a380f20dbbde94d0',   'class' => 'td_social_counter_plugin' ),
+		'TD_NEWSLETTER'     => array( 'version' => 'fb78c20f1c592d0d1907a1a43bd5cce1',       'class' => 'td_newsletter_version_check' ),
+		'TD_SUBSCRIPTION'   => array( 'version' => '18da952bde8fab1875ba66b9c5072e53',     'class' => 'tds_version_check' ),
+		'TD_MOBILE_PLUGIN'  => array( 'version' => '6c637736a1bbdf7e42f21cf3650dfb1b',    'class' => 'td_mobile_theme' ),
 		'AMP'               => array( 'version' => '___amp___',                 'class' => 'AMP_Autoloader' ),
-		'TD_STANDARD_PACK'  => array( 'version' => 'f3d6322e6f953bf07f46586e1d97917d',    'class' => 'tdsp_version_check' ),
-
+		'TD_STANDARD_PACK'  => array( 'version' => '9214a050dc0a6c6eeaa5c1aa35f9cfe3',    'class' => 'tdsp_version_check' ),
+		'TD_WOO'            => array( 'version' => 'ba3f9555bcfe508b99c8d5d68ca4ed68',              'class' => 'td_woo_version_check' )
 	);
 
 

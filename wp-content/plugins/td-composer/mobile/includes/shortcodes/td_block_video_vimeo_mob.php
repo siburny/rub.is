@@ -13,6 +13,6 @@ class td_block_video_vimeo extends td_block {
 	}
 
     function render($atts, $content = null) {
-        return td_video_playlist_render::render_generic($atts, 'vimeo');
+        return td_video_playlist_render::render_generic($atts, 'vimeo', $this->get_wrapper_class());
     }
 }

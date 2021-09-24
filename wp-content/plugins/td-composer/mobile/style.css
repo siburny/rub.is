@@ -681,7 +681,8 @@ img.wp-smiley {
   width: auto;
 }
 .wp-caption-text,
-.wp-caption-dd {
+.wp-caption-dd,
+.wp-block-image figcaption {
   text-align: left;
   margin: 0 0 26px 0;
   font-size: 12px !important;
@@ -1113,6 +1114,21 @@ blockquote.pull-right:after {
 /*  ----------------------------------------------------------------------------
     dropcaps
 */
+.td-page-content .dropcap,
+.td-post-content .dropcap,
+.comment-content .dropcap {
+  float: left;
+  display: block;
+  font-size: 50px;
+  line-height: 50px;
+  background-color: #4db2ec;
+  color: white;
+  text-align: center;
+  margin: 9px 13px 0 0;
+  padding: 2px 13px 5px 13px;
+  text-transform: uppercase;
+  min-width: 57px;
+}
 .td-page-content .dropcap1,
 .td-post-content .dropcap1,
 .comment-content .dropcap1 {
@@ -1140,6 +1156,69 @@ blockquote.pull-right:after {
   line-height: 69px;
   margin: 0 9px 0 0;
   padding: 0 13px 0 0;
+}
+.td-page-content p.has-drop-cap.dropcapp::first-letter,
+.td-post-content p.has-drop-cap.dropcapp::first-letter,
+.comment-content p.has-drop-cap.dropcapp::first-letter {
+  float: left;
+  display: block;
+  font-size: 50px;
+  font-weight: inherit;
+  line-height: 56px;
+  background-color: #4db2ec;
+  color: white;
+  text-align: center;
+  margin: 9px 13px 0 0;
+  padding: 2px 14px 4px;
+  font-family: 'mobile-theme', sans-serif;
+  text-transform: uppercase;
+}
+.td-page-content p.has-drop-cap.dropcapp1:first-letter,
+.td-post-content p.has-drop-cap.dropcapp1:first-letter,
+.comment-content p.has-drop-cap.dropcapp1:first-letter {
+  padding-left: 18px;
+  padding-right: 17px;
+  font-size: 40px;
+  border-radius: 70px;
+}
+.td-page-content p.has-drop-cap.dropcapp2:first-letter,
+.td-post-content p.has-drop-cap.dropcapp2:first-letter,
+.comment-content p.has-drop-cap.dropcapp2:first-letter,
+.td-page-content p.has-drop-cap.dropcapp3:first-letter,
+.td-post-content p.has-drop-cap.dropcapp3:first-letter,
+.comment-content p.has-drop-cap.dropcapp3:first-letter {
+  background-color: transparent !important;
+  color: #4B4B4B;
+  font-size: 79px;
+  line-height: 69px;
+  margin: 0 9px 0 0;
+  padding: 0 13px 0 0;
+}
+.td-page-content p.has-drop-cap.dropcapp3:first-letter,
+.td-post-content p.has-drop-cap.dropcapp3:first-letter,
+.comment-content p.has-drop-cap.dropcapp3:first-letter {
+  font-weight: bold;
+}
+.td-page-content p.has-drop-cap.dropcapp4,
+.td-post-content p.has-drop-cap.dropcapp4,
+.comment-content p.has-drop-cap.dropcapp4 {
+  margin-top: 40px;
+}
+.td-page-content p.has-drop-cap.dropcapp4:first-letter,
+.td-post-content p.has-drop-cap.dropcapp4:first-letter,
+.comment-content p.has-drop-cap.dropcapp4:first-letter {
+  background-color: #000;
+  font-size: .85em;
+  line-height: 1;
+  color: #fff;
+  border-radius: 100px;
+  margin: -2px 15px 0 0;
+  padding: 9px 11px;
+}
+.td-page-content p.has-drop-cap.dropcapp4:after,
+.td-post-content p.has-drop-cap.dropcapp4:after,
+.comment-content p.has-drop-cap.dropcapp4:after {
+  padding-top: 0;
 }
 /*  ----------------------------------------------------------------------------
     text columns
@@ -1500,8 +1579,8 @@ blockquote.pull-right:after {
 }
 @font-face {
   font-family: 'mobile-theme';
-  src: url('images/icons/mobile-theme.eot?9');
-  src: url('images/icons/mobile-theme.eot?9#iefix') format('embedded-opentype'), url('images/icons/mobile-theme.woff?9') format('woff'), url('images/icons/mobile-theme.ttf?9') format('truetype'), url('images/icons/mobile-theme.svg?9#mobile-theme') format('svg');
+  src: url('images/icons/mobile-theme.eot?10');
+  src: url('images/icons/mobile-theme.eot?10#iefix') format('embedded-opentype'), url('images/icons/mobile-theme.woff?10') format('woff'), url('images/icons/mobile-theme.ttf?10') format('truetype'), url('images/icons/mobile-theme.svg?10#mobile-theme') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -1743,11 +1822,23 @@ blockquote.pull-right:after {
 .td-icon-naver:before {
   content: '\e9d3';
 }
+.td-icon-discord:before {
+  content: '\e90c';
+}
 .td-icon-video-thumb-play:before {
   content: '\e9d4';
 }
 .td-icon-audio-thumb-play:before {
   content: '\e9d5';
+}
+.td-icon-tiktok:before {
+  content: '\e9d6';
+}
+.td-icon-yandex:before {
+  content: '\e9d7';
+}
+.td-icon-flipboard:before {
+  content: '\e9d9';
 }
 /*  ----------------------------------------------------------------------------
     Module general
@@ -2000,7 +2091,7 @@ blockquote.pull-right:after {
     Ads
 */
 .td-adspot-title {
-  color: #bbb;
+  color: #767676;
   font-size: 10px;
   text-align: center;
   display: block;
@@ -2599,6 +2690,7 @@ blockquote.pull-right:after {
   padding: 6px 0;
   max-height: 60px;
   max-width: 250px;
+  width: auto;
 }
 @media (max-width: 320px) {
   .td-main-menu-logo img {
@@ -2696,6 +2788,27 @@ blockquote.pull-right:after {
   background-color: #fff;
   opacity: 0.8;
 }
+.td-search-wrap .td-search-submit {
+  margin: 0 auto;
+  width: 30%;
+}
+.td-search-wrap .td-search-submit input {
+  display: block;
+  text-align: center;
+  margin: 8px 0;
+  width: 100%;
+  text-transform: uppercase;
+  line-height: 24px;
+  color: #000;
+  border: none;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.36);
+  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.36);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.36);
+  font-size: 15px;
+  border-radius: 0;
+  background-color: #fff;
+  opacity: 0.8;
+}
 .td-search-background {
   background-repeat: no-repeat;
   background-size: cover;
@@ -2761,7 +2874,8 @@ blockquote.pull-right:after {
 .td-drop-down-search .btn {
   display: none;
 }
-#td-header-search {
+#td-header-search,
+#td-header-search-no-ajax {
   color: #fff;
   font-weight: bold;
   font-size: 28px;
@@ -2900,8 +3014,9 @@ blockquote.pull-right:after {
 }
 #td-mobile-nav {
   padding: 0;
-  position: absolute;
+  position: fixed;
   width: 100%;
+  height: calc(100% + 1px);
   top: 0;
   z-index: 9999;
   -webkit-transition: transform 0.5s cubic-bezier(0.79, 0.14, 0.15, 0.86);
@@ -2914,7 +3029,6 @@ blockquote.pull-right:after {
   -ms-transform: translate3d(-99%, 0, 0);
   -o-transform: translate3d(-99%, 0, 0);
   left: -1%;
-  height: 1px;
   overflow: hidden;
 }
 .td-menu-socials-wrap {
@@ -3095,7 +3209,7 @@ blockquote.pull-right:after {
   box-shadow: 0 0 46px;
 }
 .td-menu-mob-open-menu #td-mobile-nav {
-  height: auto;
+  height: calc(100% + 1px);
   overflow: auto;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
@@ -3135,6 +3249,9 @@ blockquote.pull-right:after {
 }
 .td-footer-wrap:last-child {
   margin-bottom: 0;
+}
+.td-footer-logo img {
+  width: auto;
 }
 .footer-email-wrap {
   padding-top: 16px;
@@ -3506,6 +3623,12 @@ header .td-module-meta-info .td-post-comments a {
 }
 .td-social-naver .td-icon-naver {
   font-size: 16px;
+}
+.td-social-discord {
+  background-color: #7289DA;
+}
+.td-social-discord .td-icon-discord {
+  font-size: 15px;
 }
 .td-social-line {
   background-color: #00b900;
@@ -3986,6 +4109,57 @@ header .td-module-meta-info .td-post-comments a {
   opacity: 0.5;
 }
 /*  ----------------------------------------------------------------------------
+    Smart list 2
+*/
+.tdm_smart_list_2 {
+  margin-top: 38px;
+}
+.tdm_smart_list_2 .td-number-and-title {
+  text-align: left;
+  padding: 0;
+  margin-bottom: 21px;
+  position: relative;
+}
+.tdm_smart_list_2 .td-sml-description {
+  margin-top: 0;
+}
+.tdm_smart_list_2 h2 {
+  margin: 0;
+  line-height: 32px;
+}
+.tdm_smart_list_2 .td-item {
+  margin-bottom: 53px;
+}
+.tdm_smart_list_2 .td-sml-current-item-title {
+  margin-top: 2px;
+  width: 100%;
+  padding-left: 50px;
+  font-size: 24px;
+  line-height: 28px;
+  display: inline-block;
+}
+.tdm_smart_list_2 .td-sml-current-item-nr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 30px;
+  color: #fff;
+  background-color: #222;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  display: inline-block;
+}
+.tdm_smart_list_2 .td-slide-smart-list-figure {
+  text-align: center;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 16px;
+}
+/*  ----------------------------------------------------------------------------
     wordpress default galleries
 */
 .gallery img {
@@ -3994,6 +4168,14 @@ header .td-module-meta-info .td-post-comments a {
 /*  ----------------------------------------------------------------------------
     caption
 */
+.gallery-item {
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 0 2%;
+}
 .gallery-item img {
   margin-bottom: 0;
 }
@@ -4879,4 +5061,7 @@ body {
 .td-custom-html-mob {
   text-align: center;
   margin: 0 auto;
+}
+.td-close-video-fixed {
+  display: none;
 }

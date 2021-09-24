@@ -16,69 +16,124 @@ function tdc_register_api_routes() {
 	register_rest_route($namespace, '/do_job/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_render_shortcode'),
+        'permission_callback' => '__return_true',
 	));
 
 
 	register_rest_route($namespace, '/save_post/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_save_post'),
+        'permission_callback' => '__return_true',
 	));
 
-	register_rest_route($namespace, '/save_history/', array(
-		'methods'  => 'POST',
-		'callback' => array ('tdc_ajax', 'on_ajax_save_history'),
-	));
+//	register_rest_route($namespace, '/save_history/', array(
+//		'methods'  => 'POST',
+//		'callback' => array ('tdc_ajax', 'on_ajax_save_history'),
+//        'permission_callback' => '__return_true',
+//	));
 
 	register_rest_route($namespace, '/load_header_template/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_load_header_template'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/update_header_template/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_update_header_template'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/get_header_templates/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_get_header_templates'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/get_header_template/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_get_header_template'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/decode_html_content/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_decode_html_content'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/get_image_url/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_get_image_url'),
+        'permission_callback' => '__return_true',
 	));
 
 
 	register_rest_route($namespace, '/get_image_id/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_get_image_id'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/save_parts/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_save_parts'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/change_template_name/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_change_template_name'),
+        'permission_callback' => '__return_true',
 	));
 
 	register_rest_route($namespace, '/save_header_mobile_menu/', array(
 		'methods'  => 'POST',
 		'callback' => array ('tdc_ajax', 'on_ajax_save_header_mobile_menu'),
+        'permission_callback' => '__return_true',
 	));
+
+	register_rest_route($namespace, '/load_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_load_footer_template'),
+        'permission_callback' => '__return_true',
+	));
+
+	register_rest_route($namespace, '/update_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_update_footer_template'),
+        'permission_callback' => '__return_true',
+	));
+
+	register_rest_route($namespace, '/get_footer_templates/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_get_footer_templates'),
+        'permission_callback' => '__return_true',
+	));
+
+	register_rest_route($namespace, '/get_footer_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_get_footer_template'),
+        'permission_callback' => '__return_true',
+	));
+
+	register_rest_route($namespace, '/update_options/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_update_options'),
+        'permission_callback' => '__return_true',
+	));
+
+	register_rest_route($namespace, '/create_mobile_template/', array(
+		'methods'  => 'POST',
+		'callback' => array ('tdc_ajax', 'on_ajax_create_mobile_template'),
+        'permission_callback' => '__return_true',
+	));
+
+    register_rest_route($namespace, '/set_param_info_option/', array(
+        'methods'  => 'POST',
+        'callback' => array ('tdc_ajax', 'on_ajax_set_param_info_option'),
+        'permission_callback' => '__return_true',
+    ));
 }
 
 /**
@@ -91,11 +146,13 @@ function tdc_on_save_post( $post_id, $post, $update) {
 
 	// Do nothing for newly created posts
 	$post_status = get_post_status( $post_id );
-	if ( 'auto-draft' === $post_status || 'heartbeat' === @$_POST[ 'action' ] ) {
+	if ( 'auto-draft' === $post_status || ( !empty($_POST[ 'action' ]) && 'heartbeat' === $_POST[ 'action' ] )  ) {
 		return;
 	}
 
 	td_util::check_header( $post );
+
+	td_util::check_footer( $post );
 
 	// Set the 'tdc_dirty_content' flag
 	if ($update === false) {
@@ -112,8 +169,11 @@ function tdc_on_save_post( $post_id, $post, $update) {
 	update_post_meta( $post_id, 'tdc_icon_fonts', $icon_font_list );
 
 	// Set icon fonts used in post
-	$google_font_list = tdc_util::get_required_google_fonts_ids( $post_id );
-	update_post_meta( $post_id, 'tdc_google_fonts', $google_font_list );
+    $post_type = get_post_type( $post_id );
+    if ( in_array( $post_type, array( 'page', 'tdb_templates' ))) {
+        $google_font_list = td_util::get_required_google_fonts_ids( $post_id );
+	    update_post_meta( $post_id, 'tdc_google_fonts_settings', $google_font_list );
+    }
 }
 
 
@@ -273,6 +333,8 @@ class tdc_ajax {
 
 
 		die( json_encode( $parameters ) );
+
+		return true;
 	}
 
 
@@ -298,7 +360,10 @@ class tdc_ajax {
 		$post_content = $_POST['tdc_content'];
 
 		$meta = $_POST['tdc_customized'];
-		$single_post_content_width = @$_POST['tdc_single_post_content_width'];
+		$single_post_content_width = '';
+		if ( ! empty( $_POST ['tdc_single_post_content_width'] ) ) {
+		    $single_post_content_width = $_POST['tdc_single_post_content_width'];
+		}
 
 		if ( ! isset( $action ) || 'tdc_ajax_save_post' !== $action || ! isset( $post_id ) || ! isset( $post_content ) ) {
 
@@ -319,7 +384,20 @@ class tdc_ajax {
 					$parameters['errors'][] = $error;
 				}
 			} else {
-				update_post_meta( $post_id, 'tdc_dirty_content', 0 );
+			    $tda_essential_css = get_post_meta($post_id, 'tda_essential_css', true);
+
+                if ( ! empty($tda_essential_css ) ) {
+                    foreach ( [ 'critical', 'rest' ] as $val ) {
+                        $file_path = TD_ANALYZE_CSS_CACHE_DIR . $post_id . '-tda-' . $val . '-css-' . $tda_essential_css . '.css';
+                        if ( file_exists( $file_path ) ) {
+                            unlink( $file_path );
+                        }
+                    }
+                }
+                delete_post_meta( $post_id, 'tda_essential_css');
+                delete_post_meta( $post_id, 'tda_group_ids');
+
+			    update_post_meta( $post_id, 'tdc_dirty_content', 0 );
 				update_post_meta( $post_id, 'tdc_content', $post_content );
 
 				$td_homepage_loop = get_post_meta( $post_id, 'td_homepage_loop', true );
@@ -377,24 +455,28 @@ class tdc_ajax {
                     foreach ( $content_matches[ 1 ] as $str_atts ) {
 
                         $arr_atts = shortcode_parse_atts( $str_atts );
+                        if (is_array($arr_atts)) {
+	                        foreach ( $arr_atts as $arr_att ) {
+		                        if ( 0 === strpos( $arr_att, 'content_width' ) ) {
+			                        $arr_att_val = str_replace( array( 'content_width="', '"' ), '', $arr_att );
 
-                        foreach ($arr_atts as $arr_att ) {
-                            if ( 0 === strpos( $arr_att, 'content_width' ) ) {
-                                $arr_att_val = str_replace( array('content_width="', '"'), '', $arr_att );
+			                        $final_val = $arr_att_val;
+			                        if ( base64_decode( $arr_att_val, true ) && base64_encode( base64_decode( $arr_att_val, true ) ) === $arr_att_val ) {
+				                        $arr_att_val = json_decode( base64_decode( $arr_att_val ), true );
 
-                                $final_val = $arr_att_val;
-                                if ( base64_decode( $arr_att_val, true ) && base64_encode( base64_decode( $arr_att_val, true ) ) === $arr_att_val ) {
-                                    $arr_att_val = json_decode( base64_decode( $arr_att_val ), true );
+				                        if ( ! empty( $arr_att_val[ 'all' ] ) ) {
+					                        $final_val = $arr_att_val[ 'all' ];
+				                        }
+			                        }
 
-                                    if ( !empty($arr_att_val['all'])) {
-                                        $final_val = $arr_att_val['all'];
+			                        if ( ! empty( $final_val ) ) {
+				                        update_post_meta( $post_id, 'tdc_single_post_content_width', $final_val );
+				                        $val_for_single_post_content = true;
+			                        }
 
-                                        update_post_meta( $post_id, 'tdc_single_post_content_width', $final_val );
-                                        $val_for_single_post_content = true;
-                                    }
-                                }
-                                break;
-                            }
+			                        break;
+		                        }
+	                        }
                         }
 
                         // Do it just for the first tdb_single_content shortcode
@@ -420,35 +502,35 @@ class tdc_ajax {
 
 
 
-	static function on_ajax_save_history( WP_REST_Request $request ) {
-		if ( ! current_user_can( 'edit_pages' ) ) {
-			//@todo - ceva eroare sa afisam aici
-			echo 'no permission';
-			die;
-		}
-
-		$parameters = array();
-
-		$action       = $_POST['tdc_action'];
-		$post_id      = $_POST['tdc_post_id'];
-		$post_content = $_POST['tdc_content'];
-
-		if ( ! isset( $action ) || 'tdc_ajax_save_history' !== $action || ! isset( $post_id ) || ! isset( $post_content ) ) {
-
-			$parameters['errors'][] = 'Invalid data';
-
-		} else {
-			$the_post = get_post( $post_id );
-
-			if ( is_null( $the_post ) ) {
-			    $parameters['errors'][] = 'Post not found!';
-            } else {
-                update_post_meta( $post_id, 'tdc_history', $post_content );
-            }
-		}
-
-		die( json_encode( $parameters ) );
-	}
+//	static function on_ajax_save_history( WP_REST_Request $request ) {
+//		if ( ! current_user_can( 'edit_pages' ) ) {
+//			//@todo - ceva eroare sa afisam aici
+//			echo 'no permission';
+//			die;
+//		}
+//
+//		$parameters = array();
+//
+//		$action       = $_POST['tdc_action'];
+//		$post_id      = $_POST['tdc_post_id'];
+//		$post_content = $_POST['tdc_content'];
+//
+//		if ( ! isset( $action ) || 'tdc_ajax_save_history' !== $action || ! isset( $post_id ) || ! isset( $post_content ) ) {
+//
+//			$parameters['errors'][] = 'Invalid data';
+//
+//		} else {
+//			$the_post = get_post( $post_id );
+//
+//			if ( is_null( $the_post ) ) {
+//			    $parameters['errors'][] = 'Post not found!';
+//            } else {
+//                update_post_meta( $post_id, 'tdc_history', $post_content );
+//            }
+//		}
+//
+//		die( json_encode( $parameters ) );
+//	}
 
 
 
@@ -465,8 +547,9 @@ class tdc_ajax {
 		$action = $_POST['tdc_action'];
 		$header_template_content = $_POST['tdc_header_template_content'];
 		$header_template_title = $_POST['tdc_header_template_title'];
+		$header_is_mobile = @$_POST['tdc_header_is_mobile'];
 
-		if ( ! isset( $action ) || 'load_header_template' !== $action || ! isset( $header_template_content ) ) {
+		if ( ! isset( $action ) || 'load_header_template' !== $action || empty( $header_template_content ) ) {
 
 			$parameters['errors'][] = 'Invalid data';
 
@@ -561,6 +644,10 @@ class tdc_ajax {
 			    $parameters['header_template_id'] = $template_id;
 			}
 
+			if ( !empty( $header_is_mobile ) && '1' == $header_is_mobile ) {
+			    update_post_meta($template_id, 'tdc_is_mobile_template', 1);
+            }
+
 		} else {
 
 		    $data_template = array(
@@ -583,6 +670,10 @@ class tdc_ajax {
 			} else {
 			    $parameters['header_template_id'] = $template_id;
 			}
+
+			if ( !empty( $header_is_mobile ) && '1' == $header_is_mobile ) {
+			    update_post_meta($template_id, 'tdc_is_mobile_template', 1);
+            }
         }
 
 		die( json_encode( $parameters ) );
@@ -665,6 +756,30 @@ class tdc_ajax {
                     // Set header template as header template for header template itself!
                     update_post_meta( $template_id, 'tdc_header_template_id', $template_id );
 			        update_post_meta( $template_id, 'tdc_dirty_content', 0 );
+
+			        $extra_google_fonts_ids = [];
+
+			        if ( base64_decode( $header_template_content, true ) && base64_encode( base64_decode( $header_template_content, true ) ) === $header_template_content ) {
+                        $header_template_content = json_decode( base64_decode( $header_template_content ), true );
+
+                        foreach ( ['tdc_header_desktop', 'tdc_header_desktop_sticky', 'tdc_header_mobile', 'tdc_header_mobile_sticky'] as $viewport ) {
+                            if ( ! empty( $header_template_content[ $viewport ] ) ) {
+                                $google_fonts_ids = td_util::get_content_google_fonts_ids( $header_template_content[ $viewport ] );
+
+                                foreach ( $google_fonts_ids as $google_fonts_id => $font_settings ) {
+                                    if ( array_key_exists( $google_fonts_id, $extra_google_fonts_ids ) ) {
+                                        $extra_google_fonts_ids[ $google_fonts_id ] = array_unique( array_merge( $extra_google_fonts_ids[ $google_fonts_id ], $google_fonts_ids[ $google_fonts_id ] ) );
+                                    } else {
+                                        $extra_google_fonts_ids[ $google_fonts_id ] = $font_settings;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if ( ! empty( $extra_google_fonts_ids ) ) {
+                        update_post_meta( $template_id, 'tdc_google_fonts_settings', $extra_google_fonts_ids );
+                    }
 			    }
 		    }
 		}
@@ -682,24 +797,72 @@ class tdc_ajax {
 			die;
 		}
 
+		$mobile_templates = $_POST['mobile_templates'];
+
 	    $parameters = array();
 
-		$header_templates = new WP_Query( array(
-                'post_type' => 'tdb_templates',
-                'posts_per_page' => -1,
-                'meta_key' => 'tdb_template_type',
-                'meta_value' => 'header'
-            )
-        );
+	    if ( empty( $mobile_templates )) {
 
-		if ( $header_templates->found_posts ) {
-		    foreach ( $header_templates->posts as $header_template ) {
-		        $parameters[ 'tdb_header_templates' ][] = array(
-                    'id' => $header_template->ID,
-                    'title' => $header_template->post_title
-                );
+	        $header_templates = new WP_Query( array(
+                    'post_type' => 'tdb_templates',
+                    'posts_per_page' => -1,
+                    'meta_key' => 'tdb_template_type',
+                    'meta_value' => 'header',
+                    'meta_query' => array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'value'   => '1',
+                            'compare' => '!=',
+                        ),
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                    ),
+                )
+            );
+
+            if ( $header_templates->found_posts ) {
+                foreach ( $header_templates->posts as $header_template ) {
+
+                    $parameters[ 'tdb_header_templates' ][] = array(
+                        'id' => $header_template->ID,
+                        'title' => $header_template->post_title,
+                        'is_global_template' =>  ( td_util::get_option('tdb_header_template' ) === 'tdb_template_' . $header_template->ID ? '1' : '0')
+                    );
+                }
+            }
+
+        } else {
+
+	        $header_templates = new WP_Query( array(
+                    'post_type' => 'tdb_templates',
+                    'posts_per_page' => -1,
+                    'meta_key' => 'tdb_template_type',
+                    'meta_value' => 'header',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'value'   => '1',
+                            'compare' => '==',
+                        ),
+                    ),
+                )
+            );
+
+            if ( $header_templates->found_posts ) {
+                foreach ( $header_templates->posts as $header_template ) {
+
+                    $parameters[ 'tdb_header_templates' ][] = array(
+                        'id' => $header_template->ID,
+                        'title' => $header_template->post_title,
+                        'is_global_template' =>  ( td_util::get_option('tdb_header_template_mobile' ) === 'tdb_template_' . $header_template->ID ? '1' : '0')
+                    );
+                }
             }
         }
+
 
         die( json_encode( $parameters ) );
     }
@@ -712,6 +875,7 @@ class tdc_ajax {
 
 	    $action = $_POST['tdc_action'];
 	    $header_template_id = $_POST['tdc_header_template_id'];
+	    $mobile_template = $_POST['mobile_template'];
 
 	    if ( ! isset( $action ) || 'get_header_template' !== $action || ( ! empty( $header_template_id ) && 'no_header' !== $header_template_id && ! ( get_post( $header_template_id ) instanceof WP_Post ) ) ) {
 
@@ -724,9 +888,14 @@ class tdc_ajax {
 	        $parameters['template_content'] = '';
 	        $parameters['template_id'] = '';
 
+	        $is_mobile = false;
+	        if ( ! empty($mobile_template) && '1' === $mobile_template) {
+	            $is_mobile = true;
+            }
+
 	        if ( empty( $header_template_id ) ) {
 
-	            $global_header_template_id = td_api_header_style::get_header_template_id();
+	            $global_header_template_id = td_api_header_style::get_header_template_id( $is_mobile );
 
                 if ( empty( $global_header_template_id ) ) {
                     $parameters['global_template'] = true;
@@ -912,6 +1081,7 @@ class tdc_ajax {
         $template_types = array(
             'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header'
         );
+		$template_types = apply_filters( 'tdb_template_types', $template_types );
 
         if ( in_array( $template_type, $template_types) === false ) {
             $reply['error'] = 'Invalid template type! Please make sure your are editing a supported template type title.';
@@ -968,7 +1138,6 @@ class tdc_ajax {
     }
 
 
-
     static function on_ajax_save_header_mobile_menu( WP_REST_Request $request ) {
 	    // permission check
         if ( ! current_user_can( 'edit_pages' ) ) {
@@ -988,5 +1157,543 @@ class tdc_ajax {
         }
 
         die( json_encode( $parameters ) );
+    }
+
+
+    static function on_ajax_get_footer_templates() {
+	    if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$mobile_templates = $_POST['mobile_templates'];
+
+	    $parameters = array();
+
+	    if ( empty( $mobile_templates )) {
+
+	        $footer_templates = new WP_Query( array(
+                    'post_type' => 'tdb_templates',
+                    'posts_per_page' => -1,
+                    'meta_key' => 'tdb_template_type',
+                    'meta_value' => 'footer',
+                    'meta_query' => array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'value'   => '1',
+                            'compare' => '!=',
+                        ),
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                    ),
+                )
+            );
+
+            if ( $footer_templates->found_posts ) {
+                foreach ( $footer_templates->posts as $footer_template ) {
+
+                    $parameters[ 'tdb_footer_templates' ][] = array(
+                        'id' => $footer_template->ID,
+                        'title' => $footer_template->post_title,
+                        'is_global_template' =>  ( td_util::get_option('tdb_footer_template' ) === 'tdb_template_' . $footer_template->ID ? '1' : '0')
+                    );
+                }
+            }
+
+        } else {
+
+	        $footer_templates = new WP_Query( array(
+                    'post_type' => 'tdb_templates',
+                    'posts_per_page' => -1,
+                    'meta_key' => 'tdb_template_type',
+                    'meta_value' => 'footer',
+                    'meta_query' => array(
+                        array(
+                            'key'     => 'tdc_is_mobile_template',
+                            'value'   => '1',
+                            'compare' => '==',
+                        ),
+                    ),
+                )
+            );
+
+            if ( $footer_templates->found_posts ) {
+                foreach ( $footer_templates->posts as $footer_template ) {
+
+                    $parameters[ 'tdb_footer_templates' ][] = array(
+                        'id' => $footer_template->ID,
+                        'title' => $footer_template->post_title,
+                        'is_global_template' =>  ( td_util::get_option('tdb_footer_template_mobile' ) === 'tdb_template_' . $footer_template->ID ? '1' : '0')
+                    );
+                }
+            }
+        }
+
+        die( json_encode( $parameters ) );
+    }
+
+
+    static function on_ajax_load_footer_template( WP_REST_Request $request ) {
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$action = $_POST['tdc_action'];
+		$footer_template_content = $_POST['tdc_footer_template_content'];
+		$footer_template_title = $_POST['tdc_footer_template_title'];
+		$footer_is_mobile = '';
+
+		if (!empty($_POST['tdc_footer_is_mobile'])) {
+		    $footer_is_mobile = $_POST['tdc_footer_is_mobile'];
+        }
+
+		if ( ! isset( $action ) || 'load_footer_template' !== $action || ! isset( $footer_template_content ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else if ( empty( $_POST['tdc_footer_template_id'] ) ) {
+
+		    global $wpdb;
+
+		    $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "
+                        SELECT post_title 
+                        FROM {$wpdb->posts} 
+                        WHERE post_title LIKE '%s' 
+                        AND post_type = '%s' 
+                        AND post_status = '%s'",
+                    array( '%' . $wpdb->esc_like( $footer_template_title ) . '%', 'tdb_templates', 'publish' )
+                )
+            );
+
+		    $titles = [];
+
+		    foreach ( $results as $post ) {
+                $title = $post->post_title;
+
+                if ( strpos( $title, $footer_template_title . ' ' ) !== false || $footer_template_title === $title ) {
+                    $titles[] = $title;
+                }
+            }
+
+            natsort($titles);
+            $titles = array_values( $titles );
+            $titles_count = count($titles);
+
+            // if we have more than one post with the same title we need to alter the template title
+            if ( $titles_count >= 1 ) {
+
+                // flag to check whether we set a index template title in the foreach loop
+                $flag = false;
+
+                foreach ( $titles as $index => $title ) {
+
+                    // check if the first post is the original template like 'Single Post Template 1'
+                    if ( $index == 0 ) {
+
+                        // if the first post is not the original template
+                        if ( $footer_template_title !== $title ) {
+                            // just set the flag and bail, we don't need to alter the temp title because the original template title is missing
+
+                            $flag = true;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    // check for missing template titles
+                    if ( ! in_array( $footer_template_title . ' (' . ( $index + 1 ) . ')' , $titles ) ) {
+                        $footer_template_title = $footer_template_title . ' (' . ( $index + 1 ) . ')';
+
+                        // set the flag
+                        $flag = true;
+                        break;
+                    }
+                }
+
+                // if we haven't set the title above set the posts count title
+                if ( !$flag ) {
+                    $footer_template_title = $footer_template_title . ' (' . ( $titles_count + 1 ) . ')';
+                }
+            }
+
+			$data_template = array(
+                'post_title' => $footer_template_title,
+                'post_type' => 'tdb_templates',
+				'post_content' => $footer_template_content,
+                'post_status' => 'publish',
+                'meta_input'   => array(
+                    'tdb_template_type' => 'footer',
+                ),
+			);
+
+
+			$template_id = wp_insert_post( $data_template, true );
+
+			if ( is_wp_error( $template_id ) ) {
+				$errors = $template_id->get_error_messages();
+
+				$parameters['errors'] = array();
+				foreach ( $errors as $error ) {
+					$parameters['errors'][] = $error;
+				}
+			} else {
+			    $parameters['footer_template_id'] = $template_id;
+			}
+
+			if ( !empty( $footer_is_mobile ) && '1' == $footer_is_mobile ) {
+			    update_post_meta($template_id, 'tdc_is_mobile_template', 1);
+            }
+
+		} else {
+
+		    $data_template = array(
+                'ID' => $_POST['tdc_footer_template_id'],
+                'post_content' => $footer_template_content,
+                'meta_input' => array(
+                    'tdc_footer_template_id' => $_POST['tdc_footer_template_id']
+                )
+			);
+
+		    $template_id = wp_update_post( $data_template, true );
+
+			if ( is_wp_error( $template_id ) ) {
+				$errors = $template_id->get_error_messages();
+
+				$parameters['errors'] = array();
+				foreach ( $errors as $error ) {
+					$parameters['errors'][] = $error;
+				}
+			} else {
+			    $parameters['footer_template_id'] = $template_id;
+			}
+
+			if ( !empty( $footer_is_mobile ) && '1' == $footer_is_mobile ) {
+			    update_post_meta($template_id, 'tdc_is_mobile_template', 1);
+            }
+        }
+
+		die( json_encode( $parameters ) );
+	}
+
+
+    static function on_ajax_get_footer_template() {
+	    $parameters = array();
+
+	    $action = $_POST['tdc_action'];
+	    $footer_template_id = $_POST['tdc_footer_template_id'];
+	    $mobile_template = $_POST['mobile_template'];
+
+	    if ( ! isset( $action ) || 'get_footer_template' !== $action || ( ! empty( $footer_template_id ) && 'no_footer' !== $footer_template_id && ! ( get_post( $footer_template_id ) instanceof WP_Post ) ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+
+	        $parameters['global_template'] = false;
+	        $parameters['no_header'] = false;
+	        $parameters['template_content'] = '';
+	        $parameters['template_id'] = '';
+
+	        $is_mobile = false;
+	        if ( ! empty($mobile_template) && '1' === $mobile_template) {
+	            $is_mobile = true;
+            }
+
+	        if ( empty( $footer_template_id ) ) {
+
+	            $global_footer_template_id = td_api_footer_template::get_footer_template_id( $is_mobile );
+
+                if ( empty( $global_footer_template_id ) ) {
+                    $parameters['global_template'] = true;
+                } else {
+                    $global_footer_template_id = str_replace( 'tdb_template_', '', $global_footer_template_id );
+                    $meta_footer_template_content = get_post_field('post_content', $global_footer_template_id );
+
+                    if ( empty( $meta_footer_template_content ) ) {
+
+                        // $parameters['errors'][] = 'Invalid template';
+
+                        // Use legacy global template (maybe the existing global template was deleted)
+                        $parameters['global_template'] = true;
+
+                    } else {
+                        $parameters['global_template'] = true;
+                        $parameters['template_id'] = $global_footer_template_id;
+                        $parameters['template_content'] = $meta_footer_template_content;
+                    }
+                }
+            } else if ( 'no_footer' === $footer_template_id ) {
+
+	            $parameters['no_footer'] = true;
+
+            } else {
+
+		        $post_template = get_post( $footer_template_id );
+
+		        if ( $post_template instanceof WP_Post ) {
+			        $parameters['template_id'] = $footer_template_id;
+			        $parameters['template_content'] = $post_template->post_content;
+		        } else {
+			        $parameters['errors'][] = 'Invalid template';
+		        }
+	        }
+	    }
+
+        die( json_encode( $parameters ) );
+    }
+
+
+    static function on_ajax_update_footer_template( WP_REST_Request $request ) {
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+		$parameters = array();
+
+		$action = $_POST['tdc_action'];
+		$post_id = $_POST['tdc_post_id'];
+		$footer_template_id = $_POST['tdc_footer_template_id'];
+		$footer_template_content = $_POST['tdc_footer_template_content'];
+		$assoc_footer_template = $_POST['tdc_assoc_footer_template'];
+
+		if ( ! isset( $action ) || 'update_footer_template' !== $action || ! isset( $footer_template_content ) || ( ! empty( $footer_template_id ) && 'no_footer' !== $footer_template_id && ! get_post( $footer_template_id ) instanceof WP_Post ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+
+		    if ( empty( $footer_template_id ) ) {
+
+			    delete_post_meta( $post_id, 'tdc_footer_template_id' );
+			    $parameters['footer_template_id'] = '';
+
+		    } else if ( 'no_footer' === $footer_template_id ) {
+
+		        $updated = update_post_meta( $post_id, 'tdc_footer_template_id', $footer_template_id );
+
+                if ( $updated ) {
+                    $parameters['footer_template_id'] = $footer_template_id;
+                }
+
+		    } else {
+
+			    $data_template = array(
+				    'ID'           => $footer_template_id,
+				    'post_content' => $footer_template_content,
+			    );
+
+
+			    $template_id = wp_update_post( $data_template, true );
+
+			    if ( is_wp_error( $template_id ) ) {
+				    $errors = $template_id->get_error_messages();
+
+				    $parameters['errors'] = array();
+				    foreach ( $errors as $error ) {
+					    $parameters['errors'][] = $error;
+				    }
+
+			    } else {
+
+			        if ( empty( $assoc_footer_template ) ) {
+
+			            $deleted = delete_post_meta( $post_id, 'tdc_footer_template_id' );
+
+			            if ( $deleted ) {
+			                $parameters['footer_template_id'] = '';
+                        }
+
+			        } else {
+
+			            $updated = update_post_meta( $post_id, 'tdc_footer_template_id', $template_id );
+
+				        if ( $updated ) {
+					        $parameters['footer_template_id'] = $template_id;
+				        }
+                    }
+
+                    // Set header template as header template for header template itself!
+                    update_post_meta( $template_id, 'tdc_footer_template_id', $template_id );
+			        update_post_meta( $template_id, 'tdc_dirty_content', 0 );
+
+			        $footer_template_content = get_post( $template_id )->post_content;
+
+			        $google_font_list = td_util::get_content_google_fonts_ids( $footer_template_content );
+			        update_post_meta( $template_id, 'tdc_google_fonts_settings', $google_font_list );
+			    }
+		    }
+		}
+
+		die( json_encode( $parameters ) );
+	}
+
+
+	static function on_ajax_update_options() {
+	    if ( ! current_user_can( 'edit_pages' ) ) {
+			//@todo - ceva eroare sa afisam aici
+			echo 'no permission';
+			die;
+		}
+
+	    $parameters = array();
+
+		$options = $_POST['options'];
+
+		if ( ! isset( $options ) ) {
+
+			$parameters['errors'][] = 'Invalid data';
+
+		} else {
+
+		    if ( isset($options['global_header_template'])) {
+                td_util::update_option('tdb_header_template', $options['global_header_template']);
+            }
+
+            if ( isset($options['global_header_template_mobile'])) {
+                td_util::update_option('tdb_header_template_mobile', $options['global_header_template_mobile']);
+            }
+
+            if ( isset($options['global_footer_template'])) {
+                td_util::update_option('tdb_footer_template', $options['global_footer_template']);
+            }
+
+            if ( isset($options['global_footer_template_mobile'])) {
+                td_util::update_option('tdb_footer_template_mobile', $options['global_footer_template_mobile']);
+            }
+		}
+
+		die( json_encode( $parameters ) );
+    }
+
+    static function on_ajax_create_mobile_template( WP_REST_Request $request ) {
+
+        // permission check
+        if ( ! current_user_can( 'edit_pages' ) ) {
+            $reply['error'] = 'no permission';
+            die( json_encode( $reply ) );
+        }
+
+        // no empty title templates
+        $template_title = wp_strip_all_tags( $request->get_param( 'newTemplateName' ) );
+        if ( empty( $template_title ) ) {
+            $reply['error'] = 'Please enter a title for your template.';
+            die( json_encode( $reply ) );
+        }
+
+        // check the template type
+        $template_type = $request->get_param('templateType');
+        $template_types = array(
+            'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header', 'footer'
+        );
+
+        $copy_content = $request->get_param('copyContent');
+
+        if ( in_array( $template_type, $template_types) === false ) {
+            $reply['error'] = 'Invalid template type! Please make sure your are editing a supported template type title.';
+            die( json_encode( $reply ) );
+        }
+
+        $post_type = 'page' === $template_type ? 'page' : 'tdb_templates';
+
+        $posts = get_posts(
+            array(
+                'post_status' => 'publish',
+                'post_type' => $post_type,
+                'numberposts' => -1
+            )
+        );
+
+        foreach ( $posts as $post ) {
+            if ( $post->post_title === $template_title ) {
+                $reply['error'] = 'This ' . $template_type . ' template title is already used!';
+                die( json_encode( $reply ) );
+            }
+        }
+
+        // check the template id
+        $template_id = $request->get_param( 'templateID' );
+        if ( empty( $template_id ) ) {
+            $reply['error'] = 'The template/page id is missing!';
+            die( json_encode( $reply ) );
+        }
+
+        $post_content = '[tdc_zone type="tdc_content"][vc_row][vc_column][/vc_column][/vc_row][/tdc_zone]';
+        if ('1' === $copy_content ) {
+            $template = get_post($template_id);
+            $post_content = $template->post_content;
+            $post_content = tdc_util::parse_content_for_mobile( $post_content );
+        }
+
+        // update post
+        $post_id = wp_insert_post( array(
+            'post_title'   => $template_title,
+            'post_type' => $post_type,
+            'post_status' => 'publish',
+            'post_content' => $post_content
+        ));
+
+        // treat errors
+        if ( is_wp_error( $post_id ) ) {
+            $errors = $post_id->get_error_messages();
+            $reply['error'] = array(
+                   'Post update error!'
+            );
+            foreach ( $errors as $error ) {
+                $reply['error'][] = $error;
+            }
+            die( json_encode( $reply ) );
+        }
+
+        update_post_meta($template_id, 'tdc_mobile_template_id', $post_id);
+        update_post_meta($post_id, 'tdb_template_type', $template_type);
+        update_post_meta($post_id, 'tdc_is_mobile_template', 1);
+
+        $reply['template_title'] = $template_title;
+        $reply['template_type']  = $template_type;
+        $reply['template_id']    = $template_id;
+        $reply['mobile_template_id'] = $post_id;
+        $reply['mobile_template_url'] = admin_url( 'post.php?post_id=' . $post_id . '&td_action=tdc&tdbTemplateType=' . $template_type );
+
+        die( json_encode( $reply ) );
+    }
+
+
+
+
+    static function on_ajax_set_param_info_option( WP_REST_Request $request ) {
+        if ( ! current_user_can( 'edit_pages' ) ) {
+            //@todo - ceva eroare sa afisam aici
+            echo 'no permission';
+            die;
+        }
+
+        $action  = $_POST['action'];
+
+        if ( isset( $action ) && 'tdc_ajax_set_param_info_option' === $action ) {
+
+            $param_info_option = get_option('td_param_info_show');
+            if( !$param_info_option ) {
+                update_option('td_param_info_show', 'disabled');
+            } else {
+                if( $param_info_option == 'enabled' ) {
+                    update_option('td_param_info_show', 'disabled');
+                } else {
+                    update_option('td_param_info_show', 'enabled');
+                }
+            }
+
+        }
     }
 }

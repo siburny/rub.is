@@ -4,19 +4,330 @@ class td_block_exchange extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $tdc_url = TDC_URL;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
+                /* @style_general_exchange */
+                .td_block_exchange {
+                    font-family: 'Roboto', sans-serif;
+                    margin-bottom: 35px;
+                }
+                .td_block_exchange .td-exchange-header {
+                    position: relative;
+                    text-align: center;
+                    font-weight: bold;
+                    padding-top: 14px;
+                    padding-bottom: 12px;
+                    margin-bottom: 10px;
+                    z-index: 0;
+                }
+                .td_block_exchange .td-exchange-header:before {
+                    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background-color: #4db2ec;
+                    opacity: 0.07;
+                    z-index: -1;
+                }
+                .td_block_exchange .td-base-title {
+                    margin-left: 9px;
+                }
+                .td_block_exchange .td-column-1 .td-exchange-base {
+                    width: 300px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                    .td_block_exchange .td-column-1 .td-exchange-base {
+                        width: 212px;
+                    }
+                }
+                .td_block_exchange .td-rate {
+                    position: relative;
+                    border-bottom: 1px dashed #f2f2f2;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                }
+                .td_block_exchange .td-rate:last-child {
+                    border-bottom: none;
+                }
+                .td_block_exchange .td-rate .td-rate-currency {
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-left: 34px;
+                }
+                .td_block_exchange .td-rate .td-exchange-value {
+                    float: right;
+                }
+                .td_block_exchange .td-flags {
+                    background-image: url($tdc_url/assets/images/flags/flags.png);
+                    background-repeat: no-repeat;
+                    display: inline-block;
+                }
+                .td_block_exchange .td-flag-header {
+                    vertical-align: middle;
+                    position: relative;
+                    bottom: 1px;
+                }
+                .td_block_exchange .td-flags-all {
+                    position: absolute;
+                    top: 8px;
+                    left: 0;
+                }
+                .td_block_exchange .td-flag-aud {
+                    background-position: 0 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-bgn {
+                    background-position: -24px 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-brl {
+                    background-position: -48px 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-cad {
+                    background-position: -72px 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-chf {
+                    background-position: -96px 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-cny {
+                    background-position: 0 -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-czk {
+                    background-position: -24px -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-dkk {
+                    background-position: -48px -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-eur {
+                    background-position: -72px -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-gbp {
+                    background-position: -96px -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-hkd {
+                    background-position: 0 -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-hrk {
+                    background-position: -24px -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-huf {
+                    background-position: -48px -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-idr {
+                    background-position: -72px -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-ils {
+                    background-position: -96px -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-inr {
+                    background-position: 0 -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-jpy {
+                    background-position: -24px -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-krw {
+                    background-position: -48px -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-mxn {
+                    background-position: -72px -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-myr {
+                    background-position: -96px -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-nok {
+                    background-position: 0 -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-nzd {
+                    background-position: -24px -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-php {
+                    background-position: -48px -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-pln {
+                    background-position: -72px -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-ron {
+                    background-position: -96px -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-rub {
+                    background-position: -120px 0;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-sek {
+                    background-position: -120px -24px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-sgd {
+                    background-position: -120px -48px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-thb {
+                    background-position: -120px -72px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-try {
+                    background-position: -120px -96px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-usd {
+                    background-position: 0 -120px;
+                    width: 24px;
+                    height: 24px;
+                }
+                .td_block_exchange .td-flag-zar {
+                    background-position: -24px -120px;
+                    width: 24px;
+                    height: 24px;
+                }
+                @-moz-document url-prefix() .td_block_exchange .td-flags-all {
+                    top: 9px;
+                }
+                .td_block_exchange .td-column-2 {
+                    overflow: hidden;
+                }
+                .td_block_exchange .td-column-2 .td-rate {
+                    width: 26%;
+                    float: left;
+                    margin-right: 11%;
+                    border-bottom-width: 0;
+                    position: relative;
+                }
+                @media (max-width: 767px) {
+                    .td_block_exchange .td-column-2 .td-rate {
+                        width: auto;
+                        float: none;
+                        margin-right: 0;
+                        border-bottom-width: 1px;
+                    }
+                }
+                .td_block_exchange .td-column-2 .td-exchange-rates .td-rate:nth-child(3n) {
+                    margin-right: 0;
+                }
+                .td_block_exchange .td-column-2 .td-exchange-rates .td-rate:nth-child(3n + 1):before {
+                    content: '';
+                    width: 1400px;
+                    height: 1px;
+                    border-bottom: 1px dashed #F2F2F2;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                }
+                @media (max-width: 767px) {
+                    .td_block_exchange .td-column-2 .td-exchange-rates .td-rate:nth-child(3n + 1):before {
+                        display: none;
+                    }
+                }
+                .td_block_exchange .td-column-3 {
+                    overflow: hidden;
+                }
+                .td_block_exchange .td-column-3 .td-rate {
+                    width: 19%;
+                    float: left;
+                    margin-right: 8%;
+                    border-bottom-width: 0;
+                    position: relative;
+                }
+                @media (max-width: 767px) {
+                    .td_block_exchange .td-column-3 .td-rate {
+                        width: auto;
+                        float: none;
+                        margin-right: 0;
+                        border-bottom-width: 1px;
+                    }
+                }
+                .td_block_exchange .td-column-3 .td-exchange-rates .td-rate:nth-child(4n) {
+                    margin-right: 0;
+                }
+                .td_block_exchange .td-column-3 .td-exchange-rates .td-rate:nth-child(4n + 1):before {
+                    content: '';
+                    width: 1400px;
+                    height: 1px;
+                    border-bottom: 1px dashed #F2F2F2;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                }
+                @media (max-width: 767px) {
+                    .td_block_exchange .td-column-3 .td-exchange-rates .td-rate:nth-child(4n + 1):before {
+                        display: none;
+                    }
+                }
+
+                
+                
+                
 
                 /* @heading_color */
 				.$unique_block_class .td-base-title {
 					color: @heading_color;
 				}
                 /* @heading_bg_color */
-				.$unique_block_class .td-exchange-header:before {
+				body .td-theme-wrap .$unique_block_class .td-exchange-header:before {
 					background-color: @heading_bg_color;
 					opacity: 1;
 				}
@@ -63,6 +374,12 @@ class td_block_exchange extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        /*-- GENERAL -- */
+        $res_ctx->load_settings_raw( 'style_general_exchange', 1 );
+
+
+
 
         /*-- HEADING -- */
         // heading text color

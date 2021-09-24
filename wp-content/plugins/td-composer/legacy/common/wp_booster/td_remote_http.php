@@ -123,7 +123,10 @@ class td_remote_http {
 	 *          - bool FALSE: if no usable channel found
 	 *          - string: the content of the page if a channel passed. NOTE: &$channel_that_passed will contain the channel that passed
 	 */
-	private static function run_test($url, $caller_id = '', &$channel_that_passed) {
+	private static function run_test($url, $caller_id, &$channel_that_passed) {
+        if (!isset($caller_id)) {
+            $caller_id = '';
+        }
 		foreach (self::$get_url_channels as $channel) {
 			$response = self::get_page_via_channel($url, $caller_id, $channel);
 			if ($response !== false) {
@@ -145,10 +148,17 @@ class td_remote_http {
 	 *
 	 * @return bool|mixed|string
 	 */
-	private static function get_page_via_channel($url, $caller_id = '', $channel) {
+	private static function get_page_via_channel($url, $caller_id, $channel) {
+        if (!isset($caller_id)) {
+            $caller_id = '';
+        }
 		switch ($channel) {
 			case 'wordpress':
-				return self::get_url_wordpress($url, $caller_id);
+				$result = self::get_url_wordpress($url, $caller_id);
+				if ( false === $result ) {
+					return self::get_url_wordpress($url, $caller_id, array());
+				}
+				return $result;
 			break;
 
 			case 'file_get_contents':
@@ -172,14 +182,24 @@ class td_remote_http {
 	 *
 	 * @return bool|string
 	 */
-	private static function get_url_wordpress($url, $caller_id = '') {
-		//return false;
-		$response = wp_remote_get($url, array(
+	private static function get_url_wordpress($url, $caller_id = '', $settings = array(
 			'timeout' => self::http_request_timeout,
 			'sslverify' => false,
 			'headers' => array('Accept-language' => 'en'),
-			'user-agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
-		));
+			'user-agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
+		)) {
+
+		//need to keep old user-agent for twitter social counter
+		if (strpos( $url, '//twitter.com/' ) !== false) {
+			$settings = array(
+				'timeout' => self::http_request_timeout,
+				'sslverify' => false,
+				'headers' => array('Accept-language' => 'en'),
+				'user-agent' => 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
+			);
+		}
+
+		$response = wp_remote_get($url, $settings);
 
 		if (is_wp_error($response)) {
 			td_log::log(__FILE__, __FUNCTION__, 'caller_id:' . $caller_id . ' got wp_error, get_error_message: ' . $response->get_error_message());

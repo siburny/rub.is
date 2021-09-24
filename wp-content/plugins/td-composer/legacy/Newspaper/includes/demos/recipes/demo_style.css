@@ -32,7 +32,9 @@
 .td-recipes .block-title label {
   padding: 7px 12px 5px 12px;
 }
-.td-recipes .td_module_wrap .td-module-meta-info {
+.td-recipes .td_block_7 .td-module-meta-info,
+.td-recipes .td-main-content .td_module_1 .td-module-meta-info,
+.td-recipes .td-main-content .td_module_3 .td-module-meta-info {
   display: none;
 }
 .td-recipes .td_module_wrap .td-post-category {

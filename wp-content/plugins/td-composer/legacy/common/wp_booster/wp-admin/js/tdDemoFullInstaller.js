@@ -79,11 +79,11 @@ var tdDemoFullInstaller = {};
 
 
 
-                    alert('tagDiv importer detected an error. The importer will try to recover and continue to install the demo after you click ok on this dialog.\n' +
+                    alert('tagDiv Importer detects that your server is not properly configured. Don\'t worry, the importer will continue to install the demo after you click the OK button.\n' +
                         '\n' +
-                        'Steps to troubleshoot:\n' +
-                        '- Check the permissions on your upload folder\n' +
-                        '- Please make sure that WP_DEBUG is set to false in wp-config.php\n' +
+                        'Steps to verify:\n' +
+                        '- Please go to the SYSTEM STATUS tab and check if all parameters are green' +
+                        '- Verify the permissions on your upload folder\n' +
                         '- Contact our support via email contact@tagdiv.com (please provide your product license key)'
                     );
 
@@ -139,7 +139,7 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 1: {
-                    progress: 22,
+                    progress: 18,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_1',
@@ -148,7 +148,7 @@ var tdDemoFullInstaller = {};
 
                 },
                 2: {
-                    progress: 34,
+                    progress: 29,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_2',
@@ -156,7 +156,7 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 3: {
-                    progress: 46,
+                    progress: 38,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_3',
@@ -164,7 +164,7 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 4: {
-                    progress: 58,
+                    progress: 51,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_4',
@@ -172,7 +172,7 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 5: {
-                    progress: 70,
+                    progress: 63,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_5',
@@ -180,7 +180,7 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 6: {
-                    progress: 82,
+                    progress: 72,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_media_6',
@@ -188,7 +188,39 @@ var tdDemoFullInstaller = {};
                     }
                 },
                 7: {
-                    progress: 98,
+                    progress: 80,
+                    data: {
+                        action: 'td_ajax_demo_install',
+                        td_demo_action:'td_media_7',
+                        td_demo_id: demoId
+                    }
+                },
+                8: {
+                    progress: 85,
+                    data: {
+                        action: 'td_ajax_demo_install',
+                        td_demo_action:'td_media_8',
+                        td_demo_id: demoId
+                    }
+                },
+                9: {
+                    progress: 87,
+                    data: {
+                        action: 'td_ajax_demo_install',
+                        td_demo_action:'td_media_9',
+                        td_demo_id: demoId
+                    }
+                },
+                10: {
+                    progress: 92,
+                    data: {
+                        action: 'td_ajax_demo_install',
+                        td_demo_action:'td_media_10',
+                        td_demo_id: demoId
+                    }
+                },
+                11: {
+                    progress: 95,
                     data: {
                         action: 'td_ajax_demo_install',
                         td_demo_action:'td_import',

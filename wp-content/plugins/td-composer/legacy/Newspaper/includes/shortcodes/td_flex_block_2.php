@@ -124,6 +124,22 @@ class td_flex_block_2 extends td_block {
             $res_ctx->load_settings_raw( 'video_icon_pos_corner', 1 );
         }
 
+        // show video duration
+        $res_ctx->load_settings_raw('show_vid_t', $res_ctx->get_shortcode_att('show_vid_t'));
+        // video duration margin
+        $vid_t_margin = $res_ctx->get_shortcode_att('vid_t_margin');
+        $res_ctx->load_settings_raw( 'vid_t_margin', $vid_t_margin );
+        if( $vid_t_margin != '' && is_numeric( $vid_t_margin ) ) {
+            $res_ctx->load_settings_raw( 'vid_t_margin', $vid_t_margin . 'px' );
+        }
+        // video duration padding
+        $vid_t_padding = $res_ctx->get_shortcode_att('vid_t_padding');
+        $res_ctx->load_settings_raw( 'vid_t_padding', $vid_t_padding );
+        if( $vid_t_padding != '' && is_numeric( $vid_t_padding ) ) {
+            $res_ctx->load_settings_raw( 'vid_t_padding', $vid_t_padding . 'px' );
+        }
+
+
 
 
         /*-- META INFO-- */
@@ -166,6 +182,13 @@ class td_flex_block_2 extends td_block {
             }
         } else {
             $res_ctx->load_settings_raw( 'meta_padding', '0 40px 40px 0' );
+        }
+
+        // meta info border radius
+        $meta_info_border_radius = $res_ctx->get_shortcode_att('meta_info_border_radius');
+        $res_ctx->load_settings_raw( 'meta_info_border_radius', $meta_info_border_radius );
+        if ( is_numeric( $meta_info_border_radius ) ) {
+            $res_ctx->load_settings_raw( 'meta_info_border_radius', $meta_info_border_radius . 'px' );
         }
 
         // underline height
@@ -230,16 +253,88 @@ class td_flex_block_2 extends td_block {
         $show_author = $res_ctx->get_shortcode_att('show_author');
         $show_date = $res_ctx->get_shortcode_att('show_date');
         $show_review = $res_ctx->get_shortcode_att('show_review');
+        $review_space = $res_ctx->get_shortcode_att('review_space');
+        $res_ctx->load_settings_raw( 'review_space', $review_space );
+        if( $review_space != '' && is_numeric( $review_space ) ) {
+            $res_ctx->load_settings_raw( 'review_space', $review_space . 'px' );
+        }
         $review_size = $res_ctx->get_shortcode_att('review_size');
         $res_ctx->load_settings_raw( 'review_size', 10 + $review_size/0.5 . 'px' );
+        $review_distance = $res_ctx->get_shortcode_att('review_distance');
+        $res_ctx->load_settings_raw( 'review_distance', $review_distance );
+        if( $review_distance != '' && is_numeric( $review_distance ) ) {
+            $res_ctx->load_settings_raw( 'review_distance', $review_distance . 'px' );
+        }
         $show_com = $res_ctx->get_shortcode_att('show_com');
         if( $show_author == 'none' && $show_date == 'none' && $show_com == 'none' && $show_review == 'none' ) {
             $res_ctx->load_settings_raw( 'hide_author_date', 1 );
+        } else {
+            $res_ctx->load_settings_raw( 'show_author_date', 1 );
         }
         $res_ctx->load_settings_raw( 'show_author', $show_author );
         $res_ctx->load_settings_raw( 'show_date', $show_date );
         $res_ctx->load_settings_raw( 'show_review', $show_review );
         $res_ctx->load_settings_raw( 'show_com', $show_com );
+
+
+        // exclusive label
+        if( !empty( has_filter('td_composer_map_exclusive_label_array', 'td_subscription::add_exclusive_label_settings') ) ) {
+            // show exclusive label
+            $excl_show = $res_ctx->get_shortcode_att('excl_show');
+            $res_ctx->load_settings_raw( 'excl_show', $excl_show );
+            if( $excl_show == '' ) {
+                $res_ctx->load_settings_raw( 'excl_show', 'inline-block' );
+            }
+
+            // exclusive label text
+            $res_ctx->load_settings_raw( 'excl_txt', $res_ctx->get_shortcode_att('excl_txt') );
+
+            // exclusive label margin
+            $excl_margin = $res_ctx->get_shortcode_att('excl_margin');
+            $res_ctx->load_settings_raw( 'excl_margin', $excl_margin );
+            if( $excl_margin != '' && is_numeric( $excl_margin ) ) {
+                $res_ctx->load_settings_raw( 'excl_margin', $excl_margin . 'px' );
+            }
+
+            // exclusive label padding
+            $excl_padd = $res_ctx->get_shortcode_att('excl_padd');
+            $res_ctx->load_settings_raw( 'excl_padd', $excl_padd );
+            if( $excl_padd != '' && is_numeric( $excl_padd ) ) {
+                $res_ctx->load_settings_raw( 'excl_padd', $excl_padd . 'px' );
+            }
+
+            // exclusive label border size
+            $excl_border = $res_ctx->get_shortcode_att('all_excl_border');
+            $res_ctx->load_settings_raw( 'all_excl_border', $excl_border );
+            if( $excl_border != '' && is_numeric( $excl_border ) ) {
+                $res_ctx->load_settings_raw( 'all_excl_border', $excl_border . 'px' );
+            }
+
+            // exclusive label border style
+            $res_ctx->load_settings_raw( 'all_excl_border_style', $res_ctx->get_shortcode_att('all_excl_border_style') );
+
+            // exclusive label border radius
+            $excl_radius = $res_ctx->get_shortcode_att('excl_radius');
+            $res_ctx->load_settings_raw( 'excl_radius', $excl_radius );
+            if( $excl_radius != '' && is_numeric( $excl_radius ) ) {
+                $res_ctx->load_settings_raw( 'excl_radius', $excl_radius . 'px' );
+            }
+
+
+            $res_ctx->load_settings_raw( 'excl_color', $res_ctx->get_shortcode_att('excl_color') );
+            $res_ctx->load_settings_raw( 'excl_color_h', $res_ctx->get_shortcode_att('excl_color_h') );
+            $res_ctx->load_settings_raw( 'excl_bg', $res_ctx->get_shortcode_att('excl_bg') );
+            $res_ctx->load_settings_raw( 'excl_bg_h', $res_ctx->get_shortcode_att('excl_bg_h') );
+            $excl_border_color = $res_ctx->get_shortcode_att('all_excl_border_color');
+            $res_ctx->load_settings_raw( 'all_excl_border_color', $excl_border_color );
+            if( $excl_border_color == '' ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_color', '#000' );
+            }
+            $res_ctx->load_settings_raw( 'excl_border_color_h', $res_ctx->get_shortcode_att('excl_border_color_h') );
+
+
+            $res_ctx->load_font_settings( 'f_excl' );
+        }
 
 
 
@@ -251,6 +346,9 @@ class td_flex_block_2 extends td_block {
 	    $res_ctx->load_font_settings( 'f_cat' );
 	    $res_ctx->load_font_settings( 'f_meta' );
 	    $res_ctx->load_font_settings( 'f_ex' );
+
+        $res_ctx->load_font_settings( 'f_vid_title' );
+        $res_ctx->load_font_settings( 'f_vid_time' );
 
 
 
@@ -352,11 +450,23 @@ class td_flex_block_2 extends td_block {
             $res_ctx->load_settings_raw('effect_on_h', 1);
         }
 
+        // video pop-up
+        $res_ctx->load_settings_raw( 'video_rec_color', $res_ctx->get_shortcode_att('video_rec_color') );
+        $res_ctx->load_settings_raw( 'video_title_color', $res_ctx->get_shortcode_att('video_title_color') );
+        $res_ctx->load_settings_raw( 'video_title_color_h', $res_ctx->get_shortcode_att('video_title_color_h') );
+        $res_ctx->load_color_settings( 'video_bg', 'video_bg_color', 'video_bg_gradient', '', '' );
+        $res_ctx->load_color_settings( 'video_overlay', 'video_overlay_color', 'video_overlay_gradient', '', '' );
+
+        // video duration
+        $res_ctx->load_settings_raw( 'vid_t_color', $res_ctx->get_shortcode_att('vid_t_color') );
+        $res_ctx->load_settings_raw( 'vid_t_bg_color', $res_ctx->get_shortcode_att('vid_t_bg_color') );
+
     }
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $unique_block_modal_class = $this->block_uid . '_m';
 
         $compiled_css = '';
 
@@ -422,6 +532,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-load-more-wrap a i {
 					font-size: @pag_icons_size;
 				}
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap .td-next-prev-icon-svg svg {
+				    width: @pag_icons_size;
+				    height: calc( @pag_icons_size + 1px );
+				}
 				
 				
 				/* @image_alignment */
@@ -452,6 +566,18 @@ class td_flex_block_2 extends td_block {
                     left: auto;
                     right: 20px;
                     transform: none;
+				}
+				/* @show_vid_t */
+				.$unique_block_class .td-post-vid-time {
+					display: @show_vid_t;
+				}
+				/* @vid_t_margin */
+				.$unique_block_class .td-post-vid-time {
+					margin: @vid_t_margin;
+				}
+				/* @vid_t_padding */
+				.$unique_block_class .td-post-vid-time {
+					padding: @vid_t_padding;
 				}
 				/* @modules_category_margin */
 				.$unique_block_class .td-post-category {
@@ -513,6 +639,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-module-meta-info {
 					padding: @meta_padding;
 				}
+				/* @meta_info_border_radius */
+				.$unique_block_class .td-module-meta-info {
+					border-radius: @meta_info_border_radius;
+				}
 				/* @art_title */
 				.$unique_block_class .entry-title {
 					margin: @art_title;
@@ -533,6 +663,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-author-date {
 					display: none;
 				}
+				/* @show_author_date */
+				.$unique_block_class .td-author-date {
+					display: inline;
+				}
 				/* @show_author */
 				.$unique_block_class .td-post-author-name {
 					display: @show_author;
@@ -546,16 +680,77 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .entry-review-stars {
 					display: @show_review;
 				}
+				/* @review_space */
+				.$unique_block_class .entry-review-stars {
+					margin: @review_space;
+				}
 				/* @review_size */
 				.$unique_block_class .td-icon-star,
                 .$unique_block_class .td-icon-star-empty,
                 .$unique_block_class .td-icon-star-half {
 					font-size: @review_size;
 				}
+				/* @review_distance */
+				.$unique_block_class .entry-review-stars i {
+					margin-right: @review_distance;
+				}
+				.$unique_block_class .entry-review-stars i:last-child {
+				    margin-right: 0;
+				}
 				/* @show_com */
 				.$unique_block_class .td-module-comments {
 					display: @show_com;
 				}
+                
+                
+                /* @excl_show */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    display: @excl_show;
+                }
+                /* @excl_txt */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    content: '@excl_txt';
+                }
+                /* @excl_margin */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    margin: @excl_margin;
+                }
+                /* @excl_padd */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    padding: @excl_padd;
+                }
+                /* @all_excl_border */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    border: @all_excl_border @all_excl_border_style @all_excl_border_color;
+                }
+                /* @excl_radius */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    border-radius: @excl_radius;
+                }
+                /* @excl_color */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    color: @excl_color;
+                }
+                /* @excl_color_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    color: @excl_color_h;
+                }
+                /* @excl_bg */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    background-color: @excl_bg;
+                }
+                /* @excl_bg_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    background-color: @excl_bg_h;
+                }
+                /* @excl_border_color_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    border-color: @excl_border_color_h;
+                }
+                /* @f_excl */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    @f_excl
+                }
 				
 				
 				/* @f_header */
@@ -583,13 +778,22 @@ class td_flex_block_2 extends td_block {
 				}
 				/* @f_meta */
 				.$unique_block_class .td-editor-date,
-				.$unique_block_class .td-editor-date .td-post-author-name,
+				.$unique_block_class .td-editor-date .td-post-author-name a,
+				.$unique_block_class .td-editor-date .entry-date,
 				.$unique_block_class .td-module-comments a {
 					@f_meta
 				}
 				/* @f_ex */
 				.$unique_block_class .td-excerpt {
 					@f_ex
+				}
+				/* @f_vid_title */
+				#td-video-modal.$unique_block_modal_class .td-vm-title {
+					@f_vid_title
+				}
+				/* @f_vid_time */
+				.$unique_block_class .td-post-vid-time {
+					@f_vid_time
 				}
 				
 				
@@ -717,68 +921,110 @@ class td_flex_block_2 extends td_block {
 				}
 				
 				/* @mix_type */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
 				    content: '';
                     width: 100%;
                     height: 100%;
                     position: absolute;
+                    top: 0;
+                    left: 0;
 					opacity: 1;
 					transition: opacity 1s ease;
 					-webkit-transition: opacity 1s ease;
 					mix-blend-mode: @mix_type;
 				}
 				/* @color */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     background: @color;
 				}
 				/* @mix_gradient */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     @mix_gradient;
 				}
 				
 				
                 /* @mix_type_h */
                 @media (min-width: 1141px) {
-                    .$unique_block_class .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                         content: '';
                         width: 100%;
                         height: 100%;
                         position: absolute;
+                        top: 0;
+                        left: 0;
                         opacity: 0;
                         transition: opacity 1s ease;
                         -webkit-transition: opacity 1s ease;
                         mix-blend-mode: @mix_type_h;
                     }
-                    .$unique_block_class .td-module-container:hover .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:after {
                         opacity: 1;
                     }
                 }
                 
                 /* @color_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     background: @color_h;
                 }
                 /* @mix_gradient_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     @mix_gradient_h;
                 }
                 /* @mix_type_off */
-                .$unique_block_class .td-module-container:hover .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:before {
                     opacity: 0;
                 }
                     
 				/* @effect_on */
-                .$unique_block_class .entry-thumb {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb {
                     filter: @fe_brightness @fe_contrast @fe_saturate;
                     transition: all 1s ease;
 					-webkit-transition: all 1s ease;
                 }
 				/* @effect_on_h */
 				@media (min-width: 1141px) {
-                    .$unique_block_class .td-module-container:hover .entry-thumb {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb {
                         filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
                     }
                 }
+				
+				/* @video_rec_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-rec-title {
+				    color: @video_rec_color;
+				}
+				/* @video_title_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-title a {
+				    color: @video_title_color;
+				}
+				/* @video_title_color_h */
+				#td-video-modal.$unique_block_modal_class .td-vm-title a:hover {
+				    color: @video_title_color_h;
+				}
+				/* @video_bg_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    background-color: @video_bg_color;
+				}
+				/* @video_bg_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    @video_bg_gradient
+				}
+				/* @video_overlay_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_color;
+				}
+				/* @video_overlay_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_gradient;
+				}
+				
+				/* @vid_t_color */
+				.$unique_block_class .td-post-vid-time {
+					color: @vid_t_color;
+				}
+				/* @vid_t_bg_color */
+				.$unique_block_class .td-post-vid-time {
+					background-color: @vid_t_bg_color;
+				}
 				
 			</style>";
 
@@ -835,8 +1081,8 @@ class td_flex_block_2 extends td_block {
                 $buffy .= '</div>';
 
                 //get the ajax pagination for this block
-                $prev_icon = $this->get_att('prev_tdicon');
-                $next_icon = $this->get_att('next_tdicon');
+                $prev_icon = $this->get_icon_att('prev_tdicon');
+                $next_icon = $this->get_icon_att('next_tdicon');
                 $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
             $buffy .= '</div>';
 
@@ -879,7 +1125,7 @@ class td_flex_block_2 extends td_block {
             if (!empty($posts)) {
                 foreach ($posts as $post) {
                     $td_module_flex_2 = new td_module_flex_2($post, $this->get_all_atts());
-                    $buffy .= $td_module_flex_2->render($post);
+                    $buffy .= $td_module_flex_2->render(__CLASS__);
                 }
             }
             $buffy .= $td_block_layout->close_all_tags();

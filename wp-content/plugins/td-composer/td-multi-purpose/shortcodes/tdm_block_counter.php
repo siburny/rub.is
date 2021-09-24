@@ -3,6 +3,60 @@ class tdm_block_counter extends td_block {
 
     protected $shortcode_atts = array(); //the atts used for rendering the current block
 
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+
+        $compiled_css = '';
+
+        $raw_css =
+            "<style>
+                
+                /* @style_general_counter */
+                .tdm-counter-wrap {
+                  font-family: 'Roboto', sans-serif;
+                }
+                .tdm-counter-wrap .tdm-counter-title {
+                  margin-top: 13px;
+                  font-size: 20px;
+                  font-weight: 500;
+                  line-height: 21px;
+                  color: #666;
+                }
+                .tdm-counter-wrap .tdm-counter-number {
+                  font-size: 58px;
+                  font-weight: 700;
+                  line-height: 58px;
+                }
+                .tds-counter2 .tdm-counter-number {
+                  display: inline-table;
+                  width: 200px;
+                  height: 100px;
+                  padding: 20px 20px 0;
+                  border-top-left-radius: 100px;
+                  border-top-right-radius: 100px;
+                  border: 10px solid #4db2ec;
+                  border-bottom: 0;
+                }
+                .tds-counter2 .tdm-counter-number span {
+                  display: table-cell;
+                  vertical-align: bottom;
+                }
+
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
+    }
+
+    static function cssMedia( $res_ctx ) {
+        $res_ctx->load_settings_raw( 'style_general_counter', 1 );
+    }
+
     function render($atts, $content = null) {
         parent::render($atts);
 

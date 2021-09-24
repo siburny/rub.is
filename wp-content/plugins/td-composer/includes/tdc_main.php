@@ -41,6 +41,19 @@ require_once('shortcodes/vc_separator.php' );
 require_once('shortcodes/vc_wp_recentcomments.php' );
 
 
+// ASAP check if we are in composer and the current template is mobile (that means the composer was started for mobile)
+// Important! This check allows us to alter the shortcode mapping, because some shortcodes have started values with responsive values which must be parsed and "adapted" for mobile (they are not simply removed)
+$td_action = tdc_util::get_get_val( 'td_action' );
+if ( !empty($td_action) && 'tdc' === $td_action ) {
+    $post_id = tdc_util::get_get_val( 'post_id' );
+    if ( !empty($post_id)) {
+        $current_post = get_post($post_id);
+        if ( $current_post instanceof WP_Post ) {
+            td_util::check_mobile($current_post);
+        }
+    }
+}
+
 
 // mapper and internal map
 require_once('tdc_mapper.php');
@@ -51,7 +64,7 @@ require_once('tdc_map.php');
 /**
  * WP-admin - Edit page with tagDiv composer
  */
-add_action('admin_bar_menu', 'tdc_on_admin_bar_menu', 100);
+add_action('wp_before_admin_bar_render', 'tdc_on_admin_bar_menu');
 function tdc_on_admin_bar_menu() {
 	global $wp_admin_bar, $post;
 
@@ -80,14 +93,64 @@ function tdc_on_admin_bar_menu() {
             ! $is_buddypress &&
             ! td_util::is_mobile_theme()
     ) {
-	    $wp_admin_bar->add_menu( array(
-            'id'    => 'tdc_edit',
-            'meta'  => array(
-                'title' => 'Edit with TD Composer'
-            ),
-            'title' => 'Edit with TD Composer',
-            'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
-        ) );
+	    if (! wp_is_mobile()) {
+		    $wp_admin_bar->add_menu( array(
+			    'id'    => 'tdc_edit',
+			    'meta'  => array(
+				    'title' => 'Edit with tagDiv Composer'
+			    ),
+			    'title' => 'Edit with tagDiv Composer<span class="td-mobile-title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024"><path d="M1518.592 537.6l-494.592 460.8c-8.192 8.192-25.6 17.408-43.008 17.408-16.384 0-25.6-9.216-41.984-17.408l-171.008-171.008-179.2 171.008c-8.192 8.192-25.6 17.408-43.008 17.408-16.384 0-25.6-9.216-41.984-17.408l-486.4-460.8c-25.6-17.408-25.6-51.2 0-68.608l494.592-451.584c8.192-9.216 17.408-17.408 33.792-17.408 17.408 0 25.6 8.192 43.008 17.408l179.2 161.792 179.2-161.792c8.192-9.216 25.6-17.408 43.008-17.408 16.384 0 25.6 8.192 41.984 17.408l495.616 451.584c16.384 17.408 16.384 51.2-9.216 68.608zM1288.192 486.4l-272.384-256c-9.216-8.192-9.216-8.192-17.408-8.192s-17.408 0-17.408 8.192l-425.984 392.192-137.216-118.784 230.4-214.016-84.992-59.392c0-8.192-8.192-8.192-17.408-8.192-8.192 0-16.384 0-16.384 8.192l-273.408 256c-17.408 8.192-17.408 25.6-8.192 33.792l272.384 256c9.216 9.216 9.216 9.216 17.408 9.216s17.408 0 17.408-9.216l425.984-392.192 128 119.808-221.184 204.8 76.8 67.584c8.192 9.216 8.192 9.216 16.384 9.216 9.216 0 17.408 0 17.408-9.216l273.408-256c25.6-8.192 25.6-25.6 16.384-33.792z" fill="%23fff"></path></svg> Edit</span>',
+			    'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
+		    ) );
+	    }
+
+	    $is_mobile_template = get_post_meta( get_the_ID(), 'tdc_is_mobile_template', true );
+	    if ( empty($is_mobile_template)) {
+
+	        $title = 'Optional - Create or assign a dedicated Mobile Page';
+            $mobile_template_name = 'No mobile page';
+	        $mobile_template_id = get_post_meta(get_the_ID(), 'tdc_mobile_template_id', true);
+	        if (!empty($mobile_template_id)) {
+                $title = 'Current Mobile Page';
+	            $mobile_template = get_post($mobile_template_id);
+	            if ($mobile_template instanceof WP_Post && 'publish' === get_post_status($mobile_template_id)) {
+	                $mobile_template_name = $mobile_template->post_title;
+                }
+            }
+
+            if ('Newspaper' === TD_THEME_NAME  && td_global::is_tdb_registered() ) {
+	            $wp_admin_bar->add_menu( array(
+		            'id'    => 'tdc_page_mobile_template',
+		            'meta'  => array(
+			            'title' => $title,
+			            'class' => 'pageid-' . $post->ID
+		            ),
+		            'title' => '<span class="td-mob-page-before">Mobile page</span>' . $mobile_template_name . '<span class="td-mobile-title">Mobile</span>',
+		            'href'  => '#'
+	            ) );
+
+	            $wp_admin_bar->add_menu( array(
+		            'id'    => 'tdc_create_mobile_page',
+		            'meta'  => array(
+			            'title' => 'Optional - Create blank mobile page',
+			            'class' => 'pageid-' . $post->ID
+		            ),
+		            'title' => '',
+		            //'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
+	            ) );
+
+
+	            $wp_admin_bar->add_menu( array(
+		            'id'    => 'tdb_template_load',
+		            'meta'  => array(
+			            'title' => 'Optional - Load mobile page from TagDiv Cloud Library',
+			            'class' => 'pageid-' . $post->ID . ' tdb-load-mobile-template'
+		            ),
+		            'title' => '',
+		            //'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
+	            ) );
+            }
+	    }
 	}
 }
 
@@ -158,7 +221,7 @@ if ( 'post' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcP
 		<script>
 			(function(){
 
-				jQuery(window).load(function() {
+				jQuery(window).on( 'load', function() {
 					var $wpbodyContent = jQuery( '#wpbody-content' ),
 						$wrap = $wpbodyContent.children( '.wrap' ),
 						$normalSortables = $wpbodyContent.find( '#normal-sortables' );
@@ -234,7 +297,7 @@ if ( 'nav-menus' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== 
 		<script>
 			(function(){
 
-				jQuery(window).load(function() {
+				jQuery(window).on( 'load', function() {
 					var $wpbodyContent = jQuery( '#wpbody-content' );
 						$wrap = $wpbodyContent.children( '.wrap' );
 
@@ -273,7 +336,7 @@ if ( is_user_logged_in() && current_user_can('publish_pages') && 'page' === tdc_
 	    if ( $post->ID === (int) get_option( 'page_for_posts' ) ) {
 	        $actions['edit_tdc_composer'] = '<a href="#">TD Composer is disabled on Posts Page</a>';
 	    } else {
-	        $actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url='  . rawurlencode(tdc_util::get_current_url()) ) . '">Edit with TD Composer</a>';
+	        $actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url='  . rawurlencode(tdc_util::get_current_url()) ) . '">Edit with tagDiv Composer</a>';
         }
 		return $actions;
 	}
@@ -317,25 +380,24 @@ function tdc_on_remove_wpautop($content) {
 /**
  * load font icons
  */
-add_action( 'wp_enqueue_scripts', 'tdc_on_load_font_icon' ); // load them last
+add_action( 'wp_enqueue_scripts', 'tdc_on_load_font_icon', 11 ); // load them last - it must be after check_header and check_footer
 function tdc_on_load_font_icon() {
 
-	$icon_fonts = array();
+    $icon_fonts = array();
 
 	// Filter used to modify the post checked for icon fonts
 	$post_id = apply_filters( 'tdc_filter_icon_fonts_post_id', get_the_ID() );
 
 	$post_icon_fonts = get_post_meta( $post_id, 'tdc_icon_fonts', true );
 
-//	echo '<pre>';
-//	var_dump($tdc_icon_fonts);
-//	echo '</pre>';
-
 	if ( ! empty( $post_icon_fonts ) && is_array( $post_icon_fonts ) ) {
 		foreach ( $post_icon_fonts as $font_id => $font_settings ) {
 			$icon_fonts[ $font_id ] = $font_settings;
 		}
 	}
+
+	// td hook - used to updated icon fonts (used in check_header and check_footer)
+	$icon_fonts = apply_filters( 'td_filter_icon_fonts', $post_icon_fonts);
 
 	// Get font icons for footer
 
@@ -352,12 +414,15 @@ function tdc_on_load_font_icon() {
 		}
 	}
 
-	foreach ( $icon_fonts as $font_id => $font_settings ) {
-		if ( isset( $font_settings['theme_font'] ) ) {
-			continue;
+	if ( ! empty( $icon_fonts ) && is_array( $icon_fonts ) ) {
+		foreach ( $icon_fonts as $font_id => $font_settings ) {
+			if ( isset( $font_settings['theme_font'] ) ) {
+				continue;
+			}
+			wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
 		}
-		wp_enqueue_style( $font_id, TDC_URL . $font_settings['css_file'], false, TD_COMPOSER );
-	}
+    }
+
 }
 
 
@@ -377,7 +442,19 @@ if ( false === $tmpJobId ) {
 	tdc_state::set_is_live_editor_ajax( true );
 }
 
+if (is_user_logged_in() && is_admin_bar_showing()) {
 
+    add_action( 'wp_enqueue_scripts', function () {
+
+        // load the css
+        if ( true === TDC_USE_LESS ) {
+            wp_enqueue_style( 'tdc_admin_bar_menu', TDC_URL . '/td_less_style.css.php?part=less_front_menu_admin_bar', false, TD_COMPOSER );
+        } else {
+            wp_enqueue_style( 'tdc_admin_bar_menu', TDC_URL . '/assets/css/tdc_menu_admin_bar.css', false, TD_COMPOSER );
+        }
+
+    });
+}
 
 
 if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() ) {
@@ -398,6 +475,9 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 			'adminUrl' => admin_url(),
 			'hasUserRights' => is_user_logged_in() && current_user_can('publish_pages'),
             'isPageForPosts' => $is_page_for_posts,
+
+            'themeName' => TD_THEME_NAME,
+		    'themeVersion' => TD_THEME_VERSION,
 		);
 
 		ob_start();
@@ -424,6 +504,9 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 
 		// load the js
 	    if (TDC_DEPLOY_MODE == 'deploy') {
+	        if ( !empty( $_GET['action'] ) && 'update-selected-themes' === @$_GET['action']) {
+                return;
+            }
 	        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true);
 	    } else {
 	        tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wp_admin, array('jquery', 'underscore'));
@@ -589,36 +672,197 @@ function tdc_on_admin_head() {
 
 
 
-	$tdb_header_templates = array();
+	$is_mobile = false;
 
-    // read the tdb category templates
-    $wp_query_templates = new WP_Query( array(
-            'post_type' => 'tdb_templates',
-            'posts_per_page' => -1,
-            'meta_key' => 'tdb_template_type',
-            'meta_value' => 'header'
-        )
-    );
-
-    if ( !empty( $wp_query_templates->posts ) ) {
-
-        foreach ( $wp_query_templates->posts as $post ) {
-
-            $tdb_header_templates[] = array(
-                'text' => $post->post_title,
-                'val' => 'tdb_template_' . $post->ID
-            );
-        }
+    $meta_is_mobile_template = get_post_meta(get_the_ID(), 'tdc_is_mobile_template', true);
+    if ( (!empty($meta_is_mobile_template) && '1' === $meta_is_mobile_template)) {
+        $is_mobile = true;
     }
 
 
-    $global_header_template_id = td_api_header_style::get_header_template_id();
+	$tdb_header_templates = array();
+	$tdb_footer_templates = array();
+
+	$tdb_desktop_header_templates = array();
+	$tdb_desktop_footer_templates = array();
+
+
+    if ( $is_mobile ) {
+
+        $params = array(
+            'post_type'      => 'tdb_templates',
+            'posts_per_page' => - 1,
+            'meta_key'       => 'tdb_template_type',
+            'meta_value'     => 'header',
+            'meta_query'     => array(
+                array(
+                    'key'     => 'tdc_is_mobile_template',
+                    'value'   => '1',
+                    'compare' => '==',
+                )
+            )
+        );
+
+        $params['meta_query'] = array(
+            array(
+                'key'     => 'tdc_is_mobile_template',
+                'value'   => '1',
+                'compare' => '==',
+            )
+        );
+
+        $wp_query_templates = new WP_Query( $params );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+		        $tdb_header_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+
+	    $params['meta_value'] = 'footer';
+
+	    $wp_query_templates = new WP_Query( $params );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+		        $tdb_footer_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+
+	    $params['meta_query'] = array(
+            'relation' => 'OR',
+            array(
+                'key'     => 'tdc_is_mobile_template',
+                'value'   => '1',
+                'compare' => '!=',
+            ),
+            array(
+                'key'     => 'tdc_is_mobile_template',
+                'compare' => 'NOT EXISTS',
+            ),
+        );
+
+	    $wp_query_templates = new WP_Query( $params );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+		        $tdb_desktop_footer_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+
+	    $params['meta_value'] = 'header';
+
+	    $wp_query_templates = new WP_Query( $params );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+		        $tdb_desktop_header_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+
+    } else {
+
+        $wp_query_templates = new WP_Query( array(
+			    'post_type'      => 'tdb_templates',
+			    'posts_per_page' => - 1,
+			    'meta_key'       => 'tdb_template_type',
+			    'meta_value'     => 'header',
+			    'meta_query'     => array(
+				    'relation' => 'OR',
+				    array(
+					    'key'     => 'tdc_is_mobile_template',
+					    'value'   => '1',
+					    'compare' => '!=',
+				    ),
+				    array(
+					    'key'     => 'tdc_is_mobile_template',
+					    'compare' => 'NOT EXISTS',
+				    ),
+			    ),
+		    )
+	    );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+			    $tdb_header_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+
+
+	    $wp_query_templates = new WP_Query( array(
+			    'post_type'      => 'tdb_templates',
+			    'posts_per_page' => - 1,
+			    'meta_key'       => 'tdb_template_type',
+			    'meta_value'     => 'footer',
+			    'meta_query'     => array(
+				    'relation' => 'OR',
+				    array(
+					    'key'     => 'tdc_is_mobile_template',
+					    'value'   => '1',
+					    'compare' => '!=',
+				    ),
+				    array(
+					    'key'     => 'tdc_is_mobile_template',
+					    'compare' => 'NOT EXISTS',
+				    ),
+			    ),
+		    )
+	    );
+
+	    if ( ! empty( $wp_query_templates->posts ) ) {
+
+		    foreach ( $wp_query_templates->posts as $post ) {
+
+			    $tdb_footer_templates[] = array(
+				    'text'                  => $post->post_title,
+				    'val'                   => 'tdb_template_' . $post->ID,
+			    );
+		    }
+	    }
+    }
+
+    $global_header_template_id = td_api_header_style::get_header_template_id( $is_mobile );
     $global_header_template_content = '';
 
     if ( ! empty( $global_header_template_id ) && td_global::is_tdb_template( $global_header_template_id, true ) ) {
         $global_header_template_id = td_global::tdb_get_template_id( $global_header_template_id );
         $global_header_template_content = get_post_field('post_content', $global_header_template_id );
     }
+
+
+    $global_footer_template_id = td_api_footer_template::get_footer_template_id( $is_mobile );
+    $global_footer_template_content = '';
+
+    if ( ! empty( $global_footer_template_id ) && td_global::is_tdb_template( $global_footer_template_id, true ) ) {
+        $global_footer_template_id = td_global::tdb_get_template_id( $global_footer_template_id );
+        $global_footer_template_content = base64_encode( get_post_field('post_content', $global_footer_template_id ) );
+    }
+
 
 
 	$tdc_admin_settings = array(
@@ -631,6 +875,7 @@ function tdc_on_admin_head() {
 		'permalinkStructure' => get_option('permalink_structure'),
 		'pluginUrl' => TDC_URL,
 		'themeName' => TD_THEME_NAME,
+		'themeVersion' => TD_THEME_VERSION,
 
 		'mappedShortcodes' => $mappedShortcodes, // get ALL the mapped shortcodes / we should turn off pretty print
 
@@ -652,10 +897,25 @@ function tdc_on_admin_head() {
 		'deployMode' => TDC_DEPLOY_MODE,
 
         'tdbHeaderTemplates' => $tdb_header_templates,
-        'headerTemplateId' => $global_header_template_id,
-        'headerTemplateContent' => $global_header_template_content,
+        'globalHeaderTemplateId' => $global_header_template_id,
+        'globalHeaderTemplateContent' => $global_header_template_content,
 
-        'listStyles' => td_config::get_list_style_params()
+        'tdbFooterTemplates' => $tdb_footer_templates,
+        'globalFooterTemplateId' => $global_footer_template_id,
+        'globalFooterTemplateContent' => $global_footer_template_content,
+
+        'tdbHeaderDesktopTemplates' => $tdb_desktop_header_templates,
+        'tdbFooterDesktopTemplates' => $tdb_desktop_footer_templates,
+
+        'listStyles' => td_config::get_list_style_params(),
+
+        'options' => array(
+            'global_header_template' => td_util::get_option('tdb_header_template' ),
+            'global_footer_template' => td_util::get_option('tdb_footer_template' ),
+
+            'global_header_template_mobile' => td_util::get_option('tdb_header_template_mobile' ),
+            'global_footer_template_mobile' => td_util::get_option('tdb_footer_template_mobile' ),
+        )
 	);
 
 
@@ -811,7 +1071,13 @@ if (!empty($td_action)) {
 		case 'tdc':
 			// Wrapper edit page
 			$current_post = get_post($post_id);
-			do_action_ref_array( 'the_post', array( &$current_post ) );
+
+			if ( null === $current_post ) {
+			    // The page or the tdb_template does not exist! Maybe it was deleted.
+			    return;
+            }
+
+            do_action_ref_array( 'the_post', array( &$current_post ) );
 
 			tdc_state::set_post($current_post);
 
@@ -896,7 +1162,7 @@ if (!empty($td_action)) {
 					}
 
 					if ( isset( $font_settings['theme_font'] ) ) {
-						wp_enqueue_style( $font_id, get_stylesheet_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );
+						wp_enqueue_style( $font_id, get_template_directory_uri() . $font_settings['css_file'], false, TD_THEME_VERSION );
 						continue;
 					}
 
@@ -1261,7 +1527,7 @@ if (!empty($td_action)) {
 			}
 
 			break;
-		
+
 		default:
 			// Unknown td_action - kill execution
             echo 'Unknown td_action received: ' . $td_action;

@@ -137,7 +137,7 @@ function td_comment( $comment, $args, $depth ) {
                     <a class="comment-link" href="#comment-<?php comment_ID() ?>">
                         <time pubdate="<?php echo esc_attr( $td_article_date_unix ) ?>">
                             <?php comment_date() ?>
-                            <?php echo __td('At', TD_THEME_NAME); ?>
+                            <?php echo esc_html__('At', 'newspaper'); ?>
                             <?php comment_time() ?></time>
                     </a>
                     <?php edit_comment_link( esc_html__('Edit', 'newspaper')) ?>

@@ -12,6 +12,70 @@ class tdm_block_fancy_text_image extends td_block {
 
         $raw_css =
             "<style>
+                /* @style_general_fancy_text_image */
+                .td_block_fancy_text .tdm-fancy-title {
+                  font-family: 'Roboto', sans-serif;
+                  font-size: 155px;
+                  font-weight: bold;
+                  line-height: 106px;
+                  letter-spacing: -8px;
+                  margin-top: -5px;
+                  margin-bottom: -60px;
+                }
+                @media (min-width: 1019px) and (max-width: 1140px) {
+                  .td_block_fancy_text .tdm-fancy-title {
+                    font-size: 120px;
+                    line-height: 80px;
+                    letter-spacing: -6px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                  .td_block_fancy_text .tdm-fancy-title {
+                    font-size: 98px;
+                    line-height: 70px;
+                    letter-spacing: -4px;
+                  }
+                }
+                @media (max-width: 767px) {
+                  .td_block_fancy_text .tdm-fancy-title {
+                    font-size: 72px;
+                    line-height: 44px;
+                    letter-spacing: -4px;
+                    margin-top: 40px;
+                    margin-bottom: -76px;
+                  }
+                }
+                .td_block_fancy_text .tdm-fancy-title span {
+                  display: block;
+                  word-break: break-word;
+                  padding: 10px 10px 47px 0;
+                }
+                .td_block_fancy_text .tdm-fancy-title1 {
+                  color: #333;
+                }
+                .td_block_fancy_text .tdm-fancy-title2 {
+                  color: #fff;
+                  text-shadow: 2px 8px 27px rgba(0, 0, 0, 0.1);
+                  top: -60px;
+                  position: relative;
+                }
+                .td_block_fancy_text .tdm-btn {
+                  margin-top: 10px;
+                  margin-bottom: 10px;
+                }
+                @media (max-width: 767px) {
+                  .td_block_fancy_text.tdm-flip-yes .tdm-fancy-title,
+                  .td_block_fancy_text.tdm-flip-yes .tdm-image {
+                    margin-top: 30px;
+                  }
+                }
+                .td_block_fancy_text.tdm-content-horiz-center .tdm-fancy-title span {
+                  margin: 0 auto;
+                }
+                .td_block_fancy_text.tdm-content-horiz-right .tdm-fancy-title span {
+                  margin-left: auto;
+                }
+                
 
                 /* @text1_color_solid */
 				body .$unique_block_class .tdm-fancy-title1 {
@@ -95,6 +159,8 @@ class tdm_block_fancy_text_image extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_fancy_text_image', 1 );
+
         /*-- DESCRIPTION -- */
         $res_ctx->load_settings_raw( 'description_color', $res_ctx->get_shortcode_att( 'description_color' ) );
 
@@ -137,6 +203,16 @@ class tdm_block_fancy_text_image extends td_block {
 		$title_tag = $this->get_shortcode_att( 'title_tag' );
 		$description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
 
+        $image_width_html = '';
+        $image_height_html = '';
+        if( $image != '' ) {
+            $info_img = wp_get_attachment_image_src($image, 'full');
+            if (is_array($info_img)) {
+                $image_width_html = ' width="' . $info_img[1] . '"';
+                $image_height_html = ' height="' . $info_img[2] . '"';
+            }
+        }
+//        var_dump($info_img);
 		$additional_classes = array();
 
         // fancy text
@@ -173,7 +249,7 @@ class tdm_block_fancy_text_image extends td_block {
             $buffy_image = '';
             $buffy_image .= '<div class="td-block-span5 tdm-col tdm-col-img">';
             if ( ! empty( $image ) ) {
-                $buffy_image .= '<img class="tdm-image" src="' . tdc_util::get_image_or_placeholder($image) . '" alt="' . $title1 . '">';
+                $buffy_image .= '<img class="tdm-image" src="' . tdc_util::get_image_or_placeholder($image) . '"' . $image_width_html . $image_height_html . ' title="' . $title1 . '">';
             }
             $buffy_image .= '</div>';
 
@@ -190,7 +266,7 @@ class tdm_block_fancy_text_image extends td_block {
                         if ( empty( $tds_button ) ) {
                             $tds_button = td_util::get_option( 'tds_button', 'tds_button1' );
                         }
-                        $tds_button_instance = new $tds_button( $this->shortcode_atts );
+                        $tds_button_instance = new $tds_button( $this->shortcode_atts, '', $this->unique_block_class );
                         $buffy_text .= $tds_button_instance->render();
                     }
                 $buffy_text .= '</div>';

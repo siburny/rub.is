@@ -22,7 +22,7 @@ $td_custom_post_types_obj = get_post_types(
 $are_custom_post_types_installed = false;
 
 // add here the slug of the wp cpt you want to exclude from theme's panel cpt settings
-$exclude = array( 'vc_grid_item', 'tdb_templates', 'amp_validated_url' );
+$exclude = array( 'vc_grid_item', 'tdb_templates', 'amp_validated_url', 'tds_email', 'tds_locker' );
 
 foreach ($td_custom_post_types_obj as $custom_post_type_obj) {
     if (
@@ -86,6 +86,9 @@ foreach ($td_taxonomies_obj as $td_taxonomy_obj) {
             or $td_taxonomy_obj->name == 'product_cat'
             or $td_taxonomy_obj->name == 'product_shipping_class'
             or $td_taxonomy_obj->name == 'product_tag'
+            or $td_taxonomy_obj->name == 'product_visibility'
+            or $td_taxonomy_obj->name == 'tds_list'
+            or ( strpos( $td_taxonomy_obj->name, 'pa_' ) !== false ) // ignores product attributes taxonomies
         )
     ) {
         continue;

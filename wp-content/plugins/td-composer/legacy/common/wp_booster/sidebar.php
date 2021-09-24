@@ -31,12 +31,14 @@ if (!empty($td_post_theme_settings['td_sidebar'])) {
     dynamic_sidebar($td_page['td_sidebar']);
 } else {
 
-    if (td_global::$current_template == 'woo') {
+    $current_template = td_global::get_current_template();
+
+    if ($current_template === 'woo') {
         //woo commerce
         td_util::show_sidebar('woo');
-    } elseif (td_global::$current_template == 'woo_single') {
+    } elseif ($current_template === 'woo_single') {
         td_util::show_sidebar('woo_single');
-    } elseif (td_global::$current_template == 'bbpress') {
+    } elseif ($current_template === 'bbpress') {
         td_util::show_sidebar('bbpress');
     } elseif (is_tax()) {
 
@@ -72,7 +74,7 @@ if (!empty($td_post_theme_settings['td_sidebar'])) {
             td_util::show_sidebar('category');
         }
 
-    } elseif (td_global::$current_template == 'page-homepage-loop') {
+    } elseif ($current_template === 'page-homepage-loop') {
         if (!empty(td_global::$load_sidebar_from_template)) {
             //load the template
             dynamic_sidebar(td_global::$load_sidebar_from_template);

@@ -24,6 +24,30 @@ class td_block_widget extends WP_Widget {
 		// read our map_array
 		$this->map_array = td_api_block::get_by_id( $this->td_block_id );
 
+		$has_block_template = false;
+
+		foreach ($this->map_array['params'] as $param) {
+		    if ( 'block_template_id' === $param['param_name']) {
+		        $has_block_template = true;
+		        break;
+            }
+        }
+
+        if ( $has_block_template ) {
+            $tds_block_templates = td_api_block_template::_helper_generate_block_templates();
+            foreach ( $tds_block_templates as $block_template) {
+                $block_template_id = $block_template['val'];
+                if (empty($block_template_id)) {
+                    $block_template_id = 'td_block_template_1';
+                }
+                $block_template_map_array = td_api_block_template::get_by_id($block_template_id);
+                foreach ($block_template_map_array['params'] as $block_template_param) {
+                    $this->map_array['params'][] = $block_template_param;
+                }
+            }
+        }
+
+
 
 	    $widget_ops = array('classname' => 'td_pb_widget', 'description' => '[tagDiv] ' . $this->map_array['name']);
 
@@ -73,69 +97,99 @@ class td_block_widget extends WP_Widget {
 
 		switch ($param['type']) {
 
-            case 'textarea_html':
-                //print_r($param);
-
-                ?>
-                <p>
-                    <label for="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading'] ) ?></label>
-
-                    <textarea  class="widefat" name="<?php echo esc_attr( $this->get_field_name($param['param_name'])) ?>" id="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>" cols="30" rows="10"><?php echo esc_textarea($instance[$param['param_name']]); ?></textarea>
-
-
-                    <div class="td-wpa-info">
-                        <?php echo esc_textarea( $param['description'] ) ?>
-                    </div>
-
-                </p>
-                <?php
-                break;
-
-			case 'textarea_raw_html':
+			case 'textarea_html':
 				//print_r($param);
 
 				?>
 				<p>
-					<label for="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading'] ) ?></label>
+					<label
+						for="<?php echo esc_attr($this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading']) ?></label>
 
-					<textarea  class="widefat" name="<?php echo esc_attr( $this->get_field_name($param['param_name'])) ?>" id="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>" cols="30" rows="10"><?php echo esc_textarea($instance[$param['param_name']]); ?></textarea>
+					<textarea class="widefat" name="<?php echo esc_attr($this->get_field_name($param['param_name'])) ?>"
+							  id="<?php echo esc_attr($this->get_field_id($param['param_name'])) ?>" cols="30"
+							  rows="10"><?php echo esc_textarea($instance[$param['param_name']]); ?></textarea>
 
 
 				<div class="td-wpa-info">
-					<?php echo esc_textarea( $param['description'] ) ?>
+					<?php echo esc_textarea($param['description']) ?>
 				</div>
 
 				</p>
 				<?php
 				break;
 
-            case 'textfield':
+			case 'textarea_raw_html':
+				//print_r($param);
+
+				?>
+				<p>
+					<label
+						for="<?php echo esc_attr($this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading']) ?></label>
+
+					<textarea class="widefat" name="<?php echo esc_attr($this->get_field_name($param['param_name'])) ?>"
+							  id="<?php echo esc_attr($this->get_field_id($param['param_name'])) ?>" cols="30"
+							  rows="10"><?php echo esc_textarea($instance[$param['param_name']]); ?></textarea>
+
+
+				<div class="td-wpa-info">
+					<?php
+					if (isset($param['description'])) {
+						echo esc_textarea($param['description']);
+					} ?>
+				</div>
+
+				</p>
+				<?php
+				break;
+
+			case 'textfield':
 
 				// we have to change custom_title to custom-title to have "-title" at the end. That's what
-                // WordPress uses to put the title of the widget on post @see widgets.js
-                // suggested at: http://forum.tagdiv.com/topic/please-add-block-title-to-backend-widget-title/#post-58087
-                if ($param['param_name'] == 'custom_title') {
-                    $field_id = $this->get_field_id('custom-title');
-                } else {
-                    $field_id = $this->get_field_id($param['param_name']);
-                }
+				// WordPress uses to put the title of the widget on post @see widgets.js
+				// suggested at: http://forum.tagdiv.com/topic/please-add-block-title-to-backend-widget-title/#post-58087
+				if ($param['param_name'] == 'custom_title') {
+					$field_id = $this->get_field_id('custom-title');
+				} else {
+					$field_id = $this->get_field_id($param['param_name']);
+				}
 
-                ?>
-                <p>
-                    <label for="<?php echo esc_attr( $this->get_field_id($param['param_name'] ) ) ?>"><?php printf('%1$s', $param['heading'] ) ?></label>
-                    <input class="widefat" id="<?php echo esc_attr( $field_id ) ?>"
-                           name="<?php echo esc_attr( $this->get_field_name($param['param_name'] ) ) ?>" type="text"
-                           value="<?php echo esc_attr( $instance[$param['param_name']] ) ?>" />
+				?>
+				<p>
+					<label
+						for="<?php echo esc_attr($this->get_field_id($param['param_name'])) ?>"><?php printf('%1$s', $param['heading']) ?></label>
+					<input class="widefat" id="<?php echo esc_attr($field_id) ?>"
+						   name="<?php echo esc_attr($this->get_field_name($param['param_name'])) ?>" type="text"
+						   value="<?php echo esc_attr($instance[$param['param_name']]) ?>"/>
 
-                    <div class="td-wpa-info">
-                        <?php echo esc_textarea( $param['description'] ) ?>
-                    </div>
+				<div class="td-wpa-info">
+					<?php
+					if (isset($param['description'])) {
+						echo esc_textarea($param['description']);
+					} ?>
+				</div>
 
-                </p>
-                <?php
-                break;
+				</p>
+				<?php
+				break;
 
+			case 'checkbox':
 
+				if ( TD_THEME_NAME == 'Newspaper' ) {
+					break;
+				}
+
+				$value = isset($instance[$param['param_name']]) ? $instance[$param['param_name']] : '';
+				?>
+				<p>
+					<input class="checkbox"
+						   name="<?php echo esc_attr($this->get_field_name($param['param_name'])) ?>"
+						   type="checkbox" value="yes" <?php checked($value, 'yes'); ?>
+					/>
+					<label for="<?php echo esc_attr($this->get_field_id($param['param_name'])); ?>"><?php printf('%1$s', $param['heading']) ?></label>
+				</p>
+				<?php
+
+				break;
 
             case 'dropdown':
                 ?>
@@ -143,16 +197,44 @@ class td_block_widget extends WP_Widget {
                     <label for="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>"><?php printf( '%1$s', $param['heading'] ) ?></label>
                     <select name="<?php echo esc_attr( $this->get_field_name($param['param_name'])) ?>" id="<?php echo esc_attr( $this->get_field_id($param['param_name'])) ?>" class="widefat">
                         <?php
-                        foreach ($param['value'] as $param_name => $param_value) {
-                            ?>
-                            <option value="<?php echo esc_attr( $param_value ) ?>"<?php selected($instance[$param['param_name']], $param_value); ?>><?php printf( '%1$s', $param_name ) ?></option>
-                        <?php
+
+                        if ( 'category_id' === $param['param_name']) {
+                            $categories = get_categories( array(
+                                'orderby' => 'name',
+                                'parent'  => 0
+                            ) );
+
+                            foreach ( $categories as $category ) {
+                                ?>
+                                <option value="<?php echo esc_attr( $category->term_id ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $category->term_id ); ?>><?php printf( '%1$s', $category->name ) ?></option>
+		                        <?php
+                            }
+
+                        } else if ('block_template_id' === $param['param_name']) {
+
+                            $tds_block_templates = td_api_block_template::_helper_generate_block_templates();
+
+                            foreach ( $tds_block_templates as $block_template) {
+                                ?>
+                                <option value="<?php echo esc_attr( $block_template['val'] ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $block_template['val'] ); ?>><?php printf( '%1$s', $block_template['text'] ) ?></option>
+		                        <?php
+                            }
+
+                        } else {
+	                        foreach ( $param[ 'value' ] as $param_name => $param_value ) {
+		                        ?>
+                                <option value="<?php echo esc_attr( $param_value ) ?>"<?php selected( $instance[ $param[ 'param_name' ] ], $param_value ); ?>><?php printf( '%1$s', $param_name ) ?></option>
+		                        <?php
+	                        }
                         }
                         ?>
                     </select>
 
                     <div class="td-wpa-info">
-                        <?php echo esc_textarea( $param['description'] ) ?>
+                        <?php
+						if (isset($param['description'])) {
+							echo esc_textarea($param['description']);
+						} ?>
                     </div>
                 </p>
                 <?php
@@ -191,7 +273,7 @@ class td_block_widget extends WP_Widget {
 
 
 			case 'attach_image':
-				$backgroundImage = get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/no_img.png';
+				$backgroundImage = TDC_URL . '/assets/images/sidebar/no_img.png';
 				$hideRemoveButton = 'td-hidden-button';
 
 				if ( ! empty( $instance[$param['param_name']] ) ) {
@@ -273,6 +355,12 @@ class td_block_widget extends WP_Widget {
 				    case 'Ajax filter':
 					    $newValue['show_name'] = 'Ajax';
 					    break;
+                    case 'Image ad':
+                    case 'Custom ad':
+                        if ( !td_util::tdc_is_installed()) {
+	                        unset( $newValue );
+                        }
+                        break;
 				    default:
 					    $newValue['show_name'] = $groupName;
 			    }
@@ -318,7 +406,9 @@ class td_block_widget extends WP_Widget {
 			    $buffer .= '<div class="tdc-tab-content tdc-tab-widget tdc-tab-' . strtolower($groupName['show_name']) . ' ' . $class_tab_content_visible . ' ' . $class_tab_design . '"' . $data_tdc_css . '>';
 			    $class_tab_content_visible = '';
 
-			    $block_template_id = $instance['block_template_id'];
+			    if (isset($instance['block_template_id'])) {
+                    $block_template_id = $instance['block_template_id'];
+                }
 
 			    if (empty($block_template_id)) {
 					// global block template id

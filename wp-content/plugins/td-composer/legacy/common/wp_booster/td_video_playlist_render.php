@@ -14,7 +14,7 @@ class td_video_playlist_render {
 	 *
 	 * @return string the playlist HTML
 	 */
-    static function render_generic($atts, $list_type, $block_uid = '', $block_css = '') {
+    static function render_generic($atts, $list_type, $get_wrapper_class, $block_uid = '', $block_css = '') {
         if ( $block_uid == '' ) {
             $block_uid = td_global::td_generate_unique_id(); //update unique class on each render
         }
@@ -24,23 +24,74 @@ class td_video_playlist_render {
             $el_class = $atts['el_class'];
         }
 
-        $buffy .= '<div class="td_block_wrap td_block_video_playlist ' . $el_class . $block_uid . '">';
+        $playlist_source = 'video_ids';
+        if ( isset( $atts['playlist_source'] ) ) {
+            $playlist_source = $atts['playlist_source'];
+        }
+
+        $buffy .= '<div class="td_block_video_playlist ' . $get_wrapper_class . ' ' . $el_class . ' ' .  $block_uid . '">';
             $buffy .= $block_css;
 
 	        $buffy .= '<div class="td_block_inner">';
 
-	            if (empty($atts['playlist_v']) && empty($atts['playlist_yt']) ) {
-                    $buffy .= td_util::get_block_error('Video playlist', '<strong>Video id field</strong> is empty. Configure this block/widget and enter a list of video id\'s');
-		            //$buffy .= '<div class="td-block-missing-settings"><span>Video playlist</span> <strong>Video id field</strong> is empty. Configure this block/widget and enter a list of video id\'s</div>';
-	            }
-		        //inner content of the block
-		        $buffy .= self::inner($atts, $list_type);
+                // display error if api key was not provided
+                if( $list_type == 'youtube' && td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' ) {
+                    $buffy .= td_util::get_block_error('Video playlist', '<strong>A YouTube API key</strong> has not been provided. Go to <strong>Theme Panel > Social Networks > YouTube API Configuration</strong>');
+                } else {
+                    //inner content of the block
+                    $playlist_html = self::inner($atts, $list_type);
+                    $buffy .= $playlist_html;
+
+                    // display error if either video ids/username/playlist id fields are empty
+                    // or can't retrieve videos
+                    switch ($playlist_source) {
+                        case 'video_ids':
+                            if ( ( isset($atts['playlist_yt']) && empty($atts['playlist_yt']) ) || ( isset($atts['playlist_v']) && empty($atts['playlist_v']) ) ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Video id field</strong> is empty. Configure this block/widget and enter a list of video id\'s');
+                            } else if ( $playlist_html == '' ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Video ids</strong> were not found or can\'t be retrieved.');
+                            }
+                            break;
+                        case 'channel_id':
+                            if ( empty($atts['channel_id']) ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel ID field</strong> is empty. Configure this block/widget and enter a youtube channel id');
+                            } else if ( $playlist_html == '' ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel</strong> doesn\'t exist or does not have any uploads');
+                            }
+                            break;
+                        case 'username':
+                            if ( empty($atts['username']) ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Username field</strong> is empty. Configure this block/widget and enter a youtube username');
+                            } else if ( $playlist_html == '' ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel</strong> doesn\'t exist or does not have any uploads');
+                            }
+                            break;
+                        case 'playlist_id':
+                            if ( empty($atts['playlist_id']) ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Playlist id field</strong> is empty. Configure this block/widget and enter a playlist id');
+                            } else if ( $playlist_html == '' ) {
+                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Playlist</strong> doesn\'t exist or has no videos');
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
 	        $buffy .= '</div>';
         $buffy .= '</div> <!-- ./block_video_playlist -->';
         return $buffy;
     }
 
 
+    private static function get_option($option_name) {
+        $option_contents = get_option($option_name);
+        if( !is_array($option_contents) ) {
+            $option_contents = array();
+        }
+
+        return $option_contents;
+    }
 
 
 	private static function get_video_data($atts, $list_type) {
@@ -61,59 +112,245 @@ class td_video_playlist_render {
 			$list_name = 'vimeo_ids'; //array key for vimeo in the pos meta db array
 		}
 
-		// read the youtube and vimeo ids from the DB
-		$td_playlist_videos = td_util::get_post_meta_array($postId, 'td_playlist_video');
+		$playlist_source = 'video_ids';
+		if( isset( $atts['playlist_source'] ) ) {
+            $playlist_source = $atts['playlist_source'];
+        }
 
-		//print_r($td_playlist_videos);
+		$limit = '10';
+        if( isset( $atts['limit'] ) && $atts['limit'] != '' && is_numeric($atts['limit']) ) {
+            if( $atts['limit'] > 50 ) {
+                $limit = 50;
+            } else {
+                $limit = $atts['limit'];
+            }
+        }
 
-		// read the video ids from the shortcode
-		if ( !empty($atts[$atts_playlist_name]) ) {
-
-
-			$video_ids = array_map('trim', explode(",", $atts[$atts_playlist_name]));
-
-			// get the video id's that are not in the cache
-			$uncached_ids = array();
-			foreach ($video_ids as $video_id) {
-				if (!isset($td_playlist_videos[$list_name][$video_id])) {
-					$uncached_ids []= $video_id;
-				}
-			}
-
-
-			// do we have ids that are not in the cache?
-			if (!empty($uncached_ids)) {
-				// request data for the id's that are not in the cache
-				$uncached_videos = td_remote_video::api_get_videos_info($uncached_ids, $list_type);
-
-				// update the cache
-				if ($uncached_videos !== false) {
-					if (empty($td_playlist_videos[$list_name])) {
-						$td_playlist_videos[$list_name] = $uncached_videos;
-					} else {
-						// array_merge can't be used because it reindex integer indexes ( and youtube indexes are integers)
-						$td_playlist_videos[$list_name] = $td_playlist_videos[$list_name] + $uncached_videos;
-					}
-//					var_dump( $post );
-					update_post_meta($postId, 'td_playlist_video', $td_playlist_videos);
-				}
-
-			}
+        $cache_timeout = 3 * HOUR_IN_SECONDS;
+        if( isset( $atts['cache'] ) && $atts['cache'] == '0' ) {
+            $cache_timeout = 0;
+        } else {
+            if( isset( $atts['cache_timeout'] ) && $atts['cache_timeout'] != '' ) {
+                $cache_timeout = $atts['cache_timeout'];
+            }
+        }
 
 
-			// after we updated the cache with the missing videos (if any) we build our buffer of videos
-			$buffy_array = array();
-			foreach ($video_ids as $video_id) {
-				if (!empty($td_playlist_videos[$list_name][$video_id])) {
-					$buffy_array[$video_id] = $td_playlist_videos[$list_name][$video_id];
-				}
-			}
+		switch ($playlist_source) {
+            case 'video_ids':
+                // read the youtube and vimeo ids from the DB
+                $td_playlist_videos = self::get_option('td_playlist_video_' . $playlist_source);
+                $playlist_videos_pool = self::get_option('td_playlist_videos_pool');
 
-			return $buffy_array;
-		}
+                // read the video ids from the shortcode
+                if ( !empty($atts[$atts_playlist_name]) ) {
 
+                    $playlist_video_ids = array_map('trim', explode(",", $atts[$atts_playlist_name]));
 
-		return false;
+                    if( isset($td_playlist_videos[$list_name]) ) {
+
+                        $uncached_ids = array();
+                        foreach ($playlist_video_ids as $video_id) {
+                            if ( !in_array( $video_id, $td_playlist_videos[$list_name]['items'] ) ) {
+                                $uncached_ids[] = $video_id;
+                            } else if ( !isset( $playlist_videos_pool[$list_name][$video_id] ) ) {
+                                $uncached_ids[] = $video_id;
+                            }
+                        }
+
+                        if( !empty($uncached_ids) ) {
+                            $uncached_pool_ids = array();
+                            foreach ($uncached_ids as $video_id) {
+                                if ( !isset($playlist_videos_pool[$list_name][$video_id]) ) {
+                                    $uncached_pool_ids[] = $video_id;
+                                    $td_playlist_videos[$list_name]['items'][] = $video_id;
+                                }
+                            }
+
+                            if( !empty($uncached_pool_ids) ) {
+                                $uncached_videos = td_remote_video::api_get_videos_info($uncached_pool_ids, $list_type);
+
+                                if( $uncached_videos !== FALSE ) {
+                                	if (empty($playlist_videos_pool[$list_name])) {
+                                	    $playlist_videos_pool[$list_name] = $uncached_videos;
+	                                } else {
+                                	    $playlist_videos_pool[$list_name] = $playlist_videos_pool[$list_name] + $uncached_videos;
+	                                }
+
+                                    update_option('td_playlist_videos_pool', $playlist_videos_pool);
+
+                                    update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
+                                }
+                            }
+
+                        }
+
+                    } else {
+
+                        $uncached_pool_ids = array();
+                        foreach ($playlist_video_ids as $video_id) {
+                            if ( !isset($playlist_videos_pool[$list_name][$video_id]) ) {
+                                $uncached_pool_ids[] = $video_id;
+                            }
+                        }
+
+                        if( !empty( $uncached_pool_ids ) ) {
+                            $uncached_videos = td_remote_video::api_get_videos_info($uncached_pool_ids, $list_type);
+                            if( $uncached_videos !== FALSE ) {
+                                if (empty($playlist_videos_pool[$list_name])) {
+                                    $playlist_videos_pool[$list_name] = $uncached_videos;
+                                } else {
+                                    $playlist_videos_pool[$list_name] = $playlist_videos_pool[$list_name] + $uncached_videos;
+                                }
+                                update_option('td_playlist_videos_pool', $playlist_videos_pool);
+
+                                $td_playlist_videos[$list_name]['items'] = $playlist_video_ids;
+                                update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
+                            }
+                        }
+
+                    }
+
+                    $buffy_array = array();
+                    foreach ($playlist_video_ids as $key => $video_id) {
+                        if( isset( $playlist_videos_pool[$list_name][$video_id] ) ) {
+                            $buffy_array[$video_id] = $playlist_videos_pool[$list_name][$video_id];
+                        }
+                    }
+                } else {
+                    return false;
+                }
+
+                break;
+
+            case 'channel_id':
+            case 'username':
+            case 'playlist_id':
+                $td_playlist_videos = self::get_option('td_playlist_video_' . $playlist_source);
+                $playlist_videos_pool = self::get_option('td_playlist_videos_pool');
+
+                if( !empty($atts[$playlist_source]) ) {
+
+                    if( isset($td_playlist_videos[$list_name][$atts[$playlist_source]]) ) {
+
+                        if( ( ( time() - $td_playlist_videos[$list_name][$atts[$playlist_source]]['timestamp'] ) > $cache_timeout )
+                            || $limit > count( $td_playlist_videos[$list_name][$atts[$playlist_source]]['items'] ) ) {
+
+                            if( $playlist_source == 'username' || $playlist_source == 'channel_id' ) {
+                                $playlist_video_ids = td_remote_video::youtube_api_get_channel_videos_ids($atts[$playlist_source], $playlist_source, $limit);
+                            } else if ( $playlist_source == 'playlist_id' ) {
+                                $playlist_video_ids = td_remote_video::youtube_api_get_playlist_videos_ids($atts[$playlist_source], $limit);
+                            }
+
+                            if( $playlist_video_ids !== false ) {
+                                $uncached_ids = array();
+                                foreach ($playlist_video_ids as $video) {
+                                    if ( !in_array( $video['id'], $td_playlist_videos[$list_name][$atts[$playlist_source]]['items'] ) ) {
+                                        $uncached_ids[] = $video['id'];
+                                    } else if ( !isset( $playlist_videos_pool[$list_name][$video['id']] ) && $video['status'] == 'public' ) {
+                                        $uncached_ids[] = $video['id'];
+                                    } else if ( isset( $playlist_videos_pool[$list_name][$video['id']] ) && ( time() - $playlist_videos_pool[$list_name][$video['id']]['timestamp'] ) > $cache_timeout ) {
+                                        $uncached_ids[] = $video['id'];
+                                    }
+
+                                    if( isset( $playlist_videos_pool[$list_name] ) && $video['status'] != 'public' ) {
+                                        unset($playlist_videos_pool[$list_name]);
+                                    }
+                                }
+
+                                if( !empty($uncached_ids) ) {
+
+                                    $uncached_pool_ids = array();
+                                    foreach ($uncached_ids as $video_id) {
+                                        if ( !isset($playlist_videos_pool[$list_name][$video_id]) ) {
+                                            $uncached_pool_ids[] = $video_id;
+                                        } else if ( ( time() - $playlist_videos_pool[$list_name][$video_id]['timestamp'] ) > $cache_timeout ) {
+                                            $uncached_pool_ids[] = $video_id;
+                                        }
+                                    }
+
+                                    if( !empty($uncached_pool_ids) ) {
+
+                                        $uncached_videos = td_remote_video::api_get_videos_info($uncached_pool_ids, $list_type);
+
+                                        if( $uncached_videos !== FALSE ) {
+                                            foreach ( $uncached_pool_ids as $video_id ) {
+                                                $playlist_videos_pool[$list_name][$video_id] = $uncached_videos[$video_id];
+                                            }
+                                            update_option('td_playlist_videos_pool', $playlist_videos_pool);
+                                        }
+                                    }
+
+                                }
+
+                                $td_playlist_videos[$list_name][$atts[$playlist_source]]['items'] = $playlist_video_ids;
+
+                            } else {
+                                return false;
+                            }
+
+                            $td_playlist_videos[$list_name][$atts[$playlist_source]]['timestamp'] = time();
+                            update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
+
+                        }
+
+                    } else {
+
+                        if( $playlist_source == 'username' || $playlist_source == 'channel_id' ) {
+                            $playlist_video_ids = td_remote_video::youtube_api_get_channel_videos_ids($atts[$playlist_source], $playlist_source, $limit);
+                        } else if ( $playlist_source == 'playlist_id' ) {
+                            $playlist_video_ids = td_remote_video::youtube_api_get_playlist_videos_ids($atts[$playlist_source], $limit);
+                        }
+
+                        if( $playlist_video_ids !== false ) {
+                            $uncached_pool_ids = array();
+                            foreach ($playlist_video_ids as $video_id) {
+                                if ( !isset($playlist_videos_pool[$list_name][$video_id]['id']) && $video_id['status'] == 'public' ) {
+                                    $uncached_pool_ids[] = $video_id['id'];
+                                }
+                            }
+
+                            if( !empty( $uncached_pool_ids ) ) {
+                                $uncached_videos = td_remote_video::api_get_videos_info($uncached_pool_ids, $list_type);
+
+                                if( $uncached_videos !== FALSE ) {
+                                    if (empty($playlist_videos_pool[$list_name])) {
+                                        $playlist_videos_pool[$list_name] = $uncached_videos;
+                                    } else {
+                                        $playlist_videos_pool[$list_name] = $playlist_videos_pool[$list_name] + $uncached_videos;
+                                    }
+                                    update_option('td_playlist_videos_pool', $playlist_videos_pool);
+                                }
+                            }
+
+                            $td_playlist_videos[$list_name][$atts[$playlist_source]]['items'] = $playlist_video_ids;
+                            $td_playlist_videos[$list_name][$atts[$playlist_source]]['count'] = count($playlist_video_ids);
+                            $td_playlist_videos[$list_name][$atts[$playlist_source]]['timestamp'] = time();
+                            update_option('td_playlist_video_' . $playlist_source, $td_playlist_videos);
+                        } else {
+                            return false;
+                        }
+
+                    }
+
+                    $buffy_array = array();
+                    foreach ( array_slice($td_playlist_videos[$list_name][$atts[$playlist_source]]['items'], 0, $limit ) as $key => $video_id ) {
+                        if( isset($playlist_videos_pool[$list_name][$video_id['id']]) ) {
+                            $buffy_array[$video_id['id']] = $playlist_videos_pool[$list_name][$video_id['id']];
+                        }
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
+        if( !empty( $buffy_array ) ) {
+            return $buffy_array;
+        }
+        return false;
 	}
 
 
@@ -181,8 +418,7 @@ class td_video_playlist_render {
                     if ( td_global::$http_or_https === 'https' && strpos( $video_data['thumb'], 'https://' ) === false ) {
                         $video_data['thumb'] = str_replace( 'http://', 'https://', $video_data['thumb'] );
                     }
-
-                    $playlist_structure_thumb = '<div class="td_video_thumb"><img src="' . $video_data['thumb'] . '" alt="Video thumbnail" /></div>';
+                    $playlist_structure_thumb = '<div class="td_video_thumb"><img src="' . $video_data['thumb'] . '" alt="Video thumbnail" width="72px" height="40px" /></div>';
                     //$video_data_propeties .= 'thumb:"' . $video_data['thumb'] . '",';
                 }
 
@@ -304,6 +540,9 @@ class td_video_playlist_render {
                     </div>
                     <script>' . $js_variable . '</script>';
 		}
+
+
+
 
 		return '';
 	}

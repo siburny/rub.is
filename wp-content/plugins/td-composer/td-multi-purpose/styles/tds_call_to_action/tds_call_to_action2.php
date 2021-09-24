@@ -126,7 +126,7 @@ class tds_call_to_action2 extends td_style {
         }
         $buffy_btn .= '</div>';
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="td-block-width ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             $buffy .= '<div class="td-block-row tdm-row td-fix-index">';

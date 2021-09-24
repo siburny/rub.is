@@ -65,26 +65,30 @@ function td_register_post_metaboxes() {
     /**
      * 'post' post type / single
      */
-    if (current_user_can('publish_posts')) {
-        new WPAlchemy_MetaBox(array(
-            'id' => 'td_post_theme_settings',
-            'title' => 'Post Settings',
-            'types' => array('post'),
-            'priority' => 'high',
-            'template' => TDC_PATH . '/legacy/common/wp_booster/wp-admin/content-metaboxes/td_set_post_settings.php',
-        ));
+    if ( current_user_can('publish_posts') ) {
+
+    	// default post settings meta box setup options
+    	$post_settings_mb_setup_options = array(
+		    'id' => 'td_post_theme_settings',
+		    'title' => 'Post Settings',
+		    'types' => array( 'post' ),
+		    'priority' => 'high',
+		    'template' => TDC_PATH . '/legacy/common/wp_booster/wp-admin/content-metaboxes/td_set_post_settings.php'
+	    );
+
+    	// post settings meta box setup options filter (can be used to pass additional options trough the td_post_theme_settings meta box)
+	    $post_settings_mb_setup_options = apply_filters( 'td_post_theme_settings_mb_setup_options', $post_settings_mb_setup_options );
+
+        new WPAlchemy_MetaBox( $post_settings_mb_setup_options );
+
     }
 
 
     /**
      * Custom Post Types
      */
-    $td_custom_post_types = get_post_types( // get all the custom post types EXCEPT post page etc.
-        array(
-            '_builtin' => false // ignore built in CPT
-        ),
-        'names' //return the names in an array
-    );
+	// get all the custom post types EXCEPT post page etc.
+    $td_custom_post_types = apply_filters( 'td_custom_post_types', get_post_types( array( '_builtin' => false ) ) );
 
     // remove the AMP Validation URLs post type from the array if it's available and the AMP plugin is installed
     if ( td_util::is_amp_plugin_installed() ) {

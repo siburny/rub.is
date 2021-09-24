@@ -64,19 +64,19 @@ if(!empty($_REQUEST['action_reset']) && $_REQUEST['action_reset'] == 'reset_them
         $installed_demo = td_demo_state::get_installed_demo();
         if ($installed_demo !== false){
 
-            // remove demo content
-            td_demo_media::remove();
-            td_demo_content::remove();
-            td_demo_category::remove();
-            td_demo_menus::remove();
-            td_demo_widgets::remove();
-
+//            // remove demo content
+//            td_demo_media::remove();
+//            td_demo_content::remove();
+//            td_demo_category::remove();
+//            td_demo_menus::remove();
+//            td_demo_widgets::remove();
+//
             // restore all settings to the state before a demo was loaded
-            $td_demo_history = new td_demo_history();
-            $td_demo_history->restore_all();
-
-            // update status to default - no demo installed
-            td_demo_state::update_state('', '');
+//            $td_demo_history = new td_demo_history();
+//            $td_demo_history->restore_all();
+//
+//            // update status to default - no demo installed
+//            td_demo_state::update_state('', '');
         }
 
         // delete the theme settings
@@ -149,7 +149,7 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
 
             <div id="td-panel-welcome" class="td-panel-active td-panel">
 
-                <?php echo td_panel_generator::box_start('Importing / exporting theme settings'); ?>
+                <?php echo td_panel_generator::box_start('Import / Export the Theme Settings'); ?>
 
                 <!-- Import/Export theme settings -->
                 <form id="td_panel_import_export_settings" name="td_panel_import_export_settings" action="?page=td_theme_panel&td_page=td_view_import_export_settings&action_import=import_theme_settings" method="post" onsubmit="tdConfirm.showModal( 'Are you sure you want to import this settings?',
@@ -172,7 +172,7 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                             <div class="td-box-description td-box-full">
                                 <span class="td-box-title">EXPORT THEME SETTINGS</span>
                                 <p>
-                                    This box contains all the panel options encoded as a string so you can easily copy them and move them to another server.
+                                    This box contains all the theme panel options, encoded as a string so that you can easily copy and move them to another server.
                                 </p>
                             </div>
                             <div class="td-box-control-full">
@@ -192,10 +192,10 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                             <div class="td-box-row-margin-bottom"></div>
                         </div>
 
-                        <div class="td-box-row">
+                        <div class="td-box-row td-import-settings-col-1">
                             <div class="td-box-description td-box-full">
                                 <span class="td-box-title">IMPORT THEME SETTINGS</span>
-                                <p>Paste your theme settings string here and the theme will load them into the database</p>
+                                <p>Paste your encoded settings' string here, and the theme will load the options into the database.</p>
                             </div>
                             <div class="td-box-control-full">
                                 <?php
@@ -205,7 +205,99 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                                 ));
                                 ?>
                             </div>
+
                             <div class="td-box-row-margin-bottom"></div>
+                        </div>
+
+                        <div class="td-box-row td-import-settings-col-2">
+                            <div class="td-box-description td-box-full">
+                                <?php
+                                    echo td_panel_generator::checkbox(array(
+                                        'ds' => 'td_option',
+                                        'option_id' => TD_THEME_OPTIONS_NAME . '_settings_disabled',
+                                        'true_value' => '',
+                                        'false_value' => 'no',
+                                        'class' => 'test'
+                                    ));
+                                    ?>
+                                <script>
+                                    (function(){
+                                        jQuery().ready(function() {
+                                            jQuery('.td-checkbox.test').on('click', function() {
+                                                if ( '' === jQuery(this).parent().find('input[type="hidden"]').val()) {
+                                                    tdConfirm.modal({
+                                                            caption: 'Your panel backup will stop!',
+                                                            htmlInfoContent: function() {
+                                                                return 'You can reactivate it anytime.<br><div>' +
+                                                                    '<input type="checkbox" name="tdc-delete-backups" style="background-color: #FFF; width: auto">' +
+                                                                    '<label for="tdc-delete-backups">Do you want to delete existing backups?</label>' +
+                                                                    '</div>'
+                                                            },
+                                                            callbackYes: function() {
+                                                                var deleteBackups = jQuery('input[type="checkbox"][name="tdc-delete-backups"]').is(':checked');
+                                                                if (deleteBackups) {
+                                                                    jQuery('.td-theme-settings-list').html('');
+                                                                    jQuery('.td-theme-settings-diff').hide();
+                                                                }
+
+                                                                jQuery.ajax({
+                                                                    type: 'POST',
+                                                                    url: td_ajax_url,
+                                                                    data: {
+                                                                        action: 'td_ajax_backup_panel',
+                                                                        status: 1,
+                                                                        delete: deleteBackups ? 1 : 0
+                                                                    },
+                                                                    success: function(data, textStatus, XMLHttpRequest){
+                                                                    },
+                                                                    error: function(MLHttpRequest, textStatus, errorThrown){
+                                                                        //console.log(errorThrown);
+                                                                    }
+                                                                });
+                                                                tb_remove();
+                                                            },
+                                                            callbackNo: function() {
+                                                                jQuery('.td-checkbox.test').trigger('click');
+                                                            },
+                                                            offOverlayClick: true,
+                                                            hideCloseButton: true
+                                                        }
+                                                    );
+                                                } else {
+                                                    jQuery.ajax({
+                                                        type: 'POST',
+                                                        url: td_ajax_url,
+                                                        data: {
+                                                            action: 'td_ajax_backup_panel',
+                                                            status: '',
+                                                        },
+                                                        success: function(data, textStatus, XMLHttpRequest){                                                            
+                                                        },
+                                                        error: function(MLHttpRequest, textStatus, errorThrown){
+                                                            //console.log(errorThrown);
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    })();
+                                </script>
+                                <span class="td-box-title">Theme Panel Settings Backup</span>
+                                <p>Your previously saved backups</p>
+                            </div>
+                            <div class="td-box-control-full">
+                                <ul class="td-theme-settings-list">
+                                    <?php
+
+                                    $option_settings = get_option( TD_THEME_OPTIONS_NAME . '_settings' );
+                                    if ( ! is_null( $option_settings )) {
+                                        foreach ($option_settings as $key => $option_setting) {
+                                            echo '<li class="td-theme-settings" data-value="' . tdc_b64_encode(serialize($option_setting )) . '" data-compare="' . tdc_b64_encode(json_encode($option_setting)) . '">' . $key . '</li>';
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
                         </div>
 
                     <div class="td-box-row">

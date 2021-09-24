@@ -6,16 +6,27 @@
 /**
  * File uploader.
  */
-function external_media_upload( _plugin, _url, _filename ) {
+function external_media_upload( _plugin, _url, _filename, _caption, _referer ) {
 
   var _frame = wp.media.frame || wp.media.library;
   _frame.content.mode('browse');
   // @TODO: Refine this to use toolbar controller to set spinner on and off.
-  jQuery( '.media-toolbar .spinner' ).css({ 'visibility' : 'visible', 'display' : 'block' });
+  jQuery( '.media-toolbar .spinner' ).css({ 'visibility' : 'visible', 'display' : 'inline-block' });
+  var mediaWrapper = jQuery('ul.attachments');
+  if (!mediaWrapper.find('.emw-loader')[0]) {
+    var loaderElement = jQuery( '#emw-loader-wrapper' ).html();
+    mediaWrapper.append(loaderElement);
+    loaderAdded = true;
+  }
+  var loader = jQuery( '.emw-loader' );
+  //loader.show();
   wp.media.post( 'upload-remote-file', {
     url: _url,
     plugin: _plugin,
-    filename: _filename
+    filename: _filename,
+    caption: _caption,
+    referer: _referer,
+    nonce: _external_media_nonce
   })
   .done( function( resp ) {
     var attachment = wp.media.model.Attachment.create( resp );
@@ -26,6 +37,7 @@ function external_media_upload( _plugin, _url, _filename ) {
     }
     // _frame.setState( 'library' );
     jQuery( '.media-toolbar .spinner' ).css({ 'visibility' : 'hidden', 'display' : 'none' });
+    //loader.hide();
   });
 }
 

@@ -346,11 +346,6 @@
 .woocommerce div.product .woocommerce-tabs ul.tabs:before {
   border-bottom: 2px solid #222;
 }
-@media (min-width: 1019px) {
-  .woocommerce-page .related ul li.product {
-    width: 22.05% !important;
-  }
-}
 .woocommerce-cart .woocommerce table {
   border-collapse: collapse !important;
 }
@@ -497,7 +492,7 @@
   }
 }
 .woocommerce-account {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
 }
 .woocommerce-account .woocommerce-MyAccount-navigation {
   margin-bottom: 38px;
@@ -707,7 +702,7 @@
 .woocommerce.widget.widget_product_search input[type="search"] {
   height: 32px;
   width: 95%;
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: Verdana, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 12px;
   line-height: 21px;
   color: #444444;

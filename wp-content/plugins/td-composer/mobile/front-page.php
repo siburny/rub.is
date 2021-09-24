@@ -107,10 +107,10 @@ if ('posts' == get_option('show_on_front')) {
             $tdm_frontpage_latest_articles_posts_offset = td_util::get_option('tdm_frontpage_latest_articles_posts_offset');
 
             if ( $tdm_frontpage_grid_sort === 'latest' ) {
-	            if ( empty( $paged ) or $paged < 2 ) {
-		            $offset = ( !empty( $tdm_frontpage_latest_articles_posts_offset ) ? $tdm_frontpage_latest_articles_posts_offset : '' );
-	            } else {
-		            $offset = ( $paged - 1 ) * $posts_per_page;
+                $offset = ( !empty( $tdm_frontpage_latest_articles_posts_offset ) ? $tdm_frontpage_latest_articles_posts_offset : '' );
+
+                if ( $paged > 1 ) {
+                    $offset = intval($offset) + ( ( $paged - 1 ) * (int)$posts_per_page );
 	            }
             }
 

@@ -142,16 +142,21 @@ var td_edit_page = {
             td_homepage_loop_metabox.addClass('td-hide-metabox');
 
             if( td_edit_page.is_block_editor ){
-                td_edit_page.page_template_select = jQuery('.editor-page-attributes__template select');
-            } else {
-                td_edit_page.page_template_select = jQuery('#page_template');
+
+                setTimeout(function() {
+                    var $control = jQuery('.components-select-control__input option[value="page-pagebuilder-latest.php"]');
+                    if ($control.length) {
+                        td_edit_page.page_template_select = $control.parent();
+
+                        td_edit_page.page_template_select.change(function () {
+                            td_edit_page.show_template_settings();
+                        });
+
+                        td_edit_page.show_template_settings();
+                    }
+                }, 500);
             }
 
-            td_edit_page.show_template_settings();
-
-            td_edit_page.page_template_select.change(function () {
-                td_edit_page.show_template_settings();
-            });
 
             //disable sidebar settings - if any vc_row is present in the page content
             setInterval(function () {
@@ -240,7 +245,7 @@ var td_edit_page = {
                 after_element = document.createElement("div");
                 after_element.setAttribute("id", "td_after_template_container_id");
                 //insert the element in DOM, after template pull down
-                document.getElementById(page_template_select_id).parentNode.insertBefore(after_element, document.getElementById(page_template_select_id).nextSibling);
+                document.getElementById(page_template_select_id).parentNode.parentNode.insertBefore(after_element, document.getElementById(page_template_select_id).parentNode.nextSibling);
             }
         }
     },

@@ -20,6 +20,39 @@ class td_block_template_5 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+            
+            /* @style_general_template_5 */
+            .td_block_template_5 .td-block-title {
+                font-size: 16px;
+                font-weight: 500;
+                margin-top: 0;
+                margin-bottom: 26px;
+                line-height: 25px;
+                color: #000;
+                text-align: left;
+            }
+            .td_block_template_5 .td-block-title > * {
+                padding: 0 12px;
+                border-width: 0 0 0 4px;
+                border-style: solid;
+                border-color: #4db2ec;
+            }
+            .td_block_template_5 .td-subcat-filter,
+            .td_block_template_5 .td-subcat-dropdown {
+                line-height: 25px;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_5 .td-related-title a {
+                    font-size: 15px;
+                }
+            }
+            .td_block_template_5 .td-related-title:last-child {
+                border: none;
+            }
+            .td_block_template_5 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            
 
             /* @header_color */
             .td-theme-wrap .$unique_block_class .td-pulldown-filter-link:hover,
@@ -66,9 +99,19 @@ class td_block_template_5 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
 
-	    $header_color = $this->get_att('header_color');
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_5', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+            $td_css_compiler->load_setting_raw('style_general_pulldown_3', 1);
+        }
+
+        $header_color = $this->get_att('header_color');
 	    $td_css_compiler->load_setting_raw('header_color', $header_color);
 
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));

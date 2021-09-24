@@ -309,7 +309,7 @@ class td_js {
 
                         <div class="td-manual-info">
                             <ol>
-                                <li>Go to our <a href="http://tagdiv.com/td_cake/manual.php" target="_blank">manual activation page</a></li>
+                                <li>Go to our <a href="http://tagdiv.com/td_cake/manual.php?td_server_id=<?php echo esc_attr( $this->td_js_server_id() ) ?>" target="_blank">manual activation page</a></li>
                                 <li>Paste your <em>Server ID</em> there and the <a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Envato purchase code</a></li>
                                 <li>Return with the <a href="http://forum.tagdiv.com/wp-content/uploads/2017/06/activation_key.png" target="_blank">activation key</a> and paste it in this form</li>
                             </ol>
@@ -396,14 +396,10 @@ class td_js {
         if ($this->check_if_is_our_page() === true || td_api_features::is_enabled('require_activation') === false) {
             return;
         }
-        ?>
-        <?php
         $td_activate_url = 'https://forum.tagdiv.com/newspaper-6-how-to-activate-the-theme/';
         if ('Newsmag' == TD_THEME_NAME) {
             $td_activate_url = 'https://forum.tagdiv.com/newsmag-how-to-activate-the-theme/';
         }
-
-
         ?>
         <div class="error">
             <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
@@ -415,24 +411,28 @@ class td_js {
         if ($this->check_if_is_our_page() === true || td_api_features::is_enabled('require_activation') === false) {
             return;
         }
-        ?>
-        <?php
         $td_activate_url = 'https://forum.tagdiv.com/newspaper-6-how-to-activate-the-theme/';
         if ('Newsmag' == TD_THEME_NAME) {
             $td_activate_url = 'https://forum.tagdiv.com/newsmag-how-to-activate-the-theme/';
         }
-
-
         ?>
-        <div class="error">
-            <p>
-                Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. We're sorry about this extra step but we built the activation system to prevent
-                mass piracy of our themes, this allows us to better serve our paying customers.
-
-                <strong>An active theme comes with free updates, top notch support, guaranteed latest WordPress support</strong>.
-
-            </p>
-            <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
+        <div class="td-error-activate">
+            <div class="about-wrap td-wp-admin-header ">
+                <div class="td-wp-admin-top">
+                    <div class="td-tagdiv-brand-wrap">
+                        <img class="td-tagdiv-gradient" src="<?php echo td_global::$get_template_directory_uri ?>/legacy/common/wp_booster/wp-admin/images/gradient.png" />
+                        <img class="td-tagdiv-brand" src="<?php echo td_global::$get_template_directory_uri ?>/legacy/common/wp_booster/wp-admin/images/logo-tagdiv.png" />
+                    </div>
+                    <div class="td-wp-admin-theme">
+                        <h1>Your license of <?php echo TD_THEME_NAME ?> Theme is <b style="color: red;">not registered!</b></h1>
+                        <p>
+                            Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. Activation system gives you <strong>access to the support center</strong>.
+                            It also prevents mass piracy, allowing us to better serve you <strong>with free updates, upcoming premium features, top notch support and guarantees compatibility with the latest WordPress versions</strong>.
+                        </p>
+                        <p><?php echo '<a class="td-wp-admin-button" href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Activate now</a><a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php
     }

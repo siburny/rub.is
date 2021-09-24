@@ -163,7 +163,7 @@ class tds_food_menu1 extends td_style {
         $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
         $image = $this->get_shortcode_att( 'image' );
 
-		$buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+		$buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-food-menu-wrap ' . $this->unique_style_class . ' td-fix-index">';
             if ( !empty( $image ) ) {

@@ -3,13 +3,65 @@ class td_block_author extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
 
+                /* @style_general_block_author */
+                .td_block_author .block-title {
+                  float: none;
+                  margin-bottom: 20px;
+                  width: 100%;
+                }
+                .td_block_author .td_author_wrap {
+                  font-family: Verdana, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif;
+                  text-align: center;
+                }
+                .td_block_author .td-author-image {
+                  position: relative;
+                  margin-bottom: 7px;
+                  display: inline-block;
+                }
+                .td_block_author .td-author-image:before,
+                .td_block_author .td-author-image:after {
+                  border-radius: 500px;
+                }
+                .td_block_author .avatar {
+                  border-radius: 500px;
+                  display: block;
+                }
+                .td_block_author .td-author-name {
+                  position: relative;
+                  margin-bottom: 21px;
+                  font-size: 18px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                }
+                .td_block_author .td-author-description {
+                  padding: 2px 0 0 0;
+                  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
+                  font-size: 15px;
+                  line-height: 21px;
+                  font-style: italic;
+                  color: #555;
+                }
+                .td_block_author .td-author-page {
+                  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
+                  font-size: 15px;
+                  margin-top: 12px;
+                  font-weight: 600;
+                }
+                .td_block_author a {
+                  color: #000;
+                }
+                .td_block_author a:hover {
+                  color: #4db2ec;
+                }
+
+                
                 /* @photo_size */
 				.$unique_block_class .avatar {
 					width: @photo_size;
@@ -134,6 +186,8 @@ class td_block_author extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_block_author', 1 );
 
         /*-- IMAGE -- */
         // author image size
@@ -305,6 +359,13 @@ class td_block_author extends td_block {
         $buffy .= '</div>';
 
         if(!empty($author_url_text)) {
+
+            //we need to decode the square bracket case
+            if ( strpos( $author_url_text, 'td_encval' ) === 0 ) {
+                $author_url_text = str_replace('td_encval', '', $author_url_text);
+                $author_url_text = base64_decode( $author_url_text );
+            }
+
             $buffy .= '<div class="td-author-page">';
             $buffy .= '<a href="' . $author_url . '"' . $td_target . '>' . $author_url_text . '</a>';
             $buffy .= '</div>';

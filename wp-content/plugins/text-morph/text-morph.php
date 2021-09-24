@@ -5,13 +5,17 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 0.4.2
+ * Version: 4.5.1
  */
+
+use SebastianBergmann\Diff\Diff;
 
 require_once 'Numword.php';
 
 function morph_func($atts, $content = '')
 {
+    $unit = '';
+
     if (empty($content)) {
         if (array_key_exists('text', $atts)) {
             $content = $atts['text'];
@@ -37,38 +41,118 @@ function morph_func($atts, $content = '')
         $ret .= $atts['add'];
     }
 
+    if (array_key_exists('icon', $atts)) {
+        switch ($content) {
+            case 'male':
+                return '♂️';
+            case 'female':
+                return '♀️';
+            default:
+                return '';
+        }
+    }
+
+    if (array_key_exists('money', $atts)) {
+        if (!is_numeric($atts['money'])) {
+            return $atts['money'];
+        }
+
+        define('USD_TO_EUR', 0.93);
+        define('USD_TO_GBP', 0.81);
+
+        $ret = $atts['money'];
+
+        if (array_key_exists('display', $atts) && in_array($atts['display'], array('gbp', 'eur', 'gbp abbr', 'eur abbr', 'usd abbr'))) {
+
+            $symbol = '$';
+            switch ($atts['display']) {
+                case 'gbp':
+                case 'gbp abbr':
+                    $ret *= USD_TO_GBP;
+                    $symbol = '£';
+                    break;
+                case  'eur':
+                case 'eur abbr':
+                    $ret *= USD_TO_EUR;
+                    $symbol = '€';
+                    break;
+            }
+
+            $abbr = '';
+            if (in_array($atts['display'], array('gbp abbr', 'eur abbr', 'usd abbr'))) {
+                if ($ret >= 1000000000) {
+                    $ret = round($ret / 1000000000, 0);
+                    $abbr = ' billion';
+                } else if ($ret >= 1000000) {
+                    $ret = round($ret / 1000000, 0);
+                    $abbr = ' million';
+                } else if ($ret >= 1000) {
+                    $ret = round($ret / 1000, 0);
+                    $abbr = ' thousand';
+                }
+            }
+
+            return $symbol . number_format($ret, 0) . $abbr;
+        } else {
+            return '$' . number_format($ret, 0);
+        }
+    }
+
     if (array_key_exists('time', $atts)) {
         if (empty($atts['time'])) {
             return 'TBA';
         }
 
         if (array_key_exists('display', $atts)) {
-            $date = new DateTime($atts['time'], new DateTimeZone(get_option('timezone_string')));
+            try {
+                $date = new DateTime($atts['time'], new DateTimeZone(get_option('timezone_string')));
 
-            if (array_key_exists('option', $atts) && substr($atts['option'], 0, 3) == 'gmt') {
-                $date->setTimezone(new DateTimeZone(substr($atts['option'], 3)));
-            }
-
-            if (array_key_exists('math', $atts)) {
-                $parts = explode(':', substr($atts['math'], 1));
-
-                if (substr($atts['math'], 0, 1) == '+') {
-                    $date->add(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
-                } else if (substr($atts['math'], 0, 1) == '-') {
-                    $date->sub(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                if (array_key_exists('option', $atts) && substr($atts['option'], 0, 3) == 'gmt') {
+                    $date->setTimezone(new DateTimeZone(substr($atts['option'], 3)));
                 }
-            }
 
-            switch ($atts['display']) {
-                case 'hh:mm':
-                    $ret = $date->format('H:i');
-                    break;
-                case 'h:mm':
-                    $ret = $date->format('g:i A');
-                    break;
+                if (array_key_exists('math', $atts)) {
+                    $parts = explode(':', substr($atts['math'], 1));
+
+                    if (substr($atts['math'], 0, 1) == '+') {
+                        $date->add(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                    } else if (substr($atts['math'], 0, 1) == '-') {
+                        $date->sub(new DateInterval('PT' . $parts[0] . 'H' . $parts[1] . 'M' . $parts[2] . 'S'));
+                    }
+                }
+
+                switch ($atts['display']) {
+                    case 'hh:mm':
+                        $ret = $date->format('H:i');
+                        break;
+                    case 'h:mm':
+                        $ret = $date->format('g:i A');
+                        break;
+                }
+            } catch (Exception $e) {
+                $ret = $atts['time'];
             }
         } else {
             $ret = $atts['time'];
+        }
+    }
+
+    if (array_key_exists('expire', $atts)) {
+        $data = explode('|', $content);
+
+        try {
+            $date = new DateTime($atts['expire'], new DateTimeZone(get_option('timezone_string')));
+            $now = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
+
+            if (count($data) == 2) {
+                if ($date->diff($now)->invert) {
+                    $ret = $data[0];
+                } else {
+                    $ret = $data[1];
+                }
+            }
+        } catch (Exception $ex) {
+            $ret = $data[0];
         }
     }
 
@@ -110,22 +194,36 @@ function morph_func($atts, $content = '')
         }
     }
 
-    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr'))) {
-        if (empty($ret)) {
+    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr', 'minutes'))) {
+        if ($ret == '' || $ret == null) {
             return 'N/A';
         }
         if (!is_numeric($ret)) {
             return $ret;
         }
+
         switch ($atts['display']) {
+            case 'minutes':
+                $h = floor($ret / 60);
+                $m = $ret % 60;
+                $ret = ($h > 0 ? $h . ' hour' . ($h > 1 ? 's' : '') . ($m > 0 ? ' ' : '') : '') . ($m > 0 || $h == 0 ? $m . ' minute' . ($m != 1 ? 's' : '') : '');
+                break;
+            case 'lb':
+                $unit = 'lb';
+                break;
+            case 'inch':
+                $unit = 'inch' . ($ret > 1 ? 'es' : '');
+                break;
             case 'meter':
                 $ret = number_format(2.54 * $ret / 100, 2);
+                $unit = 'm';
                 break;
             case 'cm':
                 $ret = number_format(2.54 * $ret, 0);
+                $unit = 'cm';
                 break;
             case 'foot':
-                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet ' : ' foot ') : '') . ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es');
+                $ret = (floor($ret / 12) > 0 ? floor($ret / 12) . (floor($ret / 12) > 1 ? ' feet' : ' foot') . ($ret % 12 > 0 ? ' ' : '') : '') . ($ret % 12 > 0 || floor($ret / 12) == 0 ? ($ret % 12) . ' inch' . ($ret % 12 == 1 ? '' : 'es') : '');
                 break;
             case 'feet':
                 $ret = floor($ret / 12) . '\' ' . ($ret % 12) . '"';
@@ -135,19 +233,19 @@ function morph_func($atts, $content = '')
                 break;
             case 'kg':
                 $ret = number_format($ret * 0.45359237, 0);
+                $unit = 'kg';
                 break;
             case 'stone':
                 $ret = number_format($ret / 14, 1);
                 break;
             case 'abbr':
                 if ($ret >= 1000000000) {
-                    $ret = round($ret / 1000000000, 2) . ' billion';
+                    $ret = round($ret / 1000000000, 0) . ' billion';
                 } else if ($ret >= 1000000) {
-                    $ret = round($ret / 1000000, 2) . ' million';
+                    $ret = round($ret / 1000000, 0) . ' million';
                 } else if ($ret >= 1000) {
-                    $ret = round($ret / 1000, 2) . ' thousand';
+                    $ret = round($ret / 1000, 0) . ' thousand';
                 }
-
                 break;
         }
     }
@@ -166,9 +264,10 @@ function morph_func($atts, $content = '')
     }
 
     if (array_key_exists('description', $atts) && !empty($atts['description'])) {
+        $ret = '';
         $options = wp_load_alloptions();
         for ($z = 0; $z < 100; $z++) {
-            if (isset($options['text-morph-settings-find-' . $z]) && $options['text-morph-settings-find-' . $z] == $ret) {
+            if (isset($options['text-morph-settings-find-' . $z]) && $options['text-morph-settings-find-' . $z] == $content) {
                 $ret = isset($options['text-morph-settings-replace-' . $z]) ? nl2br($options['text-morph-settings-replace-' . $z]) : '';
                 break;
             }
@@ -193,7 +292,7 @@ function morph_func($atts, $content = '')
         $ret = str_replace(' ', $atts['space'], $ret);
     }
 
-    return $ret;
+    return $ret . ($unit ? ' ' . $unit : '');
 }
 
 function text_morph_settings_page()

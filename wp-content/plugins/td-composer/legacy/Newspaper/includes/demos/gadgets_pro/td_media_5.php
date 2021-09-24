@@ -1,6 +1,9 @@
 <?php
 
-// ads
-td_demo_media::add_image_to_media_gallery('td_reclama',                            "http://demo_content.tagdiv.com/Newspaper_6/fitness_pro/rec.jpg");
-td_demo_media::add_image_to_media_gallery('td_reclama_sidebar',                    "http://demo_content.tagdiv.com/Newspaper_6/fitness_pro/rec-sidebar.png");
-td_demo_media::add_image_to_media_gallery('td_reclama_big',                        "http://demo_content.tagdiv.com/Newspaper_6/fitness_pro/big.png");
+td_demo_media::add_image_to_media_gallery('tdx_pic_7', 'http://cloud.tagdiv.com/demos/Newspaper/gadgets_pro/media/cat2.jpg');
+td_demo_media::add_image_to_media_gallery('tdx_pic_8', 'http://cloud.tagdiv.com/demos/Newspaper/gadgets_pro/media/cat3.jpg');
+
+
+
+
+

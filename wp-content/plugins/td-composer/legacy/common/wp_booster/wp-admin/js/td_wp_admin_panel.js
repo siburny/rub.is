@@ -86,6 +86,10 @@ jQuery().ready(function() {
         tdbHeaderTemplateSelect();
     }
 
+    if ( 'undefined' !== typeof tdbFooterTemplateSelect ) {
+        tdbFooterTemplateSelect();
+    }
+
     // make sure this runs just on theme's panel page
     if ( jQuery('#td_panel_big_form').length ) {
         panel_navigation_hash();
@@ -621,9 +625,18 @@ function td_upload_image_font(id_upload_field) {
         jQuery('.media-menu .media-menu-item:nth-of-type(4)').addClass('hidden');
 
         window.send_to_editor = function(html) {
+
+            if (-1 !== html.indexOf('[caption')) {
+                var result = /\[caption(.*)\](.*)\[\/caption\]/g.exec(html);
+                if ( 3 === result.length ) {
+                    html = result[2];
+                }
+            }
+            
             img_link = jQuery('img', html).attr('src');
             if(typeof img_link == 'undefined') {
-                img_link = jQuery(html).attr('src');
+                var $html = jQuery(html),
+                img_link = $html.attr('src');
             }
             if(typeof img_link == 'undefined') {
                 img_link = jQuery(html).attr('href'); //used on font files (woff)
@@ -1021,6 +1034,10 @@ function show_content_panel(jquery_panel_obj, keep_position, callback, trigger) 
                     if ( 'undefined' !== typeof tdbHeaderTemplateSelect ) {
                         tdbHeaderTemplateSelect();
                     }
+
+                    if ( 'undefined' !== typeof tdbFooterTemplateSelect ) {
+                        tdbFooterTemplateSelect();
+                    }
                 }
             });
         }
@@ -1349,12 +1366,13 @@ function td_resize_tiny_mce_for_sidebar() {
             $body.addClass('tagdiv-type');
 
         } else if ($contentGut.length) {
+            $contentGut.addClass("td-gutenberg-editor");
+            $contentGut.addClass("td-gutenberg-editor-small");
+
             if ( 'no_sidebar' === sidebar_position || '' === sidebar_position || 'undefined' === typeof sidebar_position) {
-                $contentGut.addClass("td-gutenberg-editor");
+                $contentGut.removeClass("td-gutenberg-editor-small");
             }
-            else {
-                $contentGut.removeClass("td-gutenberg-editor");
-            }
+
         } else {
             //alert('iframe nu este gasit');
             clearTimeout(tmce);
@@ -1405,7 +1423,7 @@ function isEmailUrlValid(url) {
 
 function td_add_event_to_validate_panel_social_fields() {
 
-    var panel_social_input_fields = jQuery ('#td-panel-social-networks .td-panel-input');
+    var panel_social_input_fields = jQuery ('.td_panel_box_social_networks .td-panel-input');
 
     panel_social_input_fields.each( function() {
         var current_input_filed = jQuery(this);
@@ -2022,4 +2040,36 @@ function tdFooterPageSelection() {
             $viewFooterPage.attr( 'href', editUrl  );
         }
     });
+}
+
+/**
+ * this function is used to auto navigate to specific panel sections using panel id
+ * data_panel_id - the panel id
+ */
+function panel_navigate(data_panel_id) {
+
+    if( jQuery( '#' + data_panel_id ).length === 0 ) {
+        // panel id not found
+        return;
+    }
+
+    var dataPanelIdSelector = "[data-panel='" + data_panel_id + "']";
+    var currentPanel = jQuery('.td-panel-menu').find(dataPanelIdSelector);
+
+    if ( currentPanel.length ) {
+        currentPanel.trigger('click');
+    }
+
+}
+
+/**
+ * used to get query param value by param name from url
+ * @param name - query param name
+ * @return {string} - the query param value
+ */
+function get_param_by_name(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(window.location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }

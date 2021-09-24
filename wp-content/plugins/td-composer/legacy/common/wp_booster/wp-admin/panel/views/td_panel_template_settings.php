@@ -37,6 +37,57 @@
 
 <?php echo td_panel_generator::box_end();?>
 
+<!-- smart sidebar support -->
+<?php echo td_panel_generator::box_start('ToTop button', false); ?>
+
+<div class="td-box-row">
+
+    <div class="td-box-row">
+        <div class="td-box-description td-box-full">
+            <p>From here you can enable and disable the toTop button:</p>
+        </div>
+    </div>
+
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Enable button</span>
+            <p>Show the toTop button.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_to_top',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Show on mobile</span>
+            <p>Enable the button on mobile devices.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_to_top_on_mobile',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
+    <div class="td-box-row-margin-bottom"></div>
+
+</div>
+
+<?php echo td_panel_generator::box_end();?>
+
 
 
 <!-- breadcrumbs -->
@@ -213,7 +264,7 @@
 
 
 
-<?php if ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+<?php if ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK')  ) { ?>
 
     <!-- Force full width -->
     <?php echo td_panel_generator::box_start('Force full width', false); ?>
@@ -718,6 +769,33 @@
 
 <div class="td-box-section-separator"></div>
 
+<?php if ( 'Newspaper' == TD_THEME_NAME ) { ?>
+<!-- Layout size -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Page layout size</span>
+        <p>Choose the layout size for default page templates</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::dropdown(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_page_layout_size',
+            'values' => array(
+                array('text' => 'Default size' , 'val' => ''),
+                array('text' => '1200px content' , 'val' => 'td_cl tdc-row stretch_row_1200 td-stretch-content'),
+                array('text' => '1400px content' , 'val' => 'td_cl tdc-row stretch_row_1400 td-stretch-content'),
+                array('text' => '1600px content' , 'val' => 'td_cl tdc-row stretch_row_1600 td-stretch-content'),
+                array('text' => '1800px content' , 'val' => 'td_cl tdc-row stretch_row_1800 td-stretch-content'),
+                array('text' => 'Full width' , 'val' => 'td_cl tdc-row stretch_row_content td-stretch-content'),
+                array('text' => 'Full width (with paddings)' , 'val' => 'td_cl tdc-row stretch_row_content_no_space td-stretch-content'),
+            )
+        ));
+        ?>
+    </div>
+</div>
+<?php } ?>
+
 <!-- Custom Sidebar + position -->
 <div class="td-box-row">
     <div class="td-box-description">
@@ -928,7 +1006,7 @@
     <div class="td-box-control-full td-panel-sidebar-pos">
         <div class="td-display-inline-block">
             <?php
-            echo td_panel_generator::visual_select_o(array(
+           echo td_panel_generator::visual_select_o(array(
                 'ds' => 'td_option',
                 'option_id' => 'tds_woo_sidebar_pos',
                 'values' => array(
@@ -942,7 +1020,7 @@
         </div>
         <div class="td-display-inline-block td_sidebars_pulldown_align">
             <?php
-            echo td_panel_generator::sidebar_pulldown(array(
+           echo td_panel_generator::sidebar_pulldown(array(
                 'ds' => 'td_option',
                 'option_id' => 'tds_woo_sidebar'
             ));

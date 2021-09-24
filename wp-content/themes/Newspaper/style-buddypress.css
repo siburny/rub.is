@@ -265,7 +265,7 @@ a.bp-title-button {
 #buddypress .ac-reply-content input {
   font-size: 11px;
   line-height: 13px;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
 }
 #buddypress div.dir-search input[type=text],
 #buddypress li.groups-members-search input[type=text] {
@@ -350,7 +350,7 @@ a.bp-title-button {
   background-color: #FFF;
   color: #444;
   padding: 0 15px;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 11px;
   line-height: 20px;
   font-weight: 700;
@@ -391,7 +391,7 @@ a.bp-title-button {
   background-color: #FFF;
   color: #444;
   padding: 0 15px;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 11px;
   line-height: 20px;
   font-weight: 700;

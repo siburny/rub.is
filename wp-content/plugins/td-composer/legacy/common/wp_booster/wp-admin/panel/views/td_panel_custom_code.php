@@ -132,4 +132,27 @@
         ));
         ?>
     </div>
-<?php echo td_panel_generator::box_end();
+<?php echo td_panel_generator::box_end();?>
+
+
+<!--<hr>-->
+<!--<div class="td-section-separator">Other settings</div>-->
+<!---->
+<?php //echo td_panel_generator::box_start('Lighthouse options (beta)', false); ?>
+<!--<div class="td-box-row">-->
+<!--    <div class="td-box-description" style="width: 400px;">-->
+<!--        <span class="td-box-title">Prevent layout shift from scroll bar</span>-->
+<!--        <p>This will improve you CLS score, preventing the layout shift caused by the scroll bar on load. Now the content of the site will fully occupy the width space of the browser, whether there is scroll or not.</p>-->
+<!--    </div>-->
+<!--    <div class="td-box-control-full" style="width: 320px;">-->
+<!--        --><?php
+//        echo td_panel_generator::checkbox(array(
+//            'ds' => 'td_option',
+//            'option_id' => 'tds_cls_scroll_bar',
+//            'true_value' => '',
+//            'false_value' => 'yes'
+//        ));
+//        ?>
+<!--    </div>-->
+<!--</div>-->
+<?php //echo td_panel_generator::box_end();?>

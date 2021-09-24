@@ -20,6 +20,71 @@ class td_block_template_6 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+            
+            /* @style_general_template_6 */
+            .td_block_template_6.widget > ul > li {
+                margin-left: 0 !important;
+            }
+            
+            .td_block_template_6 .td-block-title {
+                text-align: center;
+                font-size: 17px;
+                font-weight: 500;
+                margin-top: 0;
+                margin-bottom: 26px;
+                line-height: 1;
+                padding: 14px 0;
+                position: relative;
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: auto 100%;
+            }
+            .td_block_template_6 .td-block-title:before {
+                content: '\\e904';
+                font-family: 'newspaper', sans-serif;
+                font-size: 8px;
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                right: 0;
+                margin: auto;
+                line-height: 1;
+            }
+            .td_block_template_6 .td-block-title > * {
+                color: #000;
+            }
+            .td_block_template_6 .td-subcat-filter {
+                line-height: 40px;
+                position: relative;
+                text-align: center;
+                margin: -24px 0 0;
+            }
+            .td_block_template_6 .td-subcat-filter .td-subcat-more {
+                margin-bottom: 10px !important;
+            }
+            .td_block_template_6 .td-subcat-list {
+                margin-bottom: 18px;
+            }
+            .td_block_template_6 .td-subcat-list li:first-child {
+                margin-left: 12px;
+            }
+            .td_block_template_6 .td-subcat-dropdown ul {
+                margin-top: 0 !important;
+            }
+            .td_block_template_6 .td-related-title a {
+                padding: 10px 10px 0 10px;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_6 .td-related-title a {
+                    font-size: 14px;
+                }
+            }
+            .td_block_template_6 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            
+            
+            
             /* @header_text_color */
             .$unique_block_class .td-block-title > *,
             .$unique_block_class .td-block-title:before {
@@ -68,7 +133,19 @@ class td_block_template_6 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_6', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+            $td_css_compiler->load_setting_raw('style_general_pulldown_3', 1);
+        }
+
+
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('header_image', wp_get_attachment_url($this->get_att('header_image'))); // @TODO tre citit dupa ID
         $td_css_compiler->load_setting_raw('accent_text_color', $this->get_att('accent_text_color'));
@@ -111,9 +188,9 @@ class td_block_template_6 extends td_block_template {
         $buffy = '';
         $buffy .= '<' . $title_tag . ' class="td-block-title">';
         if (!empty($custom_url)) {
-            $buffy .= '<a href="' . esc_url($custom_url) . '">' . esc_html($custom_title) . '</a>';
+            $buffy .= '<a href="' . esc_url($custom_url) . '" class="td-pulldown-size">' . esc_html($custom_title) . '</a>';
         } else {
-            $buffy .= '<span>' . esc_html($custom_title) . '</span>';
+            $buffy .= '<span class="td-pulldown-size">' . esc_html($custom_title) . '</span>';
         }
         $buffy .= '</' . $title_tag . '>';
         return $buffy;

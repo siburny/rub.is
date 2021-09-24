@@ -2,17 +2,69 @@
 class tdm_block_column_content extends td_block {
 
 	protected $shortcode_atts = array(); //the atts used for rendering the current block
+    private $unique_block_class;
 
     public function get_custom_css() {
 
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
-
+                /* @style_general_column_content */
+                .tdm_block_column_content .tdm-image-holder {
+                  position: relative;
+                  display: block;
+                  height: 0;
+                  margin-bottom: 24px;
+                  padding-bottom: 70%;
+                }
+                @media (max-width: 767px) {
+                  .tdm_block_column_content .tdm-image-holder {
+                    margin-bottom: 14px;
+                  }
+                }
+                .tdm_block_column_content .tdm-image-holder:hover .tdm-hover-img {
+                  opacity: 1;
+                }
+                .tdm_block_column_content .tdm-image-holder > div {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background-repeat: no-repeat;
+                  background-position: center center;
+                  background-size: cover;
+                }
+                .tdm_block_column_content .tdm-hover-img {
+                  opacity: 0;
+                  -webkit-transition: all 0.4s ease-in-out;
+                  transition: all 0.4s ease-in-out;
+                }
+                .tdm_block_column_content:hover .tdm-col-content-title-url .tdm-title {
+                  color: #4db2ec;
+                }
+                .tdm_block_column_content .tdm-title-xxsm,
+                .tdm_block_column_content .tdm-title-xsm {
+                  margin-bottom: 20px;
+                }
+                .tdm_block_column_content .tdm-title-md {
+                  margin-bottom: 14px;
+                }
+                .tdm_block_column_content .tdm-title-bg {
+                  margin-bottom: 16px;
+                }
+                .tdm_block_column_content .tdm-descr {
+                  margin-bottom: 0;
+                }
+                .tdm_block_column_content .tds-button {
+                  margin-top: 25px;
+                }
+                
+                
                 /* @images_height */
                 .$unique_block_class .tdm-image-holder {
                     padding-bottom: @images_height;
@@ -54,6 +106,8 @@ class tdm_block_column_content extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_column_content', 1 );
+
         // images height
         $res_ctx->load_settings_raw( 'images_height', $res_ctx->get_shortcode_att( 'images_height' ) );
 
@@ -78,6 +132,8 @@ class tdm_block_column_content extends td_block {
 
     function render($atts, $content = null) {
         parent::render($atts);
+
+        $this->unique_block_class = $this->block_uid;
 
         $this->shortcode_atts = shortcode_atts(
 			array_merge(
@@ -127,7 +183,7 @@ class tdm_block_column_content extends td_block {
                 if (empty($tds_title)) {
                     $tds_title = td_util::get_option('tds_title', 'tds_title1');
                 }
-                $tds_title_instance = new $tds_title($this->shortcode_atts);
+                $tds_title_instance = new $tds_title($this->shortcode_atts, $this->unique_block_class);
                 $buffy_title .= $tds_title_instance->render();
             }
 
@@ -139,14 +195,14 @@ class tdm_block_column_content extends td_block {
                 if ( empty( $tds_button ) ) {
                     $tds_button = td_util::get_option( 'tds_button', 'tds_button1' );
                 }
-                $tds_button_instance = new $tds_button( $this->shortcode_atts );
+                $tds_button_instance = new $tds_button( $this->shortcode_atts, '', $this->unique_block_class  );
                 $buffy_button .= $tds_button_instance->render();
             }
 
 
             if ( !empty( $url ) ) {
                 if ( !empty( $image1 ) || !empty( $image2 ) ) {
-                    $buffy .= '<a href="' . $url . '" class="tdm-image-holder"' . $target . '>';
+                    $buffy .= '<a href="' . $url . '" aria-label="image" class="tdm-image-holder"' . $target . '>';
                         $buffy .= $buffy_images;
                     $buffy .= '</a>';
                 }

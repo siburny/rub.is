@@ -19,8 +19,7 @@ class td_block_template_1 extends td_block_template {
 
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
-        <style>
-
+        <style>            
             /* @header_color */
             .td-theme-wrap .$unique_block_class .td-pulldown-filter-link:hover,
             .td-theme-wrap .$unique_block_class .td-subcat-item a:hover,
@@ -75,7 +74,13 @@ class td_block_template_1 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+        }
 
         $header_color = $this->get_att('header_color');
         $td_css_compiler->load_setting_raw('header_color', $header_color);
@@ -108,13 +113,13 @@ class td_block_template_1 extends td_block_template {
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
         $title_tag = 'h4';
-        
+
         // title_tag used only on Title shortcode
         $block_title_tag = $this->get_att('title_tag');
         if(!empty($block_title_tag)) {
             $title_tag = $block_title_tag ;
         }
-        
+
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {

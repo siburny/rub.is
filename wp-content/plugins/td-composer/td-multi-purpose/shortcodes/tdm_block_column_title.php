@@ -1,15 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tagdiv
- * Date: 07.09.2017
- * Time: 14:20
- */
-
 class tdm_block_column_title extends td_block {
 
     protected $shortcode_atts = array(); //the atts used for rendering the current block
     private $unique_block_class;
+
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $compiled_css = '';
+        $raw_css =
+            "<style>
+
+                /* @style_general_column_title */
+                .tdm_block_column_title {
+                  margin-bottom: 0;
+                  display: inline-block;
+                  width: 100%;
+                }
+                
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
+    }
+
+    static function cssMedia( $res_ctx ) {
+        $res_ctx->load_settings_raw( 'style_general_column_title', 1 );
+    }
 
 	function render($atts, $content = null) {
 		parent::render($atts);

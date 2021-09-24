@@ -580,6 +580,43 @@ class td_api_category_template extends td_api_base {
     }
 
 
+    static function get_current_category_template(&$category_id = '', &$is_global = false, &$is_tdb_template = false) {
+
+    	$tdc_option_key = 'tdc_category_template';
+	    $tds_option_key = 'tds_category_template';
+	    $tdb_option_key = 'tdb_category_template';
+
+	    $queried_object = get_queried_object();
+        if ( $queried_object instanceof WP_Term ) {
+	        $category_id = $queried_object->term_id;
+	        $tdb_individual_category_template = td_util::get_category_option( $category_id, $tdb_option_key );
+
+	        if ( empty( $tdb_individual_category_template ) ) {
+		        $is_global = true;
+
+		        $tdb_category_template = td_options::get( $tdb_option_key );
+		        if ( td_global::is_tdb_template( $tdb_category_template, true ) ) {
+			        $template_id     = td_global::tdb_get_template_id( $tdb_category_template );
+			        $is_tdb_template = true;
+		        } else {
+			        $template_id = td_util::get_option( $tds_option_key );
+		        }
+
+	        } else if ( 'theme_templates' === $tdb_individual_category_template ) {
+		        $template_id = td_util::get_category_option( $category_id, $tdc_option_key );  // read the category setting
+		        if ( empty( $template_id ) ) { // nothing is set, check the default value
+			        $template_id = parent::get_default_component_id( __CLASS__ );
+		        }
+	        } else {
+		        $is_tdb_template = true;
+		        $template_id     = td_global::tdb_get_template_id( $tdb_individual_category_template );
+	        }
+        }
+
+        return $template_id;
+    }
+
+
     static function render_category_template_by_id($template_id) {
         if (class_exists($template_id)) {
             /** @var $td_category_template td_category_template */
@@ -874,7 +911,53 @@ class td_api_footer_template extends td_api_base {
         return $template_id;
     }
 
+    static function get_footer_template_id( $is_mobile = false ) {
+    	$option_id = 'tdb_footer_template';
+    	if ( $is_mobile ) {
+    		$option_id .= '_mobile';
+	    }
+
+	    if (class_exists('SitePress', false)) {
+
+	    	global $sitepress;
+
+	    	if ( isset($_GET['td_action']) && ( 'tdc_edit' == $_GET['td_action'] || 'tdc' === $_GET['td_action'] )) {
+
+	    		// we are in composer
+			    $page_id = get_the_ID();
+			    $t_post_id = $sitepress->get_element_trid( $page_id, 'post_post' );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_post', false, true);
+
+				if ( !empty($translations) && is_array($translations) && count($translations)) {
+					foreach ($translations as $translation) {
+						if ( !empty( $translation->element_id ) && $page_id === intval($translation->element_id) && !empty($translation->language_code)) {
+							$option_id .= $translation->language_code;
+						}
+					}
+				}
+				
+	        } else {
+
+	            $sitepress_settings = $sitepress->get_settings();
+	            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+	                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+	                if (1 === $translation_mode) {
+	                    $option_id .= $sitepress->get_current_language();
+	                }
+	            }
+	        }
+	    }
+	    
+		$tdb_footer_template = td_util::get_option($option_id);
+
+    	if ( empty( $tdb_footer_template ) ) {
+    		return '';
+	    }
+	    return $tdb_footer_template;
+    }
+
 }
+
 /**
  * Created by ra on 2/13/2015.
  */
@@ -1107,8 +1190,45 @@ class td_api_header_style extends td_api_base {
         return $tds_header_style;
     }
 
-    static function get_header_template_id() {
-    	$tdb_header_template = td_util::get_option('tdb_header_template');
+    static function get_header_template_id( $is_mobile = false ) {
+    	$option_id = 'tdb_header_template';
+    	if ( $is_mobile ) {
+    		$option_id .= '_mobile';
+	    }
+
+    	if (class_exists('SitePress', false)) {
+
+	    	global $sitepress;
+
+	    	if ( isset($_GET['td_action']) && ( 'tdc_edit' == $_GET['td_action'] || 'tdc' === $_GET['td_action'] )) {
+
+	    		// we are in composer
+			    $page_id = get_the_ID();
+			    $t_post_id = $sitepress->get_element_trid( $page_id, 'post_post' );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_post', false, true);
+
+				if ( !empty($translations) && is_array($translations) && count($translations)) {
+					foreach ($translations as $translation) {
+						if ( !empty( $translation->element_id ) && $page_id === intval($translation->element_id) && !empty($translation->language_code)) {
+							$option_id .= $translation->language_code;
+						}
+					}
+				}
+
+	        } else {
+
+	            global $sitepress;
+	            $sitepress_settings = $sitepress->get_settings();
+	            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+	                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+	                if (1 === $translation_mode) {
+	                    $option_id .= $sitepress->get_current_language();
+	                }
+	            }
+	        }
+	    }
+	    
+        $tdb_header_template = td_util::get_option($option_id);
 
     	if ( empty( $tdb_header_template ) ) {
     		return '';
@@ -1417,6 +1537,12 @@ class td_api_single_template extends td_api_base {
 
             // on tbd templates put the text.
             if (td_global::is_tdb_template($id)) {
+
+            	$meta_is_mobile_template = get_post_meta(td_global::tdb_get_template_id($id), 'tdc_is_mobile_template', true);
+	            if ( (!empty($meta_is_mobile_template) && '1' === $meta_is_mobile_template)) {
+	                continue;
+	            }
+
                 $config_array['text'] = $template_config['text'];
             }
 
@@ -1447,6 +1573,10 @@ class td_api_single_template extends td_api_base {
 		$buffy_array = array();
 
 		foreach (self::get_all() as $id => $template_config) {
+
+			if (!empty($template_config['is_mobile_template'])) {
+				continue;
+			}
 
             $config_array = array(
                 'text' => '',

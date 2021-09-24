@@ -137,8 +137,9 @@ var ThemePluginsSetup = (function($){
 
         return {
             init: function(btn){
-                var pluginsWrap = $('.td-admin-plugins'),
-                    pluginsInstalledImg = pluginsWrap.find('.theme-plugins-installed img');
+                var pluginsWrap = $('.td-admin-setup-plugins'),
+                    pluginsInstalled = $('.theme-plugins-installed'),
+                    $widgetCloudLibrary = $('.td-cloud-library-widget');
 
                 pluginsWrap.addClass('td-installing-plugins');
                 jQuery(btn).attr( 'disabled', true );
@@ -183,37 +184,50 @@ var ThemePluginsSetup = (function($){
                                 console.log(errorThrown);
                             });
 
-                            $('.nav-tab-wrapper').append(
-                                '<a href="admin.php?page=td_theme_demos" class="nav-tab" style="display: inline;">Install demos</a>\n' +
+                            $('.nav-tab-wrapper').find('a[href$="td_theme_plugins"]').after(
+                                '<a href="admin.php?page=td_theme_demos" class="nav-tab">Prebuilt Websites</a>\n' +
                                 '<a href="admin.php?page=td_system_status" class="nav-tab  ">System status</a>\n' +
-                                '<a href="admin.php?page=td_theme_panel" class="nav-tab  " style="display: inline;">Theme panel</a>'
+                                '<a href="admin.php?page=td_theme_updates" class="nav-tab">Updates</a>' +
+                                '<a href="admin.php?page=td_theme_panel" class="nav-tab"">Theme panel</a>'
                             );
 
-                            $('#toplevel_page_td_theme_welcome').find('.wp-submenu').append(
-                                '<li><a href="admin.php?page=td_theme_demos" style="display: block;">Install demos</a></li>' +
+                            $('#toplevel_page_td_theme_welcome').find('.wp-submenu').find('li:nth-child(3)').after(
+                                '<li><a href="admin.php?page=td_theme_demos">Prebuilt Websites</a></li>' +
                                 '<li><a href="admin.php?page=td_system_status">System status</a>' +
-                                '<li><a href="admin.php?page=td_theme_panel" style="display: block;">Theme panel</a></li>'
+                                '<li><a href="admin.php?page=td_system_updates">Updates</a>' +
+                                '<li><a href="admin.php?page=td_theme_panel">Theme panel</a></li>'
                             );
                         }
 
                         if ( failedPlugins.length === 0 ) {
-                            pluginsInstalledImg.attr( 'src', pluginsInstalledImg.data('src') );
+                            pluginsInstalled.show();
+                            pluginsWrap.hide();
+                            $widgetCloudLibrary.show();
+
+                            // we need refresh to load js from plugins
+                            if ( window.self === window.top ){
+                                window.location.href = pluginsWrap.find('#td_theme_welcome_link').val();
+                            } else {
+                                window.top.location.href = pluginsWrap.find('#td_theme_welcome_link').val();
+                            }
+
+
                         } else {
                             $('.theme-plugins-setup').after(
                                 '<p class="theme-plugins-error-msg">' +
-                                    'An error occurred and we could not finish the process. <br>Please reload the page and try again, or <a href="https://forum.tagdiv.com/newspaper-how-to-update-a-plugin/" target="_blank">manually update the plugins</a>.' +
+                                    'An error occurred and we could not finish the process. <br>Please <a href="https://forum.tagdiv.com/newspaper-how-to-update-a-plugin/" target="_blank">manually update the plugins.</a>' +
                                 '</p>' );
-
-                            pluginsWrap.removeClass('td-installing-plugins');
                         }
+
+                        pluginsWrap.removeClass('td-installing-plugins');
 
                     }, 700);
                 };
 
-                pluginsInstalledImg.load(function () {
-                    pluginsWrap.removeClass('td-installing-plugins');
-                    pluginsWrap.addClass('td-installed-plugins');
-                });
+                // pluginsInstalledImg.on('load', function () {
+                //     pluginsWrap.removeClass('td-installing-plugins');
+                //     pluginsWrap.addClass('td-installed-plugins');
+                // });
 
                 find_next();
             }
@@ -231,7 +245,8 @@ var ThemePluginsSetup = (function($){
 
 ThemePluginsSetup.init();
 
-jQuery(window).load(function () {
+jQuery(window).on( "YoastSEO:ready", function() {
+
     if ('undefined' !== typeof YoastSEO) {
 
         YoastSEO.app.registerPlugin( 'tdYoastSEOPlugin', {status: 'loading'} );
@@ -267,7 +282,7 @@ jQuery(window).load(function () {
 
                 if ( 'success' === textStatus && 'undefined' !== typeof data.content ) {
 
-                    YoastSEO.app.registerModification( 'content', function() { return data.content }, 'tdYoastSEOPlugin', 5 );
+                    YoastSEO.app.registerModification( 'content', function() { return data.content; }, 'tdYoastSEOPlugin', 5 );
 
                     // wp.data.dispatch( 'core/notices' ).createNotice( 'info', 'Yoast SEO Analysis has been updated!', { id: 'td_yoast_info'} );
                     //
@@ -278,10 +293,120 @@ jQuery(window).load(function () {
             });
         };
 
-       // tdYoastSEOUpdateContent();
-
-
+        // Commented function call! There're some issues with wp 3.5 (yoast couldn't get the subheading, outbound/inbound links, etc)
+        //tdYoastSEOUpdateContent();
 
         YoastSEO.app.pluginReady( 'tdYoastSEOPlugin' );
     }
+});
+
+
+jQuery(window).on('load', function () {
+
+    var $body = jQuery('body');
+
+    $body.on( 'mousedown', '.theme.active .update-message, .td-welcome-update-theme, #update-theme', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if ( 'undefined' !== typeof window.tdData ) {
+            tdConfirm.modal({
+                caption: 'Update / Downgrade Theme & Plugins',
+                htmlInfoContent: 'The theme version will change to ' + Object.keys(window.tdData.version)[0] + '. The activated plugins should be automatically updated and reactivated!',
+                hideNoButton: true,
+                callbackYes: function () {
+
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: td_ajax_url,
+                        data: {
+                            action: 'td_ajax_change_theme_version',
+                            version: Object.keys(window.tdData.version)[0],
+                            url: Object.values(window.tdData.version)[0],
+                        },
+                        success: function (data, textStatus, XMLHttpRequest) {
+                            console.log('success');
+                            console.log(textStatus);
+                            console.log(data);
+
+                            window.location.replace( window.tdData.adminUrl + 'update-core.php?action=do-theme-upgrade&update_theme=' + window.tdData.themeName );
+                        },
+                        error: function (MLHttpRequest, textStatus, errorThrown) {
+                            //console.log(errorThrown);
+                        }
+                    });
+                    tb_remove();
+                },
+            });
+        }
+
+        return false;
+
+    });
+});
+
+
+
+var tdReports = {
+
+    initialized: false,
+
+    _error: undefined,
+    _themeName: undefined,
+    _themeVersion: undefined,
+
+    $_iframe: undefined,
+
+    _buffer: [],
+
+    init: function () {
+
+        if (tdReports.initialized) {
+            return;
+        }
+
+        jQuery('#iframe-reports').on('load', function () {
+            tdReports.$_iframe = jQuery(this);
+
+            if ( tdReports._buffer.length ) {
+                tdReports._buffer.forEach(function(msg) {
+                    tdReports.$_iframe[0].contentWindow.postMessage(msg, '*');
+                });
+                tdReports._buffer = [];
+            }
+        });
+
+        tdReports.initialized = true;
+    },
+
+    report: function(serverName, httpHost, httpReferer, httpUserAgent, themeName, themeVersion, plugins, errNo, errStr, errFile, errLine ) {
+
+        jQuery(document).ready(function () {
+            tdReports.init();
+        });
+
+        var msg = JSON.stringify({
+            serverName: serverName,
+            httpHost: httpHost,
+            httpReferer: httpReferer,
+            httpUserAgent: httpUserAgent,
+            themeName: themeName,
+            themeVersion: themeVersion,
+            plugins: plugins,
+            errNo: errNo,
+            errStr: errStr,
+            errFile: errFile,
+            errLine: errLine
+        });
+
+        if ( 'undefined' === typeof tdReports.$_iframe ) {
+            tdReports._buffer.push(msg);
+        } else {
+            tdReports.$_iframe[0].contentWindow.postMessage(msg, '*');
+        }
+    }
+};
+
+jQuery(document).ready(function () {
+    tdReports.init();
 });

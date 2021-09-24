@@ -2,6 +2,7 @@
   font-family: 'td-multipurpose';
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
   src:  url('td-multipurpose.eot');
   src:  url('td-multipurpose.eot?#iefix') format('embedded-opentype'),
         url('td-multipurpose.ttf') format('truetype'),

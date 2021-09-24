@@ -53,9 +53,25 @@ class tagdiv_util {
 				if ( ( defined('TD_MOBILE_PLUGIN') || has_action( 'admin_notices', 'td_mobile_msg' ) ) ) {
 					return true;
 				}
+			} elseif ( $plugin['slug'] === 'amp' ) {
+				if  ( self::is_amp_plugin_installed() ) {
+					return true;
+				}
 			}
 			return false;
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the default AMP WP plugin is installed
+	 * @return bool true if AMP is installed( and it's not the old tagdiv amp plugin )
+	 */
+	static function is_amp_plugin_installed() {
+		if ( defined('AMP__VERSION') && ! defined('TD_AMP') ) {
+			return true;
+		}
+
 		return false;
 	}
 

@@ -31,6 +31,83 @@ class tds_icon_box5 extends td_style {
 		$raw_css =
 			"<style>
 			
+                /* @style_general_icon_box5 */
+                .tds_icon_box5_wrap {
+                  height: 260px;
+                  -webkit-transition: all 0.3s ease;
+                  transition: all 0.3s ease;
+                }
+                .tds_icon_box5_wrap .tds-icon-box5 {
+                  position: absolute;
+                  display: block;
+                  top: 50%;
+                  left: 50%;
+                  width: 80%;
+                  -webkit-transform: translate(-50%, -50%);
+                  transform: translate(-50%, -50%);
+                }
+                .tds_icon_box5_wrap .tds-icon {
+                  -webkit-transition: transform 0.5s ease 0.3s;
+                  transition: transform 0.5s ease 0.3s;
+                  color: #444;
+                }
+                .tds_icon_box5_wrap .tds-title {
+                  -webkit-transition: transform 0.5s ease 0.2s;
+                  transition: transform 0.5s ease 0.2s;
+                }
+                .tds_icon_box5_wrap .tds-title .tdm-title {
+                  color: #444;
+                }
+                .tds_icon_box5_wrap .td-icon-box-meta-info {
+                  display: block;
+                  position: absolute;
+                }
+                .tds_icon_box5_wrap .td-icon-box-meta-info .tdm-descr,
+                .tds_icon_box5_wrap .td-icon-box-meta-info .tds-button {
+                  -webkit-transition: opacity 0.3s ease-in-out;
+                  transition: opacity 0.3s ease-in-out;
+                  opacity: 0;
+                  color: #fff;
+                }
+                .tds_icon_box5_wrap:hover {
+                  background-color: #00d6ff;
+                }
+                .tds_icon_box5_wrap:hover .tds-icon {
+                  color: #fff;
+                  -webkit-transition: transform 0.3s ease-in-out;
+                  transition: transform 0.3s ease-in-out;
+                }
+                .tds_icon_box5_wrap:hover .tds-title {
+                  -webkit-transition: transform 0.3s ease-in-out 0.1s;
+                  transition: transform 0.3s ease-in-out 0.1s;
+                }
+                .tds_icon_box5_wrap:hover .tds-title .tdm-title {
+                  color: #fff;
+                }
+                .tds_icon_box5_wrap:hover .tdm-descr,
+                .tds_icon_box5_wrap:hover .tds-button {
+                  opacity: 1;
+                  -webkit-transition: opacity 0.3s ease-in-out 0.2s;
+                  transition: opacity 0.3s ease-in-out 0.2s;
+                }
+                .tds_icon_box5_wrap .icon_box_url_wrap {
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  z-index: 3;
+                }
+                .tds_icon_box5_wrap.tdm-content-horiz-left .td-icon-box-meta-info {
+                  text-align: left;
+                }
+                .tds_icon_box5_wrap.tdm-content-horiz-right .td-icon-box-meta-info {
+                  text-align: right;
+                }
+
+                
+                
                 /* @icon_box_container_height */
 				.$unique_block_class {
 				    height: @icon_box_container_height;
@@ -40,17 +117,11 @@ class tds_icon_box5 extends td_style {
 				.$unique_block_class:hover .tds-icon {
 				    transform: translateY(@elements_top_slide);
                     -webkit-transform: translateY(@elements_top_slide);
-                    -moz-transform: translateY(@elements_top_slide);
-                    -ms-transform: translateY(@elements_top_slide);
-                    -o-transform: translateY(@elements_top_slide);
 				}
 						
 				.$unique_block_class:hover .tds-title {
 				    transform: translateY(@elements_top_slide);
                     -webkit-transform: translateY(@elements_top_slide);
-                    -moz-transform: translateY(@elements_top_slide);
-                    -ms-transform: translateY(@elements_top_slide);
-                    -o-transform: translateY(@elements_top_slide);
 				}
 				
 				/* @title_top_space */
@@ -117,6 +188,8 @@ class tds_icon_box5 extends td_style {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_icon_box5', 1 );
+
         // container height
         $res_ctx->load_settings_raw( 'icon_box_container_height', $res_ctx->get_style_att( 'icon_box_container_height', __CLASS__ ) . 'px' );
 
@@ -174,7 +247,7 @@ class tds_icon_box5 extends td_style {
 
         $this->unique_style_class = td_global::td_generate_unique_id();
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
 //        $button_text = $this->get_shortcode_att( 'button_text' );
 //        $with_button = '';
@@ -276,7 +349,7 @@ class tds_icon_box5 extends td_style {
             if  ( !empty( $open_in_new_window ) ) {
                 $target_blank = 'target="_blank"';
             }
-            $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+            $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
         }
 
 		return $buffy;

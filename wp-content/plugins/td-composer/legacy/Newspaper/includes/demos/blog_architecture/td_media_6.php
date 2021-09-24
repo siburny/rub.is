@@ -1,11 +1,5 @@
 <?php
-
-// logos
-td_demo_media::add_image_to_media_gallery('td_logo_header',             "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/architecture_logo.png");
-td_demo_media::add_image_to_media_gallery('td_logo_header_retina',      "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/architecture_logo_retina.png");
-td_demo_media::add_image_to_media_gallery('td_logo_footer',             "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/architecture_logo_footer.png");
-td_demo_media::add_image_to_media_gallery('td_logo_footer_retina',      "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/architecture_logo_footer_retina.png");
-
-
-// other images
-td_demo_media::add_image_to_media_gallery('td_footer_background_image',               "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/footer_bg.jpg");
+td_demo_media::add_image_to_media_gallery('td_pic_p4',                  "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/p4.jpg");
+// ads
+td_demo_media::add_image_to_media_gallery('td_blog_architecture_sidebar_ad',              "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/sidebar.jpg");
+td_demo_media::add_image_to_media_gallery('td_blog_architecture_content_ad',              "http://demo_content.tagdiv.com/Newspaper_6/blog_architecture/content.jpg");

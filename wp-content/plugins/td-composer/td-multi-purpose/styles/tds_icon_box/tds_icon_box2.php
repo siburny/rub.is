@@ -31,6 +31,32 @@ class tds_icon_box2 extends td_style {
 		$raw_css =
 			"<style>              
 
+                /* @style_general_icon_box2 */
+                .tds_icon_box2_wrap .tds-icon-box {
+                  display: inline-block;
+                }
+                .tds_icon_box2_wrap .tds-icon-box2:after {
+                  display: table;
+                  content: '';
+                  line-height: 0;
+                  clear: both;
+                }
+                .tds_icon_box2_wrap .tdm-col-icon,
+                .tds_icon_box2_wrap .tdm-col-text {
+                  display: table-cell;
+                  vertical-align: top;
+                }
+                .tds_icon_box2_wrap .icon_box_url_wrap {
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                }
+
+                
+                
                 /* @icon_right_space */
 				.$unique_style_class .tdm-col-icon {
 				    padding-right: @icon_right_space;
@@ -88,6 +114,8 @@ class tds_icon_box2 extends td_style {
      * @param $res_ctx td_res_context
      */
     static function cssMedia( $res_ctx ) {
+
+        $res_ctx->load_settings_raw( 'style_general_icon_box2', 1 );
 
         /*-- ICON -- */
         $icon_right = $res_ctx->get_style_att( 'icon_right', __CLASS__ );
@@ -212,7 +240,7 @@ class tds_icon_box2 extends td_style {
             if  ( !empty( $open_in_new_window ) ) {
                 $target_blank = 'target="_blank"';
             }
-            $buffy_text .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+            $buffy_text .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
         }
             // Button
             $button_text = $this->get_shortcode_att('button_text');
@@ -229,7 +257,7 @@ class tds_icon_box2 extends td_style {
         $buffy_text .= '</div>';
 
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' ' . 'td-fix-index' . ' ' . $icon_position . ' ' . $this->unique_style_class . '">';
 

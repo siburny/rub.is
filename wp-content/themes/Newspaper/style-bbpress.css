@@ -35,7 +35,7 @@
   padding-top: 4px;
 }
 #bbpress-forums .bbp-breadcrumb p {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   color: #c3c3c3;
   line-height: 14px;
   margin-bottom: 0;
@@ -141,7 +141,7 @@
 #bbpress-forums .bbp-forum-freshness a,
 #bbpress-forums .bbp-topic-freshness a {
   color: #222222;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 12px;
   font-weight: 600;
 }
@@ -241,7 +241,7 @@
 }
 #bbpress-forums .bbp-forum-title,
 #bbpress-forums .bbp-topic-permalink {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #111;
@@ -401,7 +401,7 @@
 #bbpress-forums div.bbp-topic-author a.bbp-author-name,
 #bbpress-forums div.bbp-reply-author a.bbp-author-name,
 #bbpress-forums div.bbp-search-author a.bbp-author-name {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-weight: 600;
   line-height: 16px;
   margin: 0;
@@ -497,7 +497,7 @@
 #bbpress-forums div.bbp-forum-title .bbp-topic-title-meta,
 #bbpress-forums div.bbp-topic-title .bbp-topic-title-meta,
 #bbpress-forums div.bbp-reply-title .bbp-topic-title-meta {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 12px;
   color: #c3c3c3;
 }
@@ -509,7 +509,7 @@
   margin-left: 10px;
 }
 #bbpress-forums .bbp-topic-header .bbp-meta .bbp-topic-permalink {
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: Verdana, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-weight: normal;
 }
 #bbpress-forums #subscription-toggle {
@@ -1006,7 +1006,7 @@ div.bbp-search-form button {
 }
 .widget_display_replies .bbp-author-name,
 .widget_display_topics .bbp-author-name {
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #4db2ec;

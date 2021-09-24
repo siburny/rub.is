@@ -2,9 +2,8 @@
 /*
     Our portfolio:  http://themeforest.net/user/tagDiv/portfolio
     Thanks for using our theme!
-    tagDiv - 2019
+    tagDiv - 2021
 */
-
 
 /**
  * Load the speed booster framework + theme specific files
@@ -30,14 +29,23 @@ if ( ! td_util::is_mobile_theme() ) {
 }
 
 require_once('includes/td_css_generator.php');
+require_once('includes/td_svg_theme_fonts_list.php');
 
+add_filter( 'body_class', function( $classes ) {
+    if( isset( $_COOKIE['td_dark_mode'] ) && $_COOKIE['td_dark_mode'] == true ) {
+        $classes[] = 'is_dark';
+    }
 
+    return $classes;
+} );
 
-
-
-
-
-
+//fix accessibility warnings on pagination arrows (lighthouse)
+add_filter('next_posts_link_attributes', function() {
+	return ' aria-label="next-page" ';
+});
+add_filter('previous_posts_link_attributes', function() {
+	return ' aria-label="prev-page" ';
+});
 
 /* ----------------------------------------------------------------------------
  * bbPress
@@ -62,17 +70,12 @@ add_filter('bbp_get_topic_author_avatar', 'td_bbp_change_avatar_size', 20, 3);
 add_filter('bbp_get_reply_author_avatar', 'td_bbp_change_avatar_size', 20, 3);
 add_filter('bbp_get_current_user_avatar', 'td_bbp_change_avatar_size', 20, 3);
 
-
-
 //add_action('shutdown', 'test_td');
-
 function test_td () {
     if (!is_admin()){
         td_api_base::_debug_get_used_on_page_components();
     }
-
 }
-
 
 /**
  * tdStyleCustomizer.js is required
@@ -82,11 +85,15 @@ if (TD_DEBUG_LIVE_THEME_STYLE) {
 		// new live theme demos
 	    function td_theme_style_footer() {
 		    ?>
-            <a href="https://demo.tagdiv.com/select_demo/select_demo_newspaper?utm_source=live_preview&utm_medium=click&utm_campaign=demos&utm_content=demos_button#demos" target="_blank" id="td-theme-demos-button" class="td-right-demos-button">DEMOS</a>
+            <a href="https://demo.tagdiv.com/select_demo/select_demo_newspaper?utm_source=live_preview&utm_medium=click&utm_campaign=demos&utm_content=demos_button#demos" target="_blank" rel="noreferrer" id="td-theme-demos-button" class="td-right-demos-button">DEMOS</a>
             <a href="https://themeforest.net/item/newspaper/5489609?utm_source=live_preview&utm_medium=click&utm_campaign=demos&utm_content=buy_button" id="td-theme-buy-button" class="td-right-demos-button">BUY</a>
 		    <?php
 	    }
 
 }
 
-//td_demo_state::update_state("gadgets_pro", 'full');
+//td_demo_state::update_state("shop_apocryph_pro", 'full');
+
+
+
+

@@ -13,7 +13,7 @@ jQuery(function ($) {
       var url = $parent_.find('.em-form #url').val();
       if ( url !== '' ) {
         var filename = url.replace(/^.*[\\\/]/, '');
-        external_media_upload( $plugin, url, filename );
+        external_media_upload( $plugin, url, filename, '', '' );
         $parent_.find( '.em-external-link-modal' ).hide();
       }
     });

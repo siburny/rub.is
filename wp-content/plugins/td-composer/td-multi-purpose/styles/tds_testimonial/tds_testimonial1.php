@@ -161,7 +161,7 @@ class tds_testimonial1 extends td_style {
             $name_tag = 'h3';
         }
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
         $buffy .= '<div class="tdm-testimonial-wrap td-fix-index ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             $buffy .= '<i class="tdm-icon-font tdm-icon-quote-left"></i>';
 

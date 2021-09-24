@@ -21,41 +21,45 @@ class Spacious_Dashboard {
 
 	private function setup_hooks() {
 		add_action( 'admin_menu', array( $this, 'create_menu' ) );
-
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-	}
-
-	public function enqueue_scripts() {
-		wp_enqueue_style( 'spacious-admin-dashboard', get_template_directory_uri() . '/css/admin/dashboard.css' );
 	}
 
 	public function create_menu() {
-		$theme = wp_get_theme();
+		if ( is_child_theme() ) {
+			$theme = wp_get_theme()->parent();
+		} else {
+			$theme = wp_get_theme();
+		}
 
 		/* translators: %s: Theme Name. */
 		$theme_page_name = sprintf( esc_html__( '%s Options', 'spacious' ), $theme->Name );
 
-		$page = add_theme_page( $theme_page_name, $theme_page_name, 'edit_theme_options', 'spacious-options', array(
-			$this,
-			'option_page'
-		) );
+		$page = add_theme_page(
+			$theme_page_name,
+			$theme_page_name,
+			'edit_theme_options',
+			'spacious-options',
+			array(
+				$this,
+				'option_page',
+			)
+		);
 
-		add_action( 'admin_print_styles-' . $page, array( $this, 'enqueue_styles' ) );
-	}
-
-	public function enqueue_styles() {
-		wp_enqueue_style( 'spacious-dashboard', get_template_directory_uri() . '/css/admin/dashboard.css', array(), SPACIOUS_THEME_VERSION );
 	}
 
 	public function option_page() {
-		$theme = wp_get_theme();
+		if ( is_child_theme() ) {
+			$theme = wp_get_theme()->parent();
+		} else {
+			$theme = wp_get_theme();
+		}
+
 		?>
 		<div class="wrap">
 		<div class="spacious-header">
 			<h1>
 				<?php
 				/* translators: %s: Theme version. */
-				echo sprintf( esc_html__( 'Spacious %s', 'spacious' ), SPACIOUS_THEME_VERSION );
+				echo sprintf( esc_html__( 'Spacious %s', 'spacious' ), $theme->Version );
 				?>
 			</h1>
 		</div>
@@ -87,7 +91,7 @@ class Spacious_Dashboard {
 						<h3><?php esc_html_e( 'Next Steps', 'spacious' ); ?></h3>
 						<ul>
 							<li><?php printf( '<a target="_blank" href="%s" class="welcome-icon dashicons-media-text">' . esc_html__( 'Documentation', 'spacious' ) . '</a>', esc_url( 'https://docs.themegrill.com/spacious' ) ); ?></li>
-							<li><?php printf( '<a target="_blank" href="%s" class="welcome-icon dashicons-layout">' . esc_html__( 'Starter Demos', 'spacious' ) . '</a>', esc_url( 'https://demo.themegrill.com/spacious-demos' ) ); ?></li>
+							<li><?php printf( '<a target="_blank" href="%s" class="welcome-icon dashicons-layout">' . esc_html__( 'Starter Demos', 'spacious' ) . '</a>', esc_url( 'https://themegrilldemos.com/spacious-demos/' ) ); ?></li>
 							<li><?php printf( '<a target="_blank" href="%s" class="welcome-icon dashicons-migrate">' . esc_html__( 'Premium Version', 'spacious' ) . '</a>', esc_url( 'https://themegrill.com/themes/spacious' ) ); ?></li>
 						</ul>
 					</div>

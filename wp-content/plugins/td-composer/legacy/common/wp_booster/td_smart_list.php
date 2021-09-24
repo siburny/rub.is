@@ -253,7 +253,7 @@ abstract class td_smart_list {
      * @return int|mixed
      */
     private function get_current_page($list_items) {
-        $td_page = (get_query_var('page')) ? get_query_var('page') : 1; //rewrite the global var
+    	$td_page = (get_query_var('page')) ? get_query_var('page') : 1; //rewrite the global var
         $td_paged = (get_query_var('paged')) ? get_query_var('paged') : 1; //rewrite the global var
         //paged works on single pages, page - works on homepage
         if ($td_paged > $td_page) {
@@ -261,6 +261,7 @@ abstract class td_smart_list {
         } else {
             $current_page = $td_page;
         }
+
         // if no pages, we are on the first page
         if (empty($current_page)) {
             return 1;
@@ -299,34 +300,34 @@ abstract class td_smart_list {
      * @return string Link.
      */
     public function _wp_link_page( $i ) {
-        global $wp_rewrite;
-        $post = get_post();
 
-        if ( 1 == $i ) {
-            $url = get_permalink();
-        } else {
-            if ( '' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending')) )
-                $url = add_query_arg( 'page', $i, get_permalink() );
-            elseif ( 'page' == get_option('show_on_front') && get_option('page_on_front') == $post->ID )
-                $url = trailingslashit(get_permalink()) . user_trailingslashit("$wp_rewrite->pagination_base/" . $i, 'single_paged');
-            else
-                $url = trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged');
-        }
+	    global $wp_rewrite;
+		$post       = get_post();
+		$query_args = array();
 
-        if ( is_preview() ) {
-            $url = add_query_arg( array(
-                'preview' => 'true'
-            ), $url );
+		if ( 1 == $i ) {
+			$url = get_permalink();
+		} else {
+			if ( ! get_option( 'permalink_structure' ) || in_array( $post->post_status, array( 'draft', 'pending' ), true ) ) {
+				$url = add_query_arg( 'page', $i, get_permalink() );
+			} elseif ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $post->ID ) {
+				$url = trailingslashit( get_permalink() ) . user_trailingslashit( "$wp_rewrite->pagination_base/" . $i, 'single_paged' );
+			} else {
+				$url = trailingslashit( get_permalink() ) . user_trailingslashit( $i, 'single_paged' );
+			}
+		}
 
-            if ( ( 'draft' !== $post->post_status ) && isset( $_GET['preview_id'], $_GET['preview_nonce'] ) ) {
-                $url = add_query_arg( array(
-                    'preview_id'    => wp_unslash( $_GET['preview_id'] ),
-                    'preview_nonce' => wp_unslash( $_GET['preview_nonce'] )
-                ), $url );
-            }
-        }
+		if ( is_preview() ) {
 
-        return esc_url( $url );
+			if ( ( 'draft' !== $post->post_status ) && isset( $_GET['preview_id'], $_GET['preview_nonce'] ) ) {
+				$query_args['preview_id']    = wp_unslash( $_GET['preview_id'] );
+				$query_args['preview_nonce'] = wp_unslash( $_GET['preview_nonce'] );
+			}
+
+			$url = get_preview_post_link( $post, $query_args, $url );
+		}
+
+		return esc_url( $url );
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 
-class tdc_composer_block extends td_block {
+class   tdc_composer_block extends td_block {
 
 	public $block_uid; // the block's unique ID. It is generated on each render
 	private $atts;      // the block's atts
@@ -21,7 +21,8 @@ class tdc_composer_block extends td_block {
 				'tdc_css_class' => '',
 				'tdc_css_class_style' => '',
 
-                'row_bg_gradient' => ''
+                'row_bg_gradient' => '',
+                'row_bg_gradient_s' => '',
 			),
 			$atts
 		);
@@ -159,7 +160,7 @@ class tdc_composer_block extends td_block {
 
 
 		$tdcElementStyleCss = '';
-		if ( !empty($cssOutput) || !empty($beforeCssOutput) || !empty($afterCssOutput) || ( isset($this->atts['row_bg_gradient']) && !empty($this->atts['row_bg_gradient']) ) ) {
+		if ( !empty($cssOutput) || !empty($beforeCssOutput) || !empty($afterCssOutput) || ( isset($this->atts['row_bg_gradient']) && !empty($this->atts['row_bg_gradient']) ) || ( isset($this->atts['row_bg_gradient_s']) && !empty($this->atts['row_bg_gradient_s']) ) ) {
 			$beforeElement = '';
 			if ( !empty($beforeCssOutput) ) {
 				$beforeElement = '<div class="td-element-style-before"><style>' . $beforeCssOutput . '</style></div>';
@@ -174,18 +175,92 @@ class tdc_composer_block extends td_block {
 			$addElementStyle = true;
 		}
 
-		if (!empty($buffy)) {
-
-			if (!empty($tdcElementStyleCss)) {
-				return $buffy . $tdcElementStyleCss;
-			}
-			return $buffy;
-
-		} else if (!empty($tdcElementStyleCss)) {
-			return $tdcElementStyleCss;
+		$has_style = false;
+		if (!empty($buffy) || !empty($tdcElementStyleCss)) {
+		    $has_style = true;
 		}
 
-		return '';
+		$final_style = '';
+
+		if ( $has_style ) {
+
+			global $post;
+
+			if (td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() || empty($post) ) {
+
+				if (!empty($buffy)) {
+                    if (!empty($tdcElementStyleCss)) {
+                        $buffy .= $tdcElementStyleCss;
+                    }
+                    $final_style = $buffy;
+                } else if (!empty($tdcElementStyleCss)) {
+                    $final_style = $tdcElementStyleCss;
+                }
+
+			} else if (!empty($post)) {
+
+				if (is_page()) {
+					$ref_id = $post->ID;
+
+				} else if (is_single() || is_category()) {
+                    $template_id = td_util::get_template_id();
+
+                    if (empty($template_id)) {
+                        $ref_id = $post->ID;
+                    } else {
+                        $ref_id = $template_id;
+                    }
+                }
+
+                if ( class_exists( 'Mobile_Detect' ) ) {
+					$mobile_detect = new Mobile_Detect();
+					if ( $mobile_detect->isMobile() ) {
+
+						$new_ref_id = get_post_meta( !empty($ref_id) ? $ref_id : null, 'tdc_mobile_template_id', true );
+						if ( !empty( $new_ref_id ) ) {
+							$ref_id = $new_ref_id;
+						}
+					}
+				}
+
+				if (!empty($ref_id)) {
+					$tda_essential_css = get_post_meta( $ref_id, 'tda_essential_css', true );
+
+					if ( ! empty( $tda_essential_css ) ) {
+
+						if ( ! empty( $buffy ) ) {
+							$final_style .= preg_replace( '/<style(.|\n|\r)*?<\/style>/m', '', $buffy );
+						}
+						if ( ! empty( $tdcElementStyleCss ) ) {
+							$final_style .= preg_replace( '/<style(.|\n|\r)*?<\/style>/m', '', $tdcElementStyleCss );
+						}
+
+					} else {
+
+						if ( ! empty( $buffy ) ) {
+							if ( ! empty( $tdcElementStyleCss ) ) {
+								$buffy .= $tdcElementStyleCss;
+							}
+							$final_style = $buffy;
+						} else if ( ! empty( $tdcElementStyleCss ) ) {
+							$final_style = $tdcElementStyleCss;
+						}
+					}
+				} else {
+
+					if ( ! empty( $buffy ) ) {
+						if ( ! empty( $tdcElementStyleCss ) ) {
+							$buffy .= $tdcElementStyleCss;
+						}
+						$final_style = $buffy;
+					} else if ( ! empty( $tdcElementStyleCss ) ) {
+						$final_style = $tdcElementStyleCss;
+					}
+				}
+			}
+		}
+
+		return $final_style;
 	}
 
 
@@ -202,9 +277,10 @@ class tdc_composer_block extends td_block {
 	/**
 	 * Safe way to read $this->atts. It makes sure that you read them when they are ready and set!
 	 * @param $att_name
+	 * @param $default_value
 	 * @return mixed
 	 */
-	protected function get_att($att_name) {
+	protected function get_att($att_name, $default_value = '') {
 		if ( !isset( $this->atts ) ) {
 		    echo 'tdc_composer_block - get_att() ' . $att_name . ' TD Composer Internal error: The atts are not set yet(AKA: the render method was not called yet and the system tried to read an att)';
 			die;
@@ -213,7 +289,9 @@ class tdc_composer_block extends td_block {
 		if ( !isset( $this->atts[$att_name] ) ) {
 			var_dump($this->atts);
             echo('TD Composer Internal error: The system tried to use an att that does not exists! class_name: tdc_composer_block  Att name: "' . $att_name . '" The list with available atts is in tdc_composer_block::render');
-			die;
+
+            //die;
+            return $default_value;
 		}
 		return $this->atts[$att_name];
 	}

@@ -14,6 +14,7 @@ function td_live_css_on_rest_api_init() {
 	register_rest_route($namespace, '/save_css/', array(
 		'methods'  => 'POST',
 		'callback' => 'td_live_css_on_ajax_save_css',
+		'permission_callback' => '__return_true',
 	));
 }
 

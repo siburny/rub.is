@@ -20,6 +20,67 @@ class td_block_template_11 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+            
+            /* @style_general_template_11 */
+            .td_block_template_11.widget > ul > li {
+                margin-left: 0 !important;
+            }
+            .td_block_template_11 .td-block-title {
+                font-size: 17px;
+                font-weight: 500;
+                margin-top: 2px;
+                margin-bottom: 24px;
+                line-height: 44px;
+                padding: 0;
+                position: relative;
+                text-align: left;
+            }
+            .td_block_template_11 .td-block-title:before,
+            .td_block_template_11 .td-block-title:after {
+                content: '';
+                width: 100%;
+                height: 2px;
+                position: absolute;
+                left: 0;
+                background-color: #f5f5f5;
+            }
+            .td_block_template_11 .td-block-title:after {
+                bottom: 100%;
+            }
+            .td_block_template_11 .td-block-title:before {
+                top: 100%;
+            }
+            .td_block_template_11 .td-block-title > * {
+                color: #000;
+            }
+            .td_block_template_11 .td-subcat-filter {
+                line-height: 44px;
+                display: table;
+            }
+            .td_block_template_11 .td-subcat-dropdown {
+                line-height: 1;
+                position: static;
+            }
+            .td_block_template_11 .td-subcat-dropdown .td-subcat-more {
+                margin-bottom: 0 !important;
+            }
+            .td_block_template_11 .td-subcat-dropdown ul:after {
+                height: 2px !important;
+            }
+            .td_block_template_11 .td-related-title a {
+                margin-right: 20px;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_11 .td-related-title a{
+                    font-size: 15px;
+                }
+            }   
+            .td_block_template_11 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            
+            
+            
             /* @header_text_color */
             .$unique_block_class .td-block-title > * {
                 color: @header_text_color !important;
@@ -65,7 +126,18 @@ class td_block_template_11 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_11', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+            $td_css_compiler->load_setting_raw('style_general_pulldown_2', 1);
+        }
+
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('border_color', $this->get_att('border_color'));
         $td_css_compiler->load_setting_raw('accent_text_color', $this->get_att('accent_text_color'));
@@ -92,7 +164,7 @@ class td_block_template_11 extends td_block_template {
         if(!empty($block_title_tag)) {
             $title_tag = $block_title_tag ;
         }
-        
+
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
             if (empty($td_pull_down_items)) {

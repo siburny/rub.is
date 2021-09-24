@@ -42,9 +42,11 @@ class td_panel {
 	 * register our theme panel via the hook
 	 */
 	function register_theme_panel() {
-		add_submenu_page( "td_theme_welcome", 'Install demos', 'Install demos', 'edit_posts', 'td_theme_demos',  array($this, "td_theme_demos") );
-		add_submenu_page( "td_theme_welcome", 'System status', 'System status', 'edit_posts', 'td_system_status',  array($this, "td_system_status") );
-		add_submenu_page( "td_theme_welcome", 'Theme panel', 'Theme panel', 'edit_posts', 'td_theme_panel',  array($this, "td_theme_panel") );
+		add_submenu_page( "td_theme_welcome", 'Prebuilt Websites', 'Prebuilt Websites', 'edit_posts', 'td_theme_demos',  array($this, "td_theme_demos") , 2);
+		add_submenu_page( "td_theme_welcome", 'System status', 'System status', 'edit_posts', 'td_system_status',  array($this, "td_system_status") , 3);
+		add_submenu_page( "td_theme_welcome", 'Updates', 'Updates', 'edit_posts', 'td_theme_updates',  array($this, "td_theme_updates") , 4);
+
+		add_submenu_page( "td_theme_welcome", 'Theme panel', 'Theme panel', 'edit_posts', 'td_theme_panel',  array($this, "td_theme_panel") , 5);
 	}
 
 	function td_theme_demos() {
@@ -53,6 +55,10 @@ class td_panel {
 
 	function td_system_status() {
 		require_once 'td_view_system_status.php';
+	}
+
+	function td_theme_updates() {
+		require_once 'td_view_updates.php';
 	}
 
 	function td_theme_panel() {

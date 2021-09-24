@@ -21,6 +21,62 @@ class td_block_template_8 extends td_block_template {
         $raw_css = "
         <style>
 
+            /* @style_general_template_8 */
+            .td_block_template_8.widget > ul > li {
+                margin-left: 0 !important;
+            }
+            .td_block_template_8 .td-block-title {
+                font-size: 20px;
+                font-weight: 800;
+                margin-top: 0;
+                margin-bottom: 18px;
+                line-height: 29px;
+                position: relative;
+                overflow: hidden;
+                text-align: left;
+            }
+            .td_block_template_8 .td-block-title > * {
+                position: relative;
+                padding-right: 20px;
+                color: #000;
+            }
+            .td_block_template_8 .td-block-title > *:before,
+            .td_block_template_8 .td-block-title > *:after {
+                content: '';
+                display: block;
+                height: 4px;
+                position: absolute;
+                top: 50%;
+                margin-top: -2px;
+                width: 2000px;
+                background-color: #f5f5f5;
+            }
+            .td_block_template_8 .td-block-title > *:before {
+                left: 100%;
+            }
+            .td_block_template_8 .td-block-title > *:after {
+                right: 100%;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_8 .td-related-title a {
+                    font-size: 15px;
+                }
+            }
+            .td_block_template_8 .td-related-title a:before {
+                display: none;
+            }
+            .td_block_template_8 .td-related-title a:first-child:after {
+                display: none;
+            }
+            .td_block_template_8 .td-related-title a:last-child:after {
+                left: 100%;
+                right: auto;
+            }
+            .td_block_template_8 .td-related-title .td-cur-simple-item {
+                color: #4db2ec;
+            }
+            
+
             /* @header_text_color */
             .$unique_block_class .td-block-title > * {
                 color: @header_text_color !important;
@@ -64,7 +120,17 @@ class td_block_template_8 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_8', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+        }
+
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('border_color', $this->get_att('border_color'));
         $td_css_compiler->load_setting_raw('accent_text_color', $this->get_att('accent_text_color'));

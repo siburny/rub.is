@@ -12,16 +12,35 @@ class td_block_list_menu extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
 
+                /* @style_general_list_menu */
+                .td_block_list_menu ul {
+                  flex-wrap: wrap;
+                  margin-left: 12px;
+                }
+                .td_block_list_menu ul li {
+                  margin-left: 0;
+                }
+                .td_block_list_menu .sub-menu {
+                  padding-left: 22px;
+                }
+                .td_block_list_menu .sub-menu li {
+                  font-size: 13px;
+                }
+
+                
                 /* @inline */
 				.$unique_block_class li {
 					display: inline-block;
+				}
+				.$unique_block_class .menu {
+					display: flex;
 				}
 				.$unique_block_class .sub-menu {
 					display: none;
@@ -34,6 +53,9 @@ class td_block_list_menu extends td_block {
 				.$unique_block_class ul li {
 					margin-right: @item_space_right;
 				}
+				.$unique_block_class ul li:last-child {
+					margin-right: 0;
+				}
 				/* @item_space_bottom */
 				.$unique_block_class ul li {
 					margin-bottom: @item_space_bottom;
@@ -41,9 +63,20 @@ class td_block_list_menu extends td_block {
 				.$unique_block_class ul li:last-child {
 					margin-bottom: 0;
 				}
-				/* @item_horiz_align */
+				/* @item_horiz_center */
 				.$unique_block_class ul {
-					text-align: @item_horiz_align;
+					text-align: center;
+					justify-content: center;
+				}
+				/* @item_horiz_right */
+				.$unique_block_class ul {
+					text-align: right;
+					justify-content: flex-end;
+				}
+				/* @item_horiz_left */
+				.$unique_block_class ul {
+					text-align: left;
+					justify-content: flex-start;
 				}
 				
 
@@ -80,6 +113,8 @@ class td_block_list_menu extends td_block {
 
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_list_menu', 1 );
+
         // inline list elements
         $res_ctx->load_settings_raw( 'inline', $res_ctx->get_shortcode_att('inline') );
 
@@ -109,10 +144,13 @@ class td_block_list_menu extends td_block {
         // menu list horizontal align
         $item_horiz_align = $res_ctx->get_shortcode_att('item_horiz_align');
         if( $item_horiz_align == 'content-horiz-center' ) {
-            $res_ctx->load_settings_raw( 'item_horiz_align', 'center' );
+            $res_ctx->load_settings_raw( 'item_horiz_center', 1 );
         }
         if( $item_horiz_align == 'content-horiz-right' ) {
-            $res_ctx->load_settings_raw( 'item_horiz_align', 'right' );
+            $res_ctx->load_settings_raw( 'item_horiz_right', 1 );
+        }
+        if( $item_horiz_align == 'content-horiz-left' ) {
+            $res_ctx->load_settings_raw( 'item_horiz_left', 1 );
         }
 
 

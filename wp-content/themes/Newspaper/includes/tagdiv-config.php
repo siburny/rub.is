@@ -6,7 +6,7 @@
  */
 
 define("TD_THEME_NAME", "Newspaper");
-define("TD_THEME_VERSION", "10.2");
+define("TD_THEME_VERSION", "11.2");
 define("TD_THEME_OPTIONS_NAME", "td_011");
 
 //if no deploy mode is selected, we use the final deploy built
@@ -33,11 +33,14 @@ switch (TD_DEPLOY_MODE) {
     case 'demo':
         //demo version
         define("TD_DEBUG_LIVE_THEME_STYLE", true);
-        define("TD_DEBUG_IOS_REDIRECT", true); // remove themeforest iframe from ios devices on demo only!
+		// remove themeforest iframe from ios devices on demo only!
+		// not used anymore - live preview goes on select demos
+        define("TD_DEBUG_IOS_REDIRECT", false);
         define("TD_DEBUG_USE_LESS", false);
         break;
 }
 
+do_action('td_config');
 
 class tagdiv_config {
 
@@ -58,19 +61,19 @@ class tagdiv_config {
 				'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
 				'slug' => 'revslider'
 			),
-			array(
-				'name' => 'Visual Composer',
-				'img' => get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/visual-composer.png',
-				'text' => 'Customize your pages and posts with this popular page builder<br><a href="https://forum.tagdiv.com/how-to-use-visual-composer/" target="_blank">Read more</a>',
-				'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
-				'slug' => 'js_composer'
-			)
+//			array(
+//				'name' => 'Visual Composer',
+//				'img' => get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/visual-composer.png',
+//				'text' => 'Customize your pages and posts with this popular page builder<br><a href="https://forum.tagdiv.com/how-to-use-visual-composer/" target="_blank">Read more</a>',
+//				'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
+//				'slug' => 'js_composer'
+//			)
 		);
 		tagdiv_global::$theme_plugins_list = array(
 			array(
 				'name' => 'tagDiv Composer', // The plugin name
 				'slug' => 'td-composer', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-composer/819b7f9b02b0195f80e3eab970f44973x/td-composer.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-composer/5496ac087ca179a9788dadb779dbc160/td-composer.zip', // The plugin source
 				'required' => true, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -87,7 +90,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Cloud Library', // The plugin name
 				'slug' => 'td-cloud-library', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-cloud-library/c8cba5620a72d5b299fa8f62aeca6adfx/td-cloud-library.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-cloud-library/c19aec6a20dc470dea3def4ce71e04d5/td-cloud-library.zip', // The plugin source
 				'required' => true, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -104,7 +107,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Social Counter', // The plugin name
 				'slug' => 'td-social-counter', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-social-counter/ddfcdab87986f11a58920bbc29e0e1fc/td-social-counter.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-social-counter/72fa9334bad65b54a380f20dbbde94d0/td-social-counter.zip', // The plugin source
 				'required' => true, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -121,7 +124,7 @@ class tagdiv_config {
 			array(
 				'name' => 'tagDiv Newsletter', // The plugin name
 				'slug' => 'td-newsletter', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-newsletter/48241bbc0aac80b2e0dc8b3d466a6b86/td-newsletter.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-newsletter/fb78c20f1c592d0d1907a1a43bd5cce1/td-newsletter.zip', // The plugin source
 				'required' => false, // If false, the plugin is only 'recommended' instead of required
 				'version' => '1.0.0', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -135,10 +138,44 @@ class tagdiv_config {
 				'td_class' => 'td_newsletter_version_check', // class used to recognize the plugin is activated
 				'td_install_in_welcome' => false, // custom field used to install/update/activate the plugin from theme welcome panel
 			),
+            array(
+                'name' => 'tagDiv Opt-In Builder', // The plugin name
+                'slug' => 'td-subscription', // The plugin slug (typically the folder name)
+                'source' => 'https://cloud.tagdiv.com/td_plugins/td-subscription/18da952bde8fab1875ba66b9c5072e53/td-subscription.zip', // The plugin source
+                'required' => false, // If false, the plugin is only 'recommended' instead of required
+                'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
+                'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
+                'force_deactivation' => false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins
+                'external_url' => '', // If set, overrides default API URL and points to an external URL
+                'img' => get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/tagdiv-optin.png',
+                'text' => 'Generate leads & convert visitors to subscribers with opt-in content lockers',
+                'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
+                'td_activate' => false, // custom field used to activate the plugin
+                'td_install' => false, // custom field used to install the plugin
+                'td_class' => 'tds_version_check', // class used to recognize the plugin is activated
+                'td_install_in_welcome' => false, // custom field used to install/update/activate the plugin from theme welcome panel
+            ),
+            array(
+                'name' => 'tagDiv Shop', // The plugin name
+                'slug' => 'td-woo', // The plugin slug (typically the folder name)
+                'source' => 'https://cloud.tagdiv.com/td_plugins/td-woo/ba3f9555bcfe508b99c8d5d68ca4ed68/td-woo.zip', // The plugin source
+                'required' => false, // If false, the plugin is only 'recommended' instead of required
+                'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
+                'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
+                'force_deactivation' => false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins
+                'external_url' => '', // If set, overrides default API URL and points to an external URL
+                'img' => get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/tagdiv-shop.png',
+                'text' => 'Activate for super powers and features on your WooCommerce website',
+                'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
+                'td_activate' => false, // custom field used to activate the plugin
+                'td_install' => false, // custom field used to install the plugin
+                'td_class' => 'td_woo_version_check', // class used to recognize the plugin is activated
+                'td_install_in_welcome' => false, // custom field used to install/update/activate the plugin from theme welcome panel
+            ),
 			array(
 				'name' => 'tagDiv Mobile Theme', // The plugin name
 				'slug' => 'td-mobile-plugin', // The plugin slug (typically the folder name)
-				'source' => 'https://cloud.tagdiv.com/td_plugins/td-mobile-plugin/1838ac1726d2b14cc8055e6dd55bf86f/td-mobile-plugin.zip', // The plugin source
+				'source' => 'https://cloud.tagdiv.com/td_plugins/td-mobile-plugin/6c637736a1bbdf7e42f21cf3650dfb1b/td-mobile-plugin.zip', // The plugin source
 				'required' => false, // If false, the plugin is only 'recommended' instead of required
 				'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -166,19 +203,19 @@ class tagdiv_config {
             array(
                 'name' => 'tagDiv Standard Pack', // The plugin name
                 'slug' => 'td-standard-pack', // The plugin slug (typically the folder name)
-                'source' => 'https://cloud.tagdiv.com/td_plugins/td-standard-pack/f3d6322e6f953bf07f46586e1d97917d/td-standard-pack.zip', // The plugin source
-                'required' => true, // If false, the plugin is only 'recommended' instead of required
+                'source' => 'https://cloud.tagdiv.com/td_plugins/td-standard-pack/9214a050dc0a6c6eeaa5c1aa35f9cfe3/td-standard-pack.zip', // The plugin source
+                'required' => false, // If false, the plugin is only 'recommended' instead of required
                 'version' => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
                 'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
                 'force_deactivation' => false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins
                 'external_url' => '', // If set, overrides default API URL and points to an external URL
                 'img' => get_template_directory_uri() . '/includes/wp-booster/wp-admin/images/plugins/standard-pack.jpg',
                 'text' => 'Build your website fast and effortless without code. Perfect for beginners',
-                'required_label' => 'required', //the text for required/recommended label - used also as a class for label bg color
+                'required_label' => 'optional', //the text for required/recommended label - used also as a class for label bg color
                 'td_activate' => false, // custom field used to activate the plugin
                 'td_install' => false, // custom field used to install the plugin
                 'td_class' => 'tdsp_version_check', // class used to recognize the plugin is activated
-                'td_install_in_welcome' => true, // custom field used to install/update/activate the plugin from theme welcome panel
+                'td_install_in_welcome' => false, // custom field used to install/update/activate the plugin from theme welcome panel
             ),
 		);
 	}

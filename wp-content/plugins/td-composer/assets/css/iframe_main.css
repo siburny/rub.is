@@ -356,7 +356,7 @@ body.tdc-active-helper .tdc-element:after {
   position: absolute;
   top: -2px;
   left: 5px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   line-height: 20px;
 }
 #tdc-mask-handler-structure {
@@ -550,7 +550,7 @@ body.tdc-active-helper .tdc-element:after {
 
 */
 .tdc-placeholder-title {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
   height: 50px;
   border: 1px solid #ebebeb;
   text-align: center;
@@ -751,6 +751,9 @@ body.tdc-active-helper .tdc-element:after {
 }
 .td-spot-id-custom_ad_code .tdc-placeholder-title:before {
   content: 'Custom ad code' !important;
+}
+.td_block_raw_css .tdc-placeholder-title:before {
+  content: 'CSS code' !important;
 }
 .tdc-inactive-menu {
   pointer-events: none;

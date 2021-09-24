@@ -31,6 +31,55 @@ class tds_icon_box4 extends td_style {
 		$raw_css =
 			"<style>
 
+                /* @style_general_icon_box4 */
+                .tds_icon_box4_wrap {
+                  height: 300px;
+                  -webkit-transition: all 0.3s ease;
+                  transition: all 0.3s ease;
+                }
+                .tds_icon_box4_wrap:after {
+                  content: '';
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  left: 0;
+                  -webkit-transition: all 0.3s ease;
+                  transition: all 0.3s ease;
+                }
+                .tds_icon_box4_wrap .tds-icon-box4 {
+                  position: absolute;
+                  display: block;
+                  top: 50%;
+                  left: 50%;
+                  width: 80%;
+                  -webkit-transform: translate(-50%, -50%);
+                  transform: translate(-50%, -50%);
+                  z-index: 1;
+                }
+                .tds_icon_box4_wrap .icon_box_url_wrap {
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                }
+                .tds_icon_box4_wrap:before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  bottom: 0;
+                  width: 100%;
+                  z-index: 1;
+                }
+                .tds_icon_box4_wrap:hover {
+                  -webkit-transform: translateY(-10px);
+                  transform: translateY(-10px);
+                }
+
+                
+                
                 /* @icon_box_container_height */
 				.$unique_block_class {
 				    height: @icon_box_container_height;
@@ -121,6 +170,9 @@ class tds_icon_box4 extends td_style {
      */
     static function cssMedia( $res_ctx ) {
 
+
+        $res_ctx->load_settings_raw( 'style_general_icon_box4', 1 );
+
         // container height
         $res_ctx->load_settings_raw( 'icon_box_container_height', $res_ctx->get_style_att( 'icon_box_container_height', __CLASS__ ) . 'px' );
 
@@ -202,7 +254,7 @@ class tds_icon_box4 extends td_style {
 
         $this->unique_style_class = td_global::td_generate_unique_id();
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' ' . 'td-fix-index' . ' ' . $this->unique_style_class . '">';
 
@@ -279,7 +331,7 @@ class tds_icon_box4 extends td_style {
                 if  ( !empty( $open_in_new_window ) ) {
                     $target_blank = 'target="_blank"';
                 }
-                $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+                $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
             }
 
             // Button

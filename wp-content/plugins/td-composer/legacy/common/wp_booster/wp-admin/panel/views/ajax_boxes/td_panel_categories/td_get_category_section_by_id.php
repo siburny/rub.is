@@ -23,8 +23,9 @@ $category_id = td_util::get_http_post_val('category_id');
             foreach ( $wp_query_templates->posts as $post ) {
 
                 $tdb_template_type = get_post_meta( $post->ID, 'tdb_template_type', true );
+                $meta_is_mobile_template = get_post_meta($post->ID, 'tdc_is_mobile_template', true);
 
-                if ( $tdb_template_type === 'category' ) {
+                if ( $tdb_template_type === 'category' && (empty($meta_is_mobile_template) || '0' === $meta_is_mobile_template)) {
                     $tdb_category_template_type_values [] = array(
                         'text' => $post->post_title,
                         'val' => 'tdb_template_' . $post->ID
@@ -38,7 +39,7 @@ $category_id = td_util::get_http_post_val('category_id');
     <!-- TDB Category template -->
     <div class="td-box-row">
         <div class="td-box-description">
-            <span class="td-box-title">Cloud Library Template</span>
+            <span class="td-box-title">Category Cloud Library Template</span>
             <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=category#/' ) ?>" target="_blank">Cloud Library</a> category template for this category.</p>
         </div>
         <div class="td-box-control-full">
@@ -63,49 +64,38 @@ $category_id = td_util::get_http_post_val('category_id');
                     $tdb_category_template_type_values
                 )
             ));
-    /*
-                $notices = array();
 
-                $notices['global'] = array(
-                    'text' => 'a global tdb cat template is NOT set - individual category settings are available!!',
-                    'style' => 'color: green;'
-                );
+            ?>
 
-                if ( $tdb_gloobal_category_template_is_set === 'true' ) {
-                    $notices['global']['text'] = 'a global tdb cat template is set - individual category settings are not available!! ';
-                    $notices['global']['style'] = 'color: red;';
-                }
+        </div>
+    </div>
 
-                $notices['individual'] = array(
-                    'text' => 'a individual tdb cat template is NOT set - individual category settings are available!!',
-                    'style' => 'color: green;'
-                );
+    <!-- TDB Category template -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Post Cloud Library Template</span>
+            <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=category#/' ) ?>" target="_blank">Cloud Library</a> post template for posts of this category.</p>
+        </div>
+        <div class="td-box-control-full">
 
-                //check the template query for the set tdb template
-                $have_template = false;
-                if ( !empty( $tdb_individual_category_template ) && td_global::is_tdb_template( $tdb_individual_category_template ) ) {
+            <?php
 
-                    // load the tdb template
-                    $wp_query_template = new WP_Query( array(
-                            'p' => td_global::tdb_get_template_id( $tdb_individual_category_template ),
-                            'post_type' => 'tdb_templates',
-                        )
-                    );
-
-                    if ( $wp_query_template->have_posts() ) {
-                        $have_template = true;
-                    }
-                }
-
-                if ( $have_template === true ) {
-                    $notices['individual']['text'] = 'a individual tdb cat template is set - individual category settings are not available!! ';
-                    $notices['individual']['style'] = 'color: red;';
-                }
-
-                foreach ( $notices as $notice ) {
-                    echo '<span class="tdb-cat-template-check" style="' . $notice['style'] . ' display: list-item;" >' . $notice['text'] . '</span>';
-                }
-    */
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_category',
+                'item_id' => $category_id,
+                'option_id' => 'tdb_post_category_template',
+                'values' => array_merge(
+                    array(
+                        array(
+                            'text' => 'Inherit from Post Global Settings',
+                            'val' => ''
+                        ),
+                    ),
+                    array_filter( td_api_single_template::_helper_td_global_list_to_panel_values(), function( $el ) {
+                        return strpos( $el['val'], 'tdb_template_' ) !== false;
+                    })
+                )
+            ));
 
             ?>
 
@@ -395,23 +385,21 @@ if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_
         </div>
     </div>
 
-<?php if( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
     <!-- Hide category tag on post -->
     <div class="td-box-row">
-    <div class="td-box-description">
-        <span class="td-box-title">HIDE CATEGORY ON POST AND ON CATEGORY PAGES</span>
-        <p>Show or hide category on single post page and on category pages. Useful if you want to have hidden categories to sort things up.</p>
+        <div class="td-box-description">
+            <span class="td-box-title">HIDE CATEGORY ON POST AND ON CATEGORY PAGES</span>
+            <p>Show or hide category on single post page and on category pages. Useful if you want to have hidden categories to sort things up.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_category',
+                'item_id' => $category_id,
+                'option_id' => 'tdc_hide_on_post',
+                'true_value' => 'hide',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
     </div>
-    <div class="td-box-control-full">
-        <?php
-        echo td_panel_generator::checkbox(array(
-            'ds' => 'td_category',
-            'item_id' => $category_id,
-            'option_id' => 'tdc_hide_on_post',
-            'true_value' => 'hide',
-            'false_value' => ''
-        ));
-        ?>
-    </div>
-<?php } ?>
-</div>

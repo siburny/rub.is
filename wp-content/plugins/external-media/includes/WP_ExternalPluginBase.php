@@ -69,6 +69,24 @@ abstract class WP_ExternalPluginBase {
   abstract public function attributes( $items );
 
   /**
+   * Icon.
+   *
+   * @return string
+   */
+  public function icon() {
+    return;
+  }
+
+  /**
+   * Website URL.
+   *
+   * @return string
+   */
+  public function website() {
+    return;
+  }
+
+  /**
    * Load all required assets, such as Javascript or CSS.
    * Use drupal_add_js() or drupal_add_css().
    */
@@ -90,7 +108,7 @@ abstract class WP_ExternalPluginBase {
    * @return public://[remote-file-name]
    * @see file_chooser_field_save_upload().
    */
-  abstract public function download( $file, $filename );
+  abstract public function download( $file, $filename, $caption, $referer );
 
   /**
    * Redirect callback.
@@ -110,7 +128,15 @@ abstract class WP_ExternalPluginBase {
    * @return string. Absolute URL.
    */
   public function redirectUri( $class ) {
-    return get_site_url() . '/index.php?external_media_plugin=' . $class;
+    global $wp;
+    $class = str_replace('\\', '-', $class);
+    $url = '/index.php?external_media_plugin=' . $class;
+    if ('' === get_option('permalink_structure')) {
+      return get_site_url() . $url;
+    }
+    else {
+      return home_url('/external-media/' . $class);
+    }
   }
 
   /**
@@ -124,6 +150,15 @@ abstract class WP_ExternalPluginBase {
       'content',
       'footer',
     );
+  }
+
+  /**
+   * JSON response.
+   *
+   * @return array.
+   */
+  public function getRestResponse() {
+    return array();
   }
 
   /**
@@ -157,11 +192,26 @@ abstract class WP_ExternalPluginBase {
    * @param string $url image url
    * @param string $plugin
    * @param string $filename
+   * @param string $caption
+   * @param string $referer
    * @return int $attch_id
    */
-  public function save_remote_file( $url, $plugin = '', $filename = '', $options = array() ) {
+  public function save_remote_file( $url, $plugin = '', $filename = '', $caption = '', $referer = '', $options = array() ) {
 
     if ( !function_exists( 'curl_init' ) || empty( $filename ) ) {
+      return;
+    }
+
+    // Check permissions.
+    if (!current_user_can('upload_files')) {
+      return;
+    }
+
+    // Sanitize filename.
+    $filename = sanitize_file_name( $filename );
+
+    $extensions = apply_filters( 'external_media_safe_extensions', 'jpg jpeg gif png mp3 mp4 m4v mov webm' );
+    if ($this->isUnsafe( $filename, $extensions )) {
       return;
     }
 
@@ -170,9 +220,6 @@ abstract class WP_ExternalPluginBase {
     if ( !empty( $plugin ) && $enabled ) {
       $filename = $plugin . '_' . $filename;
     }
-
-    // Sanitize filename.
-    $filename = sanitize_file_name( $filename );
 
     $upload_dir = wp_upload_dir();
     $file_path = urldecode( $upload_dir['path'] . '/' . $filename );
@@ -192,6 +239,12 @@ abstract class WP_ExternalPluginBase {
       curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
       curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
       curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
+
+      // Spoof referrer to download remote media. 
+      if ( !empty($referer) ) {
+        curl_setopt( $ch, CURLOPT_REFERER, $referer );
+      }
+
       $file_contents = curl_exec( $ch );
 
       if ( $file_contents === false ) {
@@ -214,6 +267,10 @@ abstract class WP_ExternalPluginBase {
         'post_status'    => 'inherit',
         'post_parent'    => $post_id,
       );
+      $tcaption = trim($caption);
+      if (!empty($tcaption)) {
+        $attachment['post_excerpt'] = $tcaption;
+      }
       $attach_id = wp_insert_attachment( $attachment, $file_path, $post_id );
       $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
       wp_update_attachment_metadata( $attach_id, $attach_data );
@@ -229,6 +286,18 @@ abstract class WP_ExternalPluginBase {
     }
 
     return $attach_id;
+  }
+
+  /**
+   * Check if file extension is unsafe to upload.
+   */
+  protected function isUnsafe( $filename, $extensions ) {
+    if (preg_match('/\.(php|php2|php3|php4|php5|php6|php7|php8|phtml|phar|pl|py|cgi|asp|js|html|htm|xml)(\.|$)/i', $filename)) {
+      $regex = '/\.(' . preg_replace('/ +/', '|', preg_quote($extensions)) . ')$/i';
+      if (!preg_match($regex, $filename)) {
+        return true;
+      }
+    }
   }
 
 }

@@ -164,6 +164,39 @@ class td_options {
 		//echo "SETTINGS SAVED";
 	}
 
+	static function save_panel_history() {
+
+		$options_settings_id = TD_THEME_OPTIONS_NAME . '_settings';
+
+		$option_settings_on = tagdiv_util::get_option($options_settings_id . '_disabled');
+		if (empty($option_settings_on)) {
+
+			$current_time = current_time( 'Y-m-d H:i:s' );
+
+			$option_settings = get_option( $options_settings_id );
+			if ( false === $option_settings || ! is_array( $option_settings ) ) {
+				update_option( $options_settings_id, array(
+					$current_time => self::$td_options
+				) );
+			} else {
+				foreach ( $option_settings as $key => $option_setting ) {
+					if ( $option_setting !== self::$td_options ) {
+						$option_settings = array_merge(
+							array(
+								$current_time => self::$td_options
+							),
+							$option_settings
+						);
+					}
+					break;
+				}
+				// keep 100 positions
+				$option_settings = array_slice( $option_settings, 0, 10 );
+				update_option( $options_settings_id, $option_settings );
+			}
+		}
+	}
+
 
 	/**
 	 * used only by panel import settings

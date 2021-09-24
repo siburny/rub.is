@@ -1,6 +1,159 @@
 <?php
 class td_block_authors extends td_block {
 
+    public function get_custom_css() {
+        // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+
+        $compiled_css = '';
+
+        $raw_css =
+            "<style>
+                /* @style_general_authors */
+                .td_top_authors {
+                    margin-bottom: 64px;
+                }
+                .td_top_authors img {
+                    position: absolute;
+                    max-width: 70px;
+                    left: 0;
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                    .td_top_authors img {
+                        max-width: 55px;
+                    }
+                }
+                .td_top_authors .item-details {
+                    margin-left: 85px;
+                    position: relative;
+                    height: 70px;
+                    top: 1px;
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                    .td_top_authors .item-details {
+                        height: 55px;
+                        margin-left: 70px;
+                    }
+                }
+                .td_top_authors .item-details span {
+                    font-family: 'Open Sans', arial, sans-serif;
+                    padding: 3px 7px;
+                    color: #fff;
+                    font-size: 9px;
+                    font-style: normal;
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
+                .td_top_authors .td-active .td-author-post-count {
+                    background-color: #4db2ec;
+                }
+                .td_top_authors .td-active .td-author-comments-count {
+                    background-color: #4db2ec;
+                    opacity: 0.8;
+                }
+                .td_top_authors .td-active .td-authors-name a {
+                    color: #4db2ec;
+                }
+                .td_top_authors .td_mod_wrap {
+                    min-height: 70px;
+                    padding-top: 9px;
+                    padding-bottom: 9px;
+                    border: 1px solid #fff;
+                }
+                .td_top_authors .td_mod_wrap:hover {
+                    border: 1px solid #ededed;
+                }
+                .td_top_authors .td_mod_wrap:hover .td-author-post-count {
+                    background-color: #4db2ec;
+                }
+                .td_top_authors .td_mod_wrap:hover .td-author-comments-count {
+                    background-color: #4db2ec;
+                    opacity: 0.8;
+                }
+                .td_top_authors .td_mod_wrap:hover .td-authors-name a {
+                    color: #4db2ec;
+                }
+                .td_top_authors .block-title {
+                    margin-bottom: 16px;
+                }
+                .td_top_authors .td-authors-url {
+                    display: table;
+                    position: relative;
+                    top: -2px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    color: #999;
+                }
+                .td_top_authors .td-authors-url a {
+                    color: #999;
+                    font-family: Verdana, Geneva, sans-serif;
+                    font-size: 11px;
+                    font-style: italic;
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                    .td_top_authors .td-authors-url {
+                        display: none;
+                    }
+                }
+                .td_top_authors .td-authors-name a {
+                    padding-bottom: 4px;
+                    font-family: 'Open Sans', arial, sans-serif;
+                    font-size: 15px;
+                    color: #222;
+                    line-height: 18px;
+                    font-weight: 600;
+                    display: inline-block;
+                }
+                .td_top_authors .td-authors-name a:after {
+                    content: '';
+                    height: 96px;
+                    position: absolute;
+                    right: 0;
+                    top: -15px;
+                    width: 324px;
+                }
+                @media (min-width: 1019px) and (max-width: 1140px) {
+                    .td_top_authors .td-authors-name a:after {
+                        width: 300px;
+                    }
+                }
+                @media (min-width: 768px) and (max-width: 1018px) {
+                    .td_top_authors .td-authors-name a:after {
+                        width: 228px;
+                    }
+                }
+                @media (max-width: 767px) {
+                    .td_top_authors .td-authors-name a:after {
+                        width: 100%;
+                    }
+                }
+                .td_top_authors .td-author-post-count {
+                    background-color: #222;
+                }
+                .td_top_authors .td-author-comments-count {
+                    background-color: #444;
+                }
+                
+				
+			</style>";
+
+
+        $td_css_res_compiler = new td_css_res_compiler( $raw_css );
+        $td_css_res_compiler->load_settings( __CLASS__ . '::cssMedia', $this->get_all_atts() );
+
+        $compiled_css .= $td_css_res_compiler->compile_css();
+        return $compiled_css;
+    }
+
+    static function cssMedia( $res_ctx ) {
+
+        /*-- GENERAL -- */
+        $res_ctx->load_settings_raw( 'style_general_authors', 1 );
+
+
+    }
+
 
 	/**
 	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.

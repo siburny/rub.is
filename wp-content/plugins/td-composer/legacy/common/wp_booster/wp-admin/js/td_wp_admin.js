@@ -36,6 +36,30 @@ function td_widget_attach_color_picker() {
     });
 }
 
+(function($){
+	$.unserialize = function(serializedString){
+		var str = decodeURI(serializedString);
+		var pairs = str.split('&');
+		var obj = {}, p, idx, val;
+		for (var i=0, n=pairs.length; i < n; i++) {
+			p = pairs[i].split('=');
+			idx = p[0];
+
+			if (idx.indexOf("[]") == (idx.length - 2)) {
+				// Eh um vetor
+				var ind = idx.substring(0, idx.length-2)
+				if (obj[ind] === undefined) {
+					obj[ind] = [];
+				}
+				obj[ind].push(p[1]);
+			}
+			else {
+				obj[idx] = p[1];
+			}
+		}
+		return obj;
+	};
+})(jQuery);
 
 function td_theme_update() {
     "use strict";
@@ -174,6 +198,13 @@ jQuery().ready(function() {
 
         window.send_to_editor = function( html ) {
 
+            if (-1 !== html.indexOf('[caption')) {
+                var result = /\[caption(.*)\](.*)\[\/caption\]/g.exec(html);
+                if ( 3 === result.length ) {
+                    html = result[2];
+                }
+            }
+
             var imgLink = jQuery('img', html).attr('src'),
                 imgClass = '';
 
@@ -280,6 +311,135 @@ jQuery().ready(function() {
             });
         }
     });
+
+
+    /**
+     * Used to select import settings
+     */
+    jQuery('body').on('click', '.td-theme-settings', function() {
+
+        var $this = jQuery(this),
+            $importEl = jQuery('textarea[name="td_update_theme_options[tds_update_theme_options]"]'),
+            dataValue = $this.data('value'),
+            dataCompare = $this.data('compare');
+
+        if ( $importEl.length && 'undefined' !== typeof dataValue ) {
+            $importEl.html( dataValue);
+            $this.siblings().removeClass('selected');
+            $this.addClass( 'selected' );
+        }
+
+        var linkText = '+ Show difference',
+            $elRef = $this.parent().parent(),
+            classRefButton = 'td-theme-settings-diff',
+            classRefInfo = 'td-theme-settings-diff-info',
+            $elInfo = jQuery('.' + classRefInfo);
+
+        if ($elInfo.length) {
+            $elInfo.remove();
+        }
+
+        if ( $this.next('.td-theme-settings').length ) {
+            var nextDataCompare = $this.next('.td-theme-settings').data('compare');
+
+            if ($elRef.find('.' + classRefButton).length) {
+                $elRef.find('.' + classRefButton)
+                    .data('from', nextDataCompare)
+                    .data('to', dataCompare);
+            } else {
+                jQuery('<a class="' + classRefButton + '" href="#">' + linkText + '</a>')
+                    .appendTo($elRef)
+                    .data('from', nextDataCompare)
+                    .data('to', dataCompare);
+            }
+        } else if ($elRef.find('.' + classRefButton).length) {
+            $elRef.find('.' + classRefButton).remove();
+        }
+
+    }).on( 'click', '.td-theme-settings-diff', function(event) {
+        event.preventDefault();
+
+        var $this = jQuery(this),
+            dataFrom = $this.data('from'),
+            dataTo = $this.data('to');
+
+        if (jQuery('.td-theme-settings-diff-info').length ) {
+            jQuery('.td-theme-settings-diff-info').remove();
+            return;
+        }
+
+        var $elInfo = jQuery('<div class="td-theme-settings-diff-info"><div class="td-diff-wrap td-diff-head-wrap"><div class="td-diff-title">Value ID</div><div class="td-diff-val1">Old value</div><div class="td-diff-val2">New value</div></div>');
+
+        $elInfo.appendTo(jQuery('body')).show().offset({
+            top: $this.offset().top + 25,
+            left: $this.parents('.td-box-content').offset().left + 15
+        });
+
+        var dataFrom = JSON.parse(window.atob(dataFrom)),
+            dataTo = JSON.parse(window.atob(dataTo)),
+            allKeys = [];
+
+        _.each(_.keys(dataFrom), function (key) {
+            if ( dataFrom.hasOwnProperty(key)) {
+                var record = {
+                    key: key,
+                    val1: dataFrom[key],
+                    val2: 'NOT SET'
+                };
+                if ( dataTo.hasOwnProperty(key)) {
+                    record.val2 = dataTo[key];
+                }
+
+                if (_.isObject(record.val1) && _.isObject(record.val2) ) {
+                    if ( JSON.stringify( record.val1 ) !== JSON.stringify( record.val2 ) ) {
+                        allKeys.push(record);
+                    }
+                } else if (record.val1 !== record.val2) {
+                    allKeys.push(record);
+                }
+            }
+        });
+
+        _.each(_.keys(dataTo), function (key) {
+            if ( dataTo.hasOwnProperty(key)) {
+                var record = {
+                    key: key,
+                    val1: 'NOT SET',
+                    val2: dataTo[key]
+                };
+                if ( dataFrom.hasOwnProperty(key)) {
+                    record.val1 = dataFrom[key];
+
+                    // we get out because the key already exists in allKeys
+                    return;
+                }
+
+                if (_.isObject(record.val1) && _.isObject(record.val2) ) {
+                    if ( JSON.stringify( record.val1 ) !== JSON.stringify( record.val2 ) ) {
+                        allKeys.push(record);
+                    }
+                } else if (record.val1 !== record.val2) {
+                    allKeys.push(record);
+                }
+            }
+        });
+
+
+        _.each(allKeys, function(obj) {
+            var val1 = obj.val1,
+                val2 = obj.val2;
+
+            if (_.isObject(val1)) {
+                val1 = JSON.stringify(val1);
+            }
+            if (_.isObject(val2)) {
+                val2 = JSON.stringify(val2);
+            }
+            $elInfo.append('<div class="td-diff-wrap"><div class="td-diff-title">' + obj.key + '</div><div class="td-diff-val1">' + val1 + '</div><div class="td-diff-val2">' + val2 + '</div></div>');
+        });
+    });
+
+
 });
 
 

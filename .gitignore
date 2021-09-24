@@ -1,7 +1,9 @@
 wp-config.php
 wp-content/uploads/
 wp-content/themes/Newspaper-orig/
+ai1wm-backups/
 git/
 backup/
 *.wpress
 .vscode
+wp-content/plugins/enlighter/cache

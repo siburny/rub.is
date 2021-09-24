@@ -51,7 +51,7 @@ class td_module_single_base extends td_module {
      * @param string $cut_at - not used, it's added to maintain strict standards
      * @return string
      */
-    function get_title($cut_at = '') {
+    function get_title($cut_at = '', $title_tag = '') {
         $buffy = '';
         if (!empty($this->title)) {
             $buffy .= '<h1 class="entry-title">';
@@ -69,7 +69,7 @@ class td_module_single_base extends td_module {
     }
 
     //$show_stars_on_review - not used
-    function get_author() {
+    function get_author($show_when_review = false) {
         $buffy = '';
 
         // used to hide the date "." when the post date & comment count are off
@@ -102,7 +102,7 @@ class td_module_single_base extends td_module {
      * @param $thumbType
      * @return string
      */
-    function get_image($thumbType, $css_image = false) {
+    function get_image($thumbType, $css_image = false, $video_popup = array()) {
         global $page;
 
 
@@ -300,7 +300,7 @@ class td_module_single_base extends td_module {
     }
 
 
-    function get_date($show_stars_on_review = true) {
+    function get_date($modified_date = '', $show_stars_on_review = true, $time_ago = '', $time_ago_add_txt = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_p_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -315,10 +315,23 @@ class td_module_single_base extends td_module {
 
         } else {
             if (td_util::get_option('tds_p_show_date') != 'hide') {
-                $td_article_date_unix = get_the_time('U', $this->post->ID);
+
+                global $wp_version;
+                //old WP support
+                if (version_compare($wp_version, '5.3', '<')) {
+                    $td_article_date = date(DATE_W3C, get_the_time('U', $this->post->ID));
+                } else {
+                    // get_post_datetime() used from WP 5.3
+                    $td_article_date = get_post_datetime($this->post->ID, 'date', 'gmt');
+                    if ( $td_article_date !== false  ) {
+                        $td_article_date = $td_article_date->format(DATE_W3C);
+                    }
+                }
+
                 $buffy .= '<span class="td-post-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_date . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
+
             }
         }
 
@@ -326,8 +339,8 @@ class td_module_single_base extends td_module {
     }
 
 
-    function show_date($modified_date = '') {
-    	echo '<!-- date -->' . $this->get_date( $modified_date );
+    function show_date($modified_date = '', $show_stars_on_review = true) {
+    	echo '<!-- date -->' . $this->get_date( $modified_date, $show_stars_on_review );
     }
 
 
@@ -341,9 +354,13 @@ class td_module_single_base extends td_module {
         $buffy = '';
 
             if (td_util::get_option('tds_p_show_modified_date') == 'yes') {
-                $td_article_date_unix = get_the_time('U', $this->post->ID);
+//                $td_article_date_unix = get_the_time('U', $this->post->ID);
+
+                // get_post_datetime() used since WP 5.3
+                $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
+
                 $buffy .= '<span class="td-post-date td-post-modified-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
             }
         return $buffy;
@@ -549,7 +566,18 @@ class td_module_single_base extends td_module {
 
 	        //if the post individual template is not set, check the global settings, if template 1 is set disable the top ad
 	        } else {
-		        $td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+	        	$option_id = 'td_default_site_post_template';
+	            if (class_exists('SitePress', false )) {
+	                global $sitepress;
+	                $sitepress_settings = $sitepress->get_settings();
+                    if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if (1 === $translation_mode) {
+                            $option_id .= $sitepress->get_current_language();
+                        }
+                    }
+	            }
+		        $td_default_site_post_template = td_util::get_option($option_id);
 	        }
 
 	        //default post template - is empty, check td_api_single_template::_helper_td_global_list_to_metaboxes()
@@ -643,7 +671,7 @@ class td_module_single_base extends td_module {
     function get_item_scope_meta() {
 
         // don't display meta on pages
-        if (!is_single() || ( td_util::get_option('tds_disable_article_schema') == 'yes' && !$this->is_review )) {
+        if ( is_preview() || !is_single() || ( td_util::get_option('tds_disable_article_schema') != '' && !$this->is_review ) ) {
             return '';
         }
 
@@ -667,14 +695,25 @@ class td_module_single_base extends td_module {
         $buffy .= '<meta itemprop="name" content="' . esc_attr(get_the_author_meta('display_name', $this->post->post_author)) . '">' ;
         $buffy .= '</span>' ;
 
-        // datePublished
-        $td_article_date_unix = get_post_datetime( $this->post, 'date', 'gmt' );
-        $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format( DATE_W3C ) . '">';
-
-        // dateModified - local time
-        $td_article_modified_date_unix = get_post_datetime( $this->post, 'modified', 'gmt' );
-        $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format( DATE_W3C ) . '">';
-
+        global $wp_version;
+        if (version_compare($wp_version, '5.3', '<')) {
+            // datePublished
+            $td_article_date_unix = get_the_time('U', $this->post->ID);
+            $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
+            // dateModified
+            $buffy .= '<meta itemprop="dateModified" content="' . the_modified_date('c', '', '', false) . '">';
+        }else { //get_post_datetime() should be used from WP 5.3
+            // datePublished
+            $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
+            if ($td_article_date_unix !== false) {
+                $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format(DATE_W3C) . '">';
+            }
+            // dateModified - local time
+            $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
+            if ($td_article_modified_date_unix !== false) {
+                $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format(DATE_W3C) . '">';
+            }
+        }
         // mainEntityOfPage
         $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) .'"/>';
 
@@ -1035,7 +1074,7 @@ class td_module_single_base extends td_module {
         if (empty($hideAuthor)) {
 
             $buffy .= '<div class="author-box-wrap">';
-            $buffy .= '<a href="' . get_author_posts_url($author_id) . '">' ;
+            $buffy .= '<a href="' . get_author_posts_url($author_id) . '" aria-label="author-photo">' ;
             $buffy .= get_avatar(get_the_author_meta('email', $author_id), '96');
             $buffy .= '</a>';
 
@@ -1062,11 +1101,11 @@ class td_module_single_base extends td_module {
 
                     //the theme can use the twitter id instead of the full url. This avoids problems with yoast plugin
                     if ($td_social_id == 'twitter') {
-                        if(filter_var($authorMeta, FILTER_VALIDATE_URL)){
-
+                        if ( filter_var($authorMeta, FILTER_VALIDATE_URL) ){
+                            $authorMeta = filter_var($authorMeta, FILTER_VALIDATE_URL);
                         } else {
                             $authorMeta = str_replace('@', '', $authorMeta);
-                            $authorMeta = 'http://twitter.com/' . $authorMeta;
+                            $authorMeta = td_global::$http_or_https . '://twitter.com/' . $authorMeta;
                         }
                     }
                     $buffy .= td_social_icons::get_icon($authorMeta, $td_social_id, true);

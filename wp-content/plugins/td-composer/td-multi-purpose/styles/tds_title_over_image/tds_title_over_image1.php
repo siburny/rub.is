@@ -279,7 +279,7 @@ class tds_title_over_image1 extends td_style {
         }
 
 
-		$buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+		$buffy = $this->get_style($this->get_css());
         $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . ' td-fix-index">';
 
             $buffy .= '<div class="tdm-title-over-image-info-wrap">';

@@ -24,7 +24,7 @@ jQuery(function ($) {
         for ( var i = 0; i < files.length; i++ ) {
           if ( $cardinality > 1 ) {
             if ( _count < $cardinality ) {
-              external_media_upload( $plugin, files[i].url, files[i].name );
+              external_media_upload( $plugin, files[i].url, files[i].name, '', '' );
               _count++;
             }
           }

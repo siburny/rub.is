@@ -5,12 +5,27 @@ class tdm_block_button extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
+                
+                /* @style_general_button */
+                .tdm_block.tdm_block_button {
+                  margin-bottom: 0;
+                }
+                .tdm_block.tdm_block_button .tds-button {
+                  line-height: 0;
+                }
+                .tdm_block.tdm_block_button.tdm-block-button-inline {
+                  display: inline-block;
+                }
+                .tdm_block.tdm_block_button.tdm-block-button-full,
+                .tdm_block.tdm_block_button.tdm-block-button-full .tdm-btn {
+                  display: block;
+                }
                 
                 /* @float_right */
                 .$unique_block_class {
@@ -22,6 +37,11 @@ class tdm_block_button extends td_block {
                 .$unique_block_class .tdm-btn {
                     height: auto;
                     padding: @button_padding;
+                }
+                /* @icon_align */
+                .$unique_block_class i {
+                    position: relative;
+                    top: @icon_align;
                 }
 				
 			</style>";
@@ -36,6 +56,8 @@ class tdm_block_button extends td_block {
 
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_button', 1 );
+
         // make inline
         $res_ctx->load_settings_raw('float_right', $res_ctx->get_shortcode_att('float_right'));
 
@@ -46,6 +68,10 @@ class tdm_block_button extends td_block {
             $res_ctx->load_settings_raw('button_padding', $res_ctx->get_shortcode_att('button_padding') . 'px');
         }
 
+        $icon_align = $res_ctx->get_shortcode_att( 'icon_align' );
+        if ( $icon_align != '0' ) {
+            $res_ctx->load_settings_raw( 'icon_align', $icon_align . 'px');
+        }
     }
 
 	function render($atts, $content = null) {

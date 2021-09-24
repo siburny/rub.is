@@ -229,7 +229,7 @@ voice report demo
   width: 20%;
 }
 .td-voice .td_block_social_counter .td_social_facebook .td-sp,
-.td-voice .td_block_social_counter .td_social_googleplus .td-sp,
+.td-voice .td_block_social_counter .td_social_pinterest .td-sp,
 .td-voice .td_block_social_counter .td_social_twitter .td-sp,
 .td-voice .td_block_social_counter .td_social_youtube .td-sp,
 .td-voice .td_block_social_counter .td_social_instagram .td-sp {
@@ -238,7 +238,7 @@ voice report demo
 .td-voice .td_block_social_counter .td_social_facebook:hover .td-sp {
   background-color: #516eab;
 }
-.td-voice .td_block_social_counter .td_social_googleplus:hover .td-sp {
+.td-voice .td_block_social_counter .td_social_pinterest:hover .td-sp {
   background-color: #eb4026;
 }
 .td-voice .td_block_social_counter .td_social_twitter:hover .td-sp {

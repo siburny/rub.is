@@ -227,12 +227,8 @@ function td_css_generator_mob() {
 	        @mt_pull_quote
 	    }
 	    /* @mt_lists */
-	    .td-page-content p,
-	    .td-post-content p,
-	    .woocommerce #tab-descriptiony p,
 	    .td-page-content li,
-	    .td-post-content li,
-	    .woocommerce #tab-descriptiony li {
+	    .td-post-content li {
 	        @mt_lists
 	    }
 	    /* @mt_h1 */
@@ -372,9 +368,11 @@ function td_css_generator_mob() {
     $td_css_compiler->load_setting('mobile_background_size_mob');
     $td_css_compiler->load_setting('mobile_background_position_mob');
 
+    $td_fonts_css_buffer = td_fonts::td_add_fonts_css_buffer();
+
 
     //output the style
-    return $td_css_compiler->compile_css();
+    return $td_fonts_css_buffer . $td_css_compiler->compile_css();
 
 }
 

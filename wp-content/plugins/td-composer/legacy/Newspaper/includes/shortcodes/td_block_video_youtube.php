@@ -15,148 +15,147 @@ class td_block_video_youtube extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $compiled_css = '';
 
         $raw_css =
             "<style>
-            
                 /* @display_row */
-                .$unique_block_class .td_wrapper_video_playlist {
+                body .$unique_block_class .td_wrapper_video_playlist {
                     flex-direction: column;
                 }
-                .$unique_block_class .td_wrapper_player {
+                body .$unique_block_class .td_wrapper_player {
                     flex: auto;
                 }
-                .$unique_block_class .td_container_video_playlist {
+                body .$unique_block_class .td_container_video_playlist {
                     min-width: 100%;
                     max-width: 100%;
                 }
-                .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
-                .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
+                body .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
                     width: 100%;
                 }
-                .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist {
                     height: 412px;
                 }
-                .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
                     height: 305px;
                 }
                 @media (max-width: 480px) {
-                    .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
-                    .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
+                    body .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
+                    body .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
                         height: 245px;
                     }
                 }
                 /* @display_column */
-                .$unique_block_class .td_wrapper_video_playlist {
+                body .$unique_block_class .td_wrapper_video_playlist {
                     flex-direction: row;
                 }
-                .$unique_block_class .td_wrapper_player {
+                body .$unique_block_class .td_wrapper_player {
                     flex: 1;
                 }
-                .$unique_block_class .td_container_video_playlist {
+                body .$unique_block_class .td_container_video_playlist {
                     min-width: 0;
                     max-width: none;
                 }
-                .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
-                .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist,
+                body .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
                     height: auto;
                 }
-                .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_1 .td_container_video_playlist {
                     width: 150px;
                 }
-                .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
+                body .$unique_block_class .td_video_playlist_column_2 .td_container_video_playlist {
                     width: 250px;
                 }
             
             
                 /* @v_height */
-				.$unique_block_class .td_wrapper_player {
+				body .$unique_block_class .td_wrapper_player {
 					height: @v_height;
 				}
 				/* @v_height2 */
 				@media (min-width: 1019px) {
-                    .$unique_block_class .td_video_playlist_column_3 .td_container_video_playlist {
+                    body .$unique_block_class .td_video_playlist_column_3 .td_container_video_playlist {
                         height: @v_height2;
                     }
 				}
             
             
                 /* @p_width */
-				.$unique_block_class .td_container_video_playlist {
+				body .$unique_block_class .td_container_video_playlist {
 					width: @p_width !important;
 				}
                 /* @p_height */
-				.$unique_block_class .td_container_video_playlist {
+				body .$unique_block_class .td_container_video_playlist {
 					height: @p_height !important;
 				}
 				
 				/* @p_horiz_align_center */
-				.$unique_block_class .td_container_video_playlist {
+				body .$unique_block_class .td_container_video_playlist {
 				    text-align: center;
 				}
 				/* @p_horiz_align_right */
-				.$unique_block_class .td_container_video_playlist {
+				body .$unique_block_class .td_container_video_playlist {
 				    text-align: right;
 				}
 				
 				
 				/* @title_color */
-				.$unique_block_class .td_video_playlist_title .td_video_title_text {
+				body .$unique_block_class .td_video_playlist_title .td_video_title_text {
 				    color: @title_color;
 				}
 				/* @title_bg_color */
-				.$unique_block_class .td_video_playlist_title {
+				body .$unique_block_class .td_video_playlist_title {
 				    background-color: @title_bg_color;
 				}
 				
 				/* @vid_color */
-				.$unique_block_class .td_video_title_and_time .td_video_title {
+				body .$unique_block_class .td_video_title_and_time .td_video_title {
 				    color: @vid_color;
 				}
 				/* @vid_color_h */
-				.$unique_block_class .td_video_title_and_time .td_click_video:hover .td_video_title {
+				body .$unique_block_class .td_video_title_and_time .td_click_video:hover .td_video_title {
 				    color: @vid_color_h;
 				}
 				/* @timestamp_color */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_time {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_time {
 				    color: @timestamp_color;
 				}
 				
 				/* @curr_vid_color */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_title_playing {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_title_playing {
 				    color: @curr_vid_color;
 				}
 				/* @curr_timestamp_color */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_time_playing {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_time_playing {
 				    color: @curr_timestamp_color;
 				}
 				/* @curr_bg_color */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_controls_playlist_wrapper {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_controls_playlist_wrapper {
 				    background-color: @curr_bg_color;
 				}
-				.$unique_block_class .td_wrapper_video_playlist .td_video_currently_playing:after {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_currently_playing:after {
 				    border-left-color: @curr_bg_color !important;
 				}
 				
 
                 /* @f_title */
-				.$unique_block_class .td_video_playlist_title .td_video_title_text {
+				body .$unique_block_class .td_video_playlist_title .td_video_title_text {
 				    @f_title
 				}
 				/* @f_vid */
-				.$unique_block_class .td_video_title_and_time .td_video_title {
+				body .$unique_block_class .td_video_title_and_time .td_video_title {
 					@f_vid
 				}
 				/* @f_curr_vid */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_title_playing {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_title_playing {
 					@f_curr_vid
 				}
 				/* @f_timestamp */
-				.$unique_block_class .td_wrapper_video_playlist .td_video_time,
-				.$unique_block_class .td_wrapper_video_playlist .td_video_time_playing {
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_time,
+				body .$unique_block_class .td_wrapper_video_playlist .td_video_time_playing {
 					@f_timestamp
 				}
 
@@ -171,6 +170,9 @@ class td_block_video_youtube extends td_block {
     }
 
     static function cssMedia( $res_ctx ) {
+
+        /*-- GENERAL -- */
+        $res_ctx->load_settings_raw( 'style_general_video', 1 );
 
         // display
         $display = $res_ctx->get_shortcode_att('display');
@@ -244,7 +246,7 @@ class td_block_video_youtube extends td_block {
 
     }
 
-	/**
+	/**696
 	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.
 	 */
 	function __construct() {
@@ -256,8 +258,7 @@ class td_block_video_youtube extends td_block {
 
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
-        // get the playlist
-        return td_video_playlist_render::render_generic( $atts, 'youtube', $this->block_uid, $this->get_block_css() );
+        return td_video_playlist_render::render_generic($atts, 'youtube', $this->get_wrapper_class(), $this->block_uid, $this->get_block_css());
 
     }
 }

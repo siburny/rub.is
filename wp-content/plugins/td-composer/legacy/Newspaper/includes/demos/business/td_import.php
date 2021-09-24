@@ -832,7 +832,7 @@ td_demo_content::add_post(array(
 ));
 
 td_demo_content::add_post(array(
-    'title' => 'European Banks Sitting on �1tn "Mountain" of Bad Debt',
+    'title' => 'European Banks Sitting on "Mountain" of Bad Debt',
     'file' => TDC_PATH_LEGACY . '/includes/demos/business/pages/post_default.txt',
     'categories_id_array' => array($demo_cat_10_id),
     'featured_image_td_id' => 'td_pic_3'

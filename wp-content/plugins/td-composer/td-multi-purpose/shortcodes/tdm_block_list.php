@@ -8,11 +8,65 @@ class tdm_block_list extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
             
+				/* @style_general_list */
+				.tdm_block_list .tdm-list-items {
+                  margin: 0;
+                  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
+                  font-size: 15px;
+                  line-height: 24px;
+                  color: #666;
+                }
+                .tdm_block_list.tdm-content-horiz-center .tdm-list-item {
+                  margin-left: auto;
+                  margin-right: auto;
+                }
+                .tdm_block_list.tdm-content-horiz-right .tdm-list-item {
+                  margin-right: 0;
+                  margin-left: auto;
+                }
+                .tdm_block_list .tdm-list-item {
+                  margin-bottom: 8px;
+                  margin-left: 0;
+                }
+                .tdm_block_list .tdm-list-item:after {
+                  content: '';
+                  display: table;
+                  clear: both;
+                }
+                .tdm_block_list .tdm-list-item .tdm-list-icon {
+                  vertical-align: middle;
+                }
+                .tdm_block_list .tdm-list-item i {
+                  position: relative;
+                  float: left;
+                  line-height: inherit;
+                  vertical-align: middle;
+                  color: #4db2ec;
+                }
+                .tdm_block_list .tdm-list-item .tdm-list-icon-svg {
+                  margin-top: -3px;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+                .tdm_block_list .tdm-list-item svg {
+                  width: 15px;
+                  height: auto;
+                }
+                .tdm_block_list .tdm-list-item svg,
+                .tdm_block_list .tdm-list-item svg * {
+                  fill: #4db2ec;
+                }
+                .tdm_block_list.tdm-list-with-icons .tdm-list-item {
+                  list-style-type: none;
+                }
+
+				
 				/* @text_color */
 				.$unique_block_class .tdm-list-text,
 				.$unique_block_class .tdm-list-text a {
@@ -22,6 +76,10 @@ class tdm_block_list extends td_block {
 				/* @icon_color */
 				.$unique_block_class .tdm-list-item i {
 				    color: @icon_color;
+				}
+				.$unique_block_class .tdm-list-item svg,
+				.$unique_block_class .tdm-list-item svg * {
+				    fill: @icon_color;
 				}
 
 				/* @hover_text_color */
@@ -39,14 +97,19 @@ class tdm_block_list extends td_block {
 				.$unique_block_class .tdm-list-item i {
 				    font-size: @icon_size;
 				}
+				/* @icon_svg_size */
+				.$unique_block_class .tdm-list-item svg {
+					width: @icon_svg_size;
+                    height: auto;
+				}
 				
 				/* @icon_align */
-				.$unique_block_class .tdm-list-item i {
+				.$unique_block_class .tdm-list-item .tdm-list-icon {
 				    top: @icon_align;
 				}
 				
 				/* @icon_space */
-				.$unique_block_class .tdm-list-item i {
+				.$unique_block_class .tdm-list-item .tdm-list-icon {
 				    margin-right: @icon_space;
 				}
 
@@ -75,6 +138,8 @@ class tdm_block_list extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_list', 1 );
+
         /*-- TEXT -- */
         // text color
         $res_ctx->load_settings_raw( 'text_color', $res_ctx->get_shortcode_att( 'text_color' ) );
@@ -86,10 +151,18 @@ class tdm_block_list extends td_block {
 
         /*-- ICON -- */
         // icon size
+        $icon = $res_ctx->get_icon_att('tdicon' );
         $icon_size = $res_ctx->get_shortcode_att( 'icon_size' );
-        $res_ctx->load_settings_raw( 'icon_size', $icon_size );
-        if( $icon_size != '' && is_numeric( $icon_size ) ) {
-            $res_ctx->load_settings_raw( 'icon_size', $icon_size . 'px' );
+        if( base64_encode( base64_decode( $icon ) ) == $icon ) {
+            $res_ctx->load_settings_raw('icon_svg_size', $icon_size);
+            if ($icon_size != '' && is_numeric($icon_size)) {
+                $res_ctx->load_settings_raw('icon_svg_size', $icon_size . 'px');
+            }
+        } else {
+            $res_ctx->load_settings_raw('icon_size', $icon_size);
+            if ($icon_size != '' && is_numeric($icon_size)) {
+                $res_ctx->load_settings_raw('icon_size', $icon_size . 'px');
+            }
         }
 
         // icon_align
@@ -134,13 +207,22 @@ class tdm_block_list extends td_block {
 
 	    $content_align_horizontal = $this->get_shortcode_att( 'content_align_horizontal' );
         $items = explode( "\n", rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'items' ) ) ) ) );
-        $icon = $this->get_shortcode_att( 'tdicon' );
+        $icon = $this->get_icon_att( 'tdicon' );
 
         $additional_classes = array();
 
         // content align horizontal
         if ( ! empty( $content_align_horizontal ) ) {
             $additional_classes[] = 'tdm-' . $content_align_horizontal;
+        }
+
+        $buffy_icon = '';
+        if ( !empty( $icon ) ) {
+            if( base64_encode( base64_decode( $icon ) ) == $icon ) {
+                $buffy_icon .= '<span class="tdm-list-icon tdm-list-icon-svg">' . base64_decode( $icon ) . '</span>';
+            } else {
+                $buffy_icon .= '<i class="tdm-list-icon ' . $icon . '"></i>';
+            }
         }
 
 
@@ -156,8 +238,8 @@ class tdm_block_list extends td_block {
                 $buffy .= '<ul class="tdm-list-items">';
                     foreach ($items as $item) {
                         $buffy .= '<li class="tdm-list-item">';
-                            if ( !empty( $icon ) ) {
-                                $buffy .= '<i class="' . $icon . '"></i>';
+                            if ( !empty( $buffy_icon ) ) {
+                                $buffy .= $buffy_icon;
                             }
                             $buffy .= '<span class="tdm-list-text">' . $item . '</span>';
                         $buffy .= '</li>';

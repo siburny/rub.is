@@ -108,11 +108,11 @@ class td_login {
             // Now insert the new md5 key into the db
             $wpdb->update($wpdb->users, array('user_activation_key' => $key_hash), array('user_login' => $user_login));
         //}
-        $message = 'Someone has requested a password reset for the following account:' . "\r\n\r\n";
+        $message = __( 'Someone has requested a password reset for the following account:' ) . "\r\n\r\n";
         $message .= network_home_url( '/' ) . "\r\n\r\n";
-        $message .= sprintf('Username: %s', $user_login) . "\r\n\r\n";
-        $message .= 'If this was a mistake, just ignore this email and nothing will happen.' . "\r\n\r\n";
-        $message .= 'To reset your password, visit the following address:' . "\r\n\r\n";
+        $message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
+        $message .= __( 'If this was a mistake, just ignore this email and nothing will happen.' ) . "\r\n\r\n";
+        $message .= __( 'To reset your password, visit the following address:' ) . "\r\n\r\n";
         $message .= '<' . network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login') . ">\r\n";
 
         if ( is_multisite() )
@@ -122,7 +122,7 @@ class td_login {
             // we want to reverse this for the plain text arena of emails.
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-        $title = sprintf( '[%s] Password Reset', $blogname );
+        $title = sprintf( __( '[%s] Password Reset' ), $blogname );
 
         $title = apply_filters('retrieve_password_title', $title);
         $message = apply_filters('retrieve_password_message', $message, $key);

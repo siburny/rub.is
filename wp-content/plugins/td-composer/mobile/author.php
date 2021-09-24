@@ -58,7 +58,7 @@ td_global::$current_author_obj = $part_cur_auth_obj;
 			        ?>
 
 			        <div class="td-author-description">
-				        <?php echo $part_cur_auth_obj->description; ?>
+						<?php echo get_the_author_meta('description', $part_cur_auth_obj->ID); ?>
 			        </div>
 
 			        <div class="td-author-social">

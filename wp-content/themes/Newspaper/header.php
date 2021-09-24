@@ -14,6 +14,7 @@ if ( has_action( 'tdc_header' ) ) {
 </head>
 
 <body <?php body_class('tagdiv-small-theme') ?> itemscope="itemscope" itemtype="https://schema.org/WebPage">
+<?php wp_body_open() ?>
 
 
     <!-- Mobile Search -->

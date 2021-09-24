@@ -10,8 +10,16 @@
 
 <body <?php body_class() ?> itemscope="itemscope" itemtype="<?php echo td_global::$http_or_https?>://schema.org/WebPage">
 
-    <?php /* scroll to top */?>
-    <div class="td-scroll-up"><i class="td-icon-menu-up"></i></div>
+    <?php /* scroll to top */
+    $td_hide_totop_on_mob = '';
+    if (td_util::get_option('tds_to_top_on_mobile') !== 'show') {
+        $td_hide_totop_on_mob = ' td-hide-scroll-up-on-mob';
+    }
+
+    if ( td_util::get_option('tds_to_top') != 'hide' ) {
+    ?>
+        <div class="td-scroll-up <?php echo $td_hide_totop_on_mob ?>" style="display:none;"><i class="td-icon-menu-up"></i></div>
+    <?php } ?>
 
     <?php load_template( TDC_PATH_LEGACY . '/parts/menu-mobile.php', true);?>
     <?php load_template( TDC_PATH_LEGACY . '/parts/search.php', true);?>
@@ -67,7 +75,7 @@
                         <div class="td-header-menu-wrap td-header-gradient">
                             <div class="td-container td-header-row td-header-main-menu">
                                 <div id="td-header-menu" role="navigation">
-                                    <div id="td-top-mobile-toggle"><a href="#"><i class="td-icon-font td-icon-mobile"></i></a></div>
+                                    <div id="td-top-mobile-toggle"><a href="#" aria-label="mobile-toggle"><i class="td-icon-font td-icon-mobile"></i></a></div>
 
                                     <?php
                                     wp_nav_menu(array(
@@ -81,7 +89,7 @@
                                 <div class="header-search-wrap">
                                     <div class="td-search-btns-wrap">
                                         <a id="td-header-search-button" href="#" role="button"><i class="td-icon-search"></i></a>
-                                        <a id="td-header-search-button-mob" href="#" role="button"><i class="td-icon-search"></i></a>
+                                        <a id="td-header-search-button-mob" href="#" role="button" aria-label="Search"><i class="td-icon-search"></i></a>
                                     </div>
 
                                     <div class="td-drop-down-search">
@@ -125,7 +133,7 @@
                 </div>
                 <?php
 
-                if ( empty( $tdc_header_template_content['tdc_header_mobile_sticky'] ) ) {
+                if ( empty( $tdc_header_template_content['tdc_header_mobile_sticky'] ) || ( ! td_util::tdc_is_live_editor_iframe() && isset( $tdc_header_template_content['tdc_is_mobile_header_sticky'] ) && false === $tdc_header_template_content['tdc_is_mobile_header_sticky'] )) {
                     $shortcode = '[tdc_zone type="tdc_header_mobile_sticky"][vc_row][vc_column][/vc_column][/vc_row][/tdc_zone]';
                 } else {
                     $shortcode = $tdc_header_template_content['tdc_header_mobile_sticky'];
@@ -153,7 +161,7 @@
                 </div>
                 <?php
 
-                if ( empty( $tdc_header_template_content['tdc_header_desktop_sticky'] ) ) {
+                if ( empty( $tdc_header_template_content['tdc_header_desktop_sticky'] ) || ( ! td_util::tdc_is_live_editor_iframe() && isset( $tdc_header_template_content['tdc_is_header_sticky'] ) && false === $tdc_header_template_content['tdc_is_header_sticky'] ) ) {
                     $shortcode = '[tdc_zone type="tdc_header_desktop_sticky"][vc_row][vc_column][/vc_column][/vc_row][/tdc_zone]';
                 } else {
                     $shortcode = $tdc_header_template_content['tdc_header_desktop_sticky'];
@@ -167,5 +175,7 @@
             <?php
 
         }
+
+    do_action('td_wp_booster_after_header'); //used by unique articles
 
         ?>

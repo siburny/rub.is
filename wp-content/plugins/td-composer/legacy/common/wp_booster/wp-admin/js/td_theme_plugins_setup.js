@@ -158,7 +158,7 @@ var ThemePluginsSetup = (function($){
                                 var $this = $(this),
                                     hrefAttr = $this.attr('href');
 
-                                if ( hrefAttr.indexOf( 'td_cake_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_demos' ) > 0 || hrefAttr.indexOf( 'td_theme_panel' ) > 0 ) {
+                                if ( hrefAttr.indexOf( 'td_cake_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_demos' ) > 0 || hrefAttr.indexOf( 'td_theme_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_updates' ) > 0 ) {
                                     $this.show();
                                 }
                             });
@@ -167,7 +167,7 @@ var ThemePluginsSetup = (function($){
                                 var $this = $(this),
                                     hrefAttr = $this.attr('href');
 
-                                if ( hrefAttr.indexOf( 'td_cake_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_demos' ) > 0 || hrefAttr.indexOf( 'td_theme_panel' ) > 0 ) {
+                                if ( hrefAttr.indexOf( 'td_cake_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_demos' ) > 0 || hrefAttr.indexOf( 'td_theme_panel' ) > 0 || hrefAttr.indexOf( 'td_theme_updates' ) > 0 ) {
                                     $this.css( 'display', 'block');
                                 }
                             });
@@ -178,7 +178,7 @@ var ThemePluginsSetup = (function($){
                         } else {
                             $('.theme-plugins-setup').after(
                                 '<p class="theme-plugins-error-msg">' +
-                                    'An error occurred and we could not finish the process. <br>Please reload the page and try again, or <a href="https://forum.tagdiv.com/newspaper-how-to-update-a-plugin/" target="_blank">manually update the plugins</a>.' +
+                                    'An error occurred and we could not finish the process. <br>Please <a href="https://forum.tagdiv.com/newspaper-how-to-update-a-plugin/" target="_blank">manually update the plugins.</a>' +
                                 '</p>' );
 
                             pluginsWrap.removeClass('td-installing-plugins');
@@ -187,7 +187,7 @@ var ThemePluginsSetup = (function($){
                     }, 700);
                 };
 
-                pluginsInstalledImg.load(function () {
+                pluginsInstalledImg.on( 'load', function () {
                     pluginsWrap.removeClass('td-installing-plugins');
                     pluginsWrap.addClass('td-installed-plugins');
                 });

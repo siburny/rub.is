@@ -10,22 +10,53 @@ class tdm_block_icon_box extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
 			
+			    /* @style_general_icon_box */
+			    .tdm_block_icon_box .tdm-descr {
+                  font-size: 14px;
+                  line-height: 24px;
+                  -webkit-transition: color 0.2s ease;
+                  transition: color 0.2s ease;
+                }
+
+			    
 			    /* @icon_size */
 				.$unique_block_class .tds-icon-box .tds-icon {
 				    font-size: @icon_size;
 				    text-align: center;
 				}
+				/* @svg_size */
+                .$unique_block_class svg {
+                    width: @svg_size;
+                    height: auto;
+                }
 				
 				/* @icon_spacing */
 				.$unique_block_class .tds-icon-box .tds-icon {
 				    width: @icon_spacing;
 				    height: @icon_spacing;
 				    line-height: @icon_line_height;
+				}
+				/* @svg_spacing */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    width: @svg_spacing;
+				    height: @svg_spacing;
+				    display: flex;
+                    align-items: center;
+                    justify-content: center;
+				}
+				
+				/* @content_align_horizontal_center */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    margin: 0 auto;
+				}
+				/* @content_align_horizontal_right */
+				.$unique_block_class .tds-icon-svg-wrap {
+				    margin-left: auto;
 				}
           
 
@@ -46,16 +77,39 @@ class tdm_block_icon_box extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_icon_box', 1 );
+
+        $icon = $res_ctx->get_icon_att( 'tdicon_id' );
+        $svg_code = rawurldecode( base64_decode( strip_tags( $res_ctx->get_shortcode_att('svg_code') ) ) );
+
         /*-- ICON -- */
         // icon size
-        $res_ctx->load_settings_raw( 'icon_size', $res_ctx->get_shortcode_att( 'icon_size' ) . 'px' );
+        $icon_size = $res_ctx->get_shortcode_att( 'icon_size' ) . 'px';
+        if( $svg_code != '' || base64_encode( base64_decode( $icon ) ) == $icon ) {
+            $res_ctx->load_settings_raw( 'svg_size', $icon_size );
+        } else {
+            $res_ctx->load_settings_raw( 'icon_size', $icon_size );
+        }
 
         // icon spacing
         $tds_icon = td_util::get_option( 'tds_icon', 'tds_icon1' );
-        $res_ctx->load_settings_raw( 'icon_spacing', $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_padding' ) + intval($res_ctx->get_style_att( 'all_border_size', $tds_icon ) ) * 2 . 'px' );
+        $icon_spacing = $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_padding' ) + intval($res_ctx->get_style_att( 'all_border_size', $tds_icon ) ) * 2 . 'px';
+        if( $svg_code != '' || base64_encode( base64_decode( $icon ) ) == $icon ) {
+            $res_ctx->load_settings_raw('svg_spacing', $icon_spacing);
+        } else {
+            $res_ctx->load_settings_raw('icon_spacing', $icon_spacing);
+        }
 
         // icon line height
         $res_ctx->load_settings_raw( 'icon_line_height', $res_ctx->get_shortcode_att( 'icon_size' ) * $res_ctx->get_shortcode_att( 'icon_padding' ) . 'px' );
+
+        // content horiz align
+        $content_horiz_align = $res_ctx->get_shortcode_att( 'content_align_horizontal' );
+        if( $content_horiz_align == 'content-horiz-center' ) {
+            $res_ctx->load_settings_raw('content_align_horizontal_center', 1);
+        } else if ( $content_horiz_align == 'content-horiz-right' ) {
+            $res_ctx->load_settings_raw('content_align_horizontal_right', 1);
+        }
 
     }
 

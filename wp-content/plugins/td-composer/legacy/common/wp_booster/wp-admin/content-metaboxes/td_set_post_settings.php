@@ -4,6 +4,25 @@
         <div class="td-page-options-tab" data-panel-class="td-page-option-post-smart-list"><a href="#">Smart List</a></div>
     <?php } ?>
     <div class="td-page-options-tab" data-panel-class="td-page-option-post-review"><a href="#">Reviews</a></div>
+    <?php
+
+    $td_post_settings_tabs = apply_filters( 'td_post_settings_tabs', array() );
+
+    if ( !empty( $td_post_settings_tabs ) && is_array( $td_post_settings_tabs ) ) {
+        foreach ( $td_post_settings_tabs as $tab ) {
+
+            // tabs id/name/file are required
+            if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+                continue;
+            ?>
+
+            <div class="td-page-options-tab" data-panel-class="td-page-option-post-<?php echo $tab['id'] ?>"><a href="#"><?php echo $tab['name'] ?></a></div>
+
+	        <?php
+        }
+    }
+
+    ?>
 </div>
 
 <div class="td-meta-box-inside">
@@ -63,13 +82,17 @@
                 <select name="<?php $mb->the_name(); ?>" class="td-panel-dropdown">
                     <option value="">Auto select a category</option>
                     <?php
-                    $td_current_categories = td_util::get_category2id_array(false);
+                    $td_current_categories = td_util::get_category2id_array(false, false );
 
                     //print_r($td_current_categories);
                     //die;
                     foreach ($td_current_categories as $td_category => $td_category_id) {
+                        $disabled = '';
+                        if ( '__' === $td_category_id && false !== strpos($td_category, '--')) {
+                            $disabled = 'disabled';
+                        }
                         ?>
-                        <option value="<?php echo $td_category_id?>"<?php $mb->the_select_state($td_category_id); ?>><?php echo $td_category?></option>
+                        <option value="<?php echo $td_category_id?>"<?php $mb->the_select_state($td_category_id); ?> <?php echo $disabled ?>><?php echo $td_category?></option>
                     <?php
                     }
                     ?>
@@ -282,7 +305,6 @@
             </div>
         </div>
 
-
         <div class="rating_type rate_Stars">
             <p>
                 <strong>Add star ratings for this product:</strong><br>
@@ -320,8 +342,6 @@
             <p><a href="#" class="docopy-p_review_stars button">Add rating category</a></p>
         </div>
 
-
-
         <div class="rating_type rate_Percentages">
             <p>
                 <strong>Add percent ratings for this product:</strong><br>
@@ -347,7 +367,6 @@
 
             <p><a href="#" class="docopy-p_review_percents button">Add rating category</a></p>
         </div>
-
 
         <div class="rating_type rate_Points">
             <p>
@@ -384,8 +403,6 @@
             </p>
         </div>
 
-
-
         <script>
             jQuery().ready(function() {
                 td_updateMetaboxes();
@@ -414,7 +431,29 @@
                 }
             }); //end on load
         </script>
+
     </div> <!-- /post option review -->
+
+    <!-- post settings from filters -->
+	<?php
+
+	if ( !empty( $td_post_settings_tabs ) && is_array( $td_post_settings_tabs ) ) {
+		foreach ( $td_post_settings_tabs as $tab ) {
+
+			// tabs id/name/file are required
+			if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+				continue;
+			?>
+
+            <div class="td-page-option-panel td-page-option-post-<?php echo $tab['id'] ?>">
+	            <?php require_once( $tab['file'] ); ?>
+            </div> <!-- /post option <?php echo $tab['id'] ?> -->
+
+			<?php
+		}
+	}
+
+	?>
 
 </div>
 

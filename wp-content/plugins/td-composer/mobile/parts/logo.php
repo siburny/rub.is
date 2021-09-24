@@ -1,5 +1,9 @@
 <?php
 
+// Mobile Theme logo + retina logo
+$td_header_logo_mob = td_util::get_option('tds_logo_menu_upload_mob');
+$td_header_logoR_mob = td_util::get_option('tds_logo_menu_upload_r_mob');
+
 // read the mobile logo + retina logo
 $td_mobile_customLogo = td_util::get_option('tds_logo_menu_upload');
 $td_mobile_customLogoR = td_util::get_option('tds_logo_menu_upload_r');
@@ -12,11 +16,57 @@ $td_header_logoR = td_util::get_option('tds_logo_upload_r');
 $td_logo_text = stripslashes(td_util::get_option('tds_logo_text'));
 $td_tagline_text = stripslashes(td_util::get_option('tds_tagline_text'));
 
+// Mobile Theme text logo + tagline
+//$td_logo_text_mob = stripslashes(td_util::get_option('tds_logo_text_mob'));
+//$td_tagline_text_mob = stripslashes(td_util::get_option('tds_tagline_text_mob'));
+
 $td_logo_alt = td_util::get_option('tds_logo_alt');
 $td_logo_title = td_util::get_option('tds_logo_title');
 
-if (!empty($td_logo_title)) {
+// Mobile Theme alt & title
+$td_logo_alt_mob = td_util::get_option('tds_logo_alt_mob');
+$td_logo_title_mob = td_util::get_option('tds_logo_title_mob');
+
+// specific Mobile Theme options
+if(!empty($td_header_logo_mob)) {
+    $td_mobile_customLogo = $td_header_logo_mob;
+}
+if(!empty($td_header_logoR_mob)) {
+    $td_mobile_customLogoR = $td_header_logoR_mob;
+}
+
+$logo_image_width_html = '';
+$logo_image_height_html = '';
+
+if( $td_mobile_customLogo != '' ) {
+    $attachment_id = attachment_url_to_postid( $td_mobile_customLogo );
+    $info_img = wp_get_attachment_image_src( $attachment_id, 'full');
+    if (is_array($info_img)) {
+        $logo_image_width_html = ' width="' . $info_img[1] . '"';
+        $logo_image_height_html = ' height="' . $info_img[2] . '"';
+    }
+}
+
+
+//if(!empty($td_logo_text_mob)) {
+//    $td_logo_text = $td_logo_text_mob;
+//}
+//if(!empty($td_tagline_text_mob)) {
+//    $td_tagline_text = $td_tagline_text_mob;
+//}
+if (!empty($td_logo_alt_mob)) {
+    $td_logo_alt = $td_logo_alt_mob;
+}
+if (!empty($td_logo_title_mob)) {
+    $td_logo_title = ' title="' . $td_logo_title_mob . '"';
+} elseif (!empty($td_logo_title)) {
     $td_logo_title = ' title="' . $td_logo_title . '"';
+}
+
+// H1 on logo when there's no title with H1 in page
+$td_use_h1_logo = false;
+if ( ( is_front_page() || is_home() ) && td_util::get_option('tds_h1_on_logo') != 'hide' ) {
+    $td_use_h1_logo = true;
 }
 
 
@@ -25,23 +75,36 @@ if (!empty($td_mobile_customLogo)) {
     // mobile logo here
     if (!empty($td_mobile_customLogoR)) {
         //if retina
+
+        if($td_use_h1_logo === true) {
+            echo '<h1 class="td-logo">';
+        }
         ?>
 
-        <a class="td-mobile-logo" href="<?php echo esc_url(home_url('/')); ?>">
+        <a class="td-mobile-logo" aria-label="Logo" href="<?php echo esc_url(home_url('/')); ?>">
             <img class="td-retina-data"
                  data-retina="<?php echo esc_attr($td_mobile_customLogoR) ?>"
                  src="<?php echo $td_mobile_customLogo ?>"
-                 alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
+                 alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title . $logo_image_width_html . $logo_image_height_html ?>/>
         </a>
     <?php
+        if($td_use_h1_logo === true) {
+            echo '</h1>';
+        }
     } else {
         //not retina
         if (!empty($td_mobile_customLogo)) {
+            if($td_use_h1_logo === true) {
+                echo '<h1 class="td-logo">';
+            }
             ?>
-            <a class="td-mobile-logo" href="<?php echo esc_url(home_url('/')); ?>">
-                <img src="<?php echo $td_mobile_customLogo ?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
+            <a class="td-mobile-logo" aria-label="Logo" href="<?php echo esc_url(home_url('/')); ?>">
+                <img src="<?php echo $td_mobile_customLogo ?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title . $logo_image_width_html . $logo_image_height_html ?>/>
             </a>
         <?php
+            if($td_use_h1_logo === true) {
+                echo '</h1>';
+            }
         }
     }
 
@@ -50,23 +113,35 @@ if (!empty($td_mobile_customLogo)) {
     // header logo here
     if (!empty($td_header_logoR)) {
         //if retina
+        if($td_use_h1_logo === true) {
+            echo '<h1 class="td-logo">';
+        }
         ?>
 
-        <a class="td-header-logo" href="<?php echo esc_url(home_url('/')); ?>">
+        <a class="td-header-logo" aria-label="Logo" href="<?php echo esc_url(home_url('/')); ?>">
             <img class="td-retina-data"
                  data-retina="<?php echo esc_attr($td_header_logoR) ?>"
                  src="<?php echo $td_header_logo ?>"
                  alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
         </a>
     <?php
+        if($td_use_h1_logo === true) {
+            echo '</h1>';
+        }
     } else {
         //not retina
         if (!empty($td_header_logo)) {
+            if($td_use_h1_logo === true) {
+                echo '<h1 class="td-logo">';
+            }
             ?>
-            <a class="td-header-logo" href="<?php echo esc_url(home_url('/')); ?>">
+            <a class="td-header-logo" aria-label="Logo" href="<?php echo esc_url(home_url('/')); ?>">
                 <img src="<?php echo $td_header_logo ?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
             </a>
         <?php
+            if($td_use_h1_logo === true) {
+                echo '</h1>';
+            }
         } else { ?>
             <div class="td-logo-text-wrap">
                 <span class="td-logo-text-container">

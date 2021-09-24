@@ -11,7 +11,18 @@
 }
 
 .external-media-donation-box p {
+  color: #d61212;
   font-size: 14px;
+}
+
+.external-media-donation-box a.button-primary {
+  background: #d61212;
+  border-color: #d61212;
+}
+
+.external-media-donation-box a.button-primary:hover {
+  background: #800a0a;
+  border-color: #800a0a;
 }
 
 button.external-media-button {
@@ -58,15 +69,16 @@ button.external-media-button {
   font-weight: bold;
   border-right: none;
   background-color: #fff;
-  border-left: 1px solid #999;
+  border-left: 1px solid #007cba;
 }
 
 #wp-external-media-settings-tab-contents {
-   min-height: 450px;
-   margin: 0 0 0 90px;
-   padding: 20px;
-   background-color: #fff;
-   border: 1px solid #ddd;
+  min-height: 550px;
+  margin: 0 0 0 90px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: 5px solid #007cba;
 }
 
 #wp-external-media-settings-tab-contents li {
@@ -101,5 +113,23 @@ button.external-media-button {
 
 .media-embed .thumbnail {
   margin-top: 50px;
+}
+
+.emw-loader {
+  opacity: 0.9;
+  position: absolute;
+  z-index: 20;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.emw-loader .loader-wrapper {
+  display: flex;
+  justify-content: center;
 }
 

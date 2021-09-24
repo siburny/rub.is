@@ -131,6 +131,9 @@ class vc_wp_recentcomments extends td_block {
 	function render($atts, $content = null) {
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
+        // show only approved comments
+        $atts['status'] = 'approve';
+
 		$td_column_number = $this->get_att('td_column_number');
 		if (empty($td_column_number)) {
 			$td_column_number = td_global::vc_get_column_number(); // get the column width of the block from the page builder API

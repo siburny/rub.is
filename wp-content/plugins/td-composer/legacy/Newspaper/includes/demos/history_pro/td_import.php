@@ -44,24 +44,6 @@ td_demo_misc::add_social_buttons(array(
     'youtube' => '#'
 ));
 
-
-/*  ----------------------------------------------------------------------------
-    ads
-*/
-td_demo_misc::clear_all_ads();
-
-/*  ----------------------------------------------------------------------------
-    sidebars
-*/
-//default sidebar
-td_demo_widgets::remove_widgets_from_sidebar('default');
-
-//remove footer widgets > remove existing widgets from footer widgets areas
-td_demo_widgets::remove_widgets_from_sidebar('footer-1');
-td_demo_widgets::remove_widgets_from_sidebar('footer-2');
-td_demo_widgets::remove_widgets_from_sidebar('footer-3');
-
-
 /*  ----------------------------------------------------------------------------
     Cloud Templates
 */
@@ -154,6 +136,14 @@ $td_cloud_global_tag_template_id = td_demo_content::add_cloud_template(array(
 
 // set - the default (global) search template
 td_demo_misc::update_global_tag_template( 'tdb_template_' . $td_cloud_global_tag_template_id );
+
+
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Cloud Template - History PRO',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
 
 
 /*  ---------------------------------------------------------------------------
@@ -290,18 +280,6 @@ $td_magazinepage_id = td_demo_content::add_page(array(
     'sidebar_position' => 'no_sidebar',
     'homepage' => false
 ));
-
-//footer page
-$td_footerpage_id = td_demo_content::add_page(array(
-    'title' => 'Footer',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/history_pro/pages/footer.txt',
-    'template' => 'default',   // the page template full file name with .php, for default no extension needed
-    'td_layout' => '',
-    'sidebar_position' => 'no_sidebar',
-    'homepage' => false
-));
-
-td_util::update_option( 'tds_footer_page', $td_footerpage_id);
 
 
 /*  ----------------------------------------------------------------------------

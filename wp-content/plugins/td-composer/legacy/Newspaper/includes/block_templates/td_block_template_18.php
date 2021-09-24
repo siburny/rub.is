@@ -20,6 +20,166 @@ class td_block_template_18 extends td_block_template {
         // the css that will be compiled by the block, <style> - will be removed by the compiler
         $raw_css = "
         <style>
+            
+            /* @style_general_template_18 */
+            .td_block_template_18 {
+                padding-top: 20px;
+            }
+            .td_block_template_18.td_block_mega_menu {
+                padding-top: 0;
+            }
+            .td_block_template_18 .td-block-title {
+                font-family: 'Open Sans', arial, sans-serif;
+                font-size: 55px;
+                font-weight: bold;
+                letter-spacing: -4px;
+                line-height: 1;
+                text-align: center;
+                overflow: hidden;
+                margin-bottom: 25px;
+                text-transform: lowercase;
+                margin-top: 0;
+            }
+            @media (min-width: 768px) and (max-width: 1018px) {
+                .td_block_template_18 .td-block-title {
+                    font-size: 35px;
+                    margin-bottom: 18px;
+                }
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title {
+                    font-size: 45px;
+                    margin-bottom: 18px;
+                }
+            }
+            .td_block_template_18 .td-block-title > span,
+            .td_block_template_18 .td-block-title > a {
+                padding: 0 20px 10px;
+                display: inline-block;
+                background: #06d3d5;
+                background: -webkit-linear-gradient(-68deg, #06d3d5 30%,#2a81cb 80%);
+                background: linear-gradient(156deg, #06d3d5 30%,#2a81cb 80%);
+                color: #fff;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent;
+            }
+            @media (min-width: 768px) and (max-width: 1018px) {
+                .td_block_template_18 .td-block-title > span,
+                .td_block_template_18 .td-block-title > a {
+                    padding: 0 20px 4px;
+                }
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title > span,
+                .td_block_template_18 .td-block-title > a {
+                    padding: 2px 10px;
+                }
+            }
+            .td_block_template_18 .td-block-title .td-block-speech-bubble {
+                font-family: 'Open Sans', arial, sans-serif !important;
+                font-size: 12px !important;
+                font-weight: 600;
+                line-height: 1;
+                letter-spacing: -0.6px !important;
+                padding: 4px 8px;
+                background-color: #2a81cb;
+                color: #fff;
+                -webkit-text-fill-color: #fff;
+                position: absolute;
+                border-radius: 3px 3px 3px 0;
+                margin-left: 6px;
+                top: -4px;
+                text-transform: uppercase;
+            }
+            @media (min-width: 768px) and (max-width: 1018px) {
+                .td_block_template_18 .td-block-title .td-block-speech-bubble {
+                    font-size: 10px;
+                    padding: 3px 6px;
+                    border-radius: 2px 2px 2px 0;
+                    top: 0;
+                }
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title .td-block-speech-bubble {
+                    font-size: 10px;
+                    padding: 3px 6px;
+                    border-radius: 2px 2px 2px 0;
+                    top: 0;
+                }
+            }
+            .td_block_template_18 .td-block-title .td-block-speech-bubble:before {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 6px 6px 0 0;
+                border-color: #2a81cb transparent transparent transparent;
+            }
+            .td_block_template_18 .td-block-title .td-block-subtitle {
+                display: table;
+                font-family: 'Open Sans', arial, sans-serif;
+                font-size: 15px;
+                line-height: 1;
+                font-style: italic;
+                font-weight: normal;
+                letter-spacing: normal;
+                color: #808080;
+                position: relative;
+                margin: 2px auto;
+                text-transform: none;
+                max-width: 80%;
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title .td-block-subtitle {
+                    font-size: 13px;
+                }
+            }
+            .td_block_template_18 .td-block-title .td-block-subtitle:before,
+            .td_block_template_18 .td-block-title .td-block-subtitle:after {
+                content: '';
+                position: absolute;
+                height: 1px;
+                width: 1500px;
+                top: 3px;
+                bottom: 0;
+                background-color: #e3e3e3;
+            }
+            .td_block_template_18 .td-block-title .td-block-subtitle:before {
+                left: 100%;
+                margin: auto 0 auto 20px;
+            }
+            @media (min-width: 768px) and (max-width: 1018px) {
+                .td_block_template_18 .td-block-title .td-block-subtitle:before {
+                    margin: auto 0 auto 15px;
+                }
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title .td-block-subtitle:before {
+                    margin: auto 0 auto 10px;
+                }
+            }
+            .td_block_template_18 .td-block-title .td-block-subtitle:after {
+                right: 100%;
+                margin: auto 20px auto 0;
+            }
+            @media (min-width: 768px) and (max-width: 1018px) {
+                .td_block_template_18 .td-block-title .td-block-subtitle:after {
+                    margin: auto 15px auto 0;
+                }
+            }
+            @media (max-width: 767px) {
+                .td_block_template_18 .td-block-title .td-block-subtitle:after {
+                    margin: auto 10px auto 0;
+                }
+            }
+            .td_block_template_18 .td-pulldown-filter-display-option:before {
+                display: none;
+            }
+            
+            
         
             /* @header_color_a */
             .$unique_block_class .td-block-title > span,
@@ -81,7 +241,17 @@ class td_block_template_18 extends td_block_template {
         </style>
     ";
 
-        $td_css_compiler = new td_css_compiler($raw_css);
+        $td_css_compiler = new td_css_compiler(self::get_common_css() . $raw_css );
+
+        /*-- GENERAL -- */
+        $td_css_compiler->load_setting_raw( 'style_general_template_18', 1 );
+
+        // check if we have pulldown categories for css
+        $td_pull_down_items = $this->get_td_pull_down_items();
+        if (!empty($td_pull_down_items)) {
+            $td_css_compiler->load_setting_raw('style_general_pulldown', 1);
+        }
+
         $td_css_compiler->load_setting_raw('header_color', $this->get_att('header_color'));
         $td_css_compiler->load_setting_raw('header_text_color', $this->get_att('header_text_color'));
         $td_css_compiler->load_setting_raw('header_color_a', $this->get_att('header_text_color_a'));
@@ -117,7 +287,12 @@ class td_block_template_18 extends td_block_template {
         $custom_title = $this->get_att('custom_title');
         $custom_url = $this->get_att('custom_url');
 
+        $title_tag = 'h4';
 
+        $block_title_tag = $this->get_att('title_tag');
+        if(!empty($block_title_tag)) {
+            $title_tag = $block_title_tag ;
+        }
 
         if (empty($custom_title)) {
             $td_pull_down_items = $this->get_td_pull_down_items();
@@ -145,14 +320,14 @@ class td_block_template_18 extends td_block_template {
 
         // there is a custom title
         $buffy = '';
-        $buffy .= '<h4 class="td-block-title">';
+        $buffy .= '<' . $title_tag . ' class="td-block-title">';
         if (!empty($custom_url)) {
             $buffy .= '<a href="' . esc_url($custom_url) . '">' . esc_html($custom_title) . '' . $speech_bubble . '</span></a>';
         } else {
             $buffy .= '<span>' . esc_html($custom_title) . '' . $speech_bubble . '</span>';
         }
         $buffy .= $subtitle;
-        $buffy .= '</h4>';
+        $buffy .= '</' . $title_tag . '>';
         return $buffy;
     }
 

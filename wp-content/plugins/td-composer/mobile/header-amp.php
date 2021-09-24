@@ -84,7 +84,6 @@
 
 </amp-sidebar>
 
-
 <amp-state id="td_amp_search_state">
     <script type="application/json">
         {
@@ -99,6 +98,7 @@
     <div class="td-search-background"></div>
     <div class="td-search-wrap">
         <div class="td-drop-down-search">
+            <?php if (td_util::get_option('tds_live_search_mob') != 'hide') { ?>
 
             <form
                     id="srcfrm"
@@ -194,20 +194,56 @@
                                 {{/td_query_posts}}
                             </div>
                             <div class="result-msg">
-                                <a href="{{td_query_all_results}}" rel="nofollow">View all results</a>
+                                <a href="{{td_query_all_results}}" data-amp-replace="?amp" data-amp-addparams="&amp" rel="nofollow">View all results</a>
                             </div>
                         </div>
                     </template>
                 </div>
 
             </form>
+<?php } else { ?>
+                <form
+                    id="srcfrm"
+                    method="GET"
+                    action="<?php echo esc_url( home_url( '/' ) ); ?>"
+                    target="_top"
+                    class="td-search-form"
+                >
 
+                    <!-- amp-sidebar close button -->
+                    <div
+                        class="td-search-close"
+                        role="button"
+                        aria-label="close sidebar"
+                        on="tap:td_amp_search.toggle,AMP.setState({td_amp_search_state: {visible: false,s: ''}})"
+                        tabindex="0"
+                        class="close-sidebar"
+                    ><i class="td-icon-close-mobile"></i>
+                    </div>
+
+                    <div role="search" class="td-search-input">
+
+                        <input
+                            id="td-header-search"
+                            type="search"
+                            name="s"
+                            placeholder="Search…"
+                        >
+                    </div>
+                    <div class="td-search-submit">
+                        <input type="submit"
+                           value="<?php _etd('Search', TD_THEME_NAME)?>"
+                        >
+
+                    </div>
+                </form>
+            <?php } ?>
         </div>
     </div>
 
 </amp-sidebar>
 
-<div class="td-scroll-up td-scroll-up-visible"><a href="#top"><i class="td-icon-menu-up"></i></a></div>
+<div class="td-scroll-up td-scroll-up-visible"><a href="#top" aria-label="to-top"><i class="td-icon-menu-up"></i></a></div>
 
 <div id="td-outer-wrap">
     <div id="top" class="td-header-wrap">
@@ -215,15 +251,16 @@
             <div id="td-header-menu">
 
                 <!-- amp-sidebar menu open button -->
-                <div id="td-top-mobile-toggle" role="button" on="tap:td_amp_menu.toggle,AMP.setState({td_amp_menu_state: {visible: true}})" tabindex="0"><i class="td-icon-font td-icon-mobile"></i></div>
+                <div id="td-top-mobile-toggle" aria-label="mobile-toggle" role="button" on="tap:td_amp_menu.toggle,AMP.setState({td_amp_menu_state: {visible: true}})" tabindex="0"><i class="td-icon-font td-icon-mobile"></i></div>
 
                 <!-- logo -->
                 <div class="td-main-menu-logo">
 		            <?php locate_template('parts/logo.php', true, false); ?>
                 </div>
 
-                <!-- amp-sidebar search open button -->
-                <div class="td-search-icon" role="button" on="tap:td_amp_search.toggle,AMP.setState({td_amp_search_state: {visible: true,s: ''}})" tabindex="0"><i class="td-icon-search"></i></div>
+
+                    <!-- amp-sidebar search open button -->
+                    <div class="td-search-icon" aria-label="search" role="button" on="tap:td_amp_search.toggle,AMP.setState({td_amp_search_state: {visible: true,s: ''}})" tabindex="0"><i class="td-icon-search"></i></div>
 
             </div>
         </div>

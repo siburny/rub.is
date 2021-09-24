@@ -115,7 +115,7 @@ jQuery(function ($) {
               for ( var i = 0; i < data.docs.length; i++ ) {
                 if ( $cardinality > 1 ) {
                   if ( _count < $cardinality ) {
-                    external_media_upload( $plugin, data.docs[i].id + ':::' + oauthToken, data.docs[i].name );
+                    external_media_upload( $plugin, data.docs[i].id + ':::' + oauthToken, data.docs[i].name, '', '' );
                     _count++;
                   }
                 }

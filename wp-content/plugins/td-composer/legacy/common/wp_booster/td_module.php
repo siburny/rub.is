@@ -123,15 +123,15 @@ abstract class td_module {
 	function get_author_photo() {
 		$buffy = '';
 
-		$buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '" class="td-author-photo">' . get_avatar( $this->post->post_author, '96' ) . '</a>';
+		$buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '" aria-label="author-photo" class="td-author-photo">' . get_avatar( $this->post->post_author, '96' ) . '</a>';
 
 		return $buffy;
 	}
 
-    function get_author() {
+    function get_author($show_when_review = false) {
         $buffy = '';
 
-        if ($this->is_review === false or td_util::get_option('tds_m_show_review') == 'hide') {
+        if ($show_when_review or ($this->is_review === false or td_util::get_option('tds_m_show_review') == 'hide')) {
             if (td_util::get_option('tds_m_show_author_name') != 'hide') {
                 $buffy .= '<span class="td-post-author-name">';
                 $buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '">' . get_the_author_meta('display_name', $this->post->post_author) . '</a>' ;
@@ -149,14 +149,14 @@ abstract class td_module {
     }
 
 
-    function get_date($modified_date = '') {
+    function get_date($modified_date = '', $show_when_review = false, $time_ago = '', $time_ago_add_txt = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_m_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
         }
 
         $buffy = '';
-        if ($this->is_review and td_util::get_option('tds_m_show_review') != 'hide') {
+        if (!$show_when_review and ( $this->is_review and td_util::get_option('tds_m_show_review') != 'hide' )) {
             //if review show stars
             $buffy .= '<span class="entry-review-stars">';
                 $buffy .=  td_review::render_stars($this->td_review);
@@ -165,15 +165,62 @@ abstract class td_module {
         } else {
             if (td_util::get_option('tds_m_show_date') != 'hide') {
 
-                $td_article_date_unix = get_the_time('U', $this->post->ID);
+                global $wp_version;
+                //old WP support
+                if (version_compare($wp_version, '5.3', '<')) {
+                    $td_article_date = date(DATE_W3C, get_the_time('U', $this->post->ID));
+                    $td_article_modified_date = date(DATE_W3C, get_the_modified_date('U', $this->post->ID));
+                } else {
+                    // get_post_datetime() used from WP 5.3
+                    $td_article_date = get_post_datetime($this->post->ID, 'date', 'gmt');
+                    if ( $td_article_date !== false  ) {
+                        $td_article_date = $td_article_date->format(DATE_W3C);
+                    }
+                    $td_article_modified_date = get_post_datetime($this->post->ID, 'modified', 'gmt');
+                    if ( $td_article_modified_date !== false  ) {
+                        $td_article_modified_date = $td_article_modified_date->format(DATE_W3C);
+                    }
+                }
+
                 $buffy .= '<span class="td-post-date">';
 
                 if ($modified_date == 'yes' || td_util::get_option('tds_m_show_modified_date') == 'yes') {
-                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
+                    $display_modified_date = get_the_modified_date(get_option('date_format'), $this->post->ID);
+
+                    if( $time_ago != '' ) {
+                        $current_time = current_time( 'timestamp' );
+                        $post_time_u  = get_the_modified_date('U', $this->post->ID );
+                        $diff = (int) abs( $current_time - $post_time_u );
+
+                        if ( $diff < WEEK_IN_SECONDS ) {
+                            $display_modified_date = human_time_diff( $post_time_u, $current_time );
+                            if( $time_ago_add_txt != '' ) {
+                                $display_modified_date .= ' ' . $time_ago_add_txt;
+                            }
+                        }
+                    }
+
+                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_modified_date . '" >' . $display_modified_date . '</time>';
                 }
                 else {
-                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                    $display_date = get_the_time(get_option('date_format'), $this->post->ID);
+
+                    if( $time_ago != '' ) {
+                        $current_time = current_time( 'timestamp' );
+                        $post_time_u  = get_the_time('U', $this->post->ID );
+                        $diff = (int) abs( $current_time - $post_time_u );
+
+                        if ( $diff < WEEK_IN_SECONDS ) {
+                            $display_date = human_time_diff( $post_time_u, $current_time );
+                            if( $time_ago_add_txt != '' ) {
+                                $display_date .= ' ' . $time_ago_add_txt;
+                            }
+                        }
+                    }
+
+                    $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . $td_article_date . '" >' . $display_date . '</time>';
                 }
+
                 $buffy .= '</span>';
             }
         }
@@ -184,6 +231,18 @@ abstract class td_module {
 
     function show_date($modified_date = '') {
     	echo '<!-- date -->' . $this->get_date( $modified_date );
+    }
+
+    function get_review() {
+        $buffy = '';
+
+        if( $this->is_review and td_util::get_option('tds_m_show_review') != 'hide' ) {
+            $buffy .= '<span class="entry-review-stars">';
+                $buffy .=  td_review::render_stars($this->td_review);
+            $buffy .= '</span>';
+        }
+
+        return $buffy;
     }
 
 
@@ -337,16 +396,92 @@ abstract class td_module {
 
 
             $buffy .= '<div class="td-module-thumb">';
+                $post_type = get_post_format($this->post->ID);
+
                 if ( current_user_can('edit_published_posts') ) {
                     $buffy .= '<a class="td-admin-edit" href="' . get_edit_post_link($this->post->ID) . '">edit</a>';
                 }
 
-                $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap" title="' . $this->title_attribute . '">';
+                $video_popup_param_no = '';
+                if ( get_class($this) == 'td_module_flex_3' ) {
+                    $video_popup_param_no = '2';
+                }
+                if ( get_class($this) == 'td_module_flex_4' ) {
+                    $video_popup_param_no = '3';
+                }
+
+                $td_show_video_modal = false;
+                $td_global_video_modal = td_util::get_option('tds_m_show_modal_video');
+                //general video modal used on Newsmag
+                if ( TD_THEME_NAME == 'Newsmag' && $td_global_video_modal == '' ){
+                        $td_show_video_modal = true;
+
+                } else { //when it is set on shortcode
+                    if ( isset($this->module_atts['video_popup' . $video_popup_param_no]) && $this->module_atts['video_popup' . $video_popup_param_no] != '' ) {
+                        $td_show_video_modal = true;
+                    }
+                }
+
+                $video_popup_class = '';
+                $video_popup_data = '';
+                if ( $post_type == 'video' && $td_show_video_modal ) {
+
+                    $video_url = get_post_meta($this->post->ID, 'td_post_video');
+
+                    if( isset($video_url[0]['td_video']) && $video_url[0]['td_video'] != '' ) {
+                        $video_source = td_video_support::detect_video_service($video_url[0]['td_video']);
+
+                        $video_popup_class = 'td-module-video-modal';
+                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url[0]['td_video'] ) . '"';
+
+                        $video_rec = '';
+                        if( isset($this->module_atts['video_rec' . $video_popup_param_no]) ) {
+                            $video_rec = rawurldecode( base64_decode( strip_tags( $this->module_atts['video_rec' . $video_popup_param_no] ) ) );
+                        }
+                        $video_rec_title = '';
+                        if( isset($this->module_atts['video_rec_title' . $video_popup_param_no]) ) {
+                            $video_rec_title = $this->module_atts['video_rec_title' . $video_popup_param_no];
+                        }
+                        $video_rec_disable = false;
+                        if( isset($this->module_atts['video_rec_disable' . $video_popup_param_no]) && ( current_user_can('administrator') || current_user_can('editor') ) ) {
+                            if( $this->module_atts['video_rec_disable' . $video_popup_param_no] != '' ) {
+                                $video_rec_disable = true;
+                            }
+                        }
+
+                        $video_popup_ad = array(
+                            'code' => $video_rec,
+                            'title' => $video_rec_title,
+                            'disable' => $video_rec_disable,
+                        );
+
+                        if( $video_popup_ad['code'] == '' ) {
+                            $video_popup_ad['code'] = stripslashes( td_options::get( 'tds_modal_video_ad') );
+                        }
+                        if( $video_popup_ad['title'] == '' ) {
+                            $video_popup_ad['title'] = td_options::get( 'tds_modal_video_ad_title');
+                        }
+                        if( !$video_popup_ad['disable'] && ( current_user_can('administrator') || current_user_can('editor') ) ) {
+                            if( td_options::get( 'tds_modal_video_ad_disable') != '' ) {
+                                $video_popup_ad['disable'] = true;
+                            }
+                        }
+
+                        if( $video_popup_ad['code'] != '' ) {
+                            $video_popup_data .= 'data-video-rec="' . base64_encode( json_encode($video_popup_ad) ) . '"';
+                        }
+                    }
+                }
+
+                $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap ' . $video_popup_class . '" title="' . $this->title_attribute . '" ' . $video_popup_data . '>';
 
                     $tds_animation_stack = td_util::get_option('tds_animation_stack');
-
+                    $tds_ajax_preloading = '';
+                    if(isset($this->module_atts['td_ajax_preloading'])) {
+                        $tds_ajax_preloading = $this->module_atts['td_ajax_preloading'];
+                    }
                     // if we have the lazy loading animation on, we're not on an ajax call or on composer
-                    if ( empty( $tds_animation_stack ) && !wp_doing_ajax() && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                    if ( empty( $tds_animation_stack ) && empty($tds_ajax_preloading) && !wp_doing_ajax() && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
 
                         // retina image
                         $retina_image = '';
@@ -402,7 +537,7 @@ abstract class td_module {
                                         <style>
                                               @media ( -webkit-max-device-pixel-ratio: 2 ) {
                                                   .td-thumb-css.' . $retina_uuid . ' {
-                                                      background-image: url(' . $retina_url[0] . ');
+                                                      background-image: url("' . $retina_url[0] . '");
                                                   }
                                               }
                                         </style>
@@ -410,7 +545,7 @@ abstract class td_module {
                                 }
                             }
 
-                            $buffy .= '<span class="entry-thumb td-thumb-css ' . $retina_uuid . '" style="background-image: url(' . $td_temp_image_url[0] . ')" ></span>';
+                            $buffy .= '<span class="entry-thumb td-thumb-css ' . $retina_uuid . '" style="background-image: url(\'' . $td_temp_image_url[0] . '\')" ></span>';
 
                         // normal image
                         } else {
@@ -420,8 +555,6 @@ abstract class td_module {
 
 
                     // on video or audio type posts add the specific icon
-                    $post_type = get_post_format($this->post->ID);
-
                     if ($post_type == 'video' || $post_type == 'audio') {
 
                         $use_small_post_format_icon_size = false;
@@ -449,7 +582,7 @@ abstract class td_module {
 
         return $buffy;
     }
-    
+
 
 
      /**
@@ -467,13 +600,20 @@ abstract class td_module {
     /**
      * This function returns the title with the appropriate markup.
      * @param string $cut_at - if provided, the method will just cut at that point
+     * @param string $title_tag - if provided, will change the default h3 tag on article title
      * and it will cut after that. If not setting is in the database the function will cut at the default value
      * @return string
      */
 
-    function get_title($cut_at = '') {
+    function get_title($cut_at = '', $title_tag = '' ) {
+
+        $module_title_tag = 'h3';
+        if ( $title_tag != '' ) {
+            $module_title_tag = $title_tag;
+        }
+
         $buffy = '';
-        $buffy .= '<h3 class="entry-title td-module-title">';
+        $buffy .= '<' . $module_title_tag . ' class="entry-title td-module-title">';
         $buffy .='<a href="' . $this->href . '" rel="bookmark" title="' . $this->title_attribute . '">';
 
         //see if we have to cut the title and if we have the title lenght in the panel for ex: td_module_6__title_excerpt
@@ -505,7 +645,7 @@ abstract class td_module {
 
         }
         $buffy .='</a>';
-        $buffy .= '</h3>';
+        $buffy .= '</' . $module_title_tag . '>';
         return $buffy;
     }
 
@@ -593,6 +733,39 @@ abstract class td_module {
     }
 
 
+    /**
+     * This method is used by modules to get the featured video duration
+     * @return string
+     */
+    function get_video_duration() {
+
+        $buffy = '';
+
+        if( get_post_format( $this->post->ID ) == 'video' ) {
+            $video_url = get_post_meta($this->post->ID, 'td_post_video');
+
+            if( isset($video_url[0]['td_video']) && $video_url[0]['td_video'] != '' ) {
+                if ( metadata_exists('post', $this->post->ID, 'td_post_video_duration') && get_post_meta( $this->post->ID, 'td_post_video_duration', true ) != '' ) {
+                    $video_duration = get_post_meta( $this->post->ID, 'td_post_video_duration', true );
+                } else {
+                    $video_duration = td_video_support::get_video_duration($video_url[0]['td_video']);
+
+                    if ( $video_duration != '' ) {
+                        update_post_meta($this->post->ID, 'td_post_video_duration', $video_duration);
+                    }
+                }
+
+                if( $video_duration != '' ) {
+                    $buffy .= '<div class="td-post-vid-time">' . $video_duration . '</div>';
+                }
+            }
+        }
+
+        return $buffy;
+
+    }
+
+
 
     function get_category() {
 
@@ -644,42 +817,77 @@ abstract class td_module {
 	    } else {
 
 		    // custom post type
+            $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+            // get primary taxonomy term if is set
+            if (!empty($td_post_theme_settings['td_primary_cat'])) {
+                //we have a custom category selected
+                $selected_tax_id = $td_post_theme_settings['td_primary_cat'];
+                $selected_category_obj = get_term($selected_tax_id);
+                $selected_category_obj_id = $selected_category_obj->term_id;
+                $selected_category_obj_name = $selected_category_obj->name;
+            } else {
 
-		    // Validate that the current queried term is a term
-		    global $wp_query;
-		    $current_queried_term = $wp_query->get_queried_object();
+                // Validate that the current queried term is a term
+                global $wp_query;
+                $current_queried_term = $wp_query->get_queried_object();
 
-		    if ( $current_queried_term instanceof WP_Term ) {
-			    $current_term = term_exists( $current_queried_term->name, $current_queried_term->taxonomy );
+                if ($current_queried_term instanceof WP_Term) {
+                    $current_term = term_exists($current_queried_term->name, $current_queried_term->taxonomy);
 
-			    if ($current_term !== 0 && $current_term !== null) {
-				    $selected_category_obj = $current_queried_term;
-			    }
-		    }
+                    if ($current_term !== 0 && $current_term !== null) {
+                        $selected_category_obj = $current_queried_term;
+                    }
+                } else { //get one auto
 
+                    $td_taxonomy_terms = array();
+                    $post_type = get_post_type($this->post);
+                    $td_taxonomies = get_object_taxonomies($post_type);
 
-		    // Get and validate the custom taxonomy according to the validated queried term
-		    if (!empty($selected_category_obj)) {
+                    foreach ( $td_taxonomies as $td_taxonomy ) {
+                        if ( ! is_taxonomy_hierarchical( $td_taxonomy ) ) {
+                            continue;
+                        }
 
-			    $taxonomy_objects = get_object_taxonomies($this->post, 'objects');
-			    $custom_taxonomy_object = '';
+                        $terms = get_the_terms($this->post, $td_taxonomy);
 
-			    foreach ($taxonomy_objects as $taxonomy_object) {
+                        // needs to be an array
+                        if( is_array($terms) ) {
 
-				    if ($taxonomy_object->_builtin !== 1 && $taxonomy_object->name === $selected_category_obj->taxonomy) {
-					    $custom_taxonomy_object = $taxonomy_object;
-					    break;
-				    }
-			    }
+                            foreach ($terms as $term) {
+                                $td_taxonomy_terms[] = $term;
+                            }
+                        }
+                    }
 
-			    // Invalid taxonomy
-			    if (empty($custom_taxonomy_object)) {
-				    return $buffy;
-			    }
+                    if(current($td_taxonomy_terms) !== false) {
+                        $selected_category_obj = current($td_taxonomy_terms);
+                    }
 
-			    $selected_category_obj_id = $selected_category_obj->term_id;
-			    $selected_category_obj_name = $selected_category_obj->name;
-		    }
+                }
+
+                // Get and validate the custom taxonomy according to the validated queried term
+                if (!empty($selected_category_obj)) {
+
+                    $taxonomy_objects = get_object_taxonomies($this->post, 'objects');
+                    $custom_taxonomy_object = '';
+
+                    foreach ($taxonomy_objects as $taxonomy_object) {
+
+                        if ($taxonomy_object->_builtin !== 1 && $taxonomy_object->name === $selected_category_obj->taxonomy) {
+                            $custom_taxonomy_object = $taxonomy_object;
+                            break;
+                        }
+                    }
+
+                    // Invalid taxonomy
+                    if (empty($custom_taxonomy_object)) {
+                        return $buffy;
+                    }
+
+                    $selected_category_obj_id = $selected_category_obj->term_id;
+                    $selected_category_obj_name = $selected_category_obj->name;
+                }
+            }
 	    }
 
 	    if (!empty($selected_category_obj_id) && !empty($selected_category_obj_name)) { //!!!! catch error here
@@ -722,9 +930,10 @@ abstract class td_module {
     /**
      * Gets a shortcode att but only if the module received them
      * @param $att_name
+     * @param $default_value
      * @return mixed|string
      */
-    function get_shortcode_att($att_name) {
+    function get_shortcode_att($att_name, $default_value = '') {
         // returns '' if not set - for loops and other places where modules are not in blocks
 
         if (empty($this->module_atts)) {
@@ -732,9 +941,18 @@ abstract class td_module {
         }
         if (!isset($this->module_atts[$att_name])) {
             td_util::error(__FILE__, $att_name . ' - Is not mapped in the shortcode that uses this module ( <strong>' . get_class($this) . '</strong>)', $this->module_atts);
-            die;
+
+            //die;
+            return $default_value;
         }
 
-        return $this->module_atts[$att_name];
+        //we need to decode the square bracket case
+        $attr_value = $this->module_atts[$att_name];
+        if (strpos($attr_value, 'td_encval') === 0) {
+            $attr_value = str_replace('td_encval', '', $attr_value);
+            $attr_value = base64_decode($attr_value);
+        }
+
+        return $attr_value;
     }
 }

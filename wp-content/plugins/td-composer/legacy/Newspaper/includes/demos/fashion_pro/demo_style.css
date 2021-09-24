@@ -24,6 +24,7 @@ Fashion Pro Demo
 }
 .td-fashion-pro .wp-caption {
   position: relative;
+  margin-bottom: 26px;
 }
 .td-fashion-pro .wp-caption .wp-caption-text {
   position: absolute;
@@ -49,7 +50,7 @@ Fashion Pro Demo
 @media (max-width: 767px) {
   .td-fashion-pro .wp-caption .wp-caption-text {
     top: auto;
-    bottom: -20px;
+    bottom: -16px;
     left: 50%;
     transform: translateX(-50%);
     width: 300px;

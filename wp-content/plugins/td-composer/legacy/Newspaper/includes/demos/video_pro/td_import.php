@@ -1,16 +1,4 @@
 <?php
-/**
- * Created by ra on 5/14/2015.
- */
-
-
-
-/*  ---------------------------------------------------------------------------
-    top menu - MENUS MUST HAVE THE FOLLOWING NAMES:
-    td-demo-top-menu
-    td-demo-header-menu
-    td-demo-footer-menu
-*/
 // main menu
 $td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu', 'header-menu');
 
@@ -18,12 +6,10 @@ $td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu', 'hea
 $td_demo_homepage_menu_id = td_demo_menus::create_menu('td-demo-custom-menu', 'custom-menu');
 
 
-
 /*  ----------------------------------------------------------------------------
     background - leave empty if you want to make sure that there is NO background on the demo - td_demo_misc::update_background('');
  */
 td_demo_misc::update_background('');
-
 
 
 /*  ----------------------------------------------------------------------------
@@ -34,27 +20,6 @@ td_demo_misc::update_logo(array(
     'retina' => '',
     'mobile' => ''
 ));
-
-/*  ----------------------------------------------------------------------------
-    footer text
- */
-
-
-/*  ----------------------------------------------------------------------------
-    socials
- */
-
-
-/*  ----------------------------------------------------------------------------
-    ads
- */
-td_demo_misc::clear_all_ads();
-
-
-/*  ----------------------------------------------------------------------------
-    sidebars
- */
-
 
 
 /*  ----------------------------------------------------------------------------
@@ -68,6 +33,8 @@ $td_cloud_global_header_template_id = td_demo_content::add_cloud_template(array(
 ));
 // set - the default header template
 td_demo_misc::update_global_header_template( 'tdb_template_' . $td_cloud_global_header_template_id );
+//update mobile menu id in cloud header template
+update_post_meta( $td_cloud_global_header_template_id, 'header_mobile_menu_id', $td_demo_header_menu_id );
 
 //cloud template - type single
 $td_cloud_post_template_id = td_demo_content::add_cloud_template(array(
@@ -126,12 +93,19 @@ td_util::update_option( 'tdb_tag_template', 'tdb_template_' . $td_cloud_tag_temp
 
 //cloud template - type 404
 $td_cloud_404_template_id = td_demo_content::add_cloud_template(array(
-    'title' => '404 Cloud Template - Nomad',
+    'title' => '404 Cloud Template - Video News Pro',
     'file' => TDC_PATH_LEGACY . '/includes/demos/video_pro/pages/404_cloud_template.txt',
     'template_type' => '404',
 ));
 // set the default site wide 404 template
 td_util::update_option( 'tdb_404_template', 'tdb_template_' . $td_cloud_404_template_id );
+
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Cloud Template - Video News Pro',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
 
 
 /*  ---------------------------------------------------------------------------
@@ -258,15 +232,6 @@ $td_homepage_id = td_demo_content::add_page(array(
     'td_layout' => '',
     'homepage' => true
 ));
-//footer template
-$td_footertemplate_id = td_demo_content::add_page(array(
-    'title' => 'footer-template',
-    'file' => TDC_PATH_LEGACY . '/includes/demos/video_pro/pages/footer-template.txt',
-    'template' => 'default',   // the page template full file name with .php, for default no extension needed
-    'td_layout' => '',
-    'homepage' => false
-));
-td_util::update_option( 'tds_footer_page', $td_footertemplate_id);
 
 /*  ----------------------------------------------------------------------------
     menu

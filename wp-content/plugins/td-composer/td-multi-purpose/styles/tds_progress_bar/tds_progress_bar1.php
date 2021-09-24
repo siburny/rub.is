@@ -120,7 +120,7 @@ class tds_progress_bar1 extends td_style {
         $title = $this->get_shortcode_att( 'progress_title' );
         $percentage = $this->get_shortcode_att( 'progress_percentage' );
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-progress-wrap ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . '">';
             $buffy .= '<div class="tdm-progress-percentage td-fix-index">' . $percentage .'%</div>';

@@ -104,7 +104,12 @@ global $post;
 
         <?php echo td_panel_generator::box_end(); ?>
 
-    <?php } ?>
+    <?php }
+
+    // Extensions add their content in 'tdc-live-panel' (usually their own hidden input fields that will be saved by composer - see 'tdc_extension_save' action)
+    do_action( 'tdc_extension_settings' );
+
+    ?>
 
 </form>
 

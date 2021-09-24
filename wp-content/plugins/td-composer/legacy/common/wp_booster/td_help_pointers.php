@@ -96,7 +96,7 @@ class td_help_pointers {
 
         echo <<<HTML
         <script>
-        jQuery(window).load( function() {
+        jQuery(window).on( 'load', function() {
 
 
              var WPHelpPointer = {$pointers};

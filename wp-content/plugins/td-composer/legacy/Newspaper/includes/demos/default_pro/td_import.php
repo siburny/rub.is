@@ -1,8 +1,30 @@
-<?php 
+<?php
 
 
 
-/*  ---------------------------------------------------------------------------- 
+/*  ----------------------------------------------------------------------------
+	TDS LOCKERS
+*/
+// add post meta for default locker
+//td_demo_content::add_locker_meta( array(
+//		'tds_locker_id' => (int) get_option( 'tds_default_locker_id' ),
+//		'tds_locker_meta' => array(
+//			'tds_locker_settings' => array(
+//				'tds_title' => 'This Content Is Only For Subscribers',
+//				'tds_message' => 'Please subscribe to unlock this content. Enter your email to get access.',
+//				'tds_input_placeholder' => 'Please enter your email address.',
+//				'tds_submit_btn_text' => 'Subscribe to unlock',
+//				'tds_after_btn_text' => 'Your email address is 100% safe from spam!',
+//				'tds_pp_msg' => 'Check this !! ',
+//			),
+//			'tds_locker_styles' => array(
+//				'tds_bg_color' => '#d3d3d3',
+//			),
+//		)
+//	)
+//);
+
+/*  ----------------------------------------------------------------------------
 	CATEGORIES
 */
 $cat_tagdiv_architecture_id = td_demo_category::add_category(array(
@@ -1206,7 +1228,7 @@ $post_watch_awesome_kate_manner_go_full_cooking_pro_in_england_this_week_id = td
 ));
 
 $post_silicon_valley_guru_affected_by_the_fulminant_slashed_investments_id = td_demo_content::add_post(array(
-	'title' => 'Silicon Valley Guru Affected by the Fulminant Slashed Investments',
+	'title' => 'Silicon Valley Guru Affected by the Fulminant Slashed',
 	'file' => 'post_default.txt',
 	'featured_image_td_id' => 'td_pic_3',
 	'categories_id_array' => array($cat_tagdiv_architecture_id,$cat_tagdiv_business_id,$cat_tagdiv_decorating_id,$cat_tagdiv_gadgets_id,$cat_tagdiv_health_fitness_id,$cat_tagdiv_interiors_id,$cat_tagdiv_make_it_modern_id,$cat_tagdiv_mobile_phones_id,$cat_tagdiv_new_look_id,$cat_tagdiv_photography_id,$cat_tagdiv_racing_id,$cat_tagdiv_recipes_id,$cat_tagdiv_reviews_id,$cat_tagdiv_sport_id,$cat_tagdiv_street_fashion_id,$cat_tagdiv_style_hunter_id,$cat_tagdiv_travel_id,$cat_tagdiv_video_id,$cat_tagdiv_vogue_id,),
@@ -1237,12 +1259,6 @@ $post_eminem_stronger_than_i_was_id = td_demo_content::add_post(array(
 /*  ---------------------------------------------------------------------------- 
 	PAGES
 */
-$page_footer_id = td_demo_content::add_page(array(
-	'title' => 'Footer',
-	'file' => 'footer.txt',
-	'template' => 'default',
-));
-
 $page_home_id = td_demo_content::add_page(array(
 	'title' => 'Home',
 	'file' => 'home.txt',
@@ -1346,89 +1362,90 @@ $menu_item_0_id = td_demo_menus::add_link(array(
 	CLOUD TEMPLATES
 */
 $template_author_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Author Template 1',
+	'title' => 'Author Template - Default PRO',
 	'file' => 'author_cloud_template.txt',
 	'template_type' => 'author',
 ));
-
 td_demo_misc::update_global_author_template( 'tdb_template_' . $template_author_template_1_id);
 
 
 $template_date_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Date Template 1',
+	'title' => 'Date Template - Default PRO',
 	'file' => 'date_cloud_template.txt',
 	'template_type' => 'date',
 ));
-
 td_demo_misc::update_global_date_template( 'tdb_template_' . $template_date_template_1_id);
 
 
 $template_attachment_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Attachment Template 1',
+	'title' => 'Attachment Template - Default PRO',
 	'file' => 'attachment_cloud_template.txt',
 	'template_type' => 'attachment',
 ));
+td_demo_misc::update_global_attachment_template( 'tdb_template_' . $template_attachment_template_1_id);
 
 $template_tag_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Tag Template 1',
+	'title' => 'Tag Template - Default PRO',
 	'file' => 'tag_cloud_template.txt',
 	'template_type' => 'tag',
 ));
-
 td_demo_misc::update_global_tag_template( 'tdb_template_' . $template_tag_template_1_id);
 
 
 $template_search_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Search Template 1',
+	'title' => 'Search Template - Default PRO',
 	'file' => 'search_cloud_template.txt',
 	'template_type' => 'search',
 ));
-
 td_demo_misc::update_global_search_template( 'tdb_template_' . $template_search_template_1_id);
 
 
 $template_404_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => '404 Template 1',
+	'title' => '404 Template - Default PRO',
 	'file' => '404_cloud_template.txt',
 	'template_type' => '404',
 ));
-
 td_demo_misc::update_global_404_template( 'tdb_template_' . $template_404_template_1_id);
 
 
 $template_category_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Category Template 1',
+	'title' => 'Category Template - Default PRO',
 	'file' => 'cat_cloud_template.txt',
 	'template_type' => 'category',
 ));
-
 td_demo_misc::update_global_category_template( 'tdb_template_' . $template_category_template_1_id);
 
 
 $template_single_post_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Single Post Template 1',
+	'title' => 'Single Post Template - Default PRO',
 	'file' => 'post_cloud_template.txt',
 	'template_type' => 'single',
 ));
-
 td_util::update_option('td_default_site_post_template', 'tdb_template_' . $template_single_post_template_1_id);
 
 
+$template_footer_template_id = td_demo_content::add_cloud_template(array(
+    'title' => 'Footer Template - Default PRO',
+    'file' => 'footer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_template_id);
+
+
 $template_header_template_1_id = td_demo_content::add_cloud_template(array(
-	'title' => 'Header Template 1',
+	'title' => 'Header Template - Default PRO',
 	'file' => 'header_cloud_template.txt',
 	'template_type' => 'header',
 ));
-
 td_demo_misc::update_global_header_template( 'tdb_template_' . $template_header_template_1_id);
+//update mobile menu id in cloud header template
+update_post_meta( $template_header_template_1_id, 'header_mobile_menu_id', $menu_td_demo_header_menu_id );
 
 
 
 /*  ---------------------------------------------------------------------------- 
 	GENERAL SETTINGS
 */
-td_util::update_option('tds_footer_page', $page_footer_id);
-
 td_demo_misc::update_background('', false);
 
 td_demo_misc::update_background_mobile('tdx_pic_6');
@@ -1452,5 +1469,5 @@ td_demo_misc::add_social_buttons(array('facebook' => '#','instagram' => '#','twi
     ads
  */
 td_demo_misc::clear_all_ads();
-td_demo_misc::add_ad_image('header', 'tdx_pic_9');
-td_demo_misc::add_ad_image('sidebar', 'tdx_pic_10');
+td_demo_misc::add_ad_image('header', 'tdx_pic_9', 728, 90);
+td_demo_misc::add_ad_image('sidebar', 'tdx_pic_10', 300, 250);

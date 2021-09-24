@@ -2,16 +2,49 @@
 class tdm_block_text_image extends td_block {
 
     protected $shortcode_atts = array(); //the atts used for rendering the current block
+    private $unique_block_class;
 
     public function get_custom_css() {
 
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
 
         $raw_css =
             "<style>
+                /* @style_general_text_image */
+                @media (min-width: 767px) {
+                  .tdm_block_text_image.tdm-text-image-extend-img {
+                    margin-right: calc((-100vw + 100%) / 2);
+                  }
+                  .tdm_block_text_image.tdm-text-image-extend-img.tdm-flip-yes {
+                    margin-right: 0;
+                    margin-left: calc((-100vw + 100%) / 2);
+                  }
+                  .tdm_block_text_image.tdm-text-image-extend-img.tdm-flip-yes .tdm-col-img {
+                    text-align: right;
+                  }
+                }
+                @media (max-width: 767px) {
+                  .tdm_block_text_image .tdm-col-img {
+                    margin-top: 36px;
+                  }
+                  .tdm_block_text_image.tdm-flip-yes .tdm-col-img {
+                    margin-top: 0;
+                    margin-bottom: 15px;
+                  }
+                }
+                .tdm_block_text_image .tdm-text-wrap {
+                  padding-top: 20px;
+                  padding-bottom: 20px;
+                }
+                .tdm_block_text_image .tdm-descr {
+                  margin-bottom: 0;
+                }
+                .tdm_block_text_image .tds-button {
+                  margin-top: 30px;
+                }
                 
                 /* @description_color */
                 .$unique_block_class .tdm-descr {
@@ -47,6 +80,8 @@ class tdm_block_text_image extends td_block {
      */
     static function cssMedia( $res_ctx ) {
 
+        $res_ctx->load_settings_raw( 'style_general_text_image', 1 );
+
         // description color
         $res_ctx->load_settings_raw( 'description_color', $res_ctx->get_shortcode_att( 'description_color' ) );
         $res_ctx->load_settings_raw( 'links_color', $res_ctx->get_shortcode_att( 'links_color' ) );
@@ -60,6 +95,8 @@ class tdm_block_text_image extends td_block {
 
 	function render($atts, $content = null) {
 		parent::render($atts);
+
+        $this->unique_block_class = $this->block_uid;
 
 		$this->shortcode_atts = shortcode_atts(
 			array_merge(
@@ -77,8 +114,25 @@ class tdm_block_text_image extends td_block {
 		$flip_content = $this->get_shortcode_att( 'flip_content' );
 		$description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
 
+        $image_url = '';
+        $image_width_html = '';
+        $image_height_html = '';
+        if( $image != '' ) {
+            $info_img = wp_get_attachment_image_src($image, 'full');
+            if (is_array($info_img)) {
+                $image_url = $info_img[0];
+                $image_width_html = ' width="' . $info_img[1] . '"';
+                $image_height_html = ' height="' . $info_img[2] . '"';
+            }
+        }
 
 		$additional_classes = array();
+
+		//lazyload effect
+        $tds_animation_stack = td_util::get_option('tds_animation_stack');
+        if ( empty($tds_animation_stack) ) { //lazyload animation is ON
+            $additional_classes[] = 'td-animation-stack';
+        }
 
         // extend image
         if ( ! empty( $extend_image ) ) {
@@ -116,7 +170,12 @@ class tdm_block_text_image extends td_block {
             $buffy_image = '';
             $buffy_image .= '<div class="td-block-span6 tdm-col tdm-col-img">';
                 if ( ! empty( $image ) ) {
-                    $buffy_image .= '<img class="tdm-image td-fix-index" src="' . tdc_util::get_image_or_placeholder($image) . '" alt="">';
+                    if ( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                        $buffy_image .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_url . '" ' . $image_width_html . $image_height_html . '>';
+
+                    } else {
+                        $buffy_image .= '<img class="tdm-image td-fix-index" src="' . tdc_util::get_image_or_placeholder($image) . '" ' . $image_width_html . $image_height_html . ' alt="">';
+                    }
                 }
             $buffy_image .= '</div>';
 
@@ -140,7 +199,7 @@ class tdm_block_text_image extends td_block {
                         if ( empty( $tds_button ) ) {
                             $tds_button = td_util::get_option( 'tds_button', 'tds_button1' );
                         }
-                        $tds_button_instance = new $tds_button( $this->shortcode_atts );
+                        $tds_button_instance = new $tds_button( $this->shortcode_atts, '', $this->unique_block_class );
                         $buffy_text .= $tds_button_instance->render();
                     }
                 $buffy_text .= '</div>';

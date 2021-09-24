@@ -35,11 +35,11 @@ function spacious_content_width() {
 		$layout_meta = 'default_layout';
 	}
 
-	$spacious_default_layout = spacious_options( 'default_layout', 'right_sidebar' );
+	$spacious_default_layout = get_theme_mod( 'default_layout', 'right_sidebar' );
 
 	if ( $layout_meta == 'default_layout' ) {
 
-		if ( ( spacious_options( 'spacious_site_layout', 'box_1218px' ) == 'box_978px' ) || ( spacious_options( 'spacious_site_layout', 'box_1218px' ) == 'wide_978px' ) ) {
+		if ( ( get_theme_mod( 'spacious_site_layout', 'box_1218px' ) == 'box_978px' ) || ( get_theme_mod( 'spacious_site_layout', 'box_1218px' ) == 'wide_978px' ) ) {
 			if ( $spacious_default_layout == 'no_sidebar_full_width' ) {
 				$content_width = 978; /* pixels */
 			} else {
@@ -50,8 +50,7 @@ function spacious_content_width() {
 		} else {
 			$content_width = 750; /* pixels */
 		}
-
-	} elseif ( ( spacious_options( 'spacious_site_layout', 'box_1218px' ) == 'box_978px' ) || ( spacious_options( 'spacious_site_layout', 'box_1218px' ) == 'wide_978px' ) ) {
+	} elseif ( ( get_theme_mod( 'spacious_site_layout', 'box_1218px' ) == 'box_978px' ) || ( get_theme_mod( 'spacious_site_layout', 'box_1218px' ) == 'wide_978px' ) ) {
 		if ( $layout_meta == 'no_sidebar_full_width' ) {
 			$content_width = 978; /* pixels */
 		} else {
@@ -90,7 +89,8 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 		add_theme_support( 'title-tag' );
 
 		// Adds the support for the Custom Logo introduced in WordPress 4.5
-		add_theme_support( 'custom-logo',
+		add_theme_support(
+			'custom-logo',
 			array(
 				'height'      => 100,
 				'width'       => 100,
@@ -100,11 +100,13 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 		);
 
 		// Registering navigation menus.
-		register_nav_menus( array(
-			'header'  => esc_html__( 'Header Menu', 'spacious' ),
-			'primary' => esc_html__( 'Primary Menu', 'spacious' ),
-			'footer'  => esc_html__( 'Footer Menu', 'spacious' ),
-		) );
+		register_nav_menus(
+			array(
+				'header'  => esc_html__( 'Header Menu', 'spacious' ),
+				'primary' => esc_html__( 'Primary Menu', 'spacious' ),
+				'footer'  => esc_html__( 'Footer Menu', 'spacious' ),
+			)
+		);
 
 		// Cropping the images to different sizes to be used in the theme
 		add_image_size( 'featured-blog-large', 750, 350, true );
@@ -113,9 +115,15 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 		add_image_size( 'featured-blog-medium-small', 230, 230, true );
 
 		// Setup the WordPress core custom background feature.
-		add_theme_support( 'custom-background', apply_filters( 'spacious_custom_background_args', array(
-			'default-color' => 'eaeaea',
-		) ) );
+		add_theme_support(
+			'custom-background',
+			apply_filters(
+				'spacious_custom_background_args',
+				array(
+					'default-color' => 'eaeaea',
+				)
+			)
+		);
 
 		// Adding excerpt option box for pages as well
 		add_post_type_support( 'page', 'excerpt' );
@@ -124,25 +132,34 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 		 * Switch default core markup for search form, comment form, and comments
 		 * to output valid HTML5.
 		 */
-		add_theme_support( 'html5', array(
-			'search-form',
-			'comment-form',
-			'comment-list',
-			'gallery',
-			'caption',
-		) );
+		add_theme_support(
+			'html5',
+			array(
+				'search-form',
+				'comment-form',
+				'comment-list',
+				'gallery',
+				'caption',
+			)
+		);
 
 		// Support for selective refresh widgets in Customizer
 		add_theme_support( 'customize-selective-refresh-widgets' );
 
-		// Gutenberg layout support.
+		// Gutenberg wide layout support.
 		add_theme_support( 'align-wide' );
+
+		// Gutenberg block styles support.
+		add_theme_support( 'wp-block-styles' );
+
+		// Gutenberg responsive embeds support.
+		add_theme_support( 'responsive-embeds' );
 
 		// Define and register starter content to showcase the theme on new sites.
 		$starter_content = array(
 			'widgets'     => array(
 				// Add the search widget to the header sidebar.
-				'spacious_header_sidebar'                                  => array(
+				'spacious_header_sidebar'       => array(
 					'header_search' => array(
 						'search',
 						array(
@@ -152,19 +169,19 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 				),
 
 				// Add text widgets to the contact sidebar.
-				'spacious_contact_page_sidebar'                            => array(
+				'spacious_contact_page_sidebar' => array(
 					'text_business_info',
 					'text_about',
 				),
 
 				// Add text widget and cta widget in the Business Top sidebar.
-				'spacious_business_page_top_section_sidebar'               => array(
+				'spacious_business_page_top_section_sidebar' => array(
 					'text_top_sidebar_info' => array(
 						'text',
 						array(
 							'title' => esc_html__( 'Business Top Sidebar', 'spacious' ),
 							'text'  => esc_html__( 'Shows widgets on Business Page Template Top Section.', 'spacious' ) . ' ' . __( 'Suitable widget: TG: Services, TG: Call To Action Widget, TG: Featured Widget', 'spacious' ) .
-							           '<ul>
+									   '<ul>
 											<li>' . '<strong>' . esc_html__( 'TG: Services', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Display some pages as services. Best for Business Top or Bottom sidebar.', 'spacious' ) . '</li>
 											<li>' . '<strong>' . esc_html__( 'TG: Call To Action Widget', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Use this widget to show the call to action section.', 'spacious' ) . '</li>
 											<li>' . '<strong>' . esc_html__( 'TG: Featured Widget', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Show your some pages as recent work. Best for Business Top or Bottom sidebar.', 'spacious' ) . '</li>
@@ -183,7 +200,7 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 				),
 
 				// Add text widget and featured single page widget in the Business Middle Left Sidebar.
-				'spacious_business_page_middle_section_left_half_sidebar'  => array(
+				'spacious_business_page_middle_section_left_half_sidebar' => array(
 					'text_middle_left_sidebar_info' => array(
 						'text',
 						array(
@@ -220,13 +237,13 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 				),
 
 				// Add text widget in the Business Bottom Sidebar.
-				'spacious_business_page_bottom_section_sidebar'            => array(
+				'spacious_business_page_bottom_section_sidebar' => array(
 					'text_bottom_sidebar_info' => array(
 						'text',
 						array(
 							'title' => esc_html__( 'Business Bottom Sidebar', 'spacious' ),
 							'text'  => esc_html__( 'Shows widgets on Business Page Template Bottom Section.', 'spacious' ) . ' ' . __( 'Suitable widget: TG: Services, TG: Call To Action Widget, TG: Featured Widget', 'spacious' ) .
-							           '<ul>
+									   '<ul>
 											<li>' . '<strong>' . esc_html__( 'TG: Services', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Display some pages as services. Best for Business Top or Bottom sidebar.', 'spacious' ) . '</li>
 											<li>' . '<strong>' . esc_html__( 'TG: Call To Action Widget', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Use this widget to show the call to action section.', 'spacious' ) . '</li>
 											<li>' . '<strong>' . esc_html__( 'TG: Featured Widget', 'spacious' ) . '</strong>' . ' - ' . esc_html__( 'Show your some pages as recent work. Best for Business Top or Bottom sidebar.', 'spacious' ) . '</li>
@@ -236,35 +253,35 @@ if ( ! function_exists( 'spacious_setup' ) ) :
 				),
 
 				// Add the text widget in the footer siderbar 1.
-				'spacious_footer_sidebar_one'                              => array(
+				'spacious_footer_sidebar_one'   => array(
 					'text_business_info',
 				),
 
 				// Add search widget and text widget in the footer siderbar 2.
-				'spacious_footer_sidebar_two'                              => array(
+				'spacious_footer_sidebar_two'   => array(
 					'search',
 					'text_about',
 				),
 
 				// Add the text widget in the footer siderbar 3.
-				'spacious_footer_sidebar_three'                            => array(
+				'spacious_footer_sidebar_three' => array(
 					'text_custom_menu' => array(
 						'text',
 						array(
 							'title' => esc_html__( 'Spacious Important Links', 'spacious' ),
 							'text'  => '<ul>
 											<li><a href="https://themegrill.com/themes/spacious/">' . esc_html__( 'Theme Info', 'spacious' ) . '</a></li>
-											<li><a href="https://demo.themegrill.com/spacious/">' . esc_html__( 'View Demo', 'spacious' ) . '</a></li>
+											<li><a href="https://themegrilldemos.com/spacious/">' . esc_html__( 'View Demo', 'spacious' ) . '</a></li>
 											<li><a href="https://www.youtube.com/watch?v=rhiybsv3vUU">' . esc_html__( 'Import Demo', 'spacious' ) . '</a></li>
 											<li><a href="https://docs.themegrill.com/spacious/">' . esc_html__( 'Documentation', 'spacious' ) . '</a></li>
-											<li><a href="https://themegrill.com/support-forum/forum/spacious-free/">' . esc_html__( 'Support Forum', 'spacious' ) . '</a></li>
+											<li><a href="https://wordpress.org/support/theme/spacious/">' . esc_html__( 'Support Forum', 'spacious' ) . '</a></li>
 										</ul>',
 						),
 					),
 				),
 
 				// Add the featured single page widget in the footer siderbar 4.
-				'spacious_footer_sidebar_four'                             => array(
+				'spacious_footer_sidebar_four'  => array(
 					'featured_single_page' => array(
 						'spacious_featured_single_page_widget',
 						array(
@@ -353,7 +370,7 @@ endif;
 add_action( 'after_setup_theme', 'spacious_setup' );
 
 // Theme version.
-$spacious_theme = wp_get_theme();
+$spacious_theme = wp_get_theme( 'spacious' );
 define( 'SPACIOUS_THEME_VERSION', $spacious_theme->get( 'Version' ) );
 
 /**
@@ -395,25 +412,28 @@ define( 'SPACIOUS_ADMIN_CSS_URL', SPACIOUS_ADMIN_URL . '/css' );
 /** Load functions */
 require_once SPACIOUS_INCLUDES_DIR . '/custom-header.php';
 require_once SPACIOUS_INCLUDES_DIR . '/functions.php';
-require_once SPACIOUS_INCLUDES_DIR . '/customizer.php';
 require_once SPACIOUS_INCLUDES_DIR . '/header-functions.php';
+require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-customizer.php';
+require_once SPACIOUS_INCLUDES_DIR . '/customizer/class-spacious-customizer-partials.php';
 
 require_once SPACIOUS_ADMIN_DIR . '/meta-boxes.php';
+require_once SPACIOUS_INCLUDES_DIR . '/enqueue-scripts.php';
+require_once SPACIOUS_INCLUDES_DIR . '/class-spacious-dynamic-css.php';
+require_once SPACIOUS_INCLUDES_DIR . '/migration.php';
+
+/** Load demo import migration scripts. */
+require_once SPACIOUS_INCLUDES_DIR . '/demo-import-migration.php';
+
 
 /** Load Widgets and Widgetized Area */
 require_once SPACIOUS_WIDGETS_DIR . '/widgets.php';
 
+define( 'SPACIOUS_CUSTOMIZER_DIR', SPACIOUS_INCLUDES_DIR . '/customizer' );
+
 /**
  * Detect plugin. For use on Front End only.
  */
-include_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-/**
- * Load Demo Importer Configs.
- */
-if ( class_exists( 'TG_Demo_Importer' ) ) {
-	require_once get_template_directory() . '/inc/demo-config.php';
-}
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 /**
  * Assign the Spacious version to a variable.
@@ -425,17 +445,14 @@ $spacious_version = $theme['Version'];
  * Calling in the admin area for the Welcome Page as well as for the new theme notice too.
  */
 if ( is_admin() ) {
-	require_once get_template_directory() . '/inc/admin/class-spacious-admin.php';
+	require get_template_directory() . '/inc/admin/class-spacious-admin.php';
 	require get_template_directory() . '/inc/admin/class-spacious-dashboard.php';
 	require get_template_directory() . '/inc/admin/class-spacious-theme-review-notice.php';
 	require get_template_directory() . '/inc/admin/class-spacious-tdi-notice.php';
+	require get_template_directory() . '/inc/admin/class-spacious-welcome-notice.php';
+	require get_template_directory() . '/inc/admin/class-spacious-notice.php';
+	require get_template_directory() . '/inc/admin/class-spacious-upgrade-notice.php';
 }
-
-/**
- * Load TGMPA Configs.
- */
-require_once SPACIOUS_INCLUDES_DIR . '/tgm-plugin-activation/class-tgm-plugin-activation.php';
-require_once SPACIOUS_INCLUDES_DIR . '/tgm-plugin-activation/tgmpa-spacious.php';
 
 /**
  * Load the Spacious Toolkit file.
@@ -451,15 +468,12 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require_once get_template_directory() . '/inc/jetpack.php';
 }
 
-/**
- * Define Elementor partner ID
- */
-if ( ! defined( 'ELEMENTOR_PARTNER_ID' ) ) {
-	define( 'ELEMENTOR_PARTNER_ID', 2125 );
-}
-
 /** Add the Elementor compatibility file */
 if ( defined( 'ELEMENTOR_VERSION' ) ) {
-	require_once( SPACIOUS_INCLUDES_DIR . '/elementor/elementor.php' );
+	require_once SPACIOUS_INCLUDES_DIR . '/elementor/elementor.php';
 }
 
+/**
+ * Load deprecated functions.
+ */
+require get_template_directory() . '/inc/deprecated/deprecated-functions.php';

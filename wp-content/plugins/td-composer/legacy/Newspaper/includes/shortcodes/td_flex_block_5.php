@@ -154,6 +154,21 @@ class td_flex_block_5 extends td_block {
             $res_ctx->load_settings_raw( 'video_icon', $video_icon . 'px' );
         }
 
+        // show video duration
+        $res_ctx->load_settings_raw('show_vid_t', $res_ctx->get_shortcode_att('show_vid_t'));
+        // video duration margin
+        $vid_t_margin = $res_ctx->get_shortcode_att('vid_t_margin');
+        $res_ctx->load_settings_raw( 'vid_t_margin', $vid_t_margin );
+        if( $vid_t_margin != '' && is_numeric( $vid_t_margin ) ) {
+            $res_ctx->load_settings_raw( 'vid_t_margin', $vid_t_margin . 'px' );
+        }
+        // video duration padding
+        $vid_t_padding = $res_ctx->get_shortcode_att('vid_t_padding');
+        $res_ctx->load_settings_raw( 'vid_t_padding', $vid_t_padding );
+        if( $vid_t_padding != '' && is_numeric( $vid_t_padding ) ) {
+            $res_ctx->load_settings_raw( 'vid_t_padding', $vid_t_padding . 'px' );
+        }
+
 
 
         /*-- META INFO -- */
@@ -169,6 +184,17 @@ class td_flex_block_5 extends td_block {
         $res_ctx->load_settings_raw( 'meta_width', $meta_info_width );
         if( $meta_info_width != '' && is_numeric( $meta_info_width ) ) {
             $res_ctx->load_settings_raw( 'meta_width', $meta_info_width . 'px' );
+        }
+        // meta info margin
+        $meta_margin = $res_ctx->get_shortcode_att('meta_margin');
+        $res_ctx->load_settings_raw( 'meta_margin', $meta_margin );
+        if ( is_numeric( $meta_margin ) ) {
+            $res_ctx->load_settings_raw( 'meta_margin', $meta_margin . 'px' );
+        }
+        $meta_margin2 = $res_ctx->get_shortcode_att('meta_margin2');
+        $res_ctx->load_settings_raw( 'meta_margin2', $meta_margin2 );
+        if ( is_numeric( $meta_margin2 ) ) {
+            $res_ctx->load_settings_raw( 'meta_margin2', $meta_margin2 . 'px' );
         }
 	    // meta info padding
         $meta_padding = $res_ctx->get_shortcode_att('meta_padding');
@@ -197,6 +223,17 @@ class td_flex_block_5 extends td_block {
 	    $res_ctx->load_settings_raw( 'meta_info_border_style', $res_ctx->get_shortcode_att('meta_info_border_style') );
 	    // meta info border color
 	    $res_ctx->load_settings_raw( 'meta_info_border_color', $res_ctx->get_shortcode_att('meta_info_border_color') );
+	    // meta info border radius
+        $meta_info_border_radius = $res_ctx->get_shortcode_att('meta_info_border_radius');
+        $res_ctx->load_settings_raw( 'meta_info_border_radius', $meta_info_border_radius );
+        if ( is_numeric( $meta_info_border_radius ) ) {
+            $res_ctx->load_settings_raw( 'meta_info_border_radius', $meta_info_border_radius . 'px' );
+        }
+        $meta_info_border_radius2 = $res_ctx->get_shortcode_att('meta_info_border_radius2');
+        $res_ctx->load_settings_raw( 'meta_info_border_radius2', $meta_info_border_radius2 );
+        if ( is_numeric( $meta_info_border_radius2 ) ) {
+            $res_ctx->load_settings_raw( 'meta_info_border_radius2', $meta_info_border_radius2 . 'px' );
+        }
 
 
 	    // article title space
@@ -297,14 +334,27 @@ class td_flex_block_5 extends td_block {
 
 
         // show meta info details
+        $author_photo = $res_ctx->get_shortcode_att('author_photo');
         $show_author = $res_ctx->get_shortcode_att('show_author');
         $show_date = $res_ctx->get_shortcode_att('show_date');
         $show_review = $res_ctx->get_shortcode_att('show_review');
+        $review_space = $res_ctx->get_shortcode_att('review_space');
+        $res_ctx->load_settings_raw( 'review_space', $review_space );
+        if( $review_space != '' && is_numeric( $review_space ) ) {
+            $res_ctx->load_settings_raw( 'review_space', $review_space . 'px' );
+        }
         $review_size = $res_ctx->get_shortcode_att('review_size');
         $res_ctx->load_settings_raw( 'review_size', 10 + $review_size/0.5 . 'px' );
+        $review_distance = $res_ctx->get_shortcode_att('review_distance');
+        $res_ctx->load_settings_raw( 'review_distance', $review_distance );
+        if( $review_distance != '' && is_numeric( $review_distance ) ) {
+            $res_ctx->load_settings_raw( 'review_distance', $review_distance . 'px' );
+        }
         $show_com = $res_ctx->get_shortcode_att('show_com');
-        if( $show_author == 'none' && $show_date == 'none' && $show_com == 'none' && $show_review == 'none' ) {
+        if( $show_author == 'none' && $show_date == 'none' && $show_com == 'none' && $show_review == 'none' && $author_photo == '' ) {
             $res_ctx->load_settings_raw( 'hide_author_date', 1 );
+        } else {
+            $res_ctx->load_settings_raw( 'show_author_date', 1 );
         }
         $res_ctx->load_settings_raw( 'show_author', $show_author );
         $res_ctx->load_settings_raw( 'show_date', $show_date );
@@ -449,6 +499,77 @@ class td_flex_block_5 extends td_block {
 
         $res_ctx->load_shadow_settings( 0, 0, 0, 0, 'rgba(0, 0, 0, 0.08)', 'shadow_m' );
 
+        // video pop-up
+        $res_ctx->load_settings_raw( 'video_rec_color', $res_ctx->get_shortcode_att('video_rec_color') );
+        $res_ctx->load_settings_raw( 'video_title_color', $res_ctx->get_shortcode_att('video_title_color') );
+        $res_ctx->load_settings_raw( 'video_title_color_h', $res_ctx->get_shortcode_att('video_title_color_h') );
+        $res_ctx->load_color_settings( 'video_bg', 'video_bg_color', 'video_bg_gradient', '', '' );
+        $res_ctx->load_color_settings( 'video_overlay', 'video_overlay_color', 'video_overlay_gradient', '', '' );
+
+        // video duration
+        $res_ctx->load_settings_raw( 'vid_t_color', $res_ctx->get_shortcode_att('vid_t_color') );
+        $res_ctx->load_settings_raw( 'vid_t_bg_color', $res_ctx->get_shortcode_att('vid_t_bg_color') );
+
+
+        // exclusive label
+        if( !empty( has_filter('td_composer_map_exclusive_label_array', 'td_subscription::add_exclusive_label_settings') ) ) {
+            // show exclusive label
+            $excl_show = $res_ctx->get_shortcode_att('excl_show');
+            $res_ctx->load_settings_raw( 'excl_show', $excl_show );
+            if( $excl_show == '' ) {
+                $res_ctx->load_settings_raw( 'excl_show', 'inline-block' );
+            }
+
+            // exclusive label text
+            $res_ctx->load_settings_raw( 'excl_txt', $res_ctx->get_shortcode_att('excl_txt') );
+
+            // exclusive label margin
+            $excl_margin = $res_ctx->get_shortcode_att('excl_margin');
+            $res_ctx->load_settings_raw( 'excl_margin', $excl_margin );
+            if( $excl_margin != '' && is_numeric( $excl_margin ) ) {
+                $res_ctx->load_settings_raw( 'excl_margin', $excl_margin . 'px' );
+            }
+
+            // exclusive label padding
+            $excl_padd = $res_ctx->get_shortcode_att('excl_padd');
+            $res_ctx->load_settings_raw( 'excl_padd', $excl_padd );
+            if( $excl_padd != '' && is_numeric( $excl_padd ) ) {
+                $res_ctx->load_settings_raw( 'excl_padd', $excl_padd . 'px' );
+            }
+
+            // exclusive label border size
+            $excl_border = $res_ctx->get_shortcode_att('all_excl_border');
+            $res_ctx->load_settings_raw( 'all_excl_border', $excl_border );
+            if( $excl_border != '' && is_numeric( $excl_border ) ) {
+                $res_ctx->load_settings_raw( 'all_excl_border', $excl_border . 'px' );
+            }
+
+            // exclusive label border style
+            $res_ctx->load_settings_raw( 'all_excl_border_style', $res_ctx->get_shortcode_att('all_excl_border_style') );
+
+            // exclusive label border radius
+            $excl_radius = $res_ctx->get_shortcode_att('excl_radius');
+            $res_ctx->load_settings_raw( 'excl_radius', $excl_radius );
+            if( $excl_radius != '' && is_numeric( $excl_radius ) ) {
+                $res_ctx->load_settings_raw( 'excl_radius', $excl_radius . 'px' );
+            }
+
+
+            $res_ctx->load_settings_raw( 'excl_color', $res_ctx->get_shortcode_att('excl_color') );
+            $res_ctx->load_settings_raw( 'excl_color_h', $res_ctx->get_shortcode_att('excl_color_h') );
+            $res_ctx->load_settings_raw( 'excl_bg', $res_ctx->get_shortcode_att('excl_bg') );
+            $res_ctx->load_settings_raw( 'excl_bg_h', $res_ctx->get_shortcode_att('excl_bg_h') );
+            $excl_border_color = $res_ctx->get_shortcode_att('all_excl_border_color');
+            $res_ctx->load_settings_raw( 'all_excl_border_color', $excl_border_color );
+            if( $excl_border_color == '' ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_color', '#000' );
+            }
+            $res_ctx->load_settings_raw( 'excl_border_color_h', $res_ctx->get_shortcode_att('excl_border_color_h') );
+
+
+            $res_ctx->load_font_settings( 'f_excl' );
+        }
+
 
 
         /*-- FONTS -- */
@@ -460,6 +581,9 @@ class td_flex_block_5 extends td_block {
 	    $res_ctx->load_font_settings( 'f_ex' );
 	    $res_ctx->load_font_settings( 'f_btn' );
 	    $res_ctx->load_font_settings( 'f_more' );
+
+        $res_ctx->load_font_settings( 'f_vid_title' );
+        $res_ctx->load_font_settings( 'f_vid_time' );
 
 	    $res_ctx->load_settings_raw( 'equal_height', 1 );
         $res_ctx->load_settings_raw( 'divider_on', $res_ctx->get_shortcode_att('divider_on') );
@@ -533,7 +657,8 @@ class td_flex_block_5 extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = $this->block_uid;
+        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $unique_block_modal_class = $this->block_uid . '_m';
 
         $compiled_css = '';
 
@@ -653,6 +778,19 @@ class td_flex_block_5 extends td_block {
 					font-size: @video_icon;
 				}
 				
+				/* @show_vid_t */
+				.$unique_block_class .td-post-vid-time {
+					display: @show_vid_t;
+				}
+				/* @vid_t_margin */
+				.$unique_block_class .td-post-vid-time {
+					margin: @vid_t_margin;
+				}
+				/* @vid_t_padding */
+				.$unique_block_class .td-post-vid-time {
+					padding: @vid_t_padding;
+				}
+				
 				
 				/* @meta_horiz_align_center */
 				.$unique_block_class .td-module-meta-info {
@@ -678,6 +816,14 @@ class td_flex_block_5 extends td_block {
 				/* @meta_width */
 				.$unique_block_class .td-module-meta-info {
 					max-width: @meta_width;
+				}
+				/* @meta_margin */
+				.$unique_block_class .td-module-meta-info-top {
+					margin: @meta_margin;
+				}
+				/* @meta_margin2 */
+				.$unique_block_class .td-module-meta-info-bottom {
+					margin: @meta_margin2;
 				}
 				/* @meta_padding */
 				.$unique_block_class .td-module-meta-info-top {
@@ -709,6 +855,14 @@ class td_flex_block_5 extends td_block {
 				/* @meta_info_border_color */
 				.$unique_block_class .td-module-meta-info {
 					border-color: @meta_info_border_color;
+				}
+				/* @meta_info_border_radius */
+				.$unique_block_class .td-module-meta-info-top {
+					border-radius: @meta_info_border_radius;
+				}
+				/* @meta_info_border_radius2 */
+				.$unique_block_class .td-module-meta-info-bottom {
+					border-radius: @meta_info_border_radius2;
 				}
 				
 				/* @art_title */
@@ -796,6 +950,10 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .td-author-date {
 					display: none;
 				}
+				/* @show_author_date */
+				.$unique_block_class .td-author-date {
+					display: inline;
+				}
 				/* @show_author */
 				.$unique_block_class .td-post-author-name {
 					display: @show_author;
@@ -823,11 +981,22 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .entry-review-stars {
 					display: @show_review;
 				}
+				/* @review_space */
+				.$unique_block_class .entry-review-stars {
+					margin: @review_space;
+				}
 				/* @review_size */
 				.$unique_block_class .td-icon-star,
                 .$unique_block_class .td-icon-star-empty,
                 .$unique_block_class .td-icon-star-half {
 					font-size: @review_size;
+				}
+				/* @review_distance */
+				.$unique_block_class .entry-review-stars i {
+					margin-right: @review_distance;
+				}
+				.$unique_block_class .entry-review-stars i:last-child {
+				    margin-right: 0;
 				}
 				/* @show_com */
 				.$unique_block_class .td-module-comments {
@@ -884,6 +1053,10 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a,
 				.$unique_block_class .td-load-more-wrap a i {
 					font-size: @pag_icons_size;
+				}
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap .td-next-prev-icon-svg svg {
+				    width: @pag_icons_size;
+				    height: calc( @pag_icons_size + 1px );
 				}
 				
            
@@ -1035,6 +1208,10 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .td-load-more-wrap a {
 					color: @pag_text;
 				}
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap .td-next-prev-icon-svg svg,
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap .td-next-prev-icon-svg svg * {
+				    fill: @pag_text;
+				}
 				/* @pag_bg */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a,
 				.$unique_block_class .td-load-more-wrap a {    
@@ -1050,6 +1227,10 @@ class td_flex_block_5 extends td_block {
 				.$unique_block_class .td-load-more-wrap a:hover {
 					color: @pag_h_text;
 				}
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a:hover .td-next-prev-icon-svg svg,
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a:hover .td-next-prev-icon-svg svg * {
+				    fill: @pag_h_text;
+				}
 				/* @pag_h_bg */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a:hover,
 				.$unique_block_class .td-load-more-wrap a:hover {    
@@ -1062,10 +1243,98 @@ class td_flex_block_5 extends td_block {
 					border-color: @pag_h_border !important;
 				}
 				
+				/* @video_rec_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-rec-title {
+				    color: @video_rec_color;
+				}
+				/* @video_title_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-title a {
+				    color: @video_title_color;
+				}
+				/* @video_title_color_h */
+				#td-video-modal.$unique_block_modal_class .td-vm-title a:hover {
+				    color: @video_title_color_h;
+				}
+				/* @video_bg_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    background-color: @video_bg_color;
+				}
+				/* @video_bg_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-content-wrap {
+				    @video_bg_gradient
+				}
+				/* @video_overlay_color */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_color;
+				}
+				/* @video_overlay_gradient */
+				#td-video-modal.$unique_block_modal_class .td-vm-overlay {
+				    background-color: @video_overlay_gradient;
+				}
+				
+				/* @vid_t_color */
+				.$unique_block_class .td-post-vid-time {
+					color: @vid_t_color;
+				}
+				/* @vid_t_bg_color */
+				.$unique_block_class .td-post-vid-time {
+					background-color: @vid_t_bg_color;
+				}
+				
 				/* @shadow_m */
 				.$unique_block_class .td-module-meta-info {
 				    box-shadow: @shadow_m;
 				}
+                
+                
+                /* @excl_show */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    display: @excl_show;
+                }
+                /* @excl_txt */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    content: '@excl_txt';
+                }
+                /* @excl_margin */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    margin: @excl_margin;
+                }
+                /* @excl_padd */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    padding: @excl_padd;
+                }
+                /* @all_excl_border */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    border: @all_excl_border @all_excl_border_style @all_excl_border_color;
+                }
+                /* @excl_radius */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    border-radius: @excl_radius;
+                }
+                /* @excl_color */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    color: @excl_color;
+                }
+                /* @excl_color_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    color: @excl_color_h;
+                }
+                /* @excl_bg */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    background-color: @excl_bg;
+                }
+                /* @excl_bg_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    background-color: @excl_bg_h;
+                }
+                /* @excl_border_color_h */
+                .$unique_block_class .td-module-exclusive:hover .td-module-title a:before {
+                    border-color: @excl_border_color_h;
+                }
+                /* @f_excl */
+                .$unique_block_class .td-module-exclusive .td-module-title a:before {
+                    @f_excl
+                }
 				
 
 				/* @f_header */
@@ -1089,7 +1358,8 @@ class td_flex_block_5 extends td_block {
 				}
 				/* @f_meta */
 				.$unique_block_class .td-editor-date,
-				.$unique_block_class .td-editor-date .td-post-author-name,
+				.$unique_block_class .td-editor-date .td-post-author-name a,
+				.$unique_block_class .td-editor-date .entry-date,
 				.$unique_block_class .td-module-comments a {
 					@f_meta
 				}
@@ -1104,6 +1374,14 @@ class td_flex_block_5 extends td_block {
 				/* @f_more */
 				.$unique_block_class .td-load-more-wrap a {
 					@f_more
+				}
+				/* @f_vid_title */
+				#td-video-modal.$unique_block_modal_class .td-vm-title {
+					@f_vid_title
+				}
+				/* @f_vid_time */
+				.$unique_block_class .td-post-vid-time {
+					@f_vid_time
 				}
 				
 				/* @equal_height */
@@ -1122,65 +1400,69 @@ class td_flex_block_5 extends td_block {
 				}
 				
 				/* @mix_type */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
 				    content: '';
                     width: 100%;
                     height: 100%;
                     position: absolute;
+                    top: 0;
+                    left: 0;
 					opacity: 1;
 					transition: opacity 1s ease;
 					-webkit-transition: opacity 1s ease;
 					mix-blend-mode: @mix_type;
 				}
 				/* @color */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     background: @color;
 				}
 				/* @mix_gradient */
-				.$unique_block_class .entry-thumb:before {
+				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
                     @mix_gradient;
 				}
 				
 				
                 /* @mix_type_h */
                 @media (min-width: 1141px) {
-                    .$unique_block_class .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                         content: '';
                         width: 100%;
                         height: 100%;
                         position: absolute;
+                        top: 0;
+                        left: 0;
                         opacity: 0;
                         transition: opacity 1s ease;
                         -webkit-transition: opacity 1s ease;
                         mix-blend-mode: @mix_type_h;
                     }
-                    .$unique_block_class .td-module-container:hover .entry-thumb:after {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:after {
                         opacity: 1;
                     }
                 }
                 
                 /* @color_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     background: @color_h;
                 }
                 /* @mix_gradient_h */
-                .$unique_block_class .entry-thumb:after {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb:after {
                     @mix_gradient_h;
                 }
                 /* @mix_type_off */
-                .$unique_block_class .td-module-container:hover .entry-thumb:before {
+                html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb:before {
                     opacity: 0;
                 }
                     
 				/* @effect_on */
-                .$unique_block_class .entry-thumb {
+                html:not([class*='ie']) .$unique_block_class .entry-thumb {
                     filter: @fe_brightness @fe_contrast @fe_saturate;
                     transition: all 1s ease;
 					-webkit-transition: all 1s ease;
                 }
 				/* @effect_on_h */
 				@media (min-width: 1141px) {
-                    .$unique_block_class .td-module-container:hover .entry-thumb {
+                    html:not([class*='ie']) .$unique_block_class .td-module-container:hover .entry-thumb {
                         filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
                     }
                 }
@@ -1229,8 +1511,8 @@ class td_flex_block_5 extends td_block {
             $buffy .= '</div>';
 
             //get the ajax pagination for this block
-            $prev_icon = $this->get_att('prev_tdicon');
-            $next_icon = $this->get_att('next_tdicon');
+            $prev_icon = $this->get_icon_att('prev_tdicon');
+            $next_icon = $this->get_icon_att('next_tdicon');
             $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
         $buffy .= '</div>';
         return $buffy;
@@ -1245,7 +1527,7 @@ class td_flex_block_5 extends td_block {
                 foreach ($posts as $post) {
 
                     $td_module_flex_5 = new td_module_flex_5($post, $this->get_all_atts());
-                    $buffy .= $td_module_flex_5->render($post);
+                    $buffy .= $td_module_flex_5->render(__CLASS__);
                 }
             }
             $buffy .= $td_block_layout->close_all_tags();
@@ -1284,8 +1566,8 @@ class td_flex_block_5 extends td_block {
             
             /* global jQuery:{} */
             (function () {
-                var block = jQuery('.<?php echo $this->block_uid; ?>');
-                blockClass = '.<?php echo $this->block_uid; ?>';
+                var block = jQuery('.<?php echo $this->block_uid; ?>'),
+                    blockClass = '.<?php echo $this->block_uid; ?>';
 
                 if( block.find('audio').length > 0 ) {
                     jQuery(blockClass + ' audio').mediaelementplayer();

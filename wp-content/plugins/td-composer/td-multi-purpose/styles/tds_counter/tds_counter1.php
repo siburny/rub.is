@@ -99,7 +99,7 @@ class tds_counter1 extends td_style {
         $title = $this->get_shortcode_att( 'counter_title' );
         $number = $this->get_shortcode_att( 'counter_number' );
 
-        $buffy = PHP_EOL . '<style>' . PHP_EOL . $this->get_css() . PHP_EOL . '</style>';
+        $buffy = $this->get_style($this->get_css());
 
         $buffy .= '<div class="tdm-counter-wrap ' . self::get_class_style(__CLASS__) . ' ' . $this->unique_style_class . ' td-fix-index">';
             $buffy .= '<div class="tdm-counter-number">' . $number . '</div>';

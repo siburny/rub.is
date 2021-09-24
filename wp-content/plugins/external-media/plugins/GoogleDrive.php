@@ -114,11 +114,9 @@ class GoogleDrive extends WP_ExternalPluginBase {
 
     $elements['google_instructions'] = array(
       '#type' => 'markup',
-      '#markup' => __('<p>To get started using Google Picker API, you need to first '
-        . '<a href="https://console.developers.google.com/flows/enableapi?apiid=picker" target="_blank">'
-        . 'create or select a project in the Google Developers Console and enable the API</a>.</p>'
-        . '<ul><li>Enable <strong>Google Picker API</strong> <em>(required)</em></li>'
-        . '<li>Enable <strong>Drive API</strong> <em>(required)</em></li></ul>'
+      '#markup' => __('<p>To get started using Google Picker API, you need to first <a href="https://console.developers.google.com/flows/enableapi?apiid=picker" target="_blank"> create or select a project in the Google Developers Console and enable the API</a>.</p>'
+        . '<p> - Enable <strong>Google Picker API</strong> <em>(required)</em></p>'
+        . '<p> - Enable <strong>Drive API</strong> <em>(required)</em>' . '</p>'
         . '<p>Read more about <em>Scopes</em> and more details about how to get credentials on the '
         . '<a href="https://developers.google.com/picker/docs/" target="_blank">documentaion page</a>.'),
     );
@@ -180,14 +178,6 @@ class GoogleDrive extends WP_ExternalPluginBase {
       '#default_value' => TRUE,
     );
 
-/*
-    $elements['google_parent_folder'] = array(
-      '#title' => __('Parent Folder'),
-      '#type' => 'textfield',
-      '#description' => __('<strong>Important</strong>: Not every user may have the folder you specify here. Set the initial parent folder to display. Folder IDs can be obtain through Drive API. By default it is : root.'),
-      '#placeholder' => __('root'),
-    );*/
-
     $elements['google_redirect_uri'] = array(
       '#type' => 'markup',
       '#title' => __('Redirect URL'),
@@ -201,7 +191,7 @@ class GoogleDrive extends WP_ExternalPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function download( $file, $filename ) {
+  public function download( $file, $filename, $caption, $referer ) {
     list ( $file_id, $google_token ) = explode( ':::', $file );
     $google_drive_file_url = 'https://www.googleapis.com/drive/v2/files/' . $file_id . '?alt=media';
     $options = array(
@@ -209,7 +199,7 @@ class GoogleDrive extends WP_ExternalPluginBase {
         'Authorization: Bearer ' . $google_token,
       ),
     );
-    $attachment_id = $this->save_remote_file( $google_drive_file_url, get_class($this), $filename, $options );
+    $attachment_id = $this->save_remote_file( $google_drive_file_url, get_class($this), $filename, $caption, $referer, $options );
     if ( ! $attachment = wp_prepare_attachment_for_js( $attachment_id ) ) {
       wp_send_json_error();
     }
