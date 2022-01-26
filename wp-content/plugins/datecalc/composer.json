@@ -1,10 +1,4 @@
 {
-    "repositories": [
-        {
-            "url": "https://github.com/siburny/yasumi.git",
-            "type": "git"
-        }
-    ],
     "require": {
     },
     "require-dev": {
