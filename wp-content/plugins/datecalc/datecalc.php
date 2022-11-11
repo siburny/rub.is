@@ -3,12 +3,13 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 4.6.3
+ * Version: 5.0.0
  * Update URI: https://github.com/siburny/wordpress-plugins-dist/raw/main/plugins-info.json
  */
 
 require_once 'Numword.php';
 require_once 'load_csv.php';
+require_once 'countries.php';
 
 function count_mine($array)
 {
@@ -206,7 +207,7 @@ function zodiacColor($day, $month, $icon = false)
 
 function datecalc_func($atts)
 {
-  global $all_data;
+  global $all_data, $countryList;
 
   $prefix = '';
   $date = new DateTime('now', new DateTimeZone(get_option('timezone_string')));
@@ -913,6 +914,26 @@ function datecalc_func($atts)
     $ret = $date->format('F') . ' ' . $f2->format($date->format('j')) . ', ' . $f1->format(substr($date->format('Y'), 0, 2)) . ' ' . $f1->format(substr($date->format('Y'), 2, 2));
   } else if (count($atts) >= 2 && (!array_key_exists('display', $atts) || $atts['display'] == 'text')) {
 
+    if (array_key_exists('icon', $atts)) {
+      $country = $atts['icon'];
+
+      if (strlen($country) != 2) {
+        $key = array_search(strtolower($country), array_map('strtolower', $countryList));
+        if ($key !== false) {
+          $country = $key;
+        }
+      }
+
+      if (!empty($country)) {
+        $country = strtoupper($country);
+        
+        return mb_convert_encoding( '&#' . ( 127397 + ord( $country[0] ) ) . ';', 'UTF-8', 'HTML-ENTITIES')
+            . mb_convert_encoding( '&#' . ( 127397 + ord( $country[1] ) ) . ';', 'UTF-8', 'HTML-ENTITIES');
+        
+        //return $country;
+      }
+    }
+
     // DYNAMIC CSV
 
     $diff = array_values(array_intersect(array_keys($atts), array_keys($all_data)));
@@ -1330,7 +1351,7 @@ function date_calc_settings_page()
           <ul>
             <?php
             foreach ($all_data as $key => $value) {
-              print '<li><b>' . $key . '</b>: <b>' . count_mine($value) . '</b> record(s) fetched on <b>' . get_transient('date-calc-cache-' . $key . '_saved') . '</b> - [<a href="' . admin_url('options-general.php?page=date-calc-settings&clear=all&complete=' . time()) . '" style="font-weight:bold;">CLEAR</a>]</li>';
+              print '<li><b>' . $key . '</b>: <b>' . count_mine($value) . '</b> record(s) fetched on <b>' . get_transient('date-calc-cache-' . $key . '_saved') . '</b> - [<a href="' . admin_url('options-general.php?page=date-calc-settings&clear=' . $key . '&complete=' . time()) . '" style="font-weight:bold;">CLEAR</a>]</li>';
             }
             ?>
           </ul>

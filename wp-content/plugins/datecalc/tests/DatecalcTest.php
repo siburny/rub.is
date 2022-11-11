@@ -681,8 +681,8 @@ final class DatecalcTest extends TestCase
 
             // Dateless
             [
-              '[datecalc date="all" netflix="true" show="3" filter="original|Netflix Original"]',
-              'Mud<br />Rebelde (2022) Netflix Original<br />Johnny Test (2021) Netflix Original'
+                '[datecalc date="all" netflix="true" show="3" filter="original|Netflix Original"]',
+                'Mud<br />Rebelde (2022) Netflix Original<br />Johnny Test (2021) Netflix Original'
             ],
 
             // BUGS
@@ -727,6 +727,22 @@ final class DatecalcTest extends TestCase
             [
                 '[datecalc date="all" netflix="true" data="title" filter="date|1/1/2022,type||movie"]',
                 'The Hookup Plan'
+            ],
+
+            // DJ
+            [
+                '[datecalc date="2018" dj="true"]',
+                'The number 1 DJ in the world was Martin Garrix followed by Dimitri Vegas & Like Mike and Hardwell according to DJ Mag.'
+            ],
+
+            // Emoji flag
+            [
+                '[datecalc date="11/22/1984"  icon="United States"]',
+                '🇺🇸'
+            ],
+            [
+                '[datecalc date="11/22/1984"  icon="US"]',
+                '🇺🇸'
             ],
         ];
     }

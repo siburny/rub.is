@@ -11,7 +11,15 @@ $ignore = array_map('trim', $ignore);
 
 foreach ($csvs as $url) {
     if (strpos($url, '/') != false) {
-        $name = substr($url, strrpos($url, '/') + 1, -4);
+        if (strpos($url, 'https://docs.google.com') !== false) {
+            if (strpos($url, '|') !== false) {
+                list($name, $url) = explode('|', $url);
+            } else {
+                continue;
+            }
+        } else {
+            $name = substr($url, strrpos($url, '/') + 1, -4);
+        }
     } else {
         $name = $url;
     }
@@ -37,7 +45,7 @@ foreach ($csvs as $url) {
             $file = array_map('trim', $file);
             $input = array_map('str_getcsv', $file);
         } else {
-            $file = @file($url . '?t=' . time());
+            $file = file($url . (strpos($url, '?') !== false ? '&' : '?') . 't=' . time());
             if (!empty($file)) {
                 $file = array_map('trim', $file);
                 $input = array_map('str_getcsv', $file);
