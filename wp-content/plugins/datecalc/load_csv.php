@@ -64,12 +64,18 @@ foreach ($csvs as $url) {
         }
 
         $skip = true;
+
         array_walk($input, function ($a) use (&$all_data, $name, $input, &$skip, $key) {
             if (!$skip) {
                 if (!array_key_exists($a[$key], $all_data[$name])) {
                     $all_data[$name][$a[$key]] = array();
                 }
-                $all_data[$name][$a[$key]][] = array_combine($input[0], $a);
+
+                if (count($input[0]) != count($a)) {
+                    print '<!-- Dynamic CVS error: ' . $input . ' -->';
+                } else {
+                    $all_data[$name][$a[$key]][] = array_combine($input[0], $a);
+                }
             }
             $skip = false;
         });
@@ -80,88 +86,3 @@ foreach ($csvs as $url) {
         set_transient('date-calc-cache-' . $name . '_saved', $date->format(DATE_RFC2822), $expiration);
     }
 }
-
-/*
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/events.csv'));
-array_walk($input, function ($a) use (&$events, $input) {
-    if (is_numeric(substr($a[0], strrpos($a[0], '/') + 1))) {
-        $key = substr($a[0], 0, strrpos($a[0], '/'));
-        if (!array_key_exists($key, $events)) {
-            $events[$key] = array();
-        }
-        $events[$key][0 + substr($a[0], strrpos($a[0], '/') + 1)] = array_combine($input[0], $a);
-    }
-});
-
-
-$skip = true;
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/presidents.csv'));
-array_walk($input, function ($a) use (&$presidents, $input) {
-    global $skip;
-    if (!$skip) {
-        $presidents[$a[0]] = array_combine($input[0], $a);
-        $presidents[$a[0]]['Took office'] = date_create($presidents[$a[0]]['Took office'], new DateTimeZone(get_option('timezone_string')));
-        if ($presidents[$a[0]]['Left office'] != 'Incumbent') {
-            $presidents[$a[0]]['Left office'] = date_create($presidents[$a[0]]['Left office'], new DateTimeZone(get_option('timezone_string')));
-        }
-    } else {
-        $skip = false;
-    }
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/birthdays.csv'));
-array_walk($input, function ($a) use (&$birthdays, $input) {
-    if (!array_key_exists($a[0], $birthdays)) {
-        $birthdays[$a[0]] = array();
-    }
-
-    $birthdays[$a[0]][] = array_combine($input[0], $a);
-});
-
-/*
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/billboard-top100.csv'));
-array_walk($input, function ($a) use (&$billboard, $input) {
-    $billboard[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/babynames.csv'));
-array_walk($input, function ($a) use (&$babynames, $input) {
-    $babynames[$a[0]] = array_combine($input[0], $a);
-});
-
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/babybirths.csv'));
-array_walk($input, function ($a) use (&$babybirths, $input) {
-    $babybirths[$a[0]] = array_combine($input[0], $a);
-});
-
-$skip = true;
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/movies.csv'));
-array_walk($input, function ($a) use (&$movies, $input) {
-    global $skip;
-    if (!$skip) {
-        $movies[$a[0]] = array_combine($input[0], $a);
-    } else {
-        $skip = false;
-    }
-});
-
-$skip = true;
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/games.csv'));
-array_walk($input, function ($a) use (&$games, $input) {
-    global $skip;
-    if (!$skip) {
-        $games[$a[0]] = array_combine($input[0], $a);
-    } else {
-        $skip = false;
-    }
-});
-
-$skip = true;
-$input = array_map('str_getcsv', file(plugin_dir_path(__FILE__) . 'csv/holidays.csv'));
-array_walk($input, function ($a) use (&$holidays, $input, &$skip) {
-    if (!$skip) {
-        $holidays[] = array_combine($input[0], $a);
-    } else {
-        $skip = false;
-    }
-});

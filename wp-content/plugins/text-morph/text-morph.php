@@ -5,7 +5,7 @@
  * Description: Plugin that performs differen text transformations like UPPER/lower case, gender formatting, letter substistutions, etc.
  * Author: Maxim Rubis
  * Author URI: https://rub.is/
- * Version: 4.5.1
+ * Version: 4.6.0
  */
 
 use SebastianBergmann\Diff\Diff;
@@ -15,6 +15,10 @@ require_once 'Numword.php';
 function morph_func($atts, $content = '')
 {
     $unit = '';
+
+    if (empty($atts)) {
+        $atts = array();
+    }
 
     if (empty($content)) {
         if (array_key_exists('text', $atts)) {
@@ -33,8 +37,8 @@ function morph_func($atts, $content = '')
     }
     $ret = $content;
 
-    if (empty($atts)) {
-        $atts = array();
+    if (is_numeric(str_replace(',', '', $ret))) {
+        $ret = str_replace(',', '', $ret);
     }
 
     if (array_key_exists('add', $atts)) {
@@ -194,7 +198,7 @@ function morph_func($atts, $content = '')
         }
     }
 
-    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr', 'minutes'))) {
+    if (array_key_exists('display', $atts) && in_array($atts['display'], array('meter', 'cm', 'inch', 'foot', 'feet', 'ft', 'lb', 'kg', 'stone', 'abbr', 'abbr short', 'format', 'minutes'))) {
         if ($ret == '' || $ret == null) {
             return 'N/A';
         }
@@ -247,6 +251,17 @@ function morph_func($atts, $content = '')
                     $ret = round($ret / 1000, 0) . ' thousand';
                 }
                 break;
+            case 'abbr short':
+                if ($ret >= 1000000000) {
+                    $ret = round($ret / 1000000000, 0) . 'B';
+                } else if ($ret >= 1000000) {
+                    $ret = round($ret / 1000000, 0) . 'M';
+                } else if ($ret >= 1000) {
+                    $ret = round($ret / 1000, 0) . 'K';
+                }
+                break;
+            case 'format':
+                $ret = number_format($ret);
         }
     }
 

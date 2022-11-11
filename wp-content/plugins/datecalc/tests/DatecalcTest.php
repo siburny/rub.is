@@ -166,11 +166,11 @@ final class DatecalcTest extends TestCase
             // Week number
             [
                 '[datecalc date="12/25/1994" display="w"]',
-                'Week 52'
+                '52'
             ],
             [
                 '[datecalc date="12/25/1994" display="w" ordinalize="true"]',
-                'Week 52nd'
+                '52nd'
             ],
 
 
@@ -283,6 +283,25 @@ final class DatecalcTest extends TestCase
                 '[datecalc date="1/1/2020" planet="true" icon="true"]',
                 '♄'
             ],
+
+            // Moonphase
+            [
+                '[datecalc date="1/1/2020" moonphase="true"]',
+                'Waxing'
+            ],
+            [
+                '[datecalc date="1/1/2022" moonphase="true"]',
+                'Waning Crescent'
+            ],
+            [
+                '[datecalc date="1/1/2020" moonphase="true" icon="true"]',
+                '🌒'
+            ],
+            [
+                '[datecalc date="1/1/2022" moonphase="true" icon="true"]',
+                '🌘'
+            ],
+
 
 
             // Population
@@ -418,6 +437,18 @@ final class DatecalcTest extends TestCase
                 '[datecalc date="6/2/2009" powercolor="true" icon="true"]',
                 '<span style="color:#FFFF00">&#x2B24;</span>'
             ],
+            [
+                '[datecalc date="3/9/1982" powercolor="true"]',
+                'Light Green'
+            ],
+            [
+                '[datecalc date="1/20/2009" powercolor="true" description="true"]',
+                '22'
+            ],
+            [
+                '[datecalc date="3/9/1982" powercolor="true" description="true"]',
+                '33'
+            ],
 
             // Lucky day
             [
@@ -505,6 +536,11 @@ final class DatecalcTest extends TestCase
                 '5 days',
                 '06/25/2021'
             ],
+            [
+                '[datecalc date="11/22/1984" koreanage="true"]',
+                '39',
+                '07/25/2022'
+            ],
 
             // Generation
             [
@@ -551,10 +587,32 @@ final class DatecalcTest extends TestCase
                 '06/25/2021'
             ],
             [
+                '[datecalc date="11/22/2020" vitals="true" display="steps" abbr="true"]',
+                '36.12 million',
+                '06/25/2021'
+            ],
+            [
                 '[datecalc date="11/22/2020" vitals="true" display="breaths"]',
                 '4,334,400',
                 '06/25/2021'
             ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="miles"]',
+                '18,060',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="km"]',
+                '11,288',
+                '06/25/2021'
+            ],
+            [
+                '[datecalc date="11/22/2020" vitals="true" display="km" abbr="true"]',
+                '11.29 thousand',
+                '06/25/2021'
+            ],
+
+
 
             // Earth travels
             [
@@ -565,32 +623,110 @@ final class DatecalcTest extends TestCase
 
             // Movies
             [
-                '[datecalc date="9/3/2021" netflix="true"]',
-                'Kid Cosmic<br />Kid Cosmic 2',
+                '[datecalc date="3/1/2022" netflix="true"]',
+                'Christine (1983) <br />A Nightmare on Elm Street (1984) <br />Top Gun (1986) <br />The Shawshank Redemption (1994) <br />Gattaca (1997) <br />My Best Friend\'s Wedding (1997) <br />Starship Troopers (1997) <br />The Green Mile (1999) <br />Shrek (2001) <br />The Replacements (2000) <br />Shrek 2 (2004) <br />Freddy vs. Jason (2003) <br />Where the Wild Things Are (2009) <br />Coach Carter (2005) <br />V for Vendetta (2005) <br />21 (2008) <br />Public Enemies (2009) <br />A Nightmare on Elm Street (2010) <br />Due Date (2010) <br />Battleship (2012) <br />Texas Chainsaw (2013) <br />The Guardians of Justice (Will Save You!) (2022) Netflix Original<br />Redemption (2013) <br />The Gift (2015) <br />Shooter (2016) <br />Sorry to Bother You (2018) <br />Worst Roommate Ever (2022) Netflix Original<br />21 Bridges (2019) ',
             ],
             [
-                '[datecalc date="9/6/2021" netflix="true"]',
-                'The Circle<br />Into the Night<br />Into the Night 2',
+                '[datecalc date="3/15/2022" netflix="true"]',
+                'A Walk Among the Tombstones (2014) <br />Marilyn\'s Eyes (2021) <br />Catherine Cohen: The Twist...? She\'s Gorgeous (2022) Netflix Original<br />Bad Vegan: Fame. Fraud. Fugitives. (2022) Netflix Original<br />Team Zenko Go (2022) Netflix Original<br />Adam by Eve: A Live in Animation (2022) Netflix Original<br />London Has Fallen (2016) ',
             ],
             [
-                '[datecalc date="9/6/2021" netflix="true" show="2"]',
-                'The Circle<br />Into the Night',
+                '[datecalc date="3/1/2022" netflix="true" show="2"]',
+                'Christine (1983) <br />A Nightmare on Elm Street (1984) ',
             ],
             [
-                '[datecalc date="9/3/2021" netflix="true" day="-1"]',
-                'What Is Life Worth',
+                '[datecalc date="3/1/2022" netflix="true" day="-1"]',
+                'My Wonderful Life (2021) <br />Two Sentence Horror Stories (2017) ',
             ],
             [
-                '[datecalc date="9/7/2021" netflix="true" filter="rank|popular"]',
-                '4<br />5',
+                '[datecalc date="3/1/2022" netflix="true" filter="popular|Popular"]',
+                'Top Gun (1986) <br />Shrek (2001) <br />Shrek 2 (2004) <br />Public Enemies (2009) ',
             ],
             [
-                '[datecalc date="9/7/2021" netflix="true" filter="rank|popular,type|Netflix Original"]',
-                '4<br />5',
+                '[datecalc date="2/2/2022" netflix="true" filter="popular|Popular,original|Netflix Original"]',
+                'Dark Desire (2020) Netflix Original',
             ],
             [
-                '[datecalc date="9/7/2021" netflix="true" filter="type|"]',
-                '1<br />2',
+                '[datecalc date="01/10/2022" netflix="true" filter="popular|"]',
+                'Undercover (2019) ',
+            ],
+            [
+                '[datecalc date="02/14/2022" netflix="true" show="3" separator=","]',
+                'Devotion (2022) ,Fishbowl Wives (2022) Netflix Original',
+            ],
+            [
+                '[datecalc date="03/02/2022" netflix="true" data="month" show="3"]',
+                '22-Mar<br />22-Mar<br />22-Mar'
+            ],
+            [
+                '[datecalc date="03/01/2022" netflix="true" data="month" show="3" separator="<li>"]',
+                '<ul><li>22-Mar<li>22-Mar<li>22-Mar</ul>'
+            ],
+            [
+                '[datecalc date="02/01/2022" netflix="true" count="true"]',
+                '33',
+            ],
+            [
+                '[datecalc date="03/03/2022" netflix="true" filter="popular|Popular" count="true"]',
+                '2',
+            ],
+            [
+                '[datecalc date="05/01/2022" netflix="true" filter="type|movie" count="true"]',
+                '30',
+            ],
+            [
+                '[datecalc date="all" netflix="true" data="{title}, {year}, {released}" filter="date|1/1/2022" show="5"]',
+                'The Hookup Plan, 2018, 12/7/2018<br />Willy Wonka & the Chocolate Factory, 1971, 6/30/1971<br />Stand by Me, 1986, 8/22/1986<br />The Lost Boys, 1987, 7/31/1987<br />Teenage Mutant Ninja Turtles, 1990, 3/30/1990',
+            ],
+
+            // Dateless
+            [
+              '[datecalc date="all" netflix="true" show="3" filter="original|Netflix Original"]',
+              'Mud<br />Rebelde (2022) Netflix Original<br />Johnny Test (2021) Netflix Original'
+            ],
+
+            // BUGS
+            [
+                '[datecalc date="1/9/2022" display="dddd" count="true"]',
+                '2th Sunday'
+            ],
+            [
+                '[datecalc date="1/9/2022" display="ddddd" count="true"]',
+                '2th Sunday'
+            ],
+            [
+                '[datecalc date="1/7/2022" display="dddd" count="true"]',
+                '1th Friday'
+            ],
+            [
+                '[datecalc date="1/15/2022" display="dddd" count="true"]',
+                '3th Saturday'
+            ],
+            [
+                '[datecalc date="6/15/2022" display="dddd" count="true"]',
+                '3th Wednesday'
+            ],
+            [
+                '[datecalc date="6/15/2022" display="ddddd" count="true"]',
+                '24th Wednesday'
+            ],
+            [
+                '[datecalc date="1/22/1984" now="true" display="dddd"]',
+                'Sunday'
+            ],
+            [
+                '[datecalc date="1/1/2022" netflix="true" data="title" show="3" separator="<li>"]',
+                '<ul><li>The Hookup Plan<li>Willy Wonka & the Chocolate Factory<li>Stand by Me</ul>'
+            ],
+            [
+                '[datecalc date="1/1/2022" netflix="true" count="true" display="text"]',
+                'fifty one'
+            ],
+
+            // Exclude filter
+            [
+                '[datecalc date="all" netflix="true" data="title" filter="date|1/1/2022,type||movie"]',
+                'The Hookup Plan'
             ],
         ];
     }

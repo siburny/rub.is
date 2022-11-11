@@ -119,7 +119,49 @@ final class TextMorphTest extends TestCase
             ],
         ];
     }
-    
+
+    public function shortcode_display_formats()
+    {
+        return [
+            [
+                '[morph number="434433" display="abbr"]',
+                '434 thousand'
+            ],
+            [
+                '[morph number="1,000,000" display="abbr"]',
+                '1 million'
+            ],
+            [
+                '[morph number="1000000" display="abbr"]',
+                '1 million'
+            ],
+            [
+                '[morph number="1000000" display="format"]',
+                '1,000,000'
+            ],
+            [
+                '[morph number="1,000,000"]',
+                '1000000'
+            ],
+            [
+                '[morph number="1000" display="abbr short"]',
+                '1K'
+            ],
+            [
+                '[morph number="10000"  display="abbr short"]',
+                '10K'
+            ],
+            [
+                '[morph number="1000000" display="abbr short"]',
+                '1M'
+            ],
+            [
+                '[morph number="10000000"  display="abbr short"]',
+                '10M'
+            ],
+        ];
+    }
+
     public function shortcode_display_various_fixes()
     {
         return [
@@ -144,6 +186,7 @@ final class TextMorphTest extends TestCase
      * @dataProvider shortcode_display_expire
      * @dataProvider shortcode_display_various_fixes
      * @dataProvider shortcode_display_icons
+     * @dataProvider shortcode_display_formats
      */
     public function test_shortcode_should_output($shortcode, $output_expected)
     {
