@@ -3,7 +3,7 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 5.0.0
+ * Version: 5.0.1
  * Update URI: https://github.com/siburny/wordpress-plugins-dist/raw/main/plugins-info.json
  */
 
@@ -1082,9 +1082,9 @@ function datecalc_func($atts)
           $ret = 1 + intval($ret / 7);
           //$prefix = 'Week ';
         } else if ($token == 'dddd' && $count) {
-          $ret = (intval(($ret - 1) / 7) + 1) . _ordinal_suffix($ret) . ' ' . $date->format('l');
+          $ret = (intval(($ret - 1) / 7) + 1) . _ordinal_suffix(intval(($ret - 1) / 7) + 1) . ' ' . $date->format('l');
         } else if ($token == 'ddddd' && $count) {
-          $ret = (intval($ret / 7) + 1) . _ordinal_suffix($ret) . ' ' . $date->format('l');
+          $ret = (intval($ret / 7) + 1) . _ordinal_suffix((intval($ret / 7) + 1)) . ' ' . $date->format('l');
         }
       } elseif ($token == 's') {
 

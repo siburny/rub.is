@@ -688,23 +688,27 @@ final class DatecalcTest extends TestCase
             // BUGS
             [
                 '[datecalc date="1/9/2022" display="dddd" count="true"]',
-                '2th Sunday'
+                '2nd Sunday'
             ],
             [
                 '[datecalc date="1/9/2022" display="ddddd" count="true"]',
-                '2th Sunday'
+                '2nd Sunday'
             ],
             [
                 '[datecalc date="1/7/2022" display="dddd" count="true"]',
-                '1th Friday'
+                '1st Friday'
             ],
             [
                 '[datecalc date="1/15/2022" display="dddd" count="true"]',
-                '3th Saturday'
+                '3rd Saturday'
             ],
             [
                 '[datecalc date="6/15/2022" display="dddd" count="true"]',
-                '3th Wednesday'
+                '3rd Wednesday'
+            ],
+            [
+                '[datecalc date="8/11/2023" display="dddd" count="true" ordinalize="true"]',
+                '2nd Friday'
             ],
             [
                 '[datecalc date="6/15/2022" display="ddddd" count="true"]',
