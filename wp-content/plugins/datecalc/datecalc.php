@@ -1493,7 +1493,7 @@ add_action('admin_init', function () {
 });
 
 if (!function_exists('rub_is_check_for_updates')) {
-  function my_plugin_check_for_updates($update, $plugin_data, $plugin_file)
+  function rub_is_check_for_updates($update, $plugin_data, $plugin_file)
   {
     static $response = false;
 
