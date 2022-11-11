@@ -49,6 +49,10 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+== Version 1.9.5 - 2022-06-23 ==
+* Tweak - Load default fonts locally.
+* Fix - Color opacity option in customizer not working properly.
+
 == Version 1.9.4 - 2021-08-16 ==
 * Enhancement - Added CSS font-display property and swap value for better performance.
 
