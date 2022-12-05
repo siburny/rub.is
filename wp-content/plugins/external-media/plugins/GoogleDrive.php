@@ -95,14 +95,14 @@ class GoogleDrive extends WP_ExternalPluginBase {
     wp_enqueue_script( get_class( $this ) );
     wp_enqueue_script( get_class( $this ) . '_lib' );
     echo '<script type="text/javascript">
-      var _google_client_id = \''  . $google_client_id . '\';
-      var _google_app_id = \''  . $google_app_id . '\';
+      var _google_client_id = \''  . esc_js($google_client_id) . '\';
+      var _google_app_id = \''  . esc_js($google_app_id) . '\';
       var _google_scope = [' . join(", ", $google_scope) . '];
-      var _google_parent_folder = \''  . ( !empty($google_parent_folder) ? $google_parent_folder : 'root' ) . '\';
+      var _google_parent_folder = \''  . ( !empty($google_parent_folder) ? esc_js($google_parent_folder) : 'root' ) . '\';
       var _google_show_folders = ' . ( !empty($google_show_folders) ? 'true' : 'false' ) . ';
       var _google_owned_by_me = ' . ( !empty($google_owned_by_me) ? 'true' : 'false' ) . ';
       var _google_starred_only = ' . ( !empty($google_starred_only) ? 'true' : 'false' ) . ';
-      var _google_view_id = ' . ( !empty($google_view_id) ? $google_view_id : 0 ) . ';
+      var _google_view_id = ' . ( !empty($google_view_id) ? esc_js($google_view_id) : 0 ) . ';
     </script>';
     $this::$google_drive_loaded = true;
   }

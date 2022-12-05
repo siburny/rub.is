@@ -180,7 +180,7 @@ abstract class WP_ExternalPluginBase {
   public function renderAttributes( $attributes ) {
     $result = array();
     foreach ( $attributes as $attribute => $value ) {
-      $result[] = 'data-' . trim( $attribute ) . '="' . trim( $value ) . '"';
+      $result[] = 'data-' . esc_attr(trim( $attribute )) . '="' . esc_attr(trim( $value )) . '"';
     }
     return join( ' ', $result );
   }

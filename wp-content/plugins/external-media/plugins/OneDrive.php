@@ -80,8 +80,8 @@ class OneDrive extends WP_ExternalPluginBase {
     wp_enqueue_script( get_class($this) );
     echo '<script type="text/javascript" src="https://js.live.net/v7.2/OneDrive.js"></script>';
     echo '<script type="text/javascript">
-      var onedrive_redirect_url = \''  . $this->redirectUri( get_class($this) ) . '\';
-      var onedrive_client_id = \''  .get_option( WP_ExternalMedia_Prefix . 'onedrive_app_id' ) . '\';
+      var onedrive_redirect_url = \''  . esc_js($this->redirectUri( get_class($this) )) . '\';
+      var onedrive_client_id = \''  . esc_js(get_option( WP_ExternalMedia_Prefix . 'onedrive_app_id' )) . '\';
     </script>';
     $this::$onedrive_loaded = true;
   }

@@ -78,7 +78,7 @@ class Box extends WP_ExternalPluginBase {
     $box_client_id = get_option( WP_ExternalMedia_Prefix . 'box_client_id' );
     wp_register_script( get_class($this), plugins_url( '/plugins/js/Box.js', WP_ExternalMedia_PluginName ), array( 'jquery', 'WP_ExternalMedia_admin_view_js' ) );
     wp_enqueue_script( get_class($this) );
-    echo '<script type="text/javascript"> var _box_client_id = \''  . $box_client_id . '\'; </script>';
+    echo '<script type="text/javascript"> var _box_client_id = \''  . esc_js($box_client_id) . '\'; </script>';
     echo '<script type="text/javascript" src="https://app.box.com/js/static/select.js"></script>';
     $this::$box_loaded = true;
   }

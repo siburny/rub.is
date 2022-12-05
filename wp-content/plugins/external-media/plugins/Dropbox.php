@@ -87,7 +87,7 @@ class Dropbox extends WP_ExternalPluginBase {
     $dropbox_app_key = get_option( WP_ExternalMedia_Prefix . 'dropbox_app_key' );
     wp_register_script( get_class($this), plugins_url( '/plugins/js/Dropbox.js', WP_ExternalMedia_PluginName ), array( 'jquery', 'WP_ExternalMedia_admin_view_js' ) );
     wp_enqueue_script( get_class($this) );
-    echo '<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="' . $dropbox_app_key . '"></script>';
+    echo '<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="' . esc_attr($dropbox_app_key) . '"></script>';
     $this::$dropbox_loaded = true;
   }
 
