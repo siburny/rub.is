@@ -324,7 +324,7 @@ function datecalc_func($atts)
 
   if (array_key_exists('option', $atts)) {
     $tz = $atts['option'];
-    if (strtolower(substr($tz, 0, 3)) == "gmt") {
+    if (strtolower(substr($tz, 0, 3)) == 'gmt') {
       $tz = substr($tz, 3) . '00';
     }
     $date->setTimezone(new DateTimeZone($tz));
@@ -1017,7 +1017,7 @@ function datecalc_func($atts)
         if ($match) {
           $i++;
           if (!empty($field_name)) {
-            if (strpos($field_name, "{") === false) {
+            if (strpos($field_name, '{') === false) {
               $str[] = $value[$field_name];
             } else {
               $template = $field_name;
@@ -1038,13 +1038,16 @@ function datecalc_func($atts)
     if (array_key_exists('count', $atts)) {
       $ret = count($str);
     } else {
-      $separator = "<br />";
+      $separator = '<br />';
       if (array_key_exists('separator', $atts)) {
         $separator = $atts['separator'];
+        if(preg_match('/^[a-z]+$/', $separator)) {
+            $separator = '<' . $separator . '>';
+        }
       }
 
       $ret = implode($separator, $str);
-      if ($separator == "<li>") {
+      if ($separator == '<li>') {
         $ret = '<ul><li>' . $ret . '</ul>';
       }
     }
