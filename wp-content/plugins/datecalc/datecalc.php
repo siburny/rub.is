@@ -3,7 +3,7 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 5.0.1
+ * Version: 5.0.2
  * Update URI: https://github.com/siburny/wordpress-plugins-dist/raw/main/plugins-info.json
  */
 
@@ -334,6 +334,10 @@ function datecalc_func($atts)
     return '';
   }
 
+  if ($date instanceof DateTime) {
+    $all_data['holiday'] = get_all_holidays($date->format('Y'));
+  }
+
   $display = 'yyyy';
   if (array_key_exists('display', $atts)) {
     $display = $atts['display'];
@@ -583,7 +587,7 @@ function datecalc_func($atts)
     }
 
     return '';
-  } else if (array_key_exists('holiday', $atts) || array_key_exists('holidays', $atts)) {
+    /*} else if (array_key_exists('holiday', $atts) || array_key_exists('holidays', $atts)) {
     $type = 'all';
     if (array_key_exists('type', $atts)) {
       $type = $atts['type'];
@@ -621,7 +625,7 @@ function datecalc_func($atts)
       return '<ul><li>' . implode('</li><li>', $ret) . '</li></ul>';
     }
 
-    return 'No major holidays found for this date.';
+    return 'No major holidays found for this date.';*/
   } else if (array_key_exists('difference', $atts) && $atts['difference'] != 'true') {
     $doPlural = function ($nb, $str) {
       return $nb > 1 ? $str . 's' : $str;
@@ -926,10 +930,10 @@ function datecalc_func($atts)
 
       if (!empty($country)) {
         $country = strtoupper($country);
-        
-        return mb_convert_encoding( '&#' . ( 127397 + ord( $country[0] ) ) . ';', 'UTF-8', 'HTML-ENTITIES')
-            . mb_convert_encoding( '&#' . ( 127397 + ord( $country[1] ) ) . ';', 'UTF-8', 'HTML-ENTITIES');
-        
+
+        return mb_convert_encoding('&#' . (127397 + ord($country[0])) . ';', 'UTF-8', 'HTML-ENTITIES')
+          . mb_convert_encoding('&#' . (127397 + ord($country[1])) . ';', 'UTF-8', 'HTML-ENTITIES');
+
         //return $country;
       }
     }
@@ -1042,6 +1046,10 @@ function datecalc_func($atts)
       if ($separator == "<li>") {
         $ret = '<ul><li>' . $ret . '</ul>';
       }
+    }
+
+    if($ret == '' && $name == 'holiday') {
+      $ret = 'No major holidays found for this date.';
     }
   } else {
     $count = array_key_exists('count', $atts) && ($atts['count'] == 'yes' || $atts['count'] == '1' || $atts['count'] == 'true');
@@ -1224,11 +1232,14 @@ function get_all_holidays($year)
 
     $date = strtotime($date);
     if ($date) {
-      $key = date('n/j', $date);
+      $key = date('n/j/Y', $date);
       //$h['date'] = $key;
       $ret[$key] = $h;
     }
   }
+
+  //print "<pre>";
+  //print_r($ret);
 
   return $ret;
 }

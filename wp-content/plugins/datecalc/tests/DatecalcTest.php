@@ -177,42 +177,46 @@ final class DatecalcTest extends TestCase
             // Holidays
             [
                 '[datecalc date="12/25/2020" holiday="true"]',
-                '<ul><li>Christmas</li><li>Grav Mass Day</li></ul>'
+                'Christmas Day<br />Grav Mass Day'
             ],
             [
-                '[datecalc date="12/25/2020" holiday="true" country="US"]',
-                'Christmas'
-            ],
-            [
-                '[datecalc date="12/25/2020" holiday="true" country="RU"]',
-                'No major holidays found for this date.'
+                '[datecalc date="12/25/2020" holiday="true" separator="<li>"]',
+                '<ul><li>Christmas Day<li>Grav Mass Day</ul>'
             ],
             [
                 '[datecalc date="01/07/2020" holiday="true"]',
                 'Orthodox Christmas'
             ],
             [
-                '[datecalc date="01/07/2020" holiday="true" country="US"]',
+                '[datecalc date="12/25/2020" holiday="true" filter="country|US"]',
+                'Christmas Day'
+            ],
+            [
+                '[datecalc date="12/25/2020" holiday="true" filter="country|RU"]',
                 'No major holidays found for this date.'
             ],
             [
-                '[datecalc date="01/07/2020" holiday="true" country="RU"]',
+                '[datecalc date="01/07/2020" holiday="true" filter="country|US"]',
+                'No major holidays found for this date.'
+            ],
+            [
+                '[datecalc date="01/07/2020" holiday="true" filter="country|RU"]',
                 'Orthodox Christmas'
             ],
             [
-                '[datecalc date="01/07/2020" holiday="true" type="XX"]',
+                '[datecalc date="01/07/2020" holiday="true" filter="type|XX"]',
                 'No major holidays found for this date.'
             ],
             [
-                '[datecalc date="12/25/1984" holidays="true" type="major"]',
-                'Christmas'
+                '[datecalc date="12/25/1984" holidays="true" filter="type|major"]',
+                'Christmas Day'
             ],
             [
-                '[datecalc date="1/1/2020" holidays="true" type="christian"]',
+                '[datecalc date="1/1/2020" holidays="true" filter="type|christian"]',
                 'Solemnity of Mary'
             ],
             [
-                '[datecalc date="1/1/1984" holidays="true" type="major" description="true"]',
+                '[datecalc date="1/1/1984" holidays="true" filter="type|major" data="description"]',
                 'This is the descrition for NY\'s Day'
             ],
 
@@ -734,10 +738,10 @@ final class DatecalcTest extends TestCase
             ],
 
             // DJ
-            [
+            /*[
                 '[datecalc date="2018" dj="true"]',
                 'The number 1 DJ in the world was Martin Garrix followed by Dimitri Vegas & Like Mike and Hardwell according to DJ Mag.'
-            ],
+            ],*/
 
             // Emoji flag
             [
@@ -771,15 +775,8 @@ final class DatecalcTest extends TestCase
 
         $this->assertGreaterThan(0, count($holidays), 'No holidays were loaded');
 
-        $year = 2020;
-
         foreach ($holidays as $k => $h) {
             $date = $k;
-            if (strpos($date, '/') !== false) {
-                $date .= '/' . $year;
-            } else {
-                $date .= ' ' . $year;
-            }
 
             $key = strtotime($date);
             $this->assertNotEmpty($key, 'Error parsing holiday rule: [' . $date . ']');
