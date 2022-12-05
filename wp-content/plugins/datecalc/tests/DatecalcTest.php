@@ -366,12 +366,12 @@ final class DatecalcTest extends TestCase
 
             // Event
             [
-                '[datecalc date="1/20/1981" event="true"]',
-                '<p><b>2009</b> &ndash; Barack Obama, inaugurated as the 44th President of the United States of America, becomes the United States\' first African-American president.</p><p><b>1981</b> &ndash; Ronald Reagan inaugurated as the 40th President of the United States of America.</p><p><b>1945</b> &ndash; Franklin D. Roosevelt sworn-in for an unprecedented (and never to be repeated) 4th term as US President.</p>'
+                '[datecalc date="1/20/1981" events="true" data="<b>{year}</b> - {output}"]',
+                '<b>1265</b> - First English Parliament summoned other than by royal command (in this instance by Simon de Montfort, Earl of Leicester) mets in Westminster Hall.<br /><b>1841</b> - China cedes Hong Kong to the British during the 1st Opium War.<br /><b>1921</b> - Republic of Turkey declared out of remnants of Ottoman Empire.<br /><b>1942</b> - Nazi officials hold notorious Wannsee conference in Berlin to organise the "final solution", the extermination of Europe\'s Jews.<br /><b>1945</b> - Franklin D. Roosevelt sworn-in for an unprecedented (and never to be repeated) 4th term as US President.<br /><b>1981</b> - Ronald Reagan inaugurated as the 40th President of the United States of America.<br /><b>2009</b> - Barack Obama, inaugurated as the 44th President of the United States of America, becomes the United States\' first African-American president.'
             ],
             [
-                '[datecalc date="6/25/1981" event="true"]',
-                '<p><b>1950</b> &ndash; North Korea invades South Korea, beginning the Korean War.</p><p><b>1929</b> &ndash; US President Herbert Hoover authorizes building of Boulder Dam (Hoover Dam).</p><p><b>1876</b> &ndash; Battle of the Little Bighorn: US 7th Cavalry under Brevet Major General George Armstrong Custer wiped out by Sioux and Cheyenne warriors led by Chiefs Crazy Horse and Sitting Bull in what has become famously known as "Custer\'s Last Stand".</p>'
+                '[datecalc date="6/25/1981" events="true" data="<b>{year}</b> - {output}"]',
+                '<b>1678</b> - Venetian Elena Cornaro Piscopia is awarded a doctorate of philosophy, the 1st woman to receive a university doctoral degree or PhD.<br /><b>1876</b> - Battle of the Little Bighorn: US 7th Cavalry under Brevet Major General George Armstrong Custer wiped out by Sioux and Cheyenne warriors led by Chiefs Crazy Horse and Sitting Bull in what has become famously known as "Custer\'s Last Stand".<br /><b>1929</b> - US President Herbert Hoover authorizes building of Boulder Dam (Hoover Dam).<br /><b>1950</b> - North Korea invades South Korea, beginning the Korean War.'
             ],
 
 

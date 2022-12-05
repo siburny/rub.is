@@ -3,7 +3,7 @@
 /**
  * Plugin Name: dateCalc
  * Description: Flexible date and time formatter
- * Version: 5.0.2
+ * Version: 5.0.3
  * Update URI: https://github.com/siburny/wordpress-plugins-dist/raw/main/plugins-info.json
  */
 
@@ -336,6 +336,7 @@ function datecalc_func($atts)
 
   if ($date instanceof DateTime) {
     $all_data['holiday'] = get_all_holidays($date->format('Y'));
+    $all_data['events'] = get_all_events($date->format('Y'));
   }
 
   $display = 'yyyy';
@@ -545,7 +546,7 @@ function datecalc_func($atts)
     }
 
     return 'You share a birthday with ' . implode(', ', $str);
-  } else if (array_key_exists('event', $atts) || array_key_exists('events', $atts)) {
+  /*} else if (array_key_exists('event', $atts) || array_key_exists('events', $atts)) {
     if (!array_key_exists($date->format('n/j'), $all_data['event'])) {
       return '';
     }
@@ -570,7 +571,7 @@ function datecalc_func($atts)
       }
     }
 
-    return $str;
+    return $str;*/
   } else if (array_key_exists('president', $atts) || array_key_exists('presidents', $atts)) {
     $array = array();
     if (!empty($all_data['president'])) {
@@ -1223,6 +1224,34 @@ function get_all_holidays($year)
   $ret = array();
 
   foreach ($all_data['holiday'] as $h) {
+    $date = $h[0]['date'];
+    if (strpos($date, '/') !== false) {
+      $date .= '/' . $year;
+    } else {
+      $date .= ' ' . $year;
+    }
+
+    $date = strtotime($date);
+    if ($date) {
+      $key = date('n/j/Y', $date);
+      //$h['date'] = $key;
+      $ret[$key] = $h;
+    }
+  }
+
+  //print "<pre>";
+  //print_r($ret);
+
+  return $ret;
+}
+
+function get_all_events($year)
+{
+  global $all_data;
+
+  $ret = array();
+
+  foreach ($all_data['events'] as $h) {
     $date = $h[0]['date'];
     if (strpos($date, '/') !== false) {
       $date .= '/' . $year;
