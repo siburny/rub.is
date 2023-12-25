@@ -305,7 +305,6 @@ usage:
   background-color: #ff7c7c;
 }
 .tda-btn-save {
-  margin-left: 30px;
   position: relative;
   opacity: 1;
   width: 160px;
@@ -319,10 +318,14 @@ usage:
   transition: none;
 }
 .tda-btn-auto {
-  background-color: #ff7c7c;
+  font-size: 10px;
+  margin-left: auto;
+  color: #000;
+  text-decoration: underline;
 }
 .tda-btn-auto:hover {
-  background-color: #f76565;
+  color: #4db2ec;
+  text-decoration: none;
 }
 .tda-btn-manual-active {
   border-color: #ff7c7c !important;

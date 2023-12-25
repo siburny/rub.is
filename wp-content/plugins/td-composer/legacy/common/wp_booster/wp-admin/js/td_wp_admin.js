@@ -27,13 +27,44 @@ function td_widget_attach_color_picker() {
     });
 
 
-    jQuery(document).mousedown(function() {
+    jQuery(document).on('mousedown', function() {
         jQuery('.td-color-picker-widget').each(function() {
             var display = jQuery(this).css('display');
             if ( display == 'block' )
                 jQuery(this).fadeOut();
         });
     });
+}
+
+function td_hide_sidebar_box() {
+    if ( jQuery('.td-post-templates-metabox').length ) {
+        var postTemplate = jQuery('input[name="td_post_theme_settings[td_post_template]"]').val(),
+            globalPostTemplate = '';
+        if ( 'undefined' !== typeof window.tdcAdminSettings && 'undefined' !== typeof window.tdcAdminSettings.globalPostTemplate ) {
+            globalPostTemplate = window.tdcAdminSettings.globalPostTemplate;
+        }
+
+        if ( 0 === postTemplate.indexOf( 'tdb_template_') || ( postTemplate == '' && 0 === globalPostTemplate.indexOf( 'tdb_template_') )  ) {
+            jQuery(".td-sidebar-box, .remove-wpa-info").addClass('td-hide-metabox');
+        } else {
+            jQuery(".td-sidebar-box, .remove-wpa-info").removeClass('td-hide-metabox');
+        }
+
+        jQuery('[data-option-value^="tdb_template_"],[data-option-value^="single_template"],[data-option-value=""]').on('click', function (event) {
+
+            var $this = jQuery(this),
+                dataOptionValue = $this.data('option-value');
+            if ( 0 === dataOptionValue.indexOf('tdb_template_') || ( dataOptionValue == '' && 0 === globalPostTemplate.indexOf( 'tdb_template_') ) ) {
+                jQuery(".td-sidebar-box, .remove-wpa-info").addClass('td-hide-metabox');
+            } else {
+                jQuery(".td-sidebar-box, .remove-wpa-info").removeClass('td-hide-metabox');
+            }
+        });
+    }
+
+    if (jQuery('.td-cpt-option-general').length) {
+        jQuery(".remove-wpa-info").addClass('td-hide-metabox');
+    }
 }
 
 (function($){
@@ -108,7 +139,7 @@ document.addEventListener("DOMContentLoaded", td_theme_update);
 jQuery().ready(function() {
 
     td_widget_attach_color_picker();
-
+    td_hide_sidebar_box();
     /*  ----------------------------------------------------------------------------
         Sidebar manager
      */
@@ -257,7 +288,7 @@ jQuery().ready(function() {
 
 
 
-    jQuery('[data-option-value^="tdb_template_"],[data-option-value^="single_template"]').click(function(event) {
+    jQuery('[data-option-value^="tdb_template_"],[data-option-value^="single_template"]').on('click', function(event) {
         var $this = jQuery(this),
             dataOptionValue = $this.data('option-value');
 

@@ -147,9 +147,11 @@ class td_menu {
                     }
 
                     //check for subcategories
+                    //cache_domain was added from WP 6.0, to get uncached result
                     $td_subcategories = get_categories(array(
                         'child_of' => $td_mega_menu_cat,
-                        'number' => $td_show_child_cat  //
+                        'number' => $td_show_child_cat,
+                        'cache_domain' => microtime()
                     ));
                     if (!empty($td_subcategories)) {
 	                    $item->classes[] = 'menu-item-has-children'; // add the extra class for the dropdown to work

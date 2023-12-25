@@ -3,46 +3,160 @@
 
 
 /*  ----------------------------------------------------------------------------
-	TDS LOCKERS
+	SUBSCRIPTION - start phase 1
 */
-// add post meta for default locker
-td_demo_content::add_locker_meta( array(
-        'tds_locker_id' => (int) get_option( 'tds_default_locker_id' ),
-        'tds_locker_meta' => array(
-            'tds_locker_settings' => array(
-                'tds_title' => 'Content available exclusively for subscribers ',
-                'tds_message' => 'Enter your email address in the form bellow to get access.',
-                'tds_input_placeholder' => 'Your email address',
-                'tds_submit_btn_text' => 'Subscribe',
-                'tds_after_btn_text' => 'Your email address is 100% safe from spam!',
-                'tds_pp_msg' => 'I\'ve read and accept the <a href=\"#\">Privacy Policy</a>',
-            ),
-            'tds_locker_styles' => array(
-                'tds_bg_color' => '#333237',
-                'tds_title_color' => '#ffffff',
-                'tds_message_color' => '#bbbbbb',
-                'tds_input_bg_color' => '#ffffff',
-                'tds_input_border_color' => '#ffffff',
-                'tds_submit_btn_bg_color' => '#10bf6b',
-                'tds_submit_btn_bg_color_h' => '#000000',
-                'tds_pp_checked_color' => '#000000',
-                'tds_pp_check_bg' => 'rgba(255,255,255,0.6)',
-                'tds_pp_check_border_color' => 'rgba(16,191,107,0)',
-                'tds_pp_msg_color' => '#a0a0a0',
-                'tds_pp_msg_links_color' => '#10bf6b',
-                'tds_pp_msg_links_color_h' => '#ffffff',
-                'tds_general_font_family' => '420',
-                'tds_title_font_size' => '28',
-                'tds_title_font_line_height' => '1.3',
-                'tds_title_font_weight' => '700',
-                'tds_message_font_size' => '13',
-                'tds_message_font_line_height' => '1.5',
-                'tds_input_font_size' => '13',
-                'tds_submit_btn_text_font_size' => '13',
-            ),
+update_option('users_can_register', true);
+global $wpdb;
+$disable_wizard = $wpdb->get_var( "SELECT value FROM tds_options WHERE name = 'disable_wizard'");
+if ( empty($disable_wizard)) {
+    td_demo_subscription::add_account_details( array(
+            'company_name' => 'Demo Company',
+            'billing_cui' => '75864589',
+            'billing_j' => '10/120/2021',
+            'billing_address' => '2656 Farm Meadow Drive',
+            'billing_city' => 'Tucson',
+            'billing_country' => 'Arizona',
+            'billing_email' => 'yourcompany@website.com',
+            'billing_bank_account' => 'NL43INGB4186520410',
+            'billing_post_code' => '85712',
+            'billing_vat_number' => '75864589',
+            'options' => 'a:1:{s:15:"td_demo_content";i:1;}',
         )
+    );
+
+    td_demo_subscription::add_payment_bank( array(
+            'account_name' => 'Alpha Bank Account',
+            'account_number' => '123456',
+            'bank_name' => 'Alpha Bank',
+            'routing_number' => '123456',
+            'iban' => 'NL43INGB4186520410',
+            'bic_swift' => '123456',
+            'description' => 'Make your payment directly into our bank account. Please use your Subscription ID as the payment reference. Your subscription will be activated when the funds are cleared in our account.',
+            'instruction' => 'Payment method instructions go here.',
+            'is_active' => '1',
+            'options' => 'a:1:{s:15:"td_demo_content";i:1;}',
+        )
+    );
+
+    td_demo_subscription::add_option( array(
+            'name' => 'td_demo_content',
+            'value' => '1',
+        )
+    );
+}
+
+
+
+$plan_yearly_plan___crypto_news_pro_id = td_demo_subscription::add_plan( array(
+        'name' => 'Yearly Plan - Crypto News PRO',
+        'price' => '100',
+        'months_in_cycle' => '12',
+        'trial_days' => '0',
+        'is_free' => '0',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"6661e7af2868bf5";}',
     )
 );
+
+$plan_monthly_plan___crypto_news_pro_id = td_demo_subscription::add_plan( array(
+        'name' => 'Monthly Plan - Crypto News PRO',
+        'price' => '10',
+        'months_in_cycle' => '1',
+        'trial_days' => '0',
+        'is_free' => '0',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"1561e7af2868c9e";}',
+    )
+);
+
+$plan_free_plan___crypto_news_pro_id = td_demo_subscription::add_plan( array(
+        'name' => 'Free Plan - Crypto News PRO',
+        'price' => '',
+        'months_in_cycle' => '',
+        'trial_days' => '0',
+        'is_free' => '1',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"4161e7af2868cda";}',
+    )
+);
+
+
+
+$page_payment_page_id_id = td_demo_content::add_page(array(
+    'title' => 'Checkout - crypto_news_pro',
+    'file' => 'checkout_crypto_news_pro.txt',
+));
+
+td_demo_subscription::add_option( array(
+        'name' => 'payment_page_id',
+        'value' => $page_payment_page_id_id,
+    )
+);
+
+
+$page_my_account_page_id_id = td_demo_content::add_page(array(
+    'title' => 'My Account - crypto_news_pro',
+    'file' => 'my_account_crypto_news_pro.txt',
+));
+
+td_demo_subscription::add_option( array(
+        'name' => 'my_account_page_id',
+        'value' => $page_my_account_page_id_id,
+    )
+);
+
+
+$page_create_account_page_id_id = td_demo_content::add_page(array(
+    'title' => 'Login/Register - crypto_news_pro',
+    'file' => 'login_register_crypto_news_pro.txt',
+));
+
+td_demo_subscription::add_option( array(
+        'name' => 'create_account_page_id',
+        'value' => $page_create_account_page_id_id,
+    )
+);
+
+
+
+td_demo_subscription::add_option( array(
+        'name' => 'go_wizard',
+        'value' => '1',
+    )
+);
+
+td_demo_subscription::add_option( array(
+        'name' => 'wizard_company_complete',
+        'value' => '1',
+    )
+);
+
+td_demo_subscription::add_option( array(
+        'name' => 'wizard_payments_complete',
+        'value' => '1',
+    )
+);
+
+td_demo_subscription::add_option( array(
+        'name' => 'wizard_plans_complete',
+        'value' => '1',
+    )
+);
+
+td_demo_subscription::add_option( array(
+        'name' => 'wizard_locker_complete',
+        'value' => '1',
+    )
+);
+
+td_demo_subscription::add_option( array(
+        'name' => 'disable_wizard',
+        'value' => '1',
+    )
+);
+
+
+/*  ----------------------------------------------------------------------------
+	SUBSCRIPTION - end phase 1
+*/
+
 
 
 /*  ----------------------------------------------------------------------------
@@ -236,6 +350,80 @@ $cat_videos_id = td_demo_category::add_category(array(
 
 
 /*  ----------------------------------------------------------------------------
+	PAGES
+*/
+$page_home_id = td_demo_content::add_page(array(
+    'title' => 'Home',
+    'file' => 'home.txt',
+    'homepage' => true,
+    'footer_template_id' => $template_footer_template_home_id
+));
+
+$page_switching_plans_crypto_news_pro_id = td_demo_content::add_page(array(
+    'title' => 'Switching plans - Crypto News PRO',
+    'file' => 'switching_plans_crypto_news_pro.txt',
+    'demo_unique_id' => '7161e7af2889d43',
+));
+
+
+
+/*  ----------------------------------------------------------------------------
+	SUBSCRIPTION - start phase 2
+*/
+
+/*  ----------------------------------------------------------------------------
+	SUBSCRIPTIONS
+*/
+// add locker
+$post_tds_default_wizard_locker_id = td_demo_content::add_post( array(
+        'post_type' => 'tds_locker',
+        'title' => 'Subscription Locker - Crypto News PRO',
+        'file' => '',
+        'categories_id_array' => [],
+        'tds_locker_settings' => array(
+            'tds_title' => 'Content available exclusively for subscribers',
+            'tds_message' => 'Please subscribe to unlock this content.',
+            'tds_submit_btn_text' => 'Subscribe',
+            'tds_pp_msg' => 'I consent to processing of my data according to <a href=\"#\">Terms of Use</a> & <a href=\"#\">Privacy Policy</a>',
+            'tds_locker_cf_1_name' => 'Custom field 1',
+            'tds_locker_cf_2_name' => 'Custom field 2',
+            'tds_locker_cf_3_name' => 'Custom field 3',
+        ),
+        'tds_payable' => 'paid_subscription',
+        'tds_paid_subs_page_id' => $page_switching_plans_crypto_news_pro_id,
+        'tds_paid_subs_plan_ids' => [$plan_yearly_plan___crypto_news_pro_id,$plan_monthly_plan___crypto_news_pro_id,$plan_free_plan___crypto_news_pro_id],
+        'tds_locker_styles' => array(
+            'tds_bg_color' => '#333237',
+            'tds_title_color' => '#ffffff',
+            'tds_message_color' => '#bbbbbb',
+            'tds_submit_btn_bg_color' => '#10bf6b',
+            'tds_submit_btn_bg_color_h' => '#000000',
+            'tds_pp_checked_color' => '#000000',
+            'tds_pp_check_bg' => '#ffffff',
+            'tds_pp_check_border_color' => '#ffffff',
+            'tds_pp_msg_color' => '#a0a0a0',
+            'tds_pp_msg_links_color' => '#10bf6b',
+            'tds_pp_msg_links_color_h' => '#ffffff',
+            'tds_general_font_family' => '420',
+            'tds_title_font_size' => '28',
+            'tds_title_font_line_height' => '1.3',
+            'tds_title_font_weight' => '700',
+            'tds_message_font_size' => '13',
+            'tds_message_font_line_height' => '1.5',
+            'tds_submit_btn_text_font_size' => '13',
+        ),
+    )
+);
+
+td_util::update_option('tds_demo_options', 'a:1:{s:5:"plans";a:3:{i:0;a:2:{s:9:"unique_id";s:15:"6661e7af2868bf5";s:4:"name";s:29:"Yearly Plan - Crypto News PRO";}i:1;a:2:{s:9:"unique_id";s:15:"1561e7af2868c9e";s:4:"name";s:30:"Monthly Plan - Crypto News PRO";}i:2;a:2:{s:9:"unique_id";s:15:"4161e7af2868cda";s:4:"name";s:27:"Free Plan - Crypto News PRO";}}}');
+
+
+/*  ----------------------------------------------------------------------------
+	SUBSCRIPTION - end phase 2
+*/
+
+
+/*  ----------------------------------------------------------------------------
 	ATTACHMENTS
 */
 
@@ -255,14 +443,9 @@ $post_td_post_how_to_trade_stocks_with_crypto_primexbt_id = td_demo_content::add
     'title' => 'How to Trade Stocks with Crypto - PrimeXBT',
     'file' => 'post_default.txt',
     'featured_image_td_id' => 'td_pic_2',
-    'categories_id_array' => array($cat_deals_id,),'post_meta' => array(
-        // 'post meta key' => 'post meta value'
-        'tds_lock_content' => true, // '1' or `true` to set post to have locked content..
-        'td_post_theme_settings' => array(
-            'tds_lock_content' => true,
-            'tds_locker' => (int) get_option( 'tds_default_locker_id' ), // this sets the default locker..
-        )
-    ),
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
+    'categories_id_array' => array($cat_deals_id,),
 ));
 
 $post_td_post_vpns_and_geo_blocking_in_the_cryptocurrency_world_id = td_demo_content::add_post(array(
@@ -290,15 +473,9 @@ $post_td_post_trading_indicators_what_you_need_to_know_id = td_demo_content::add
     'title' => 'Trading Indicators: What You Need to Know',
     'file' => 'post_default.txt',
     'featured_image_td_id' => 'td_pic_6',
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
     'categories_id_array' => array($cat_deals_id,),
-    'post_meta' => array(
-        // 'post meta key' => 'post meta value'
-        'tds_lock_content' => true, // '1' or `true` to set post to have locked content..
-        'td_post_theme_settings' => array(
-            'tds_lock_content' => true,
-            'tds_locker' => (int) get_option( 'tds_default_locker_id' ), // this sets the default locker..
-        )
-    ),
 ));
 
 $post_td_post_gamestop_and_dogecoin_show_how_memes_can_move_markets_id = td_demo_content::add_post(array(
@@ -375,15 +552,9 @@ $post_td_post_techcrunch_founder_to_sell_his_kyiv_flat_as_an_nft_id = td_demo_co
     'title' => 'TechCrunch Founder to Sell His Kyiv Flat – as an NFT',
     'file' => 'post_default.txt',
     'featured_image_td_id' => 'td_pic_7',
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
     'categories_id_array' => array($cat_nfts_id,),
-    'post_meta' => array(
-        // 'post meta key' => 'post meta value'
-        'tds_lock_content' => true, // '1' or `true` to set post to have locked content..
-        'td_post_theme_settings' => array(
-            'tds_lock_content' => true,
-            'tds_locker' => (int) get_option( 'tds_default_locker_id' ), // this sets the default locker..
-        )
-    ),
 ));
 
 $post_td_post_decentraland_sees_a_record_usd_913000_virtual_land_sale_id = td_demo_content::add_post(array(
@@ -404,15 +575,9 @@ $post_td_post_lawyer_warns_russian_blockchain_exodus_has_already_begun_id = td_d
     'title' => 'Lawyer Warns Russian Blockchain Exodus Has Already Begun',
     'file' => 'post_default.txt',
     'featured_image_td_id' => 'td_pic_10',
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
     'categories_id_array' => array($cat_blockchain_id,),
-    'post_meta' => array(
-        // 'post meta key' => 'post meta value'
-        'tds_lock_content' => true, // '1' or `true` to set post to have locked content..
-        'td_post_theme_settings' => array(
-            'tds_lock_content' => true,
-            'tds_locker' => (int) get_option( 'tds_default_locker_id' ), // this sets the default locker..
-        )
-    ),
 ));
 
 $post_td_post_new_platform_gives_whiskey_fans_a_boozy_blockchain_boost_id = td_demo_content::add_post(array(
@@ -476,15 +641,9 @@ $post_the_first_digital_real_estate_nft_fund_id = td_demo_content::add_post(arra
     'featured_image_td_id' => '',
     'featured_video_url' => 'https://www.youtube.com/watch?v=oz30_Puyglc',
     'post_format' => 'video',
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
     'categories_id_array' => array($cat_videos_id,),
-    'post_meta' => array(
-        // 'post meta key' => 'post meta value'
-        'tds_lock_content' => true, // '1' or `true` to set post to have locked content..
-        'td_post_theme_settings' => array(
-            'tds_lock_content' => true,
-            'tds_locker' => (int) get_option( 'tds_default_locker_id' ), // this sets the default locker..
-        )
-    ),
 ));
 
 $post_how_is_the_price_of_bitcoins_set_2_id = td_demo_content::add_post(array(
@@ -585,22 +744,13 @@ $post_the_most_ambitious_trend_in_crypto_id = td_demo_content::add_post(array(
     'file' => 'post_default.txt',
     'categories_id_array' => array($cat_videos_id,),
     'featured_image_td_id' => '',
+    'tds_lock_content' => '1',
+    'tds_locker' => $post_tds_default_wizard_locker_id,
     'featured_video_url' => 'https://www.youtube.com/watch?v=tGwyeGuZ0_k',
     'post_format' => 'video',
 ));
 
 td_global::set_demo_installing(false);
-
-
-/*  ----------------------------------------------------------------------------
-	PAGES
-*/
-$page_home_id = td_demo_content::add_page(array(
-    'title' => 'Home',
-    'file' => 'home.txt',
-    'homepage' => true,
-    'footer_template_id' => $template_footer_template_home_id
-));
 
 
 /*  ----------------------------------------------------------------------------

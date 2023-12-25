@@ -264,6 +264,10 @@ class tds_icon1 extends td_style {
 
         // icon
         $icon = $this->get_icon_att('tdicon_id');
+        $data_icon = '';
+        if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+            $data_icon = 'data-td-svg-icon="' . $this->get_att('tdicon_id') . '"';
+        }
 
         $svg_code = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('svg_code') ) ) );
         if( $svg_code == '' ) {
@@ -276,7 +280,7 @@ class tds_icon1 extends td_style {
 	    if( $svg_code == '' ) {
             $buffy .= '<i class="' . self::get_group_style( __CLASS__ ) . ' ' . $icon . ' ' . $this->unique_style_class . ' td-fix-index"></i>';
         } else {
-	        $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' tds-icon-svg-wrap ' . $this->unique_style_class . ' td-fix-index"><div class="tds-icon-svg">' . $svg_code . '</div></div>';
+	        $buffy .= '<div class="' . self::get_group_style( __CLASS__ ) . ' tds-icon-svg-wrap ' . $this->unique_style_class . ' td-fix-index"><div class="tds-icon-svg" ' . $data_icon . '>' . $svg_code . '</div></div>';
         }
 
 	    return $buffy;

@@ -1,45 +1,118 @@
 <?php
 
-//removing the comments sidewide
-if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_supports(get_post_type(), 'comments')) {
+// removing the comments sidewide
+if ( ( td_util::get_option('tds_disable_comments_sidewide' ) == '' ) && post_type_supports( get_post_type(), 'comments' ) ) {
 
-    if (post_password_required()) {
+    if ( post_password_required() ) {
         return;
     }
     ?>
     <div class="comments" id="comments">
         <?php
-        if (have_comments()) {
+        if ( have_comments() ) {
 
             // on Newspaper the css class 'td-pb-padding-side' is not applied
             $td_css_cls_pb_padding_side = '';
             $td_css_cls_block_title = '';
             $global_block_template_id = td_options::get('tds_global_block_template', 'td_block_template_1');
 
-            if ('Newsmag' == TD_THEME_NAME) {
+            if ( 'Newsmag' == TD_THEME_NAME ) {
                 $td_css_cls_pb_padding_side = 'td-pb-padding-side ';
-            } else if ('Newspaper' == TD_THEME_NAME) {
+            } else if ( 'Newspaper' == TD_THEME_NAME ) {
                 $td_css_cls_block_title = 'td-block-title';
 
-                if ($global_block_template_id === 'td_block_template_1') {
+                if ( $global_block_template_id === 'td_block_template_1' ) {
                     $td_css_cls_block_title = 'block-title';
                 }
             }
 
             $num_comments = get_comments_number(); // get_comments_number returns only a numeric value
-            if ($num_comments > 1) {
-                $td_comments_no_text = $num_comments . ' ' . __td('COMMENTS', TD_THEME_NAME);
+            if ( $num_comments > 1 ) {
+                $td_comments_no_text = $num_comments . ' ' . __td('COMMENTS', TD_THEME_NAME );
             } else {
-                $td_comments_no_text = __td('1 COMMENT', TD_THEME_NAME);
+                $td_comments_no_text = __td('1 COMMENT', TD_THEME_NAME );
             }
             ?>
 
             <div class="td-comments-title-wrap <?php echo esc_attr( $td_css_cls_pb_padding_side . $global_block_template_id ) ?>">
-                <h4 class="td-comments-title <?php echo esc_attr( $td_css_cls_block_title ) ?>"><span><?php echo esc_attr( $td_comments_no_text ) ?></span></h4>
+                <h4 class="td-comments-title <?php echo esc_attr( $td_css_cls_block_title ) ?>">
+                    <span><?php echo esc_attr( $td_comments_no_text ) ?></span>
+                </h4>
             </div>
 
             <ol class="comment-list <?php echo esc_attr( $td_css_cls_pb_padding_side ) ?>">
-                <?php wp_list_comments(array('callback' => 'td_comment')); ?>
+                <?php
+                wp_list_comments(
+                    array(
+                        'callback' => function ( $comment, $args, $depth ) {
+                            $GLOBALS['comment'] = $comment;
+
+                            $td_isPingTrackbackClass = '';
+
+                            if( $comment->comment_type == 'pingback' ) {
+                                $td_isPingTrackbackClass = 'pingback';
+                            }
+
+                            if( $comment->comment_type == 'trackback' ) {
+                                $td_isPingTrackbackClass = 'trackback';
+                            }
+
+                            if ( !empty( $comment->comment_author_email ) ) {
+                                $td_comment_auth_email = $comment->comment_author_email;
+                            } else {
+                                $td_comment_auth_email = '';
+                            }
+
+                            $td_article_date_unix = @strtotime("{$comment->comment_date_gmt} GMT");
+
+                            ?>
+                            <li class="comment <?php echo esc_attr( $td_isPingTrackbackClass ) ?>" id="comment-<?php comment_ID() ?>">
+                                <article>
+                                    <footer>
+                                        <?php echo get_avatar( $td_comment_auth_email, 50 ); ?>
+                                        <cite><?php comment_author_link() ?></cite>
+
+                                        <a class="comment-link" href="#comment-<?php comment_ID() ?>">
+                                            <time pubdate="<?php echo esc_attr( $td_article_date_unix ) ?>">
+                                                <?php comment_date();?>
+                                                <?php echo __td('At', TD_THEME_NAME ); ?>
+                                                <?php comment_time();?>
+                                            </time>
+                                        </a>
+
+                                        <?php edit_comment_link( __td('Edit', TD_THEME_NAME ) ) ?>
+
+                                    </footer>
+
+                                    <div class="comment-content tagdiv-type">
+                                        <?php if ($comment->comment_approved == '0') { ?>
+                                            <em><?php echo __td('Your comment is awaiting moderation', TD_THEME_NAME ); ?></em>
+                                        <?php } ?>
+                                        <?php comment_text(); ?>
+                                    </div>
+
+                                    <div class="comment-meta" id="comment-<?php comment_ID() ?>">
+                                        <?php
+                                        comment_reply_link(
+                                            array_merge(
+                                                $args,
+                                                array(
+                                                    'depth' => $depth,
+                                                    'max_depth' => $args['max_depth'],
+                                                    'reply_text' => __td('Reply', TD_THEME_NAME ),
+                                                    'login_text' =>  __td('Log in to leave a comment', TD_THEME_NAME )
+                                                )
+                                            )
+                                        )
+                                        ?>
+                                    </div>
+                                </article>
+                            </li>
+                            <?php
+                        }
+                    )
+                );
+                ?>
             </ol>
             <div class="comment-pagination">
                 <?php previous_comments_link(); ?>
@@ -48,7 +121,7 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
 
         <?php }
 
-        if (!comments_open() and (get_comments_number() > 0)) { ?>
+        if ( !comments_open() and ( get_comments_number() > 0 ) ) { ?>
             <p class="td-pb-padding-side"><?php _etd( 'Comments are closed.', TD_THEME_NAME ); ?></p>
         <?php }
 
@@ -84,11 +157,10 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
         $defaults = array('fields' => apply_filters('comment_form_default_fields', $fields));
         $defaults['comment_field'] =
             '<div class="clearfix"></div>
-				<div class="comment-form-input-wrap td-form-comment">
-					<textarea placeholder="' . __td('Comment:', TD_THEME_NAME) . '" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
-					<div class="td-warning-comment">' . __td('Please enter your comment!', TD_THEME_NAME) . '</div>
-				</div>
-		        ';
+            <div class="comment-form-input-wrap td-form-comment">
+                <textarea placeholder="' . __td('Comment:', TD_THEME_NAME) . '" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
+                <div class="td-warning-comment">' . __td('Please enter your comment!', TD_THEME_NAME) . '</div>
+            </div>';
 
         $defaults['comment_notes_before'] = '';
         $defaults['comment_notes_after'] = '';
@@ -97,12 +169,12 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
         $defaults['cancel_reply_link'] = __td('Cancel reply', TD_THEME_NAME);
 
         // login with our login modal when you want to write a comment
-        //	        if ( td_util::get_option('tds_login_sign_in_widget') == 'show' && td_util::tdc_is_installed() ) {
-        //		        $url = '#login-form';
-        //	        } else {
-        //		        $post_id = get_the_ID();
-        //		        $url = wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) );
-        //	        }
+        //if ( td_util::get_option('tds_login_sign_in_widget') == 'show' && td_util::tdc_is_installed() ) {
+        //    $url = '#login-form';
+        //} else {
+        //    $post_id = get_the_ID();
+        //    $url = wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) );
+        //}
 
         $defaults['must_log_in'] = '<p class="must-log-in td-login-comment"><a class="td-login-modal-js" data-effect="mpf-td-login-effect" href="#login-form">' . __td('Log in to leave a comment', TD_THEME_NAME) . ' </a></p>';
 
@@ -120,84 +192,11 @@ if ((td_util::get_option('tds_disable_comments_sidewide') == '') && post_type_su
             require_once( TDC_PATH_LEGACY . '/parts/header/td-login-modal.php');
         }
 
-        comment_form($defaults);
+        comment_form( $defaults );
 
         ?>
     </div> <!-- /.content -->
     <?php
 }
 
-
-//end removing the comments sidewide
-/**
- * Custom callback for outputting comments
- *
- * @return void
- * @author tagdiv
- */
-function td_comment( $comment, $args, $depth ) {
-    $GLOBALS['comment'] = $comment;
-
-    $td_isPingTrackbackClass = '';
-
-    if($comment->comment_type == 'pingback') {
-        $td_isPingTrackbackClass = 'pingback';
-    }
-
-    if($comment->comment_type == 'trackback') {
-        $td_isPingTrackbackClass = 'trackback';
-    }
-
-    if (!empty($comment->comment_author_email)) {
-        $td_comment_auth_email = $comment->comment_author_email;
-    } else {
-        $td_comment_auth_email = '';
-    }
-
-    $td_article_date_unix = @strtotime("{$comment->comment_date_gmt} GMT");
-    //print_r($td_article_date_unix);
-
-
-    ?>
-<li class="comment <?php echo esc_attr( $td_isPingTrackbackClass ) ?>" id="comment-<?php comment_ID() ?>">
-    <article>
-        <footer>
-            <?php
-            //echo get_template_directory_uri() . "/images/avatar.jpg";
-            //echo get_avatar($td_comment_auth_email, 50, get_template_directory_uri() . "/images/avatar.jpg");
-            echo get_avatar($td_comment_auth_email, 50);
-            ?>
-            <cite><?php comment_author_link() ?></cite>
-
-            <a class="comment-link" href="#comment-<?php comment_ID() ?>">
-                <time pubdate="<?php echo esc_attr( $td_article_date_unix ) ?>">
-                    <?php comment_date();?>
-                    <?php echo __td('At', TD_THEME_NAME); ?>
-                    <?php comment_time();?></time>
-            </a>
-
-            <?php edit_comment_link( __td('Edit', TD_THEME_NAME)) ?>
-
-        </footer>
-
-        <div class="comment-content tagdiv-type">
-            <?php if ($comment->comment_approved == '0') { ?>
-                <em><?php echo __td('Your comment is awaiting moderation', TD_THEME_NAME); ?></em>
-            <?php }
-            comment_text(); ?>
-        </div>
-
-        <div class="comment-meta" id="comment-<?php comment_ID() ?>">
-            <?php comment_reply_link(array_merge( $args, array(
-                'depth' => $depth,
-                'max_depth' => $args['max_depth'],
-                'reply_text' => __td('Reply', TD_THEME_NAME),
-                'login_text' =>  __td('Log in to leave a comment', TD_THEME_NAME)
-            )))
-            ?>
-        </div>
-    </article>
-    <?php
-
-}
 ?>

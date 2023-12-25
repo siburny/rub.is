@@ -544,6 +544,7 @@ class vc_single_image extends td_block {
 				'image' => '',
 				'image_width' => '',
 				'image_height' => '',
+				'image_cf' => '',
 				'image_url' => '#',
 				'open_in_new_window' => '',
 				'height' => '',
@@ -559,6 +560,7 @@ class vc_single_image extends td_block {
 
                 'video_popup' => '',
                 'video_url' => '',
+                'autoplay_vid' => 'yes',
                 'video_rec' => '',
                 'video_rec_title' => '',
                 'video_rec_color' => '',
@@ -601,30 +603,23 @@ class vc_single_image extends td_block {
 			$no_custom_url = ' td-no-img-custom-url';
 		}
 
-//		$image_size = ' background-size: cover;';
-//		if ( '' !== $atts['size'] ) {
-//			$image_size = ' background-size: ' . $atts['size'] . ';';
-//		}
-//
-//		$image_repeat = ' background-repeat: no-repeat;';
-//		if ( '' !== $atts['repeat'] ) {
-//			$image_repeat = ' background-repeat: ' . $atts['repeat'] . ';';
-//		}
-//
-//		$image_alignment = ' background-position: center center;';
-//		if ( '' !== $atts['alignment'] ) {
-//			$image_alignment = ' background-position: center ' . $atts['alignment'] . ';';
-//		}
-
 		$editing_class = '';
 		if (tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax()) {
 			$editing_class = 'tdc-editing-vc_single_image';
 		}
 
-		if ( !empty($atts['image']) ) {
+		// external image
+        $image_external = td_util::get_custom_field_value_from_string($atts['image_cf']);
+		if (is_numeric($image_external)) {
+            $image_external = wp_get_attachment_image_url($image_external, 'full');
+        }
 
-			$image_info = tdc_util::get_image($atts);
-
+		if ( !empty($atts['image']) || '' !== $image_external ) {
+		    if ( '' !== $image_external ) {
+                $image_info['url'] = $image_external;
+            } else {
+                $image_info = tdc_util::get_image($atts);
+            }
             /**
              * Google Analytics tracking settings
              */
@@ -649,8 +644,10 @@ class vc_single_image extends td_block {
                 if( $video_url != '' ) {
                     $video_source = td_video_support::detect_video_service($video_url);
 
+                    $autoplay_vid = $atts[ 'autoplay_vid' ];
+
                     $video_popup_class = 'td-image-video-modal';
-                    $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url ) . '"';
+                    $video_popup_data = 'data-video-source="' . $video_source . '" data-video-autoplay="' . $autoplay_vid . '" data-video-url="'. esc_url( $video_url ) . '"';
 
                     $video_rec = '';
                     if( $atts[ 'video_rec' ] != '' ) {
@@ -737,7 +734,7 @@ class vc_single_image extends td_block {
 		} else {
 			$info = '';
 			if ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
-				$info = td_util::get_block_error('Single Image', 'Render failed - no image is selected' );
+				$info = td_util::get_block_error('Single Background Image', 'Render failed - no image is selected' );
 			}
 			$buffer = '<div class="wpb_wrapper td_block_single_image ' . $this->get_wrapper_class() . '">' . $info . '</div>';
 		}

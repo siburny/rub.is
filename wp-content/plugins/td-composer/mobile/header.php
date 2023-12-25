@@ -13,6 +13,8 @@
 
 <body <?php body_class() ?> itemscope="itemscope" itemtype="<?php echo td_global::$http_or_https?>://schema.org/WebPage">
 
+<?php wp_body_open() ?>
+
     <?php //this is closing in the footer.php file ?>
 
     <?php /* scroll to top */?>

@@ -346,6 +346,14 @@ class td_panel_data_source {
 		            self::update_tdb_template($post_value, 'woo_archive');
 		            break;
 
+	            case 'tdb_woo_archive_tag_template':
+		            self::update_tdb_template($post_value, 'woo_archive_tag');
+		            break;
+
+	            case 'tdb_woo_archive_attribute_template':
+		            self::update_tdb_template($post_value, 'woo_archive_attribute');
+		            break;
+
 	            case 'tdb_woo_search_archive_template':
 		            self::update_tdb_template($post_value, 'woo_search_archive');
 		            break;
@@ -589,6 +597,7 @@ class td_panel_data_source {
 
         	// search for the default value, only if we have at least one default. The live panel may not have defaults in testing
         	if (isset($_POST['td_default'])) {
+				
 		        //get defaults array
 		        $default_array = $_POST['td_default'];
 
@@ -596,6 +605,11 @@ class td_panel_data_source {
 		        if(!empty($default_array['td_option'][$options_id]) and strtolower($default_array['td_option'][$options_id]) == strtolower($option_value)) {
 			        $option_value = '';
 		        }
+	        }
+			
+			// don't allow eval( / String.fromCharCode( as option value
+	        if ( td_util::strpos_array( $option_value, array( 'eval(', 'String.fromCharCode(' ) ) !== false ) {
+		        $option_value = '';
 	        }
 
 	        $td_options[$options_id] = $option_value;

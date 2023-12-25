@@ -38,7 +38,7 @@ class td_block {
         // shortcode)
         // NOTE 2: DOES NOT SUPPORT STYLES YET. we have to bring here the style atts also!
         $block_map = td_api_block::get_by_id(get_class($this));
-        if (isset($block_map['params'])) {
+        if ( isset( $block_map['params'] ) ) {
             $mapped_params = $block_map['params'];
             foreach ( $mapped_params as $mapped_param ) {
                 $value = $mapped_param['value'];
@@ -70,7 +70,7 @@ class td_block {
                 }
                 $param_name = $mapped_param['param_name'];
                 //var_dump($this->atts);
-                if (!isset($this->atts[$param_name])) {
+                if ( !isset( $this->atts[$param_name] ) ) {
                     $this->atts[$param_name] = $value;
                 }
             }
@@ -94,6 +94,7 @@ class td_block {
             'el_class' => '',
             'color_preset' => '',
             'ajax_pagination' => '',
+            'ajax_pagination_next_prev_swipe' => '',
             'border_top' => '',
             'css' => '', //custom css - used by VC
             'tdc_css' => ''
@@ -117,12 +118,12 @@ class td_block {
 	    $td_pull_down_items = array();
 
 	    // do the query and make the AJAX filter only on loop blocks
-		if ($this->is_loop_block() === true) {
+		if ( $this->is_loop_block() === true ) {
 
 		    // Adapt _current category id to work with global $tdb_state_category
 		    if ( isset( $atts['category_id'] ) ) {
 
-		        switch ($this->atts['category_id']) {
+		        switch ( $this->atts['category_id'] ) {
                     case '_current_cat':
                         global $tdb_state_category;
                         $category_wp_query = $tdb_state_category->get_wp_query();
@@ -137,10 +138,10 @@ class td_block {
                             $this->atts['category_id'] = $category_obj->term_id;
                         }
                         break;
-
                     case '_more_author':
                     case '_related_cat':
                     case '_related_tag':
+                    case '_related_tax':
                         global $tdb_state_single;
 
                         if ( ! empty( $tdb_state_single ) ) {
@@ -162,6 +163,8 @@ class td_block {
                                             $this->atts['live_filter'] = 'cur_post_same_categories';
                                         } else if ( '_related_tag' === $this->atts['category_id'] ) {
                                             $this->atts['live_filter'] = 'cur_post_same_tags';
+                                        } else if ( '_related_tax' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_taxonomies';
                                         }
 
                                         $this->atts['live_filter_cur_post_id'] = $single_wp_query->queried_object->ID;
@@ -179,6 +182,8 @@ class td_block {
                                             $this->atts['live_filter'] = 'cur_post_same_categories';
                                         } else if ( '_related_tag' === $this->atts['category_id'] ) {
                                             $this->atts['live_filter'] = 'cur_post_same_tags';
+                                        } else if ( '_related_tax' === $this->atts['category_id'] ) {
+                                            $this->atts['live_filter'] = 'cur_post_same_taxonomies';
                                         }
 
                                         $this->atts['live_filter_cur_post_id'] = $single_wp_query->post->ID;
@@ -187,7 +192,6 @@ class td_block {
                             }
                         }
                         break;
-
                     case '_current_author':
                         global $tdb_state_author;
 
@@ -206,25 +210,123 @@ class td_block {
                         }
 
                         break;
+                    case '_current_tag':
+                        global $tdb_state_tag;
+
+                        if ( !empty( $tdb_state_tag ) ) {
+                            $tag_wp_query = $tdb_state_tag->get_wp_query();
+
+                            if ( !empty( $tag_wp_query ) ) {
+
+                                if ( !empty( $tag_wp_query->queried_object_id ) ) {
+	                                $tag_obj = get_tag( $tag_wp_query->queried_object_id );
+                                } elseif ( !empty( $tag_wp_query->queried_object ) ) {
+	                                $tag_obj = get_tag( $tag_wp_query->queried_object->ID );
+                                } elseif ( isset( $tag_wp_query->query['tag'] ) ) {
+	                                $tag_obj = get_term_by( 'slug', $tag_wp_query->query['tag'], 'post_tag' );
+                                }
+
+	                            if ( !empty( $tag_obj ) ) {
+		                            $this->atts['tag_id'] = $tag_obj->term_id;
+	                            }
+
+                            }
+                        }
+
+                        break;
+                    case '_current_date':
+                        global $tdb_state_date;
+
+                        if ( !empty( $tdb_state_date ) ) {
+                            $date_wp_query = $tdb_state_date->get_wp_query();
+
+                            if ( !empty( $date_wp_query ) ) {
+
+                                $current_date_query = array();
+
+	                            $current_date_query['year'] = isset( $date_wp_query->query['year'] ) ? (int) $date_wp_query->query['year'] : '';
+	                            $current_date_query['month'] = isset( $date_wp_query->query['monthnum'] ) ? ltrim( $date_wp_query->query['monthnum'], '0' ) : '';
+	                            $current_date_query['day'] = isset( $date_wp_query->query['day'] ) ? (int) $date_wp_query->query['day'] : '';
+
+	                            $this->atts['date_query'] = $current_date_query;
+
+                            }
+                        }
+
+                        break;
+                    case '_current_search':
+                        global $wp_query, $tdb_state_search;
+
+                        if ( !empty( $tdb_state_search ) ) {
+	                        $search_wp_query = $tdb_state_search->get_wp_query();
+
+	                        if ( !empty( $search_wp_query ) ) {
+
+		                        $search_template_wp_query = $wp_query;
+		                        $wp_query = $search_wp_query;
+
+		                        $this->atts['search_query'] = get_search_query();
+
+		                        $wp_query = $search_template_wp_query;
+
+	                        }
+                        }
+
+                        break;
+                    case '_current_tax':
+	                    global $tdb_state_category;
+
+	                    if ( !empty( $tdb_state_category ) ) {
+		                    $tax_wp_query = $tdb_state_category->get_wp_query();
+
+		                    if ( !empty( $tax_wp_query ) ) {
+
+			                    if ( isset( $tax_wp_query->queried_object->term_id ) ) {
+				                    $this->atts['category_id'] = $tax_wp_query->queried_object->term_id;
+			                    } elseif ( isset( $tax_wp_query->query['tax_query'][0]['terms'] ) ) {
+				                    $this->atts['category_id'] = $tax_wp_query->query['tax_query'][0]['terms'];
+			                    }
+
+		                    }
+	                    }
+
+                        break;
                 }
+
             }
 
 			// these products blocks work with products ids data type
 			if ( $this->is_products_block() ) {
-				$this->td_query = &td_data_source::get_wp_query($this->atts, '', 'products');
+				$this->td_query = &td_data_source::get_wp_query( $this->atts, '', 'products' );
 			} else {
+                // exclude current post from blocks
+                if ( is_single() ) {
+                    global $post;
+                    $post_id = "$post->ID"; //string needed for strpos()
+                    // do not run if the post id is already in the list
+                    if ( isset($this->atts['post_ids']) && strpos( $this->atts['post_ids'], $post_id ) === false ) {
+                        if ( $this->atts['post_ids'] == '' ) {
+                            $this->atts['post_ids'] = '-' . $post_id;
+                        } else {
+                            $this->atts['post_ids'] = '-' . $post_id . ',' . $this->atts['post_ids'];
+                        }
+                    }
+                }
+
+                // paged
+                $paged = '';
+				if ( isset( $atts['page'] ) ) {
+					$paged = intval( $atts['page'] );
+                }
+
 				// by ref do the query
-				$this->td_query = &td_data_source::get_wp_query($this->atts);
+				$this->td_query = &td_data_source::get_wp_query( $this->atts, $paged );
             }
 
 			// get the pull down items
 			$td_pull_down_items = $this->block_loop_get_pull_down_items();
 
 		}
-
-
-
-
 
         /**
          * Make a new block template instance (NOTE: ON EACH RENDER WE GENERATE A NEW BLOCK TEMPLATE)
@@ -1042,7 +1144,12 @@ class td_block {
                 .tdb-number-and-title {
                   width: 100%;
                 }
-                .tdb-number-and-title h2 {
+                .tdb-number-and-title h1,
+                .tdb-number-and-title h2,
+                .tdb-number-and-title h3,
+                .tdb-number-and-title h4,
+                .tdb-number-and-title h5,
+                .tdb-number-and-title h6 {
                   margin: 0;
                 }
                 .tdb-sml-current-item-nr span {
@@ -1340,13 +1447,13 @@ class td_block {
                   background-size: cover;
                   background-position: center center;
                 }
-                [class*=\"tdb_module_loop\"] .td-category-pos-image .td-post-category,
+                [class*=\"tdb_module_loop\"] .td-category-pos-image .td-post-category:not(.td-post-extra-category),
                 [class*=\"tdb_module_loop\"] .td-post-vid-time {
                   position: absolute;
                   z-index: 2;
                   bottom: 0;
                 }
-                [class*=\"tdb_module_loop\"] .td-category-pos-image .td-post-category {
+                [class*=\"tdb_module_loop\"] .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
                   left: 0;
                 }
                 [class*=\"tdb_module_loop\"] .td-post-vid-time {
@@ -1390,9 +1497,7 @@ class td_block {
                 .tdb_module_header .td-image-container {
                   position: relative;
                   width: 100%;
-                  height: 100%;
-                  flex: 1;
-                  flex-grow: initial;
+                  flex: 0 0 auto;
                 }
                 .tdb_module_header .td-module-thumb {
                   margin-bottom: 0;
@@ -1427,13 +1532,13 @@ class td_block {
                   background-size: cover;
                   background-position: center center;
                 }
-                .tdb_module_header .td-category-pos-image .td-post-category,
+                .tdb_module_header .td-category-pos-image .td-post-category:not(.td-post-extra-category),
                 .tdb_module_header .td-post-vid-time {
                   position: absolute;
                   z-index: 2;
                   bottom: 0;
                 }
-                .tdb_module_header .td-category-pos-image .td-post-category {
+                .tdb_module_header .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
                   left: 0;
                 }
                 .tdb_module_header .td-post-vid-time {
@@ -1458,8 +1563,7 @@ class td_block {
                 .tdb-header-align {
                   vertical-align: middle;
                 }
-
-
+                
                 
             </style>";
 
@@ -1470,6 +1574,17 @@ class td_block {
 	protected function get_custom_css() {
 		return '';
 	}
+
+	protected function get_inline_css($block_uid = '') {
+        if (method_exists( $this,'get_raw_css')) {
+            return $this->get_raw_css( true );
+        }
+        return '';
+    }
+
+    protected function get_inline_js($block_uid = '') {
+        return '';
+    }
 
 
 	/**
@@ -1501,6 +1616,21 @@ class td_block {
 		$custom_css = $this->get_custom_css();
 		if (!empty($custom_css)) {
 			$buffy_style .= PHP_EOL . '<style>' . PHP_EOL . '/* custom css */' . PHP_EOL . $custom_css . PHP_EOL . '</style>';
+		}
+
+		if ( td_util::tdc_is_live_editor_iframe() || !empty( tdc_util::get_get_val('tda_action'))) {
+
+			$inline_css = $this->get_inline_css();
+			if ( ! empty( $inline_css ) ) {
+				$inline_css  = td_util::remove_style_tag( $inline_css );
+				$buffy_style .= PHP_EOL . '<style class="tdc-pattern">' . PHP_EOL . '/* inline css */' . PHP_EOL . $inline_css . PHP_EOL . '</style>';
+			}
+
+			$inline_js = $this->get_inline_js();
+			if ( ! empty( $inline_js ) ) {
+				$inline_js   = td_util::remove_script_tag( $inline_js );
+				$buffy_style .= PHP_EOL . '<script type="text/javascript" class="tdc-pattern-js">' . PHP_EOL . '/* inline js */' . PHP_EOL . $inline_js . PHP_EOL . '</script>';
+			}
 		}
 
 
@@ -2663,20 +2793,32 @@ class td_block {
 
 
 	/**
-	 * retrieves the block pagination
+	 * the block pagination
 	 *
 	 * @param string $prev_icon
+	 * @param string $prev_icon_class
 	 * @param string $nex_icon
+	 * @param string $next_icon_class
 	 *
 	 * @return string
 	 */
-    function get_block_pagination( $prev_icon = '', $nex_icon = '' ) {
+    function get_block_pagination( $prev_icon = '', $nex_icon = '', $prev_icon_class = '',  $next_icon_class = '' ) {
 
 	    $offset = 0;
 
 	    if ( isset( $this->atts['offset'] ) ) {
 		    $offset = (int)$this->atts['offset'];
 	    }
+
+        $prev_icon_data = '';
+        if( $prev_icon_class != '' && ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
+            $prev_icon_data = 'data-td-svg-icon="' . $prev_icon_class . '"';
+        }
+
+        $next_icon_data = '';
+        if( $prev_icon_class != '' && ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
+            $next_icon_data = 'data-td-svg-icon="' . $next_icon_class . '"';
+        }
 
 	    $buffy = '';
 
@@ -2692,7 +2834,7 @@ class td_block {
                         $prev_icon = '<i class="td-next-prev-icon td-icon-font td-icon-menu-left"></i>';
                     } else {
                         if( base64_encode( base64_decode( $prev_icon ) ) == $prev_icon ) {
-                            $prev_icon = '<span class="td-next-prev-icon td-next-prev-icon-svg ">' . base64_decode( $prev_icon ) . '</span>';
+                            $prev_icon = '<span class="td-next-prev-icon td-next-prev-icon-svg " ' . $prev_icon_data . '>' . base64_decode( $prev_icon ) . '</span>';
                         } else {
                             $prev_icon = '<i class="td-next-prev-icon ' . $prev_icon . '"></i>';
                         }
@@ -2701,7 +2843,7 @@ class td_block {
                         $nex_icon = '<i class="td-next-prev-icon td-icon-font td-icon-menu-right"></i>';
                     } else {
                         if( base64_encode( base64_decode( $nex_icon ) ) == $nex_icon ) {
-                            $nex_icon = '<span class="td-next-prev-icon td-next-prev-icon-svg ">' . base64_decode( $nex_icon ) . '</span>';
+                            $nex_icon = '<span class="td-next-prev-icon td-next-prev-icon-svg " ' . $next_icon_data . '>' . base64_decode( $nex_icon ) . '</span>';
                         } else {
                             $nex_icon = '<i class="td-next-prev-icon ' . $nex_icon . '"></i>';
                         }
@@ -3000,7 +3142,7 @@ class td_block {
 
 
 
-		if ( 'tdb_single_post_share' === get_class($this) ) {
+		if ( 'tdb_single_post_share' === get_class($this) || 'td_block_social_share' === get_class($this)) {
 			ob_start();
 			?>
 			<script>
@@ -3088,6 +3230,27 @@ class td_block {
 
                 var tdComposerBlockItem = new tdcComposerBlocksApi.item();
 				tdComposerBlockItem.blockUid = '<?php printf( '%1$s', $this->block_uid ) ?>';
+
+                tdComposerBlockItem.callbackAdd = function (blockUid) {
+                    if ( 'undefined' !== typeof window.tdReadingProgressBar ) {
+                        let $progressBar = jQuery('.tdb_single_reading_progress[data-td-block-uid="' + blockUid + '"]');
+
+
+                        if( $progressBar.length ) {
+                            let barPosition = $progressBar.data('bar-position');
+
+                            let $readingProgressBarItem = new tdReadingProgressBar.item();
+                            $readingProgressBarItem.blockUid = blockUid;
+                            $readingProgressBarItem.barPosition = barPosition;
+                            tdReadingProgressBar.addItem($readingProgressBarItem);
+
+                            if( barPosition === 'top' || barPosition === 'bottom' ) {
+                                tdReadingProgressBar.createFixedBar($readingProgressBarItem, 0, 30);
+                            }
+                        }
+                    }
+                };
+
 				tdComposerBlockItem.callbackDelete = function(blockUid) {
 
 					if ( 'undefined' !== typeof window.tdPullDown ) {
@@ -3110,6 +3273,26 @@ class td_block {
 						tdHomepageFull.deleteItem( blockUid );
 					}
 
+                    if ( 'undefined' !== typeof window.tdPopupModal ) {
+                        // delete the modal if it exists
+                        tdPopupModal.deleteItem( blockUid );
+                    }
+
+                    if ( 'undefined' !== typeof window.tdReadingProgressBar ) {
+                        // delete the progress bar if it exists
+                        tdReadingProgressBar.deleteItem( blockUid );
+                    }
+
+                    if ( 'undefined' !== typeof window.tdbLocationFinder ) {
+                        // delete the location finder block if it exists
+                        tdbLocationFinder.deleteItem( blockUid );
+                    }
+
+                    if ( 'undefined' !== typeof window.tdbLocationDisplay ) {
+                        // delete the location display block if it exists
+                        tdbLocationDisplay.deleteItem( blockUid );
+                    }
+
                     if ( 'undefined' !== typeof window.tdbMenu ) {
                         tdbMenu.deleteItem( blockUid );
                     }
@@ -3123,6 +3306,7 @@ class td_block {
 
 					tdcDebug.log('td_block.php js_tdc_get_composer_block  -  callbackDelete(' + blockUid + ') - td_block base callback runned');
 				};
+
 				tdcComposerBlocksApi.addItem(tdComposerBlockItem);
 			})();
 		</script>
@@ -3169,6 +3353,7 @@ class td_block {
 	    $el_class = $this->get_att('el_class');
 	    $color_preset = $this->get_att('color_preset');
 		$ajax_pagination = $this->get_att('ajax_pagination');
+		$ajax_pagination_next_prev_swipe= $this->get_att('ajax_pagination_next_prev_swipe');
 	    $border_top = $this->get_att('border_top');
 	    $css = $this->get_att('css');
 	    $tdc_css = $this->get_att('tdc_css');
@@ -3208,8 +3393,6 @@ class td_block {
 
 
 
-
-
 	    //add the classes that we receive via shortcode. @17 aug 2016 - this att may be used internally - by ra
         if (!empty($class)) {
             $class_array = explode(' ', $class);
@@ -3240,7 +3423,11 @@ class td_block {
 	     * - the class has a force css transform for lazy devices
 	     */
 	    if (!empty($ajax_pagination)) {
-		    $block_classes[]= 'td_with_ajax_pagination';
+		    $block_classes[] = 'td_with_ajax_pagination';
+
+            if( $ajax_pagination == 'next_prev' && $ajax_pagination_next_prev_swipe != '' ) {
+                $block_classes[] = 'td_with_ajax_pagination_next_prev_swipe';
+            }
 	    }
 
 
@@ -3361,7 +3548,7 @@ class td_block {
 
 		//we need to decode the square bracket case
         $attr_value = $this->atts[$att_name];
-        if ( strpos($attr_value, 'td_encval') === 0 ) {
+        if ( is_string( $attr_value ) && strpos($attr_value, 'td_encval') === 0 ) {
             $attr_value = str_replace('td_encval', '', $attr_value);
             $attr_value = base64_decode( $attr_value );
         }

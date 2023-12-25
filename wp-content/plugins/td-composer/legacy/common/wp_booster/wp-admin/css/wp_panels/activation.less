@@ -283,7 +283,7 @@
 
 
 .td-error-activate {
-  margin: 25px 20px 0 2px;
+  margin: 25px 20px 0 5px;
 
   .td-wp-admin-button {
     margin-right: 20px;
@@ -305,7 +305,6 @@
   }
   .td-wp-admin-header {
     margin: 0;
-    max-width: 1080px;
     width: 100%;
   }
   .td-wp-admin-theme {
@@ -341,25 +340,94 @@
     font-size: 14px;
   }
 }
-
-@-webkit-keyframes fullrotate {
-  0% {
-    -webkit-transform: rotate(0);
-    transform: rotate(0)
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg)
-  }
+.td-tagdiv-link {
+  z-index: 0;
 }
 
-@keyframes fullrotate {
-  0% {
-    -webkit-transform: rotate(0);
-    transform: rotate(0)
+.tds-s-form-check {
+  input {
+    display: none;
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg)
+
+  label {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .tds-s-fc-check-hidden {
+    position: relative;
+    margin-right: 10px;
+    width: 19px;
+    height: 19px;
+    background-color: #fff;
+    //border: 2px solid #D7D8DE;
+    //outline: 3px solid transparent;
+    transition: border-color .2s ease-in-out, outline-color .2s ease-in-out;
+    cursor: pointer;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 9px;
+      height: 9px;
+      background-color: #0489FC;
+      opacity: 0;
+      transition: opacity .2s ease-in-out;
+    }
+  }
+
+  .tds-s-fc-title {
+    flex: 1;
+    font-size: 1em;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+  }
+
+  input[type=checkbox] + .tds-s-fc-check-hidden {
+    //border-radius: 5px;
+
+    &:after {
+      border-radius: 3px;
+    }
+  }
+  input[type=radio] + .tds-s-fc-check-hidden {
+    &,
+    &:after {
+      border-radius: 100%;
+    }
+  }
+  input:checked + .tds-s-fc-check-hidden {
+    border-color: #0489FC;
+    outline-color: rgba(4, 137, 252, .1);
+
+    &:after {
+      //opacity: 1;
+    }
+  }
+  input[disabled] {
+    & + .tds-s-fc-check-hidden,
+    & + .tds-s-fc-check-hidden + .tds-s-fc-title {
+      pointer-events: none;
+    }
+
+    & + .tds-s-fc-title {
+      color: #CECECE;
+      cursor: default;
+    }
+
+    & + .tds-s-fc-check-hidden + .tds-s-fc-title {
+      color: #BEBEBE;
+    }
+  }
+  input[disabled]:checked + .tds-s-fc-check-hidden {
+    outline-color: rgba(4, 137, 252, .08);
+
+    &:after {
+      background-color: #9ACFFD;
+    }
   }
 }

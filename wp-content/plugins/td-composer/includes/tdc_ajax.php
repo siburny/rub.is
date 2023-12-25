@@ -134,6 +134,177 @@ function tdc_register_api_routes() {
         'callback' => array ('tdc_ajax', 'on_ajax_set_param_info_option'),
         'permission_callback' => '__return_true',
     ));
+
+    /**
+     * tagDiv Composer api proxy - to prevent issues with cross domain requests we proxy all the request via php
+     */
+    register_rest_route($namespace, '/td_cloud_proxy/', array(
+        'methods'  => 'POST',
+        'callback' => function($request) {
+
+	        $reply = array();
+
+	        $cloud_end_point = $request->get_param('cloudEndPoint');
+
+	        // permission check
+            if ( ! current_user_can( 'edit_pages' ) && 'templates/get_all' !== $cloud_end_point ) {
+	            $reply['error'] = array(
+	            	array(
+			            'type' => 'Proxy ERROR',
+			            'message' => 'You have no permission to access this endpoint.',
+			            'debug_data' => ''
+		            )
+	            );
+                die( json_encode( $reply ) );
+            }
+
+            if (empty($cloud_end_point)) {
+	            $reply['error'] = array(
+	            	array(
+			            'type' => 'Proxy ERROR',
+			            'message' => 'No cloudEndPoint received. Please use tdcApi.cloudRun for proxy requests.',
+			            'debug_data' => $request
+		            )
+	            );
+                die( json_encode( $reply ) );
+            }
+
+	        $cloud_post = $request->get_param('cloudPost');
+
+	        //POST parameters
+	        $cloud_post['envato_key'] = '';
+	        $cloud_post['theme_version'] = TD_THEME_VERSION;
+	        $cloud_post['deploy_mode'] = 'deploy';// TDB_DEPLOY_MODE;
+	        $cloud_post['host'] = $_SERVER['HTTP_HOST'];
+
+	        if (in_array($cloud_end_point, ['templates/activate_domain', 'templates/check_domains'])) {
+	            delete_transient('TD_CHECKED_LICENSE');
+            }
+
+	        if ( ! isset( $cloud_post['wp_type'] ) ) {
+	        	$cloud_post['wp_type'] = '';
+	        }
+
+	        $api_url = tdc_util::get_api_url();
+
+            if (true || TDB_DEPLOY_MODE !== 'dev') {
+	            $envato_key = base64_decode(td_util::get_option('td_011'));
+
+	            //theme is not registered
+//	            if (empty($envato_key)) {
+//		            $reply['error'] = array(
+//		            	array(
+//				            'type' => 'Proxy ERROR',
+//				            'message' => 'The theme is not activated. You can activate it from ' . TD_THEME_NAME . ' > Activate Theme section',
+//				            'debug_data' => array(
+//					            'envato_key' => $envato_key
+//				            )
+//			            )
+//		            );
+//		            die(json_encode($reply));
+//	            }
+
+	            $cloud_post['envato_key'] = $envato_key . '';
+            }
+
+	        $api_response = wp_remote_post($api_url . '/' . $cloud_end_point, array (
+		        'method' => 'POST',
+		        'body' => $cloud_post,
+		        'timeout' => 14
+	        ));
+
+//            $file = fopen("d:\log.txt", "w");
+//            ob_start();
+//            var_dump( $api_url . '/' . $cloud_end_point );
+//            var_dump( $cloud_post );
+//            fwrite( $file, ob_get_clean() );
+//			fclose( $file );
+
+	        if (is_wp_error($api_response)) {
+		        //http error
+			    $reply['error'] = array(
+				    array(
+					    'type' => 'Proxy ERROR',
+					    'message' => 'Failed to contact the templates API server.',
+					    'debug_data' => $api_response
+				    )
+			    );
+		        die(json_encode($reply));
+	        }
+
+	        if (isset($api_response['response']['code']) and $api_response['response']['code'] != '200') {
+		        //response code != 200
+		        $reply['error'] = array(
+			        array(
+				        'type' => 'Proxy ERROR',
+				        'message' => 'Received a response code != 200 while trying to contact the templates API server.',
+				        'debug_data' => $api_response
+			        )
+		        );
+		        die(json_encode($reply));
+	        }
+
+	        if (empty($api_response['body'])) {
+		        //response body is empty
+		        $reply['error'] = array(
+			        array(
+				        'type' => 'Proxy ERROR',
+				        'message' => 'Received an empty response body while contacting the templates API server.',
+				        'debug_data' => $api_response
+			        )
+		        );
+		        die(json_encode($reply));
+	        }
+
+	        die($api_response['body']);
+        },
+        'permission_callback' => '__return_true',
+    ));
+
+
+    /**
+     * update transient endpoint
+     */
+	register_rest_route($namespace, '/transients/', array(
+        'methods' => 'POST',
+        'callback' => function ($request) {
+
+            // permission check
+            if (!current_user_can('edit_pages')) {
+	            $reply['error'] = array(
+		            array(
+			            'type' => 'Proxy ERROR',
+			            'message' => 'You have no permission to access this endpoint.',
+			            'debug_data' => ''
+		            )
+	            );
+                die(json_encode($reply));
+            }
+
+            // check for post id
+            $options = $request->get_param( 'options' );
+            if (empty($options)) {
+                $reply['error'] = 'The options are missing and it\'s required!';
+                die( json_encode( $reply ) );
+            }
+
+            foreach ($options as $item) {
+                switch ($item['op']) {
+                    case 'update':
+                        set_transient($item['name'], $item['val'], $item['time']);
+                        break;
+                    case 'delete':
+                        delete_transient($item['name']);
+                        break;
+                }
+            };
+
+            die(json_encode(array(
+	            'success' => true
+            )));
+        },
+        'permission_callback' => '__return_true',
+    ));
 }
 
 /**
@@ -642,6 +813,21 @@ class tdc_ajax {
 				}
 			} else {
 			    $parameters['header_template_id'] = $template_id;
+
+			    if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+
+			        $lang = '';
+			        td_util::check_option_id($lang);
+
+			        if (!empty($lang)) {
+				        do_action( 'wpml_set_element_language_details', [
+					        'element_id'    => $template_id,
+					        'element_type'  => 'post_tdb_templates',
+					        'trid'          => $template_id,
+					        'language_code' => $lang,
+				        ] );
+			        }
+                }
 			}
 
 			if ( !empty( $header_is_mobile ) && '1' == $header_is_mobile ) {
@@ -797,6 +983,10 @@ class tdc_ajax {
 			die;
 		}
 
+		if (!empty($_POST['lang']) && class_exists('SitePress', false)) {
+            do_action( 'wpml_switch_language', $_POST['lang'] );
+        }
+
 		$mobile_templates = $_POST['mobile_templates'];
 
 	    $parameters = array();
@@ -824,12 +1014,25 @@ class tdc_ajax {
             );
 
             if ( $header_templates->found_posts ) {
+
+                $lang = '';
+                if (class_exists('SitePress', false)) {
+                    global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if (1 === $translation_mode) {
+                            $lang = $sitepress->get_current_language();
+                        }
+                    }
+                }
+
                 foreach ( $header_templates->posts as $header_template ) {
 
                     $parameters[ 'tdb_header_templates' ][] = array(
                         'id' => $header_template->ID,
                         'title' => $header_template->post_title,
-                        'is_global_template' =>  ( td_util::get_option('tdb_header_template' ) === 'tdb_template_' . $header_template->ID ? '1' : '0')
+                        'is_global_template' =>  ( td_util::get_option( 'tdb_header_template' . $lang ) === 'tdb_template_' . $header_template->ID ? '1' : '0')
                     );
                 }
             }
@@ -1167,6 +1370,10 @@ class tdc_ajax {
 			die;
 		}
 
+		if (!empty($_POST['lang']) && class_exists('SitePress', false)) {
+            do_action( 'wpml_switch_language', $_POST['lang'] );
+        }
+
 		$mobile_templates = $_POST['mobile_templates'];
 
 	    $parameters = array();
@@ -1194,12 +1401,25 @@ class tdc_ajax {
             );
 
             if ( $footer_templates->found_posts ) {
+
+                $lang = '';
+                if (class_exists('SitePress', false)) {
+                    global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if (1 === $translation_mode) {
+                            $lang = $sitepress->get_current_language();
+                        }
+                    }
+                }
+
                 foreach ( $footer_templates->posts as $footer_template ) {
 
                     $parameters[ 'tdb_footer_templates' ][] = array(
                         'id' => $footer_template->ID,
                         'title' => $footer_template->post_title,
-                        'is_global_template' =>  ( td_util::get_option('tdb_footer_template' ) === 'tdb_template_' . $footer_template->ID ? '1' : '0')
+                        'is_global_template' =>  ( td_util::get_option('tdb_footer_template' . $lang ) === 'tdb_template_' . $footer_template->ID ? '1' : '0')
                     );
                 }
             }
@@ -1558,7 +1778,11 @@ class tdc_ajax {
 		} else {
 
 		    if ( isset($options['global_header_template'])) {
-                td_util::update_option('tdb_header_template', $options['global_header_template']);
+		        $option_id = 'tdb_header_template';
+		        if ( !empty($options['lang'])) {
+		            $option_id .= $options['lang'];
+		        }
+                td_util::update_option($option_id, $options['global_header_template']);
             }
 
             if ( isset($options['global_header_template_mobile'])) {
@@ -1566,7 +1790,11 @@ class tdc_ajax {
             }
 
             if ( isset($options['global_footer_template'])) {
-                td_util::update_option('tdb_footer_template', $options['global_footer_template']);
+                $option_id = 'tdb_footer_template';
+		        if ( !empty($options['lang'])) {
+		            $option_id .= $options['lang'];
+		        }
+                td_util::update_option($option_id, $options['global_footer_template']);
             }
 
             if ( isset($options['global_footer_template_mobile'])) {

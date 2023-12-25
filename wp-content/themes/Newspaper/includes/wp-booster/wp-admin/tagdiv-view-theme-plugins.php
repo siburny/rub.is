@@ -75,7 +75,8 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 
 		// Get plugins that require update
 		$td_plugins_update_list = array();
-		$plugins_path = ABSPATH . 'wp-content/plugins';
+        //there are issues with ABSPATH on wp.com servers, so we use WP_PLUGIN_DIR check $file_data bellow
+        //$plugins_path = ABSPATH . 'wp-content/plugins';
 
 		// Check for Plugin updates
 		wp_update_plugins();
@@ -94,10 +95,17 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 			$plugin = $plugin_name . '/' . $plugin_name . '.php';
 
 			//Add AMP plugin to the update plugins list
-			if ($plugin == 'amp/amp.php' ) {
+			if ( $plugin == 'amp/amp.php' ) {
 				if ( isset( $td_amp_new_ver ) ) {
 					$td_plugins_update_list[] = $plugin;
+					continue;
 				}
+			}
+
+			if ( $plugin === 'td-subscription/td-subscription.php') {
+			    if ( !empty($plugin_updates->response['td-subscription/td-subscription.php'])) {
+				    $td_plugins_update_list[] = $plugin;
+			    }
 			}
 
 			//plugin exists and it's inactive
@@ -113,7 +121,8 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 
 				//read plugin file
 				global $wp_filesystem;
-                $file_data = $wp_filesystem->get_contents( $plugins_path . '/' . $plugin );
+                //there are issues with ABSPATH on wp.com servers, so we use WP_PLUGIN_DIR
+                $file_data = $wp_filesystem->get_contents( WP_PLUGIN_DIR . '/' . $plugin );
 
                 preg_match('/define\s*\(\s*\'' . $constant . '\',\s*\'(.*)\'\s*\)/', $file_data, $matches);
 
@@ -130,12 +139,23 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 
 		// sort theme plugins based on the config array
 		foreach ( tagdiv_global::$theme_plugins_list as $td_global_plugin ) {
+
+			// don't add plugins that supposed to appear in theme's plugins list
+			if ( !$td_global_plugin['td_show_in_theme_plugins'] ) {
+				continue;
+			}
+
 			foreach ( $td_tgm_theme_plugins as $td_tgm_theme_plugin ) {
 				if ( $td_global_plugin['name'] == $td_tgm_theme_plugin['name'] ) {
 					$sorted_plugins[] = $td_tgm_theme_plugin;
 				}
 			}
+
 		}
+
+        //echo '<pre>';
+        //var_dump($td_plugins_update_list);
+        //echo '</pre>';
 
 		$td_tgm_theme_plugins = array_merge( $sorted_plugins, tagdiv_global::$theme_plugins_for_info_list );
 
@@ -152,9 +172,13 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 					//show update button for AMP even if it is active
 					if ( $td_tgm_theme_plugin['file_path'] == 'amp/amp.php' && in_array ( $td_tgm_theme_plugin['file_path'],  $td_plugins_update_list ) ) {
 						$tmp_class = 'td-plugin-update';
-					} else {
+                    } else {
 						$tmp_class = 'td-plugin-active';
 						$required_label = 'active';
+					}
+
+					if ( $td_tgm_theme_plugin['file_path'] == 'td-subscription/td-subscription.php' && in_array ( $td_tgm_theme_plugin['file_path'],  $td_plugins_update_list ) ) {
+						$tmp_class .= ' td-plugin-update';
 					}
 
 				} else if ( in_array ( $td_tgm_theme_plugin['file_path'],  $td_plugins_update_list) ) {
@@ -173,6 +197,17 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
                 <!-- Import content -->
                 <div class="td-plugin-image">
                     <span class="td-plugin-required td-<?php echo esc_attr( $required_label ) ?>"><?php printf( '%1$s', $required_label ) ?></span>
+
+                    <?php
+
+                    if ($td_tgm_theme_plugin['slug'] === 'td-subscription' && is_plugin_active('td-subscription/td-subscription.php') && defined('TD_SUBSCRIPTION_VERSION')) {
+                        ?>
+                            <span class="td-plugin-version">V <?php printf( '%1$s', TD_SUBSCRIPTION_VERSION ) ?></span>
+                        <?php
+                    }
+
+                    ?>
+
                     <img class="td-demo-thumb" src="<?php echo esc_url( $td_tgm_theme_plugin['img'] ) ?>"/>
                     <div class="td-plugin-meta">
                         <h3 class="theme-name"><?php printf( '%1$s', $td_tgm_theme_plugin['name'] ) ?></h3>
@@ -225,7 +260,12 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 								'tgmpa-update',
 								'tgmpa-nonce'
 							));
-							?>">Update</a>
+							$op_name = 'Update';
+							if ('td-subscription' === $td_tgm_theme_plugin['slug'] && !empty($plugin_updates->response['td-subscription/td-subscription.php'])) {
+							    $op_name = 'Update to ' . $plugin_updates->response['td-subscription/td-subscription.php']->new_version;
+                            }
+
+							?>"><?php echo $op_name ?></a>
                             <a class="td-plugin-button td-button-uninstall-plugin" href="<?php
 							echo esc_url(
 								add_query_arg(
@@ -236,7 +276,7 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 									),
 									admin_url('admin.php')
 								));
-							?>"">Deactivate</a>
+							?>">Deactivate</a>
                             <a class="td-plugin-button td-button-activate-plugin" href="<?php
 							echo esc_url(
 								add_query_arg(
@@ -247,7 +287,7 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
 									),
 									admin_url('admin.php')
 								));
-							?>"">Activate</a>
+							?>">Activate</a>
                         </div>
                     </div>
                 </div>
@@ -275,8 +315,8 @@ require_once TAGDIV_ROOT_DIR . "/includes/wp-booster/wp-admin/tagdiv-view-header
         <div class="td-supported-plugin"><p>Jetpack</p><span>- plugin with lots of features *it may slow down your site</span></div>
         <div class="td-supported-plugin"><p>WooCommerce</p><span>- eCommerce solution</span></div>
         <div class="td-supported-plugin"><p>WordPress (Yoast) SEO</p><span> - SEO plugin</span></div>
-        <div class="td-supported-plugin"><p>Wp User Avatar</p><span> - Change users avatars</span></div>
-        <div class="td-supported-plugin"><p>WP GDPR Compliance</p><span> - GDPR compliance plugin</span></div>
+        <div class="td-supported-plugin"><p>Simple Local Avatar</p><span> - Change users avatars</span></div>
+        <div class="td-supported-plugin"><p>GDPR Cookie Consent</p><span> - GDPR compliance plugin</span></div>
         <div class="td-supported-plugin"><p>HubSpot All-In-One Marketing</p><span> - Grow your email list, generate leads, and manage contacts</span></div>
     </div>
 </div>

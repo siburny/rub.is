@@ -172,7 +172,7 @@ if (!isset($ad_fields['ad_field_advantage_usage']) || (isset($ad_fields['ad_fiel
 					printf( '%1$s', $ad_fields['ad_field_advantage_usage'] );
 				} else {
 					//echo 'If you leave the AdSense size boxes on Auto, the theme will automatically resize the <strong>google ads</strong>. For more info follow this <a href="http://forum.tagdiv.com/header-ad/" target="_blank">link</a>';
-					echo 'If you leave the AdSense size boxes on Auto, the theme will automatically resize the <strong>Google Ads</strong>.';
+					echo 'If you leave the AdSense size boxes on Auto, the theme will automatically resize the <strong>Google Ads</strong>. Please note that the Disable Ad options can be enabled only for non-adsense ads.';
 				}
 				?>
 			</p>

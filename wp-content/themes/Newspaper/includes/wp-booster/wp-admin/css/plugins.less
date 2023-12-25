@@ -167,6 +167,16 @@
     }
   }
 
+  .td-plugin-version {
+    right: 8px;
+    top: 8px;
+    height: auto;
+    border-radius: 3px;
+    padding: 0 6px;
+    font-size: 8px;
+    line-height: 16px;
+  }
+
   .td-button-uninstall-plugin {
     display: none;
   }
@@ -194,6 +204,11 @@
   .td-button-uninstall-plugin {
     display: inline-block;
   }
+
+  .td-plugin-image {
+    box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, .08);
+    border-top: 2px solid #69bd32;
+  }
 }
 
 .td-plugin-inactive {
@@ -211,6 +226,17 @@
 .td-plugin-update {
   .td-button-update-plugin {
     display: inline-block;
+  }
+  .td-button-update-plugin {
+    margin-right: 5px;
+  }
+  .td-button-uninstall-plugin {
+    padding-left: 8px;
+    padding-right: 8px;
+
+    &:before {
+      display: none;
+    }
   }
 }
 

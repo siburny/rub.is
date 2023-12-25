@@ -5,6 +5,16 @@ $users_can_register = get_option('users_can_register');
 $users_can_register_form = '';
 $users_can_register_link = '';
 
+$login_captcha_html = '';
+$register_captcha_html = '';
+$show_captcha = td_util::get_option('tds_captcha');
+$captcha_site_key = td_util::get_option('tds_captcha_site_key');
+
+if ($show_captcha == 'show' && $captcha_site_key != '') {
+    $login_captcha_html = '<input type="hidden" id="gRecaptchaResponseMobL" name="gRecaptchaResponse" data-sitekey="' . $captcha_site_key . '" >';
+    $register_captcha_html = '<input type="hidden" id="gRecaptchaResponseMobR" name="gRecaptchaResponse" data-sitekey="' . $captcha_site_key . '" >';
+}
+
 if ($users_can_register == 1) {
 
     //add the Register tab to the modal window if `Anyone can register` chec
@@ -27,6 +37,7 @@ if ($users_can_register == 1) {
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_email" id="register_email-mob" value="" required><label for="register_email-mob">' . __td('your email', TD_THEME_NAME) .'</label></div>
 	                <div class="td-login-inputs"><input class="td-login-input" type="text" name="register_user" id="register_user-mob" value="" required><label for="register_user-mob">' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="register_button" id="register_button-mob" class="td-login-button" value="' . __td('REGISTER', TD_THEME_NAME) . '">
+	                ' . $register_captcha_html . '
 	                <div class="td-login-info-text">' . __td('A password will be e-mailed to you.', TD_THEME_NAME) . '</div>
 	                ' . get_the_privacy_policy_link('<div class="td-login-info-text">', '</div>') . '
                 </form>
@@ -50,6 +61,7 @@ echo '
 	                <div class="td-login-inputs"><input class="td-login-input" autocomplete="username" type="text" name="login_email" id="login_email-mob" value="" required><label for="login_email-mob">' . __td('your username', TD_THEME_NAME) .'</label></div>
 	                <div class="td-login-inputs"><input class="td-login-input" autocomplete="current-password" type="password" name="login_pass" id="login_pass-mob" value="" required><label for="login_pass-mob">' . __td('your password', TD_THEME_NAME) .'</label></div>
 	                <input type="button" name="login_button" id="login_button-mob" class="td-login-button" value="' . __td('LOG IN', TD_THEME_NAME) . '">
+	                ' . $login_captcha_html . '
 	                <div class="td-login-info-text">
 	                <a href="#" id="forgot-pass-link-mob">' . __td('Forgot your password?', TD_THEME_NAME) . '</a>
 	                </div>

@@ -67,7 +67,9 @@ class vc_separator extends tdc_composer_block {
                   width: 98%;
                   border-radius: 100%;
                 }
-
+                html :where([style*='border-width']) {
+                    border-style: none;
+                }
 				
 			</style>";
 

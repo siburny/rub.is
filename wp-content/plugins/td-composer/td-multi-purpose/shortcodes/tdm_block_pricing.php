@@ -6,7 +6,17 @@ class tdm_block_pricing extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -32,9 +42,11 @@ class tdm_block_pricing extends td_block {
                 }
                 .tdm_block_pricing .tdm-pricing-price-old {
                   font-size: 29px;
-                  text-decoration: line-through;
                   vertical-align: super;
                   color: #666;
+                }
+                .tdm_block_pricing .tdm-pricing-price-old .tdm-pricing-price-2 {
+                    text-decoration: line-through;
                 }
                 .tdm_block_pricing .tdm-pricing-ribbon-wrap {
                   position: absolute;

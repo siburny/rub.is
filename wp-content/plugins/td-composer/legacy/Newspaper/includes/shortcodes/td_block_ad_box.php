@@ -5,7 +5,17 @@ class td_block_ad_box extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -294,6 +304,7 @@ class td_block_ad_box extends td_block {
             array(
                 'spot_id' => '', //header / sidebar etc
                 'spot_hide' => '',
+                'spot_hide_plan_id' => '',
                 'spot_img_all' => '',
                 'spot_img_tl' => '',
                 'spot_img_tp' => '',
@@ -323,16 +334,37 @@ class td_block_ad_box extends td_block {
                 'el_class' => '',
             ), $atts);
 
-        $spot_id        = $this->atts['spot_id'];
-        $spot_hide      = $this->atts['spot_hide'];
-        $spot_code      = rawurldecode( base64_decode( strip_tags( $this->atts['spot_code'] ) ) );
-        $custom_title   = $this->atts['custom_title'];
-        $spot_title     = $this->atts['spot_title'];
+        $spot_id           = $this->atts['spot_id'];
+        $spot_hide         = $this->atts['spot_hide'];
+        $spot_hide_plan_id = $this->atts['spot_hide_plan_id'];
+        $spot_code         = rawurldecode( base64_decode( strip_tags( $this->atts['spot_code'] ) ) );
+        $custom_title      = $this->atts['custom_title'];
+        $spot_title        = $this->atts['spot_title'];
+
+        // currently logged in user
+        $current_user = wp_get_current_user();
+        $current_user_id = $current_user->ID;
+        $is_current_user_admin = current_user_can('administrator') || current_user_can('editor');
 
         // hide spot for admins/editors
-        $spot_hide_bool = false;
-        if( $spot_hide != '' && ( current_user_can('administrator') || current_user_can('editor') ) ) {
-            $spot_hide_bool = true;
+        $spot_hide_for_admins_bool = false;
+        $spot_hide_for_subscribed_bool = false;
+
+        if( $is_current_user_admin ) {
+            if( $spot_hide != '' ) {
+                $spot_hide_for_admins_bool = true;
+            }
+        } else {
+            if( defined( 'TD_SUBSCRIPTION' ) && $spot_hide_plan_id != '' ) {
+                $spot_hide_plan_id = explode(',', $spot_hide_plan_id);
+
+                foreach ( $spot_hide_plan_id as $plan_id ) {
+                    if( tds_util::is_user_subscribed_to_plan( $current_user_id, $plan_id ) ) {
+                        $spot_hide_for_subscribed_bool = true;
+                        break;
+                    }
+                }
+            }
         }
 
         // rec title
@@ -439,40 +471,48 @@ class td_block_ad_box extends td_block {
 
         $buffy = '';
 
+        if( $spot_hide_for_subscribed_bool && !( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
+            return $buffy;
+        }
+
         if( !empty($spot_imgs)  ) {
             $buffy .= '<div class="' . $this->get_wrapper_class() . ' td-a-rec td-a-rec-id-custom-spot td-a-rec-img ' . $this->get_ad_css_class($atts) . '">';
             //get the block css
             $buffy .= $this->get_block_css();
 
-            $buffy .= '<div style="display: inline-block">';
-                $buffy .= $rec_title;
+                $buffy .= '<div style="display: inline-block">';
+                    if( $spot_hide_for_admins_bool ) {
+                        return $this->get_placeholder_block('custom_ad_img', $rec_title);
+                    }
 
-                if ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
-                    $buffy .= '<div class="td-spot-id-spot_img_hidden"><div class="tdc-placeholder-title"></div></div>';
-                }
+                    $buffy .= $rec_title;
 
-                foreach ($spot_imgs as $key => $spot_img) {
+                    if ( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                        $buffy .= '<div class="td-spot-id-spot_img_hidden"><div class="tdc-placeholder-title"></div></div>';
+                    }
 
-	                // <img> width attribute
-	                $width_attribute = '';
-	                if( $this->atts[$key . '_width_attribute'] != '' ) {
-		                $width_attribute = ' width="' . esc_attr($this->atts[$key . '_width_attribute']) . '" ';
-	                }
+                    foreach ($spot_imgs as $key => $spot_img) {
 
-	                // <img> height attribute
-	                $height_attribute = '';
-	                if( $this->atts[$key . '_height_attribute'] != '' ) {
-		                $height_attribute = ' height="' . esc_attr($this->atts[$key . '_height_attribute']) . '" ';
-	                }
+                        // <img> width attribute
+                        $width_attribute = '';
+                        if( $this->atts[$key . '_width_attribute'] != '' ) {
+                            $width_attribute = ' width="' . esc_attr($this->atts[$key . '_width_attribute']) . '" ';
+                        }
 
-                    $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
-                    $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" ' . $spot_img_alt_attribute . $width_attribute . $height_attribute .  ' />';
-                    $buffy .= '</a>';
-                }
+                        // <img> height attribute
+                        $height_attribute = '';
+                        if( $this->atts[$key . '_height_attribute'] != '' ) {
+                            $height_attribute = ' height="' . esc_attr($this->atts[$key . '_height_attribute']) . '" ';
+                        }
+
+                        $buffy .= '<a href="' . $spot_url . '"' . $spot_url_new_window . $spot_url_rel .  ' class="td_' . $key . '">';
+                            $buffy .= '<img src="' . wp_get_attachment_url($spot_img) . '" ' . $spot_img_alt_attribute . $width_attribute . $height_attribute .  ' />';
+                        $buffy .= '</a>';
+                    }
                 $buffy .= '</div>';
             $buffy .= '</div>';
         } else if( $spot_code != '' ) {
-            if( $spot_hide_bool ) {
+            if( $spot_hide_for_admins_bool ) {
                 return $this->get_placeholder_block('custom_ad_code', $rec_title);
             }
 
@@ -485,7 +525,7 @@ class td_block_ad_box extends td_block {
                 $buffy .= do_shortcode( stripslashes( $spot_code ) );
             $buffy .= '</div>';
         } else if (!empty($ad_array[$spot_id]['current_ad_type'])) {
-            if( $spot_hide_bool || ( !empty( $ad_array[$spot_id]['disable_for_admins'] ) && $ad_array[$spot_id]['disable_for_admins'] == 'yes' ) ) {
+            if( $spot_hide_for_admins_bool || ( !empty( $ad_array[$spot_id]['disable_for_admins'] ) && $ad_array[$spot_id]['disable_for_admins'] == 'yes' ) ) {
                 return $this->get_placeholder_block($spot_id, $rec_title);
             }
 

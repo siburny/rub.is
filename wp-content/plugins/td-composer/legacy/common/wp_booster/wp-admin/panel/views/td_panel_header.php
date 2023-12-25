@@ -46,7 +46,7 @@ if ( td_global::is_tdb_registered() ) {
     <div class="td-box-row">
     <div class="td-box-description">
         <span class="td-box-title">Cloud Library Template</span>
-        <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=header#/' ) ?>" target="_blank">Cloud Library</a> header template for all website.</p>
+        <p>Set a <a href="<?php echo admin_url( 'admin.php?page=tdb_cloud_templates' ) ?>" target="_blank">Cloud Library</a> header template for all website.</p>
     </div>
     <div class="td-box-control-full">
 
@@ -54,15 +54,15 @@ if ( td_global::is_tdb_registered() ) {
 
         $option_id = 'tdb_header_template';
         if (class_exists('SitePress', false)) {
-            global $sitepress;
-            $sitepress_settings = $sitepress->get_settings();
-            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
-                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
-                if (1 === $translation_mode) {
-                    $option_id .= $sitepress->get_current_language();
-                }
-            }
-        }
+	        global $sitepress;
+	        $sitepress_settings = $sitepress->get_settings();
+	        if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+	            $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+	            if (1 === $translation_mode) {
+	                $option_id .= $sitepress->get_current_language();
+	            }
+	        }
+	    }
 
         echo td_panel_generator::dropdown(array(
             'ds' => 'td_option',

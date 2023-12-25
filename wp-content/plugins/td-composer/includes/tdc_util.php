@@ -14,14 +14,14 @@ class tdc_util {
 	}
 
 
-	static function enqueue_js_files_array($js_files_array, $dependency_array = array(), $url = TDC_URL, $ver = TD_COMPOSER ) {
+	static function enqueue_js_files_array( $js_files_array, $dependency_array = array(), $url = TDC_URL, $ver = TD_COMPOSER ) {
 
 		$last_js_file_id = '';
-		foreach ($js_files_array as $js_file_id => $js_file) {
-			if ($last_js_file_id == '') {
-				wp_enqueue_script($js_file_id, $url . $js_file, $dependency_array, $ver, true); //first, load it with jQuery dependency
+		foreach ( $js_files_array as $js_file_id => $js_file ) {
+			if ( $last_js_file_id == '' ) {
+				wp_enqueue_script( $js_file_id, $url . $js_file, $dependency_array, $ver, true ); // first, load it with jQuery dependency
 			} else {
-				wp_enqueue_script($js_file_id, $url . $js_file, array($last_js_file_id), $ver, true);  //not first - load with the last file dependency
+				wp_enqueue_script( $js_file_id, $url . $js_file, array( $last_js_file_id ), $ver, true );  // not first - load with the last file dependency
 			}
 			$last_js_file_id = $js_file_id;
 		}
@@ -802,4 +802,121 @@ class tdc_util {
 			$content .= " $key=\"$val\"";
 		}
 	}
+
+
+	static function get_api_url($ext = 'api') {
+    	$api_url = '';
+
+	    if ( defined('TDB_CLOUD_LOCATION') && TDB_CLOUD_LOCATION === 'local') {
+		    $api_url = 'http://' . $_SERVER['SERVER_ADDR'] . '/td_cloud/' . $ext;
+		    //$api_url = 'http://localhost/td_cloud/' . $ext;
+	    } else {
+	    	$cloud = get_option('tdb_work_cloud');
+	    	if (empty($cloud) || 'false' === $cloud) {
+	    	    $api_url = 'https://cloud.tagdiv.com/' . $ext;
+		    } else {
+	    	    $api_url = 'https://work-cloud.tagdiv.com/' . $ext;
+		    }
+	    }
+
+	    return $api_url;
+    }
+
+
+    static function get_custom_pagination(
+        $current_page,
+        $num_pages,
+        $url_param,
+        $pages_to_show = 3,
+        $classes = array(
+            'wrapper' => '',
+            'item' => '',
+            'active' => '',
+            'dots' => ''
+        )
+    ) {
+
+        $buffy = '';
+
+
+        // Set the start and end pages that need to be displayed
+        $pages_to_show_minus_1 = $pages_to_show - 1;
+        $half_page_start       = floor($pages_to_show_minus_1/2 );
+        $half_page_end         = ceil($pages_to_show_minus_1/2 );
+        $start_page            = $current_page - $half_page_start;
+
+        if( $start_page <= 0 ) {
+            $start_page = 1;
+        }
+
+        $end_page = $current_page + $half_page_end;
+        if( ( $end_page - $start_page ) != $pages_to_show_minus_1 ) {
+            $end_page = $start_page + $pages_to_show_minus_1;
+        }
+
+        if( $end_page > $num_pages ) {
+            $start_page = $num_pages - $pages_to_show_minus_1;
+            $end_page = $num_pages;
+        }
+
+        if( $start_page <= 0 ) {
+            $start_page = 1;
+        }
+
+
+        // Build the pagination if the total number of pages is greater than 1
+        if( $num_pages > 1 ) {
+            $buffy .= '<div class="' . $classes['wrapper'] . '">';
+                // Display the previous page link if the current page
+                // is greater than the current page
+                if( $current_page > 1 ) {
+                    $buffy .= '<a href="' . self::get_custom_pagination_page_link( ($current_page - 1), $url_param ) . '" class="' . $classes['item'] . '"><i class="td-icon-left"></i></a>';
+                }
+
+                // If the current page number exceeds the maximum number of pages
+                // allowed to be displayed, then show the first page and dots placeholder
+                if( $start_page >= 2 && $pages_to_show < $num_pages ) {
+                    $buffy .= '<a href="' . self::get_custom_pagination_page_link( 1, $url_param ) . '" class="' . $classes['item'] . '">1</a>';
+
+                    if( $start_page > 2 ) {
+                        $buffy .= '<span class="' . $classes['item'] . ' ' . $classes['dots'] . '">...</span>';
+                    }
+                }
+
+                // Display the pages
+                for( $page = $start_page; $page <= $end_page; $page++ ) {
+                    if( $page == $current_page ) {
+                        $buffy .= '<div class="' . $classes['item'] . ' ' . $classes['active'] . '">' . $page . '</div>';
+                    } else {
+                        $buffy .= '<a href="' . self::get_custom_pagination_page_link( $page, $url_param ) . '" class="' . $classes['item'] . '">' . $page . '</a>';
+                    }
+                }
+
+                //
+                if( $end_page < $num_pages ) {
+                    if( $end_page + 1 < $num_pages ) {
+                        $buffy .= '<div class="' . $classes['item'] . ' ' . $classes['dots'] . '">...</div>';
+                    }
+
+                    $buffy .= '<a href="' . self::get_custom_pagination_page_link( $num_pages, $url_param ) . '" class="' . $classes['item'] . '">' . $num_pages .'</a>';
+                }
+
+                // Display the next page link if the current page is not
+                // equal to the last page
+                if( $current_page < $num_pages ) {
+                    $buffy .= '<a href="' . self::get_custom_pagination_page_link( ($current_page + 1), $url_param ) . '" class="' . $classes['item'] . '"><i class="td-icon-right"></i></a>';
+                }
+            $buffy .= '</div>';
+        }
+
+        return $buffy;
+
+    }
+
+
+    static function get_custom_pagination_page_link( $current_page, $url_param ) {
+
+        return add_query_arg($url_param, $current_page, self::get_current_url());
+
+    }
 }

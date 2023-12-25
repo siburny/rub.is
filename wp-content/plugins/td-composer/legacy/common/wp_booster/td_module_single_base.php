@@ -83,7 +83,7 @@ class td_module_single_base extends td_module {
             $buffy .= '<div class="td-post-author-name' . $post_author_no_dot . '"><div class="td-author-by">' . __td('By', TD_THEME_NAME) . '</div> ';
             $buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '">' . get_the_author_meta('display_name', $this->post->post_author) . '</a>' ;
 
-            if (td_util::get_option('tds_p_show_author_name') != 'hide' and td_util::get_option('tds_p_show_date') != 'hide') {
+            if (td_util::get_option('tds_p_show_author_name') != 'hide' and ( td_util::get_option('tds_p_show_date') != 'hide' || td_util::get_option('tds_p_show_modified_date') != 'hide' ) ) {
                 $buffy .= '<div class="td-author-line"> - </div> ';
             }
             $buffy .= '</div>';
@@ -300,7 +300,7 @@ class td_module_single_base extends td_module {
     }
 
 
-    function get_date($modified_date = '', $show_stars_on_review = true, $time_ago = '', $time_ago_add_txt = '') {
+    function get_date($modified_date = '', $show_stars_on_review = true, $time_ago = '', $time_ago_add_txt = '', $time_ago_txt_pos = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_p_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -357,10 +357,12 @@ class td_module_single_base extends td_module {
 //                $td_article_date_unix = get_the_time('U', $this->post->ID);
 
                 // get_post_datetime() used since WP 5.3
-                $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
-
+                $td_article_modified_date = get_post_datetime($this->post->ID, 'modified', 'gmt');
+                if ( $td_article_modified_date !== false  ) {
+                    $td_article_modified_date = $td_article_modified_date->format(DATE_W3C);
+                }
                 $buffy .= '<span class="td-post-date td-post-modified-date">';
-                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '"  datetime="' . $td_article_modified_date . '" >' . __td('Modified date:', TD_THEME_NAME) . ' ' . get_the_modified_date(get_option( 'date_format' ), $this->post->ID) . '</time>';
                 $buffy .= '</span>';
             }
         return $buffy;
@@ -377,9 +379,13 @@ class td_module_single_base extends td_module {
     function get_comments() {
         $buffy = '';
         if (td_util::get_option('tds_p_show_comments') != 'hide') {
+
+	        $comments_number_dsq = td_util::get_dsq_comments_number( $this->post );
+	        $comments_number = $comments_number_dsq ?: get_comments_number( $this->post->ID );
+
             $buffy .= '<div class="td-post-comments">';
             $buffy .= '<a href="' . get_comments_link($this->post->ID) . '"><i class="td-icon-comments"></i>';
-            $buffy .= get_comments_number($this->post->ID);
+            $buffy .= $comments_number;
             $buffy .= '</a>';
             $buffy .= '</div>';
         }
@@ -430,11 +436,27 @@ class td_module_single_base extends td_module {
         /*  ----------------------------------------------------------------------------
             Prepare the content
         */
-        $content = get_the_content(__td('Continue', TD_THEME_NAME));
-        $content = apply_filters('the_content', $content);
-        $content = str_replace(']]>', ']]&gt;', $content);
+		// content locker support
+	    if ( is_plugin_active( 'td-subscription/td-subscription.php' ) ) {
 
+		    // run locker init
+		    tds_email_locker::instance()->locker_init();
 
+		    // get content
+		    $content = get_the_content( __td( 'Continue', TD_THEME_NAME ) );
+		    $content = apply_filters( 'the_content', $content );
+		    $content = str_replace( ']]>', ']]&gt;', $content );
+
+		    // remove the content filter
+		    if ( has_filter( 'the_content', array( tds_email_locker::instance(), 'lock_content' ) ) ) {
+			    remove_filter( 'the_content', array( tds_email_locker::instance(), 'lock_content' ) );
+		    }
+
+	    } else {
+		    $content = get_the_content( __td( 'Continue', TD_THEME_NAME ) );
+		    $content = apply_filters( 'the_content', $content );
+		    $content = str_replace( ']]>', ']]&gt;', $content );
+	    }
 
         /** ----------------------------------------------------------------------------
          * Smart list support. class_exists and new object WORK VIA AUTOLOAD
@@ -643,7 +665,7 @@ class td_module_single_base extends td_module {
     function get_item_scope() {
         //show the review meta only on single posts that are reviews, the rest have to be article (in article lists)
         if ($this->is_review && is_single()) {
-            return 'itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Review"';
+            return 'itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Product"';
         } elseif( td_util::get_option('tds_disable_article_schema') == '' ){
             return 'itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Article"';
         } else {
@@ -688,46 +710,6 @@ class td_module_single_base extends td_module {
             $td_publisher_logo = get_permalink($this->post->ID);
         }
 
-        $buffy = ''; //the vampire slayer
-
-        // author
-        $buffy .= '<span class="td-page-meta" itemprop="author" itemscope itemtype="https://schema.org/Person">' ;
-        $buffy .= '<meta itemprop="name" content="' . esc_attr(get_the_author_meta('display_name', $this->post->post_author)) . '">' ;
-        $buffy .= '</span>' ;
-
-        global $wp_version;
-        if (version_compare($wp_version, '5.3', '<')) {
-            // datePublished
-            $td_article_date_unix = get_the_time('U', $this->post->ID);
-            $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
-            // dateModified
-            $buffy .= '<meta itemprop="dateModified" content="' . the_modified_date('c', '', '', false) . '">';
-        }else { //get_post_datetime() should be used from WP 5.3
-            // datePublished
-            $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
-            if ($td_article_date_unix !== false) {
-                $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format(DATE_W3C) . '">';
-            }
-            // dateModified - local time
-            $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
-            if ($td_article_modified_date_unix !== false) {
-                $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format(DATE_W3C) . '">';
-            }
-        }
-        // mainEntityOfPage
-        $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) .'"/>';
-
-        // publisher
-        $buffy .= '<span class="td-page-meta" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">';
-        $buffy .= '<span class="td-page-meta" itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">';
-        $buffy .= '<meta itemprop="url" content="' . $td_publisher_logo . '">';
-        $buffy .= '</span>';
-        $buffy .= '<meta itemprop="name" content="' . $td_publisher_name . '">';
-        $buffy .= '</span>';
-
-        // headline !!!! we may improve this one to use the subtitle or excerpt? - We could not find specs about what it should be.
-        $buffy .= '<meta itemprop="headline " content="' . esc_attr( $this->post->post_title) . '">';
-
         // featured image
         $td_image = array();
         if (!is_null($this->post_thumb_id)) {
@@ -747,84 +729,128 @@ class td_module_single_base extends td_module {
             $td_image[2] = '580';
         }
 
-        // ImageObject meta
-        if (!empty($td_image[0])) {
-            $buffy .= '<span class="td-page-meta" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">';
-            $buffy .= '<meta itemprop="url" content="' . $td_image[0] . '">';
-            $buffy .= '<meta itemprop="width" content="' . $td_image[1] . '">';
-            $buffy .= '<meta itemprop="height" content="' . $td_image[2] . '">';
-            $buffy .= '</span>';
-        }
+        $buffy = ''; //the vampire slayer
 
         // if we have a review, we must add additional stuff
         if ($this->is_review) {
 
-            // take rating count for aggregateRating meta
+            //calculate total, best rating and count the ratings
             $td_review = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
-            if (!empty($td_review['has_review'])) {
-                switch ($td_review['has_review']) {
-                    case 'rate_stars' :
+            $rating_value = td_review::calculate_total_stars_for_meta($td_review);
+            $best_rating = '';
+            $rating_count = '';
 
-                        $rating_count = count($td_review["p_review_stars"]);
-                        break;
-                    case 'rate_percent':
-                        $rating_count = count($td_review["p_review_percents"]);
-                        break;
-                    case 'rate_point' :
-                        $rating_count = count($td_review["p_review_points"]);
-                        break;
-                }
+            switch ($td_review['has_review']) {
+                case 'rate_stars' :
+                    $best_rating = 5;
+                    $rating_count = count($td_review["p_review_stars"]);
+                    break;
+                case 'rate_percent':
+                    $best_rating = 100;
+                    $rating_count = count($td_review["p_review_percents"]);
+                    break;
+                case 'rate_point' :
+                    $best_rating = 10;
+                    $rating_count = count($td_review["p_review_points"]);
+                    break;
             }
 
-            // the item that is reviewd
-            $buffy .= '<span class="td-page-meta" itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">';
-            $buffy .= '<meta itemprop="name " content = "' . $this->title_attribute . '">';
 
-            $buffy .= '<span class="td-page-meta" itemprop="brand" itemscope itemtype="https://schema.org/Organization">';
-            $buffy .= '<meta itemprop="name " content = "' . $td_publisher_name . '">';
-            $buffy .= '</span>';
-
-            if (!empty($this->td_review['review'])) {
-                $buffy .= '<meta itemprop="description" content = "' . esc_attr($this->td_review['review']) . '">';
-            } else {
-                //we have no review text :| get a excerpt for the about meta thing
-                if ($this->post->post_excerpt != '') {
-                    $td_post_excerpt = $this->post->post_excerpt;
-                } else {
-                    $td_post_excerpt = td_util::excerpt($this->post->post_content, 45);
-                }
-                $buffy .= '<meta itemprop="description" content = "' . esc_attr($td_post_excerpt) . '">';
+            // review description
+            if ( isset($this->td_review['review']) && !empty($this->td_review['review'])  ) {
+                $td_review_content = esc_attr($this->td_review['review']);
+            } else {             //in case we don't have review description, we get it from content
+                $td_review_content =  esc_attr(td_util::excerpt($this->post->post_content, 45));
             }
 
-            $buffy .= '<meta itemprop="image " content = "' . $td_image[0] . '">';
-            $buffy .= '<meta itemprop="sku " content = "' . $this->post->post_name . '">';
+            $buffy.= '<span class="td-page-meta" itemprop="name">' . esc_attr( strip_tags( $this->post->post_name ) ) . '</span>';
+            $buffy .= '<meta itemprop="description" content="' . $td_review_content . '">';
+            $buffy .= '<span class="td-page-meta" itemprop="brand" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name " content = "' . $td_publisher_name . '"></span>';
+            $buffy .= '<meta itemprop="sku " content = "' . esc_attr( strip_tags( $this->post->post_name ) ) . '">';
             $buffy .= '<meta itemprop="mpn " content = "' . $this->post->ID . '">';
 
-                $buffy .= '<span itemprop="aggregateRating" itemscope itemtype="https://schema.org/aggregateRating">';
-                $buffy .= '<meta itemprop="ratingValue" content = "' . td_review::calculate_total_stars($this->td_review) . '">';
-                $buffy .= '<meta itemprop="ratingCount" content = "' . $rating_count  . '">';
-                $buffy .= '</span>';
+            if ( !empty( $td_image[0] ) ) {
+                $buffy .= '<link itemprop="image " href="' . $td_image[0] . '"/>';
+            }
 
+            $buffy .= '<span class="td-page-meta" itemprop="review" itemtype="https://schema.org/Review" itemscope>';
+                $buffy .= '<span itemprop="author" itemtype="https://schema.org/Person" itemscope>';
+                    $buffy .= '<meta itemprop="name" content="' . esc_attr(get_the_author_meta('display_name', $this->post->post_author)) . '" />';
+                $buffy .= '</span>';
+                $buffy .= '<span itemprop="reviewRating" itemtype="https://schema.org/Rating" itemscope>';
+                    $buffy .= '<meta itemprop="ratingValue" content="' . $rating_value . '" />';
+                    $buffy .= '<meta itemprop="bestRating" content="' . $best_rating . '" />';
+                $buffy .= '</span>';
+                $buffy.= '<span class="td-page-meta" itemprop="reviewBody">' . $td_review_content . '</span>';
             $buffy .= '</span>';
 
-//            if (!empty($this->td_review['review'])) {
-//                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($this->td_review['review']) . '">';
-//            } else {
-//                //we have no review text :| get a excerpt for the about meta thing
-//                if ($this->post->post_excerpt != '') {
-//                    $td_post_excerpt = $this->post->post_excerpt;
-//                } else {
-//                    $td_post_excerpt = td_util::excerpt($this->post->post_content, 45);
-//                }
-//                $buffy .= '<meta itemprop="reviewBody" content = "' . esc_attr($td_post_excerpt) . '">';
-//            }
+            //using this, the reviews count will replace author in google search
+            if ( td_util::get_option('tds_aggregate_rating_schema') === 'yes' ) {
+                $buffy .= '<span class="td-page-meta" itemprop="aggregateRating" itemscope itemtype="https://schema.org/aggregateRating">';
+                    $buffy .= '<meta itemprop="ratingValue" content = "' . $rating_value . '">';
+                    $buffy .= '<meta itemprop="ratingCount" content = "' . $rating_count . '">';
+                    $buffy .= '<meta itemprop="bestRating" content="' . $best_rating . '" />';
+                $buffy .= '</span>';
+            }
 
-            // review rating
-            $buffy .= '<span class="td-page-meta" itemprop="reviewRating" itemscope itemtype="' . td_global::$http_or_https . '://schema.org/Rating">';
-            $buffy .= '<meta itemprop="worstRating" content = "1">';
-            $buffy .= '<meta itemprop="bestRating" content = "5">';
-            $buffy .= '<meta itemprop="ratingValue" content = "' . td_review::calculate_total_stars($this->td_review) . '">';
-            $buffy .= ' </span>';
+            $buffy .= '<span class="td-page-meta" itemprop="offers" itemtype="https://schema.org/Offer" itemscope>';
+                $buffy .= '<link itemprop="url" href="' . get_permalink( $this->post->ID ) . '" />';
+                $buffy .= '<meta itemprop="availability" content="https://schema.org/InStock" />';
+                $buffy .= '<meta itemprop="priceCurrency" content="USD" />';
+                $buffy .= '<meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />';
+                $buffy .= '<meta itemprop="price" content="0" />';
+                $buffy .= '<meta itemprop="priceValidUntil" content="' . date("Y-m-d") . '" />';
+            $buffy .= '</span>';
+
+        } else { //schema Article
+
+            // author
+            $buffy .= '<span class="td-page-meta" itemprop="author" itemscope itemtype="https://schema.org/Person">';
+            $buffy .= '<meta itemprop="name" content="' . esc_attr(get_the_author_meta('display_name', $this->post->post_author)) . '">';
+            $buffy .= '<meta itemprop="url" content="' . esc_attr(get_author_posts_url($this->post->post_author)) . '">';
+            $buffy .= '</span>';
+
+            global $wp_version;
+            if (version_compare($wp_version, '5.3', '<')) {
+                // datePublished
+                $td_article_date_unix = get_the_time('U', $this->post->ID);
+                $buffy .= '<meta itemprop="datePublished" content="' . date(DATE_W3C, $td_article_date_unix) . '">';
+                // dateModified
+                $buffy .= '<meta itemprop="dateModified" content="' . the_modified_date('c', '', '', false) . '">';
+            } else { //get_post_datetime() should be used from WP 5.3
+                // datePublished
+                $td_article_date_unix = get_post_datetime($this->post, 'date', 'gmt');
+                if ($td_article_date_unix !== false) {
+                    $buffy .= '<meta itemprop="datePublished" content="' . $td_article_date_unix->format(DATE_W3C) . '">';
+                }
+                // dateModified - local time
+                $td_article_modified_date_unix = get_post_datetime($this->post, 'modified', 'gmt');
+                if ($td_article_modified_date_unix !== false) {
+                    $buffy .= '<meta itemprop="dateModified" content="' . $td_article_modified_date_unix->format(DATE_W3C) . '">';
+                }
+            }
+            // mainEntityOfPage
+            $buffy .= '<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="' . get_permalink($this->post->ID) . '"/>';
+
+            // publisher
+            $buffy .= '<span class="td-page-meta" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">';
+            $buffy .= '<span class="td-page-meta" itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">';
+            $buffy .= '<meta itemprop="url" content="' . $td_publisher_logo . '">';
+            $buffy .= '</span>';
+            $buffy .= '<meta itemprop="name" content="' . $td_publisher_name . '">';
+            $buffy .= '</span>';
+
+            // headline !!!! we may improve this one to use the subtitle or excerpt? - We could not find specs about what it should be.
+            $buffy .= '<meta itemprop="headline " content="' . esc_attr($this->post->post_title) . '">';
+
+            // ImageObject meta
+            if (!empty($td_image[0])) {
+                $buffy .= '<span class="td-page-meta" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">';
+                $buffy .= '<meta itemprop="url" content="' . $td_image[0] . '">';
+                $buffy .= '<meta itemprop="width" content="' . $td_image[1] . '">';
+                $buffy .= '<meta itemprop="height" content="' . $td_image[2] . '">';
+                $buffy .= '</span>';
+            }
         }
         return $buffy;
     }

@@ -2,20 +2,33 @@
     <div class="td-page-options-tab td-page-options-tab-active" data-panel-class="td-page-option-general"><a href="#">General</a></div>
     <div class="td-page-options-tab" data-panel-class="td-page-option-post-list"><a href="#">Posts Loop Settings</a></div>
     <div class="td-page-options-tab" data-panel-class="td-page-option-unique-articles"><a href="#">Unique Articles</a></div>
+	<?php
+
+	$td_page_settings_tabs = apply_filters( 'td_page_settings_tabs', array() );
+
+	if ( !empty( $td_page_settings_tabs ) && is_array( $td_page_settings_tabs ) ) {
+		foreach ( $td_page_settings_tabs as $tab ) {
+
+			// tabs id/name/file are required
+			if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+				continue;
+			?>
+
+            <div class="td-page-options-tab" data-panel-class="td-page-option-post-<?php echo $tab['id'] ?>"><a href="#"><?php echo $tab['name'] ?></a></div>
+
+			<?php
+		}
+	}
+
+	?>
 </div>
 
-
 <div class="td-meta-box-inside">
-
-
 
     <!-- page option general -->
     <div class="td-page-option-panel td-page-option-panel-active td-page-option-general">
 
-
         <p><strong>Note:</strong> Unlike the default template, the settings from this panel applies to the bottom part of the page (where the loop + sidebar is). </p>
-
-
 
         <!-- sidebar position -->
         <div class="td-meta-box-row">
@@ -46,7 +59,6 @@
             ?>
         </div>
 
-
         <!-- sidebar -->
         <div class="td-meta-box-row">
             <span class="td-page-o-custom-label">
@@ -71,17 +83,12 @@
             ?>
         </div>
 
-
-
         <div class="td-meta-box-row">
             <span class="td-page-o-custom-label">Template layout:</span>
             <img class="td-doc-image-wp td-doc-image-homepage-loop" style="max-width: 100%" src="<?php echo TDC_URL_LEGACY ?>/assets/images/pagebuilder/info-homepage-loop.png" />
         </div>
+
     </div>
-
-
-
-
 
     <!-- Posts loop settings -->
     <div class="td-page-option-panel td-page-option-post-list">
@@ -150,12 +157,12 @@
             <span class="td-page-o-info">Custom title for the article list section</span>
         </div>
 
-
         <div class="td-meta-box-row td-meta-box-row-separator">
             <h3>Filters for the loop:</h3>
         </div>
 
         <?php
+
         class td_set_homepage_loop_filter {
 
             public function __construct()  { }
@@ -207,23 +214,19 @@
                 );
             }
 
-        }//end class
+        }
 
         $obj_td_homepage_filter_add = new td_set_homepage_loop_filter;
-        //instantiates the filter render object, passing metabox object
+        // instantiates the filter render object, passing metabox object
         $td_metabox_generator = new td_metabox_generator($mb);
 
-        //call to create the filter
+        // call to create the filter
         $td_metabox_generator->td_render_homepage_loop_filter($obj_td_homepage_filter_add->homepage_filter_get_map());
 
         ?>
-    </div> <!-- end post loop filter -->
+    </div>
 
-
-
-
-
-    <!-- page option general -->
+    <!-- page option unique articles -->
     <div class="td-page-option-panel td-page-option-unique-articles">
         <p>
             <strong>Note:</strong> We recommand to not use the Unique articles feature if you plan to use ajax blocks that have sub categories or pagination. This feature will make sure that only unique articles are loaded on the initial page load.
@@ -239,10 +242,29 @@
                 </select>
             </div>
         </div>
-    </div><!-- /page option general -->
+    </div>
 
+    <!-- post settings from filters -->
+	<?php
 
+	if ( !empty( $td_page_settings_tabs ) && is_array( $td_page_settings_tabs ) ) {
+		foreach ( $td_page_settings_tabs as $tab ) {
 
-</div><!-- /.td-meta-box-inside -->
+			// tabs id/name/file are required
+			if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+				continue;
+			?>
+
+            <div class="td-page-option-panel td-page-option-post-<?php echo $tab['id'] ?>">
+				<?php require_once( $tab['file'] ); ?>
+            </div> <!-- /page option <?php echo $tab['id'] ?> -->
+
+			<?php
+		}
+	}
+
+	?>
+
+</div>
 
 

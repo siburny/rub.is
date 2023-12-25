@@ -269,9 +269,9 @@ class td_flex_block_5 extends td_block {
         }
         // article audio size
         $art_audio_size = $res_ctx->get_shortcode_att('art_audio_size');
-        $res_ctx->load_settings_raw( 'art_audio_size', 10 + $art_audio_size/0.5 . 'px' );
-
-
+        if( $art_audio_size != '' && is_numeric( $art_audio_size ) ) {
+            $res_ctx->load_settings_raw('art_audio_size', 10 + $art_audio_size / 0.5 . 'px');
+        }
         // show category tag
         $res_ctx->load_settings_raw( 'show_cat', $res_ctx->get_shortcode_att('show_cat') );
         // category tag space
@@ -344,7 +344,9 @@ class td_flex_block_5 extends td_block {
             $res_ctx->load_settings_raw( 'review_space', $review_space . 'px' );
         }
         $review_size = $res_ctx->get_shortcode_att('review_size');
-        $res_ctx->load_settings_raw( 'review_size', 10 + $review_size/0.5 . 'px' );
+        if ( $review_size != '' && is_numeric( $review_size ) ) {
+            $res_ctx->load_settings_raw('review_size', 10 + $review_size / 0.5 . 'px');
+        }
         $review_distance = $res_ctx->get_shortcode_att('review_distance');
         $res_ctx->load_settings_raw( 'review_distance', $review_distance );
         if( $review_distance != '' && is_numeric( $review_distance ) ) {
@@ -477,6 +479,8 @@ class td_flex_block_5 extends td_block {
 
 	    $res_ctx->load_settings_raw( 'com_bg', $res_ctx->get_shortcode_att('com_bg') );
 	    $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
+        $res_ctx->load_settings_raw( 'rev_txt', $res_ctx->get_shortcode_att('rev_txt') );
+
 
         $res_ctx->load_settings_raw( 'audio_btn_color', $res_ctx->get_shortcode_att( 'audio_btn_color' ) );
         $res_ctx->load_settings_raw( 'audio_time_color', $res_ctx->get_shortcode_att( 'audio_time_color' ) );
@@ -657,7 +661,18 @@ class td_flex_block_5 extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
+
         $unique_block_modal_class = $this->block_uid . '_m';
 
         $compiled_css = '';
@@ -800,12 +815,12 @@ class td_flex_block_5 extends td_block {
 					margin-left: auto;
                     margin-right: auto;
 				}
-				.$unique_block_class .td-category-pos-image .td-post-category {
+				.$unique_block_class .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					left: 50%;
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
-				.$unique_block_class.td-h-effect-up-shadow .td_module_wrap:hover .td-category-pos-image .td-post-category {
+				.$unique_block_class.td-h-effect-up-shadow .td_module_wrap:hover .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 				    transform: translate(-50%, -2px);
 					-webkit-transform: translate(-50%, -2px);
 				}
@@ -924,7 +939,7 @@ class td_flex_block_5 extends td_block {
 				}
 				
 				/* @show_cat */
-				.$unique_block_class .td-post-category {
+				.$unique_block_class .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat;
 				}
 				/* @modules_category_margin */
@@ -1157,6 +1172,11 @@ class td_flex_block_5 extends td_block {
 				/* @com_txt */
 				.$unique_block_class .td-module-comments a {
 					color: @com_txt;
+				}
+				
+				/* @rev_txt */
+				.$unique_block_class .entry-review-stars {
+					color: @rev_txt;
 				}
 				
 				/* @audio_btn_color */
@@ -1512,8 +1532,10 @@ class td_flex_block_5 extends td_block {
 
             //get the ajax pagination for this block
             $prev_icon = $this->get_icon_att('prev_tdicon');
+            $prev_icon_class = $this->get_att('prev_tdicon');
             $next_icon = $this->get_icon_att('next_tdicon');
-            $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
+            $next_icon_class = $this->get_att('next_tdicon');
+            $buffy .= $this->get_block_pagination($prev_icon, $next_icon, $prev_icon_class, $next_icon_class);
         $buffy .= '</div>';
         return $buffy;
     }

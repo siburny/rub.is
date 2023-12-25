@@ -79,6 +79,9 @@
 .tdc-ico-tdm_block_title_over_image {
   .stitches-sprite(-105px, -141px, 40px, 24px);
 }
+.tdc-ico-tdm_block_popup {
+  .stitches-sprite(-105px, -175px, 40px, 24px);
+}
 
 
 // Visual Composer icons
@@ -207,4 +210,104 @@
       position: absolute;
     }
   }
+}
+
+
+
+.tdc-modal-align-selector {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px !important;
+  font-size: 0;
+
+  .tdc-property-title {
+    top: 0;
+    width: 180px;
+    vertical-align: top;
+  }
+
+  .tdc-property {
+    display: flex;
+    flex-wrap: wrap;
+    width: 93px;
+
+    label {
+      margin: 0 0 8px 12px;
+      vertical-align: top;
+
+      div {
+        background: url(images/icon-modal-align.png);
+        -webkit-transition: transform 0.3s ease-in-out;
+        -moz-transition: transform 0.3s ease-in-out;
+        -o-transition: transform 0.3s ease-in-out;
+        transition: transform 0.3s ease-in-out;
+      }
+  }
+
+    // icons gray
+    [class="top-left"] {
+      .stitches-sprite(-10px, -10px, 19px, 19px);
+    }
+    [class="top-center"] {
+      .stitches-sprite(-10px, -39px, 19px, 19px);
+    }
+    [class="top-right"] {
+      .stitches-sprite(-10px, -68px, 19px, 19px);
+    }
+    [class="center-left"] {
+      .stitches-sprite(-10px, -97px, 19px, 19px);
+    }
+    [class="center-center"] {
+      .stitches-sprite(-10px, -126px, 19px, 19px);
+    }
+    [class="center-right"] {
+      .stitches-sprite(-10px, -155px, 19px, 19px);
+    }
+    [class="bottom-left"] {
+      .stitches-sprite(-10px, -184px, 19px, 19px);
+    }
+    [class="bottom-center"] {
+      .stitches-sprite(-10px, -213px, 19px, 19px);
+    }
+    [class="bottom-right"] {
+      .stitches-sprite(-10px, -242px, 19px, 19px);
+    }
+  }
+
+  .tdc-property-input-radio:checked + label div {
+    -webkit-transition: transform 0.3s ease-in-out;
+    -moz-transition: transform 0.3s ease-in-out;
+    -o-transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+
+    // icons blue
+    &[class="top-left"] {
+      .stitches-sprite(-39px, -10px, 19px, 19px);
+    }
+    &[class="top-center"] {
+      .stitches-sprite(-39px, -39px, 19px, 19px);
+    }
+    &[class="top-right"] {
+      .stitches-sprite(-39px, -68px, 19px, 19px);
+    }
+    &[class="center-left"] {
+      .stitches-sprite(-39px, -97px, 19px, 19px);
+    }
+    &[class="center-center"] {
+      .stitches-sprite(-39px, -126px, 19px, 19px);
+    }
+    &[class="center-right"] {
+      .stitches-sprite(-39px, -155px, 19px, 19px);
+    }
+    &[class="bottom-left"] {
+      .stitches-sprite(-39px, -184px, 19px, 19px);
+    }
+    &[class="bottom-center"] {
+      .stitches-sprite(-39px, -213px, 19px, 19px);
+    }
+    &[class="bottom-right"] {
+      .stitches-sprite(-39px, -242px, 19px, 19px);
+    }
+  }
+
 }

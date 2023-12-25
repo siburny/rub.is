@@ -15,7 +15,7 @@ if (!empty($td_welcome_menu_items) && is_array($td_welcome_menu_items)) {
     ?>
     <div class="about-wrap td-wp-admin-header ">
         <div class="td-wp-admin-top">
-            <img class="td-tagdiv-brand" src="<?php echo get_template_directory_uri() ?>/includes/wp-booster/wp-admin/images/plugins/tagdiv-small.png" />
+            <a class="td-tagdiv-link" href="https://tagdiv.com?utm_source=theme&utm_medium=logo&utm_campaign=tagdiv&utm_content=click_hp"><img class="td-tagdiv-brand" src="<?php echo get_template_directory_uri() ?>/includes/wp-booster/wp-admin/images/plugins/tagdiv-small.png" /></a>
             <div class="td-wp-admin-theme">
                 <h1>Welcome to <?php echo TD_THEME_NAME ?>!</h1>
                 <span><?php echo $td_theme_desc ?></span>

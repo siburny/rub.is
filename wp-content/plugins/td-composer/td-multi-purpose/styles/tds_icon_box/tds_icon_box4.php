@@ -275,11 +275,11 @@ class tds_icon_box4 extends td_style {
             $buffy .= $tds_title_instance->render();
 
             // Description
-            $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('description') ) ) );
+            $description = td_util::get_custom_field_value_from_string( rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('description') ) ) ) );
             $buffy .= '<p class="tdm-descr">' . $description . '</p>';
 
             //url on icon box
-            $icon_box_url = $this->get_style_att( 'icon_box_url' );
+            $icon_box_url = td_util::get_custom_field_value_from_string( $this->get_style_att( 'icon_box_url' ) );
             if ( !empty( $icon_box_url ) ) {
 
                 /**
@@ -331,7 +331,7 @@ class tds_icon_box4 extends td_style {
                 if  ( !empty( $open_in_new_window ) ) {
                     $target_blank = 'target="_blank"';
                 }
-                $buffy .= '<a href="' . $this->get_style_att( 'icon_box_url' ) . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
+                $buffy .= '<a href="' . $icon_box_url . '" aria-label="icon_box" class="icon_box_url_wrap" ' . $target_blank . $data_ga_event_cat . $data_ga_event_action . $data_ga_event_label . $data_fb_event_name . $data_fb_event_cotent_name . '> </a>';
             }
 
             // Button

@@ -35,7 +35,7 @@ class td_video_support{
                     $controlsParam = 'controls=0"';
                 }
                 if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
-                    $autoplayParam = 'autoplay=1';
+                    $autoplayParam = 'autoplay=1&mute=1';
                 }
                 if( $loop != '' ) {
                     $loopParam = 'loop=1&playlist=' . self::get_youtube_id($videoUrl);
@@ -123,7 +123,7 @@ class td_video_support{
                     $controlsParam = 'controls=false';
                 }
                 if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
-                    $autoplayParam = 'autoplay=1&mute=0';
+                    $autoplayParam = 'autoplay=1&mute=1';
                 }
 
 				$buffy .= '
@@ -137,7 +137,7 @@ class td_video_support{
                     $controlsParam = 'controls=false';
                 }
                 if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
-                    $autoplayParam = 'autoplay=1';
+                    $autoplayParam = 'autoplay=1&muted=1';
                 }
                 if( $loop != '' ) {
                     $loopParam = 'loop=1';
@@ -145,7 +145,7 @@ class td_video_support{
 
 				$buffy = '
                 <div class="wpb_video_wrapper">
-                    <iframe src="' . td_global::$http_or_https . '://player.vimeo.com/video/' . self::get_vimeo_id($videoUrl) . '?' . $controlsParam . '&' . $autoplayParam . '&' . $loopParam . '" width="500" height="212" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                    <iframe src="' . td_global::$http_or_https . '://player.vimeo.com/video/' . self::get_vimeo_id_for_iframe($videoUrl) . $controlsParam . '&' . $autoplayParam . '&' . $loopParam . '" width="500" height="212" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                 </div>
                 ';
 				break;
@@ -252,7 +252,7 @@ class td_video_support{
                     $controlsParam = 'controls';
                 }
                 if( $autoplay != '' && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
-                    $autoplayParam = 'autoplay';
+                    $autoplayParam = 'autoplay muted';
                 }
                 if( $loop != '' ) {
                     $loopParam = 'loop';
@@ -290,7 +290,16 @@ class td_video_support{
 		//verify post is not a revision
 		if ( !wp_is_post_revision( $post_id ) ) {
 
-			$post_types = apply_filters( 'td_featured_video_support_post_type', array( 'post' ) );
+            $post_types = get_post_types( array('_builtin' => false) );
+            $post_types_arr = array('post');
+
+            foreach ( $post_types as $post_type ) {
+                if ( post_type_supports($post_type, 'post-formats') && has_post_format('video', $post_id) ) {
+                    $post_types_arr[] = $post_type;
+                }
+            }
+            //cpt support
+			$post_types = apply_filters( 'td_featured_video_support_post_type', $post_types_arr );
 
 			if (
 				( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
@@ -332,10 +341,17 @@ class td_video_support{
             $videoDuration = self::get_video_duration($td_post_video['td_video']);
             update_post_meta( $post_id, 'td_post_video_duration', $videoDuration );
 
-			$videoThumbUrl = self::get_thumb_url( $td_post_video['td_video'] );
+
+            $has_featured_image = has_post_thumbnail($post_id);
+            $videoThumbUrl = '';
+
+            // download video thumb only if there's not featured image
+            if ( !$has_featured_image ) {
+                $videoThumbUrl = self::get_thumb_url( $td_post_video['td_video'] );
+            }
 
             // its time to setup the thumb
-			if ( !empty( $videoThumbUrl ) ) {
+			if ( $videoThumbUrl !== '' ) {
 
 			    // save the post id
 				self::$on_save_post_post_id = $post_id;
@@ -421,7 +437,10 @@ class td_video_support{
 					}
 
 					if (!empty($dailymotion_api) and !empty($dailymotion_api->thumbnail_url)) {
-						return $dailymotion_api->thumbnail_url;
+                        $url = $dailymotion_api->thumbnail_url;
+                        //without ?ext=.jpeg @media_sideload_image will throw invalid image url
+                        $url_with_extension = $url . '?ext=.jpeg';
+						return $url_with_extension;
 					}
 				}
 				break;
@@ -604,7 +623,34 @@ class td_video_support{
      * Vimeo id
      */
     private static function get_vimeo_id($videoUrl) {
-        sscanf(parse_url($videoUrl, PHP_URL_PATH), '/%d', $video_id);
+
+        $path = parse_url($videoUrl, PHP_URL_PATH);
+        $pathFragments = explode('/', $path);
+
+        if ( isset($pathFragments[2]) && $pathFragments[2] != '' ) {
+            $video_id = ltrim($path, '/');
+        } else {
+            sscanf($path, '/%d', $video_id);
+        }
+
+        return $video_id;
+    }
+
+    /*
+     * Vimeo id - modified to render unlisted videos
+     */
+    private static function get_vimeo_id_for_iframe($videoUrl) {
+
+        $path = parse_url($videoUrl, PHP_URL_PATH);
+        $pathFragments = explode('/', $path);
+
+        if ( isset($pathFragments[2]) && $pathFragments[2] != '' ) {
+            $video_id = $pathFragments [1] . '?h=' . $pathFragments [2] . '&'  ;
+        } else {
+            sscanf($path, '/%d', $video_id);
+            $video_id = $video_id . '?';
+        }
+
         return $video_id;
     }
 

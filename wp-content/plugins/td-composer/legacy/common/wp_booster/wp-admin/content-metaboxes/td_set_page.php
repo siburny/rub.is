@@ -1,15 +1,33 @@
 <div class="td-page-options-tab-wrap">
     <div class="td-page-options-tab td-page-options-tab-active" data-panel-class="td-page-option-general"><a href="#">General</a></div>
     <div class="td-page-options-tab" data-panel-class="td-page-option-unique-articles-2"><a href="#">Unique Articles</a></div>
+	<?php
+
+	$td_page_settings_tabs = apply_filters( 'td_page_settings_tabs', array() );
+
+	if ( !empty( $td_page_settings_tabs ) && is_array( $td_page_settings_tabs ) ) {
+		foreach ( $td_page_settings_tabs as $tab ) {
+
+			// tabs id/name/file are required
+			if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+				continue;
+			?>
+
+            <div class="td-page-options-tab" data-panel-class="td-page-option-post-<?php echo $tab['id'] ?>"><a href="#"><?php echo $tab['name'] ?></a></div>
+
+			<?php
+		}
+	}
+
+	?>
 </div>
+
 <div class="td-meta-box-inside">
-
-
 
     <!-- page option general -->
     <div class="td-page-option-panel td-page-option-panel-active td-page-option-general">
-        <p><strong>Note:</strong> The settings from this box only work if you do not use the page builder on this template. The template detects if the page builder is used and it removes the title and sidebars if that's the case. </p>
 
+        <p><strong>Note:</strong> The settings from this box only work if you do not use the page builder on this template. The template detects if the page builder is used and it removes the title and sidebars if that's the case. </p>
 
         <!-- sidebar position -->
         <div class="td-meta-box-row">
@@ -48,7 +66,6 @@
             </div>
         </div>
 
-
         <!-- custom sidebar -->
         <div class="td-meta-box-row">
             <span class="td-page-o-custom-label">
@@ -78,12 +95,10 @@
         </div>
 
         <div class="td-disble-message" style="display: none;">
-            <p>While using a pagebuilder sidebar settings are not available. To add a sidebar on page use the widgetised sidebar block.</p>
+            <p>While using a pagebuilder sidebar settings are not available. To add a sidebar on the page, edit it using tagDiv Composer.</p>
         </div>
-    </div> <!-- /page option general -->
 
-
-
+    </div>
 
     <!-- unique articles tab -->
     <div class="td-page-option-panel td-page-option-unique-articles-2">
@@ -104,7 +119,30 @@
                 </select>
             </div>
         </div>
-    </div><!-- /page option general -->
+
+    </div>
+
+    <!-- post settings from filters -->
+	<?php
+
+	if ( !empty( $td_page_settings_tabs ) && is_array( $td_page_settings_tabs ) ) {
+		foreach ( $td_page_settings_tabs as $tab ) {
+
+			// tabs id/name/file are required
+			if ( !isset( $tab['id'], $tab['name'], $tab['file'] ) )
+				continue;
+			?>
+
+            <div class="td-page-option-panel td-page-option-post-<?php echo $tab['id'] ?>">
+				<?php require_once( $tab['file'] ); ?>
+            </div> <!-- /page option <?php echo $tab['id'] ?> -->
+
+			<?php
+		}
+	}
+
+	?>
+
 </div>
 
 

@@ -78,8 +78,25 @@ $postContent = str_replace( array( "\r\n", "\n", "\r" ), array( "\r\n'+'" ), $po
 //<link rel="stylesheet" href="http://basehold.it/22">
 
 // Add shortcodes name to be displayed into sidebar panel
+$tdbTemplateType = tdc_util::get_get_val('tdbTemplateType');
+
 $shortcodes = array();
-foreach (tdc_mapper::get_mapped_shortcodes() as $mapped_shortcode ) {
+$tdc_mapped_shortcodes = tdc_mapper::get_mapped_shortcodes();
+foreach ( $tdc_mapped_shortcodes as &$mapped_shortcode ) {
+    if ( in_array( $tdbTemplateType, ['cpt', 'cpt_tax'] ) && isset( $mapped_shortcode['tdc_category'] ) ) {
+	    switch ( $mapped_shortcode[ 'tdc_category' ] ) {
+	        case 'Single post':
+                if ( !in_array( $mapped_shortcode['base'], ['tdb_single_categories' , 'tdb_single_tags'] ) ) {
+                    $mapped_shortcode['name'] = str_replace( 'Single Post', 'CPT', $mapped_shortcode['name'] );
+                }
+                break;
+
+            case 'Category page':
+                $mapped_shortcode['name'] = str_replace( 'Category', 'Taxonomy', $mapped_shortcode['name'] );
+                $mapped_shortcode['name'] = str_replace( 'Subcategories', 'Subtaxonomies', $mapped_shortcode['name'] );
+                break;
+	    }
+    }
 	$shortcodes[ $mapped_shortcode[ 'base' ] ] = $mapped_shortcode[ 'name' ];
 }
 
@@ -114,8 +131,6 @@ function get_post_url( $post_id ) {
 
 
 $tdc_mobile_header_id = '';
-$tdbTemplateType = tdc_util::get_get_val('tdbTemplateType');
-
 $tdc_header_template_content = '';
 
 $is_mobile = false;
@@ -290,14 +305,17 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                     case 'single':
                     case 'woo_product':
                     case 'woo_shop_base':
+                    case 'cpt':
                         $preview_url = get_permalink( $tdbLoadDataFromId );
                         break;
 
                     case 'woo_archive':
-                        $preview_url = get_term_link( intval( $tdbLoadDataFromId ), 'product_cat' );
+	                    $term = get_term( intval( $tdbLoadDataFromId ) );
+                        $preview_url = get_term_link( $term->term_id, $term->taxonomy );
                         break;
 
                     case 'category':
+                    case 'cpt_tax':
                         $preview_url = get_category_link( $tdbLoadDataFromId );
                         break;
 
@@ -530,7 +548,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
             <script>
                 (function() {
                     window.addEventListener('load', function() {
-                        jQuery.when(tdcStore.get('tdc_history-' + <?php echo $post->ID ?> )).done(function (request) {
+                        jQuery.when(tdcStore.get(tdcRecycle.snapshotPath + '-' + <?php echo $post->ID ?> )).done(function (request) {
                             if ('undefined' !== typeof request.readyState && 'done' === request.readyState && 'undefined' !== typeof request.result) {
                                 var tdc_history = request.result.content;
 
@@ -589,6 +607,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 					$big_grids_mapped_shortcodes = array();
                     $header_mapped_shortcodes = array();
 					$extended_mapped_shortcodes = array();
+                    $custom_forms_mapped_shortcodes = array();
 					$external_mapped_shortcodes = array();
 					$multipurpose_mapped_shortcodes = array();
 					$single_post_mapped_shortcodes = array();
@@ -610,15 +629,16 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 					$td_woo_search_archive_shortcodes = array();
 					$td_woo_common_shortcodes = array();
 
+					$cpt_mapped_shortcodes = [];
+					$cpt_tax_mapped_shortcodes = [];
+
 					$template_shortcodes = apply_filters( 'tdc_template_shortcodes', $template_shortcodes );
 					$td_woo_single_shortcodes = apply_filters( 'td_woo_single_shortcodes', $td_woo_single_shortcodes );
 					$td_woo_archive_shortcodes = apply_filters( 'td_woo_archive_shortcodes', $td_woo_archive_shortcodes );
 					$td_woo_search_archive_shortcodes = apply_filters( 'td_woo_search_archive_shortcodes', $td_woo_search_archive_shortcodes );
 					$td_woo_common_shortcodes = apply_filters( 'td_woo_common_shortcodes', $td_woo_common_shortcodes );
 
-					$mapped_shortcodes = tdc_mapper::get_mapped_shortcodes();
-
-					foreach ($mapped_shortcodes as &$mapped_shortcode ) {
+					foreach ($tdc_mapped_shortcodes as &$mapped_shortcode ) {
 
 						$shortcode_base = $mapped_shortcode['base'];
 
@@ -648,11 +668,31 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 								case 'Extended':
 									$extended_mapped_shortcodes[] = $mapped_shortcode;
 									break;
+								case 'Custom forms':
+                                    $custom_forms_mapped_shortcodes[] = $mapped_shortcode;
+									break;
 								case 'Single post':
-									$single_post_mapped_shortcodes[] = $mapped_shortcode;
+                                    if ( $shortcode_base == 'tdb_single_acf_field' && !class_exists( 'ACF' ) ) {
+                                        break;
+                                    }
+
+								    if ( !in_array($shortcode_base, ['tdb_single_ctags']) ) {
+									    $single_post_mapped_shortcodes[] = $mapped_shortcode;
+                                    }
+
+									// this adds share shortcode for woo single product templates
+									if ( 'tdb_single_post_share' === $shortcode_base && 'woo_product' === $tdbTemplateType ) {
+										$td_woo_single_shortcodes[] = $mapped_shortcode;
+									}
+
+									if (!in_array($mapped_shortcode['base'], ['tdb_single_categories' , 'tdb_single_tags', 'tdb_single_review_overview', 'tdb_single_review_overall', 'tdb_single_review_summary'])) {
+                                        $cpt_mapped_shortcodes[] = $mapped_shortcode;
+                                    }
+
 									break;
                                 case 'Category page':
                                     $category_page_mapped_shortcodes[] = $mapped_shortcode;
+	                                $cpt_tax_mapped_shortcodes[] = $mapped_shortcode;
                                     break;
                                 case 'Tag page':
                                     $tag_page_mapped_shortcodes[] = $mapped_shortcode;
@@ -696,9 +736,9 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 					}
 
 					usort( $extended_mapped_shortcodes, 'tdc_sort_name');
+					usort( $custom_forms_mapped_shortcodes, 'tdc_sort_name');
 					usort( $external_mapped_shortcodes, 'tdc_sort_name');
 					usort( $multipurpose_mapped_shortcodes, 'tdc_sort_name');
-
 
 					// Row
 					$data_shortcode_settings = get_data_shortcode_settings(  $top_mapped_shortcodes['vc_row'] );
@@ -765,9 +805,11 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 						// Here will be displayed the extended shortcodes
 						foreach ( $single_post_mapped_shortcodes as $mapped_shortcode ) {
 
-						    if ( in_array( $mapped_shortcode['base'], array( 'tdb_single_related', 'tdb_single_related_author'))) {
+						    if ( in_array( $mapped_shortcode['base'], array( 'tdb_single_related', 'tdb_single_related_author', 'tdb_single_user_review_replies_list', 'tdb_single_user_review_reply_form', 'tdb_single_user_review_ratings'))) {
 						        continue;
                             }
+
+
 
 							$data_row_start_values = '';
 
@@ -791,6 +833,51 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 							echo $buffer;
 						}
 					}
+
+                    if ( ! empty( $cpt_mapped_shortcodes ) && 'cpt' === $tdbTemplateType ) {
+
+                        // Separator
+						echo '<div class="tdc-sidebar-separator">CPT shortcodes</div>';
+
+						// Here will be displayed the extended shortcodes
+						foreach ( $cpt_mapped_shortcodes as $mapped_shortcode ) {
+
+						    if ( in_array( $mapped_shortcode['base'], array( 'tdb_single_related', 'tdb_single_related_author'))) {
+						        continue;
+                            }
+
+                            if(
+                                get_post_type($tdbLoadDataFromId) != 'tdc-review' &&
+                                (
+                                    $mapped_shortcode['base'] === 'tdb_single_user_review_replies_list' ||
+                                    $mapped_shortcode['base'] === 'tdb_single_user_review_reply_form' ||
+                                    $mapped_shortcode['base'] === 'tdb_single_user_review_ratings'
+                                )
+                            )
+                                continue;
+
+							$data_row_start_values = '';
+
+							if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+								$tdc_class = 'tdc-element-with-row tdc-row-temp';
+								if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+									$data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+								}
+							} else {
+								$tdc_class = 'tdc-element';
+							}
+
+							$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+							$buffer =
+								'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+								'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+								'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+								'</div>';
+
+							echo $buffer;
+						}
+                    }
 
                     if ( ! empty( $category_page_mapped_shortcodes ) && 'category' === $tdbTemplateType ) {
 
@@ -846,6 +933,53 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
                         // Here will be displayed the extended shortcodes
                         foreach ( $tag_page_mapped_shortcodes as $mapped_shortcode ) {
+
+                            $data_row_start_values = '';
+
+                            if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+                                $tdc_class = 'tdc-element-with-row tdc-row-temp';
+                                if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+                                    $data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+                                }
+                            } else {
+                                $tdc_class = 'tdc-element';
+                            }
+
+                            $data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+                            $buffer =
+                                '<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+                                '<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+                                '<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+                                '</div>';
+
+                            echo $buffer;
+                        }
+                    }
+
+                    if ( ! empty( $cpt_tax_mapped_shortcodes ) && 'cpt_tax' === $tdbTemplateType ) {
+
+                        // Separator
+                        echo '<div class="tdc-sidebar-separator">Custom Taxonomy shortcodes</div>';
+
+                        // Here will be displayed the extended shortcodes
+                        foreach ( $cpt_tax_mapped_shortcodes as $mapped_shortcode ) {
+
+                            if ( in_array( $mapped_shortcode['base'], array(
+                                    'tdb_category_grid_1',
+                                    'tdb_category_grid_2',
+                                    'tdb_category_grid_3',
+                                    'tdb_category_grid_4',
+                                    'tdb_category_grid_5',
+                                    'tdb_category_grid_6',
+                                    'tdb_category_grid_7',
+                                    'tdb_category_grid_8',
+                                    'tdb_category_grid_9',
+                                    'tdb_category_grid_10',
+                                ))
+                            ) {
+                                continue;
+                            }
 
                             $data_row_start_values = '';
 
@@ -971,13 +1105,54 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
                         // Here will be displayed the common page shortcodes
                         foreach ( $common_page_el_mapped_shortcodes as $mapped_shortcode ) {
 
-                            if ( 'single' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
+                            if (
+                                    'single' === $tdbTemplateType &&
+                                    ( $mapped_shortcode['base'] === 'tdb_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_loop_2' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop_sorting_options' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_list' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters'
+                                    )
+                            )
                                 continue;
 
-							if ( 'attachment' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
+							if (
+                                    'attachment' === $tdbTemplateType &&
+                                    ( $mapped_shortcode['base'] === 'tdb_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_loop_2' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop_sorting_options' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_list' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters'
+                                    )
+                            )
 								continue;
 
-                            if ( '404' === $tdbTemplateType && ( $mapped_shortcode['base'] === 'tdb_title' || $mapped_shortcode['base'] === 'tdb_loop' || $mapped_shortcode['base'] === 'tdb_loop_2' ) )
+                            if (
+                                    '404' === $tdbTemplateType &&
+                                    ( $mapped_shortcode['base'] === 'tdb_title' ||
+                                        $mapped_shortcode['base'] === 'tdb_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_loop_2' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_loop_sorting_options' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters_list' ||
+                                        $mapped_shortcode['base'] === 'tdb_filters'
+                                    )
+                            )
+                                continue;
+
+                            if( (
+                                    'header' === $tdbTemplateType ||
+                                    'footer' === $tdbTemplateType ||
+                                    '404' === $tdbTemplateType ||
+                                    'date' === $tdbTemplateType ||
+                                    'search' === $tdbTemplateType ||
+                                    'woo_product' === $tdbTemplateType ||
+                                    'woo_archive' === $tdbTemplateType ||
+                                    'woo_search_archive' === $tdbTemplateType ||
+                                    'woo_shop_base' === $tdbTemplateType
+                                ) && $mapped_shortcode['base'] === 'tdb_single_custom_field' )
                                 continue;
 
                             $data_row_start_values = '';
@@ -1225,6 +1400,37 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 						}
 					}
 
+					if ( ! empty( $custom_forms_mapped_shortcodes ) ) {
+
+						// Separator
+						echo '<div class="tdc-sidebar-separator">Custom forms shortcodes</div>';
+
+						// Here will be displayed the extended shortcodes
+						foreach ( $custom_forms_mapped_shortcodes as $mapped_shortcode ) {
+
+							$data_row_start_values = '';
+
+							if ( isset( $mapped_shortcode['tdc_in_row'] ) && true === $mapped_shortcode['tdc_in_row'] ) {
+								$tdc_class = 'tdc-element-with-row tdc-row-temp';
+								if ( isset( $mapped_shortcode['tdc_row_start_values'] ) ) {
+									$data_row_start_values = ' data-row-start-values="' . $mapped_shortcode['tdc_row_start_values'] . '" ';
+								}
+							} else {
+								$tdc_class = 'tdc-element';
+							}
+
+							$data_shortcode_settings = get_data_shortcode_settings( $mapped_shortcode );
+
+							$buffer =
+								'<div class="tdc-sidebar-element ' . $tdc_class . '" data-shortcode-name="' . $mapped_shortcode['base'] . '" ' . $data_shortcode_settings . '>' .
+								'<div class="tdc-element-ico tdc-ico-' . $mapped_shortcode['base'] . '"></div>' .
+								'<div class="tdc-element-id">' . $mapped_shortcode['name'] . '</div>' .
+								'</div>';
+
+							echo $buffer;
+						}
+					}
+
 					if ( ! empty( $external_mapped_shortcodes ) ) {
 
 						// Separator
@@ -1232,8 +1438,34 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
 						if ( 'page' === $tdbTemplateType ) {
                             foreach ( $common_page_el_mapped_shortcodes as $common_page_el_mapped_shortcode ) {
-                                if ( $common_page_el_mapped_shortcode['base'] === 'tdb_loop' || $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' || $common_page_el_mapped_shortcode['base'] === 'tdb_breadcrumbs' || $common_page_el_mapped_shortcode['base'] === 'tdb_title' || $common_page_el_mapped_shortcode['base'] === 'tdb_woo_menu_cart' ) {
+                                if (
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_loop' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_loop_2' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_filters_loop' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_filters_loop_sorting_options' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_filters_list' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_filters' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_breadcrumbs' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_title' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_woo_menu_cart' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_single_post_share' ||
+                                        $common_page_el_mapped_shortcode['base'] === 'tdb_single_custom_field'
+                                ) {
                                     $external_mapped_shortcodes[] = $common_page_el_mapped_shortcode;
+                                }
+                            }
+
+                            foreach ( $single_post_mapped_shortcodes as $single_post_mapped_shortcode ) {
+                                if (
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_reviews_form' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_reviews_overall' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_reviews_list' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_review_replies_list' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_review_reply_form' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_user_review_ratings' ||
+                                        $single_post_mapped_shortcode['base'] === 'tdb_single_location_display'
+                                ) {
+                                    $external_mapped_shortcodes[] = $single_post_mapped_shortcode;
                                 }
                             }
                         }
@@ -1384,8 +1616,7 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 		<div id="tdc-font-list">
 		</div>
 
-        <div id="tdc-editor-css" style="z-index:2;height:650px;width:calc(100% + 26px);left:-13px">
-		</div>
+        <div id="tdc-editor-css" style="z-index: 2; height: 100%; width: 100%;"></div>
 
 		<?php
 
@@ -1428,7 +1659,6 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 
 	</div>
 
-
 	<div id="tdc-menu-settings">
 		<header class="tdb-wm-header-drag">
 			<div class="title"></div>
@@ -1458,6 +1688,17 @@ $tdb_p_infinite_count = td_util::get_option('tdb_p_autoload_count');
 		<footer>
 			<div class="tdc-iframe-apply-button"></div>
 			<div class="tdc-iframe-ok-button"></div>
+		</footer>
+	</div>
+
+	<div id="tdc-ace-editor" style="display: none;">
+		<header class="tdb-wm-header-drag">
+			<div class="title">HTML Code Editor</div>
+			<div class="close"></div>
+		</header>
+		<div class="content"></div>
+		<footer>
+            <div class="tdw-resize"></div>
 		</footer>
 	</div>
 

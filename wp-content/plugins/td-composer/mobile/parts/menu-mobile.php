@@ -1,5 +1,5 @@
-<div class="td-menu-background"></div>
-<div id="td-mobile-nav">
+<div class="td-menu-background" style="visibility:hidden"></div>
+<div id="td-mobile-nav" style="visibility:hidden">
     <div class="td-mobile-container">
         <!-- mobile menu top section -->
         <div class="td-menu-socials-wrap">
@@ -64,7 +64,9 @@
     <!-- register/login section -->
     <?php if (td_util::get_option('tds_login_mobile') != 'hide') { ?>
         <div id="login-form" class="td-register-section">
-            <?php locate_template('parts/register.php', true); ?>
+            <?php if ( !is_user_logged_in() ) {
+                locate_template('parts/register.php', true);
+            } ?>
         </div>
     <?php } ?>
 </div>

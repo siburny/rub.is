@@ -223,6 +223,10 @@ class vc_row_inner extends tdc_composer_block {
             }
         }
 
+//        $hide_for_logged = $res_ctx->get_shortcode_att( 'hide_for_logged_id_users' );
+//        if( $hide_for_logged == 'yes' && is_user_logged_in() && !td_util::tdc_is_live_editor_ajax() && !td_util::tdc_is_live_editor_iframe() ) {
+//            $res_ctx->load_settings_raw('hide_for_logged', 1);
+//        }
 
 
         /*-- FLEX SETTINGS -- */
@@ -315,7 +319,11 @@ class vc_row_inner extends tdc_composer_block {
             'flex_horiz_align' => 'flex-start',
             'flex_vert_align' => 'flex-start',
             'flex_order' => '',
-            'flex_grow' => ''
+            'flex_grow' => '',
+
+            'hide_for_user_type' => '',
+            'logged_plan_id' => '',
+            'author_plan_id' => '',
 
 		), $atts);
 
@@ -338,6 +346,26 @@ class vc_row_inner extends tdc_composer_block {
 
 		if ( td_global::get_in_element() && ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
 		    $inner_row_class .= '-composer';
+        }
+
+        // display restrictions
+        $hide_for_user_type = $this->atts['hide_for_user_type'];
+        if( $hide_for_user_type != '' ) {
+            if( !( td_util::tdc_is_live_editor_ajax() || td_util::tdc_is_live_editor_iframe() ) &&
+                (
+                    ( $hide_for_user_type == 'logged-in' && is_user_logged_in() ) ||
+                    ( $hide_for_user_type == 'guests' && !is_user_logged_in() )
+                )
+            ) {
+                $block_classes[] = 'tdc-restr-display-none';
+            }
+        } else {
+            $author_plan_ids = $this->atts['author_plan_id'];
+            $all_users_plan_ids = $this->atts['logged_plan_id'];
+
+            if( !td_util::plan_limit($author_plan_ids, $all_users_plan_ids) ) {
+                $block_classes[] = 'tdc-restr-display-none';
+            }
         }
 
 		td_global::set_in_inner_row(true);

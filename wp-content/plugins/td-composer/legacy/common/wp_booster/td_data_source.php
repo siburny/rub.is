@@ -7,8 +7,8 @@ class td_data_source {
     /**
      * converts a pagebuilde array to a wordpress query args array
      * creates the $args array from shortcodes - used by the pagebuilde + widgets + by the metabox_to_args
-     * @param string $atts : the shortcode string
-     * @param string $paged : page number  /1  or  /2
+     * @param string $atts - the shortcode string
+     * @param string $paged - page number  /1  or  /2
      * @return array
      */
     static function shortcode_to_args($atts = '', $paged = '') {
@@ -22,10 +22,12 @@ class td_data_source {
                     'post_ids' => '',
                     'post_slug' => '',
                     'category_ids' => '',
+                    'in_all_terms' => '',
+                    'include_children' => '',
                     'category_id' => '',
                     'tag_slug' => '',
                     'sort' => '',
-                    'limit' => '', /*'limit' => 5,*/
+                    'limit' => '', /* 'limit' => 5, */
                     'autors_id' => '',
                     'installed_post_types' => '',
                     'posts_per_page' => '',  //!!!! se poate sa nu mai fie folosit
@@ -35,6 +37,8 @@ class td_data_source {
                     'live_filter_cur_post_author' => '', //auto generated - author_id of current post
                     'search_query' => '', // search keyword
                     'date_query' => '', // date parameters
+                    'tag_id' => '', // current tag filter
+                    'taxonomies' => '', // taxonomies slugs for the 'cur_post_same_taxonomies' > live_filter
                 ),
                 $atts
             )
@@ -49,7 +53,7 @@ class td_data_source {
 	    /*  ----------------------------------------------------------------------
 	        jetpack sorting - this will return here if that's the case because it dosn't work with other filters (it's site wide, no category + this or other combinations)
 	    */
-	    if ($sort == 'jetpack_popular_2') {
+	    if ( $sort == 'jetpack_popular_2' ) {
 		    if (function_exists('stats_get_csv')) {
 			    // the damn jetpack api cannot return only posts so it may return pages. That's why we query with a bigger + 5 limit
 			    // so that if the api returns also 5 pages mixed with the post we will still have the desired number of posts
@@ -80,73 +84,83 @@ class td_data_source {
 		    return array(); // empty array makes WP_Query not run. Usually the return value of this function is feed directly to a new WP_Query
 	    }
 
-	    if ( 0 === strpos( $sort,'custom_order')) {
-	    	if ( function_exists( 'td_get_custom_order_ids' )) {
+	    if ( 0 === strpos( $sort,'custom_order' ) ) {
+	    	if ( function_exists( 'td_get_custom_order_ids' ) ) {
 	    		$custom_order_post_ids = td_get_custom_order_ids($sort);
-	    		if ( !empty($custom_order_post_ids) && is_array($custom_order_post_ids)) {
+	    		if ( !empty( $custom_order_post_ids) && is_array( $custom_order_post_ids ) ) {
 	    			$wp_query_args['post__in'] = $custom_order_post_ids;
                     $wp_query_args['orderby'] = 'post__in';
-                    $wp_query_args['posts_per_page'] = count($custom_order_post_ids);
+                    $wp_query_args['posts_per_page'] = count( $custom_order_post_ids );
 			    }
 		    }
 	    }
 
         //the query goes only via $category_ids - for both options ($category_ids and $category_id) also $category_ids overwrites $category_id
-        if (!empty($category_id) and empty($category_ids)) {
+        if ( !empty( $category_id ) and empty( $category_ids ) ) {
             $category_ids = $category_id;
         }
 
         // modified for taxonomy support
-        if (!empty($category_ids)) {
-            $tax_ids = explode (',', $category_ids);
+        if ( !empty( $category_ids ) ) {
+            $tax_ids = explode (',', $category_ids );
             $taxonomies_array = array();
-//            $tax_not_in = array();
-//            $tax_in = array();
+            //$tax_not_in = array();
+            //$tax_in = array();
+	        $block_type = $atts['block_type'] ?? '';
 
-            foreach ($tax_ids as $tax_id) {
+            foreach ( $tax_ids as $tax_id ) {
 
-                if (intval($tax_id) < 0) {
-                    $tax_id = str_replace('-', '', $tax_id);
+                if ( intval( $tax_id ) < 0 ) {
+                    $tax_id = str_replace('-', '', $tax_id );
                 }
 
                 $tax_args = get_term($tax_id);
-                if ($tax_args instanceof WP_Term) {
+                if ( $tax_args instanceof WP_Term ) {
                     $taxonomies_array[$tax_args->taxonomy][] = $tax_args->slug;
                 }
             }
 
             /**
-             *          category_ids cannot be empty
-             *          so we check if there is only one taxonomy id or more
-             *          stop and run old code if the category is the only taxonomy
+             * category_ids cannot be empty
+             * so we check if there is only one taxonomy id or more
+             * stop and run old code if the category is the only taxonomy
              */
-            if(count($taxonomies_array) === 1 ) {
-
-                if(isset($taxonomies_array['category'])) {
-                    $wp_query_args['cat'] = $category_ids;
+            if( count( $taxonomies_array ) === 1 ) {
+                if( isset( $taxonomies_array['category'] ) ) {
+                    if( !empty( $in_all_terms ) ) {
+                        $wp_query_args['category__and'] = explode(',', $category_ids);
+                    } else {
+                        $wp_query_args['cat'] = $category_ids;
+                    }
                 } else {
-                    foreach ($taxonomies_array as $taxonomy => $terms_array) {
+                    foreach ( $taxonomies_array as $taxonomy => $terms_array ) {
                         $wp_query_args['tax_query'] = array(
                             array(
                                 'taxonomy' => $taxonomy,
                                 'field' => 'slug',
                                 'terms' => $terms_array,
+                                'include_children' => empty( $include_children ),
+                                'operator' => ( !empty( $in_all_terms ) && $block_type !== 'tdb_filters_loop' && count( $terms_array ) > 1 ) ? 'AND' : 'IN'
                             )
                         );
                     }
                 }
 
-            } elseif( count($taxonomies_array) > 1 ) {
-
+            } elseif( count( $taxonomies_array ) > 1 ) {
                 $tax_query = array();
                 $tax_query['relation'] = 'OR';
+                if( !empty( $in_all_terms ) ) {
+                    $tax_query['relation'] = 'AND';
+                }
 
                 //this is duplicated @see single tax case above, because we need to add relation "OR"
-                foreach ($taxonomies_array as $taxonomy => $terms_array) {
+                foreach ( $taxonomies_array as $taxonomy => $terms_array ) {
                     $tax_query[] = array(
                         'taxonomy' => $taxonomy,
                         'field' => 'slug',
                         'terms' => $terms_array,
+	                    'include_children' => empty( $include_children ),
+                        'operator' => ( !empty( $in_all_terms ) && $block_type !== 'tdb_filters_loop' && count( $terms_array ) > 1 ) ? 'AND' : 'IN'
                     );
                 }
 
@@ -154,11 +168,37 @@ class td_data_source {
             }
         }
 
-        if (!empty($tag_slug)) {
-            $wp_query_args['tag'] = str_replace(' ', '-', $tag_slug);
+        if ( !empty( $tag_slug ) ) {
+            //$wp_query_args['tag'] = trim($tag_slug);
+
+            $tag_slugs = explode(',', trim( $tag_slug ) );
+            $tag_not_in = array();
+            $tag_in = array();
+            foreach ( $tag_slugs as $td_tag ) {
+                if ( !empty($td_tag) ) {
+                    $td_tag = trim($td_tag);
+                    // substr() can be replaced with str_starts_with() from php8 or WP5.9
+                    if ( substr($td_tag, 0, 1) === '-' ) {
+                        $td_tag = ltrim($td_tag, "-");
+                        $tag_obj = get_term_by('slug', $td_tag, 'post_tag');
+                        if ( $tag_obj ) {
+                            $tag_not_in[] = $tag_obj->term_id;
+                        }
+                    } else {
+                        $tag_obj = get_term_by('slug', $td_tag, 'post_tag');
+                        if ( $tag_obj ) {
+                            $tag_in[] = $tag_obj->term_id;
+                        }
+                    }
+                }
+            }
+
+            $wp_query_args ['tag__in']= $tag_in;
+            $wp_query_args ['tag__not_in']= $tag_not_in;
+
         }
 
-        switch ($sort) {
+        switch ( $sort ) {
             case 'featured':
                 if (!empty($category_ids)) {
                     //for each category, get the object and compose the slug
@@ -203,12 +243,46 @@ class td_data_source {
                     ),
                     array(
                         'key'     => td_page_views::$post_view_counter_7_day_last_date,
-                        'value'   => (date('U') - 604800), // current date minus 7 days
+                        'value'   => ( date('U') - 604800 ), // current date minus 7 days
                         'type'    => 'numeric',
                         'compare' => '>'
                     )
                 );
                 $wp_query_args['orderby'] = td_page_views::$post_view_counter_7_day_total;
+                $wp_query_args['order'] = 'DESC';
+                break;
+            case 'popular1': // popular last 24 hours (last day)
+                $wp_query_args['meta_query'] = 	array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => td_page_views::$post_views_last_24_hours_total,
+                        'type'    => 'numeric'
+                    ),
+                    array(
+                        'key'     => td_page_views::$post_view_counter_7_day_last_date,
+                        'value'   => ( date('U') - 86400 ), // current date minus 1 day(24 hours)
+                        'type'    => 'numeric',
+                        'compare' => '>'
+                    )
+                );
+                $wp_query_args['orderby'] = td_page_views::$post_views_last_24_hours_total;
+                $wp_query_args['order'] = 'DESC';
+                break;
+            case 'popular2': // popular last 48 hours (last 2 days)
+                $wp_query_args['meta_query'] = 	array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => td_page_views::$post_views_last_48_hours_total,
+                        'type'    => 'numeric'
+                    ),
+                    array(
+                        'key'     => td_page_views::$post_view_counter_7_day_last_date,
+                        'value'   => ( date('U') - 172800 ), // current date minus 2 days(48 hours)
+                        'type'    => 'numeric',
+                        'compare' => '>'
+                    )
+                );
+                $wp_query_args['orderby'] = td_page_views::$post_views_last_48_hours_total;
                 $wp_query_args['order'] = 'DESC';
                 break;
             case 'review_high':
@@ -242,22 +316,22 @@ class td_data_source {
                 break;
         }
 
-        if (!empty($autors_id)) {
+        if ( !empty( $autors_id ) ) {
             $wp_query_args['author'] = $autors_id;
         }
 
         //add post_type to query
-        if (!empty($installed_post_types)) {
+        if ( !empty( $installed_post_types ) ) {
             $array_selected_post_types = array();
-            $expl_installed_post_types = explode(',', $installed_post_types);
+            $expl_installed_post_types = explode(',', $installed_post_types );
 
-            foreach ($expl_installed_post_types as $val_this_post_type) {
-                if (trim($val_this_post_type) != '') {
-                    $array_selected_post_types[] = trim($val_this_post_type);
+            foreach ( $expl_installed_post_types as $val_this_post_type ) {
+                if ( trim( $val_this_post_type ) != '' ) {
+                    $array_selected_post_types[] = trim( $val_this_post_type );
                 }
             }
 
-            $wp_query_args['post_type'] = $array_selected_post_types;//$installed_post_types;
+            $wp_query_args['post_type'] = $array_selected_post_types; // $installed_post_types;
         }
 
 
@@ -265,12 +339,12 @@ class td_data_source {
          * the live filters are generated in td_block.php and are added when the block is rendered on the page in the atts of the block
          * @see td_block::add_live_filter_atts
          */
-        if (!empty($live_filter)) {
-            switch ($live_filter) {
+        if ( !empty( $live_filter ) ) {
+            switch ( $live_filter ) {
                 case 'cur_post_same_tags':
 
                     $tags = wp_get_post_tags($live_filter_cur_post_id);
-                    if ($tags) {
+                    if ( $tags ) {
                         $taglist = array();
                         for ($i = 0; $i <= 4; $i++) {
                             if (!empty($tags[$i])) {
@@ -299,14 +373,65 @@ class td_data_source {
                     $wp_query_args['post__not_in'] = array($live_filter_cur_post_id);
                     break;
 
+                case 'cur_post_same_taxonomies':
+
+					// tax query init
+	                $tax_query = array();
+	                $tax_query['relation'] = 'OR';
+
+					// taxonomies
+	                $taxonomies_array = array();
+					if ( !empty( $taxonomies ) ) {
+						$taxonomies_slugs = explode (',', $taxonomies );
+
+						if ( !empty( $taxonomies_slugs ) ) {
+							foreach ( $taxonomies_slugs as $tax_slug ) {
+								$tax_slug = trim( $tax_slug );
+
+								if ( taxonomy_exists( $tax_slug ) ) {
+									$taxonomies_array[] = $tax_slug;
+								}
+
+							}
+						}
+
+					}
+
+					// get current post taxonomies
+	                $post_taxonomies = get_object_taxonomies( get_post_type( $live_filter_cur_post_id ) );
+	                foreach ( $post_taxonomies as $taxonomy ) {
+
+						if ( !empty( $taxonomies_array ) && !in_array( $taxonomy, $taxonomies_array ) )
+							continue;
+
+		                $post_tax_terms = wp_get_post_terms( $live_filter_cur_post_id, $taxonomy, array( 'fields' => 'ids' ) );
+		                if ( is_array( $post_tax_terms ) ) {
+							$tax_query[] = array(
+								'taxonomy' => $taxonomy,
+								'terms' => $post_tax_terms,
+								'field' => 'term_id',
+								'include_children' => false,
+							);
+		                }
+	                }
+
+					//echo '<pre>' . print_r( $tax_query, true ) . '</pre>';
+
+                    $wp_query_args['tax_query'] = $tax_query;
+                    $wp_query_args['post__not_in'] = array( $live_filter_cur_post_id );
+
+                    break;
+
             }
         }
 
         //show only unique posts if that setting is enabled on the template
-        /*if (td_unique_posts::$show_only_unique == true) {
+        /*
+         if ( td_unique_posts::$show_only_unique == true ) {
             $wp_query_args['post__not_in'] = td_unique_posts::$rendered_posts_ids;
-        }*/
-        if (td_unique_posts::$unique_articles_enabled == true) {
+        }
+        */
+        if ( td_unique_posts::$unique_articles_enabled == true ) {
             $wp_query_args['post__not_in'] = td_unique_posts::$rendered_posts_ids;
         }
 
@@ -323,23 +448,44 @@ class td_data_source {
 			if($post_custom_field_value == 'today' || $post_custom_field_value == 'tomorrow' || $post_custom_field_value == 'yesterday') {
                 $time = new DateTime($post_custom_field_value, new DateTimeZone(get_option('timezone_string')));
 				$date = '0?'.$time->format('n').'/0?'.$time->format('j').'/';
+            } else if(strpos($post_custom_field_value, ' ') !== false) {
+				$date = explode(' ', $post_custom_field_value);
+
+                if(count($date) == 2) {
+                    if(in_array(strtolower($date[0]), $short_months)) {
+                        $month = array_search(strtolower($date[0]), $short_months) + 1;
+                        $date = '0?'.$month.'/[0-2][0-9]/'.$date[1];
+                    } else if(in_array(strtolower($date[0]), $long_months)) {
+                        $month = array_search(strtolower($date[0]), $long_months) + 1;
+                        $date = '0?'.$month.'/[0-2][0-9]/'.$date[1];
+                    } else {
+                        $date = $post_custom_field_value;
+                    }
+                } else {
+                    $date = $post_custom_field_value;
+                }
             } else if(in_array(strtolower($post_custom_field_value), $short_months)) {
                 $month = array_search(strtolower($post_custom_field_value), $short_months) + 1;
                 $date = '0?'.$month.'/';
             } else if(in_array(strtolower($post_custom_field_value), $long_months)) {
                 $month = array_search(strtolower($post_custom_field_value), $long_months) + 1;
                 $date = '0?'.$month.'/';
+            } else if((substr($post_custom_field_value, 0, 1) == '+' || substr($post_custom_field_value, 0, 1) == '-') && is_numeric(substr($post_custom_field_value, 1))) {
+                $time = new DateTime($post_custom_field_value.' day', new DateTimeZone(get_option('timezone_string')));
+				$date = '0?'.$time->format('n').'/0?'.$time->format('j').'/';
 			} else {
 				$date = explode('/', $post_custom_field_value);
 				
 				if(count($date) == 2) {
-					$date = $post_custom_field_value.'/';
+                    $date = '0?'.$date[0].'/0?'.$date[1].'/';
 				} else if(count($date) == 1 && is_numeric($post_custom_field_value)) {
 					if($post_custom_field_value > 999) {
 						$date = '.*/'.$post_custom_field_value.'$';
 					} else {
 						$date = '0?'.$post_custom_field_value.'/';
 					}
+                } else if(count($date) == 3) {
+					$date = '0?'.$date[0].'/0?'.$date[1].'/'.$date[2];
 				} else {
 					$date = $post_custom_field_value;
 				}
@@ -361,7 +507,7 @@ class td_data_source {
         }
         
         // post in section
-        if (!empty($post_ids)) {
+        if ( !empty( $post_ids ) ) {
 
             // split posts id string
             $post_id_array = explode (',', $post_ids);
@@ -422,21 +568,21 @@ class td_data_source {
         }
 
         //custom pagination limit
-        if (empty($limit)) {
+        if ( empty( $limit ) ) {
             $limit = get_option('posts_per_page');
         }
         $wp_query_args['posts_per_page'] = $limit;
 
         //custom pagination
-        if (!empty($paged)) {
+        if ( !empty( $paged ) ) {
             $wp_query_args['paged'] = $paged;
         } else {
             $wp_query_args['paged'] = 1;
         }
 
         // offset + custom pagination - if we have offset, wordpress overwrites the pagination and works with offset + limit
-        if (!empty($offset) and $paged > 1) {
-            $wp_query_args['offset'] = $offset + ( ($paged - 1) * $limit) ;
+        if ( !empty( $offset ) and $paged > 1 ) {
+            $wp_query_args['offset'] = $offset + ( ( $paged - 1 ) * $limit) ;
         } else {
             $wp_query_args['offset'] = $offset ;
         }
@@ -445,11 +591,11 @@ class td_data_source {
         //set this variable to pass it to the filter that fixes the pagination on the templates with fake loops. It is not used on blocks because the blocks have custom pagination
         self::$fake_loop_offset = $offset;
 
-        if (!empty($search_query)) {
+        if ( !empty( $search_query ) ) {
             $wp_query_args['s'] = $search_query;
         }
 
-        if (!empty($date_query)) {
+        if ( !empty( $date_query ) ) {
             foreach ( $date_query as $type => $value ) {
                 if ( $value === '' ) {
                     unset($date_query[$type]);
@@ -457,6 +603,11 @@ class td_data_source {
             }
             $wp_query_args['date_query'] = array($date_query);
         }
+
+		// current tag filter
+	    if ( !empty( $tag_id ) ) {
+		    $wp_query_args['tag_id'] = $tag_id;
+	    }
 
         //print_r($wp_query_args);
 
@@ -773,11 +924,16 @@ class td_data_source {
 		    }
 
 		    // apply td woo filters >>> we need to detect ajax requests here to process attributes filters and adjust the woocommerce_shortcode_products_query accordingly...
-		    // on ajax requests we don't have the $_GET query filters available so we need to to set filters as shortcode attributes
+		    // on ajax requests we don't have the $_GET query filters available, so we need to set filters as shortcode attributes
 		    if ( defined('TD_WOO') && class_exists( 'td_woo_util' ) ) {
 
 		        if ( td_woo_util::is_ajax() || ( tdb_state_template::get_template_type() === 'woo_shop_base' || !tdb_state_template::get_template_type() ) ) {
 				    if ( $block_type === 'td_woo_products_loop' && !empty( $atts['td_woo_attributes_filters'] ) && is_array( $atts['td_woo_attributes_filters'] ) ) {
+
+					    global $td_woo_attributes_filters_multiple_selection;
+					    $td_woo_attributes_filters_multiple_selection = $atts['td_woo_attributes_filters_ms'] ?? array();
+
+						// set attributes filters
 					    foreach ( $atts['td_woo_attributes_filters'] as $tax => $tax_terms_filters_list ) {
 						    $taxonomy = str_replace( 'tdw_', '', $tax );
 						    if ( strpos( $taxonomy, 'pa_' ) !== false ) {
@@ -785,26 +941,39 @@ class td_data_source {
 							    $td_woo_attributes_filters_ds[$taxonomy] = $terms;
 						    }
 					    }
+
 				    }
 			    }
+
 		    }
 
 		    // used to alter the products query args and pass our own query arguments( product attributes filters ) that can't be passed through attributes..
 		    add_filter( 'woocommerce_shortcode_products_query', function ( $query_args, $attributes, $type ) {
-			    global $td_woo_products_atts_ds, $td_woo_attributes_filters_ds;
 
-			    if ( !empty($td_woo_attributes_filters_ds) ) {
+			    global $td_woo_products_atts_ds, $td_woo_attributes_filters_ds, $td_woo_attributes_filters_multiple_selection;
+
+			    if ( !empty( $td_woo_attributes_filters_ds ) ) {
 				    foreach ( $td_woo_attributes_filters_ds as $taxonomy => $terms ) {
+
+						$operator = isset( $td_woo_attributes_filters_multiple_selection[$taxonomy] ) && $td_woo_attributes_filters_multiple_selection[$taxonomy] ? 'IN' : 'AND';
+
 					    $query_args['tax_query'][] = array(
 						    'taxonomy' => $taxonomy,
 						    'terms'    => $terms,
 						    'field'    => 'slug',
-						    'operator' => 'AND',
+						    'operator' => $operator,
 					    );
+
 				    }
 			    }
 
-			    return ( isset($td_woo_products_atts_ds['single_product_page_filter']) && $td_woo_products_atts_ds['single_product_page_filter'] ) ? array_merge_recursive( $query_args, $td_woo_products_atts_ds ) : array_merge( $query_args, $td_woo_products_atts_ds );
+			    if ( !empty( $query_args['orderby'] ) && 'favourites' === $query_args['orderby'] ) {
+			    	$query_args['orderby'] = 'post__in';
+				    $query_args['post__in'] = td_woo_util::get_favourite_products();
+				    $query_args['ignore_sticky_posts'] = 1;
+			    }
+
+			    return ( isset( $td_woo_products_atts_ds['single_product_page_filter'] ) && $td_woo_products_atts_ds['single_product_page_filter'] ) ? array_merge_recursive( $query_args, $td_woo_products_atts_ds ) : array_merge( $query_args, $td_woo_products_atts_ds );
 
 		    }, 10, 3 );
 
@@ -826,7 +995,7 @@ class td_data_source {
 		    /*
 			 * reset the woo products block atts & woo attributes filters globals
 			 *
-			 * fix for applying the `woocommerce_shortcode_products_query` filter when running trough td woo state
+			 * fix for applying the `woocommerce_shortcode_products_query` filter when running through td woo state
 			 *
 			 */
 		    $td_woo_products_atts_ds = array();
@@ -855,12 +1024,12 @@ class td_data_source {
     static function &get_wp_query_search( $search_string, $limit = 5, $post_type = '' ) {
         $args = array(
             's' => $search_string,
-            //'post_type' => array('post', 'page'),
             'posts_per_page' => $limit,
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+            'td_block_query' => 'search_query'
         );
 
-	    if ( !empty($post_type) ) {
+	    if ( !empty( $post_type ) ) {
 	    	$args['post_type'] = $post_type;
 	    }
 

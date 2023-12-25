@@ -108,15 +108,18 @@ function tdc_on_admin_bar_menu() {
 	    if ( empty($is_mobile_template)) {
 
 	        $title = 'Optional - Create or assign a dedicated Mobile Page';
-            $mobile_template_name = 'No mobile page';
+            $mobile_template_name = '';
+            $style = '';
 	        $mobile_template_id = get_post_meta(get_the_ID(), 'tdc_mobile_template_id', true);
 	        if (!empty($mobile_template_id)) {
                 $title = 'Current Mobile Page';
 	            $mobile_template = get_post($mobile_template_id);
 	            if ($mobile_template instanceof WP_Post && 'publish' === get_post_status($mobile_template_id)) {
 	                $mobile_template_name = $mobile_template->post_title;
+                    $style = 'style="margin-right:10px;"';
                 }
             }
+
 
             if ('Newspaper' === TD_THEME_NAME  && td_global::is_tdb_registered() ) {
 	            $wp_admin_bar->add_menu( array(
@@ -125,29 +128,8 @@ function tdc_on_admin_bar_menu() {
 			            'title' => $title,
 			            'class' => 'pageid-' . $post->ID
 		            ),
-		            'title' => '<span class="td-mob-page-before">Mobile page</span>' . $mobile_template_name . '<span class="td-mobile-title">Mobile</span>',
+		            'title' => '<span class="td-mob-page-before"  ' . $style . '>Mobile page</span>' . $mobile_template_name,
 		            'href'  => '#'
-	            ) );
-
-	            $wp_admin_bar->add_menu( array(
-		            'id'    => 'tdc_create_mobile_page',
-		            'meta'  => array(
-			            'title' => 'Optional - Create blank mobile page',
-			            'class' => 'pageid-' . $post->ID
-		            ),
-		            'title' => '',
-		            //'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
-	            ) );
-
-
-	            $wp_admin_bar->add_menu( array(
-		            'id'    => 'tdb_template_load',
-		            'meta'  => array(
-			            'title' => 'Optional - Load mobile page from TagDiv Cloud Library',
-			            'class' => 'pageid-' . $post->ID . ' tdb-load-mobile-template'
-		            ),
-		            'title' => '',
-		            //'href'  => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url=' . rawurlencode( tdc_util::get_current_url() ) )
 	            ) );
             }
 	    }
@@ -158,7 +140,7 @@ function tdc_on_admin_bar_menu() {
 
 // Set the tdc_state
 $tdcPageSettings = tdc_util::get_get_val( 'tdc-page-settings' );
-if ( 'post' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcPageSettings ) {
+if ( isset($_SERVER["SCRIPT_FILENAME"]) && 'post' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcPageSettings ) {
 	add_action('admin_head', 'on_admin_head_add_page_settings');
 	function on_admin_head_add_page_settings() {
 		?>
@@ -256,7 +238,7 @@ if ( 'post' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcP
 
 // Set the tdc_state
 $tdcMenuSettings = tdc_util::get_get_val( 'tdc-menu-settings' );
-if ( 'nav-menus' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcMenuSettings ) {
+if ( isset($_SERVER["SCRIPT_FILENAME"]) && 'nav-menus' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== $tdcMenuSettings ) {
 	add_action('admin_head', 'on_admin_head_add_menu_settings');
 	function on_admin_head_add_menu_settings() {
 		?>
@@ -331,15 +313,17 @@ if ( 'nav-menus' === basename($_SERVER["SCRIPT_FILENAME"], '.php') && false !== 
  * edit with td composer
  */
 if ( is_user_logged_in() && current_user_can('publish_pages') && 'page' === tdc_util::get_get_val('post_type') ) {
+
 	add_filter( 'page_row_actions', 'tdc_on_page_row_actions', 10, 2 );
 	function tdc_on_page_row_actions( $actions, $post ) {
 	    if ( $post->ID === (int) get_option( 'page_for_posts' ) ) {
 	        $actions['edit_tdc_composer'] = '<a href="#">TD Composer is disabled on Posts Page</a>';
 	    } else {
-	        $actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url='  . rawurlencode(tdc_util::get_current_url()) ) . '">Edit with tagDiv Composer</a>';
+	        $actions['edit_tdc_composer'] = '<a href="' . admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=page&prev_url='  . rawurlencode( tdc_util::get_current_url() ) ) . '">Edit with tagDiv Composer</a>';
         }
 		return $actions;
 	}
+
 }
 
 
@@ -478,9 +462,39 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 
             'themeName' => TD_THEME_NAME,
 		    'themeVersion' => TD_THEME_VERSION,
+
+            'globalSettings' => [],
+
+            'wpRestNonce' => wp_create_nonce('wp_rest'),
+            'wpRestUrl' => rest_url(),
+            'permalinkStructure' => get_option('permalink_structure'),
+
+            'lang' => '',
 		);
 
-		ob_start();
+	    foreach (['tdcSavingHistory'] as $item) {
+            $existing_val = td_util::get_option($item);
+            $tdc_admin_settings['globalSettings'][$item] = empty($existing_val) ? false : $existing_val;
+        }
+
+        //add global post template - we need this in @td_wp_admin to hide sidebar metabox
+        $td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+        if( strpos( $td_default_site_post_template, 'tdb_template_') !== false ) {
+            $tdc_admin_settings['globalPostTemplate'] = $td_default_site_post_template;
+        }
+
+		if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $tdc_admin_settings['lang'] = $sitepress->get_current_language();
+                }
+            }
+        }
+
+        ob_start();
 		?>
 		<script>
 			window.tdcAdminSettings = <?php echo json_encode( $tdc_admin_settings );?>;
@@ -499,20 +513,23 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
 		if ( true === TDC_USE_LESS ) {
 			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/td_less_style.css.php?part=tdc_wp_admin_main', false, TD_COMPOSER );
 		} else {
-			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, TD_COMPOSER);
+			wp_enqueue_style('tdc_wp_admin_main', TDC_URL . '/assets/css/tdc_wp_admin_main.css', false, TD_COMPOSER );
 		}
 
 		// load the js
-	    if (TDC_DEPLOY_MODE == 'deploy') {
-	        if ( !empty( $_GET['action'] ) && 'update-selected-themes' === @$_GET['action']) {
+	    if ( TDC_DEPLOY_MODE == 'deploy' ) {
+
+	        if ( !empty( $_GET['action'] ) && 'update-selected-themes' === @$_GET['action'] ) {
                 return;
             }
-	        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true);
+	        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true );
+
 	    } else {
-	        tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wp_admin, array('jquery', 'underscore'));
+
+	        tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_wp_admin, array( 'jquery', 'underscore' ) );
+
 	    }
 	}
-
 	return;
 }
 
@@ -863,7 +880,8 @@ function tdc_on_admin_head() {
         $global_footer_template_content = base64_encode( get_post_field('post_content', $global_footer_template_id ) );
     }
 
-
+    $lang = '';
+    td_util::check_option_id($lang);
 
 	$tdc_admin_settings = array(
 		'adminUrl' => admin_url(),
@@ -910,13 +928,22 @@ function tdc_on_admin_head() {
         'listStyles' => td_config::get_list_style_params(),
 
         'options' => array(
-            'global_header_template' => td_util::get_option('tdb_header_template' ),
-            'global_footer_template' => td_util::get_option('tdb_footer_template' ),
+            'global_header_template' => td_util::get_option( 'tdb_header_template'. $lang ),
+            'global_footer_template' => td_util::get_option('tdb_footer_template' . $lang ),
 
             'global_header_template_mobile' => td_util::get_option('tdb_header_template_mobile' ),
             'global_footer_template_mobile' => td_util::get_option('tdb_footer_template_mobile' ),
-        )
+        ),
+
+        'globalSettings' => [],
+        'lang' => $lang,
 	);
+
+
+    foreach (['tdcSavingHistory'] as $item) {
+        $existing_val = td_util::get_option($item);
+        $tdc_admin_settings['globalSettings'][$item] = empty($existing_val) ? false : $existing_val;
+    }
 
 
 	echo '<script>window.tdcAdminSettings = ' . json_encode( $tdc_admin_settings ) . '</script>';
@@ -1038,9 +1065,12 @@ function tdc_on_admin_enqueue_scripts() {
 
 	// load the js
     if (TDC_DEPLOY_MODE == 'deploy') {
-        wp_enqueue_script('js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array('jquery', 'underscore'), TD_COMPOSER, true);
+        wp_enqueue_script( 'js_files_for_wp_admin', TDC_URL . '/assets/js/js_files_for_wp_admin.min.js', array(
+            'jquery',
+            'underscore'
+        ), TD_COMPOSER, true );
     } else {
-        tdc_util::enqueue_js_files_array(tdc_config::$js_files_for_wp_admin, array('jquery', 'underscore'));
+        tdc_util::enqueue_js_files_array( tdc_config::$js_files_for_wp_admin, array( 'jquery', 'underscore' ) );
     }
 
 	// Disable the confirmation messages at leaving pages
@@ -1100,6 +1130,10 @@ if (!empty($td_action)) {
 
                 $classes .= ' tdb-template-type-' . $current_post_type;
 
+                if( is_plugin_active( 'wordpress-seo/wp-seo.php' ) || is_plugin_active( 'wordpress-seo-premium/wp-seo-premium.php' ) ) {
+                    $classes .= ' tdc-yoast-active';
+                }
+
 				return $classes;
 			}
 
@@ -1157,7 +1191,8 @@ if (!empty($td_action)) {
 
 			    foreach ( tdc_config::$font_settings as $font_id => $font_settings ) {
 
-					if ( $font_id === 'font_newspaper' && 'Newsmag' === TD_THEME_NAME ) {
+                    // custom_svg_icons doesn't have a css file
+					if ( ( $font_id === 'font_newspaper' && 'Newsmag' === TD_THEME_NAME ) || $font_settings['css_file'] == '') {
 						continue;
 					}
 

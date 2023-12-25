@@ -130,7 +130,7 @@
                             name="s"
                             [value]="td_amp_search_state.s"
                             autocomplete="off"
-                            placeholder="Search…"
+                            placeholder='<?php echo __td('Search', TD_THEME_NAME) ?>…'
                             on="input-debounced:srcfrm.submit"
                             required=""
                             minlength="3"
@@ -141,7 +141,7 @@
 
                 <div id="src_load" hidden="">
                     <div class="">
-                        <h2 style="color: white">Loading…</h2>
+                        <h2 style="color: white"><?php echo __td('Loading', TD_THEME_NAME) ?>…</h2>
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
 
                 <div submit-success>
                     <template type="amp-mustache">
-                        <h5 style="color: white">Here are the results for the search: <span style="font-weight: bold; font-style: italic;">"{{td_search_query}}"</span></h5>
+                        <h5 style="color: white"><?php echo __td('Here are the results for the search:', TD_THEME_NAME) ?> <span style="font-weight: bold; font-style: italic;">"{{td_search_query}}"</span></h5>
                         <div id="td-aj-search">
                             <div class="td-aj-search-results">
 
@@ -194,7 +194,7 @@
                                 {{/td_query_posts}}
                             </div>
                             <div class="result-msg">
-                                <a href="{{td_query_all_results}}" data-amp-replace="?amp" data-amp-addparams="&amp" rel="nofollow">View all results</a>
+                                <a href="{{td_query_all_results}}" data-amp-replace="?amp" data-amp-addparams="&amp" rel="nofollow"><?php echo __td('View all results', TD_THEME_NAME) ?></a>
                             </div>
                         </div>
                     </template>

@@ -35,10 +35,10 @@ function td_css_generator() {
     input[type=submit]:hover,
     .td-read-more a,
     .td-post-category:hover,
-    .td_top_authors .td-active .td-author-post-count,
-    .td_top_authors .td-active .td-author-comments-count,
-    .td_top_authors .td_mod_wrap:hover .td-author-post-count,
-    .td_top_authors .td_mod_wrap:hover .td-author-comments-count,
+    body .td_top_authors .td-active .td-author-post-count,
+    body .td_top_authors .td-active .td-author-comments-count,
+    body .td_top_authors .td_mod_wrap:hover .td-author-post-count,
+    body .td_top_authors .td_mod_wrap:hover .td-author-comments-count,
     .td-404-sub-sub-title a:hover,
     .td-search-form-widget .wpb_button:hover,
     .td-rating-bar-wrap div,
@@ -101,8 +101,8 @@ function td_css_generator() {
     .td_quote_on_blocks,
     .dropcap2,
     .dropcap3,
-    .td_top_authors .td-active .td-authors-name a,
-    .td_top_authors .td_mod_wrap:hover .td-authors-name a,
+    body .td_top_authors .td-active .td-authors-name a,
+    body .td_top_authors .td_mod_wrap:hover .td-authors-name a,
     .td-post-next-prev-content a:hover,
     .author-box-wrap .td-author-social a:hover,
     .td-author-name a:hover,
@@ -160,7 +160,10 @@ function td_css_generator() {
     .td-theme-wrap .sf-menu ul .current-category-ancestor > a,
     .td-theme-wrap .sf-menu ul .current-menu-item > a,
     .td_outlined_btn,
-    .td_block_categories_tags .td-ct-item:hover {
+    body .td_block_categories_tags .td-ct-item:hover,
+    body .td_block_list_menu li.current-menu-item > a,
+    body .td_block_list_menu li.current-menu-ancestor > a,
+    body .td_block_list_menu li.current-category-ancestor > a {
         color: @theme_color;
     }
 

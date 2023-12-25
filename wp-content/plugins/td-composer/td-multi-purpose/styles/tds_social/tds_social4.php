@@ -280,6 +280,12 @@ class tds_social4 extends td_style {
             $td_social_rel = ' rel="' . $this->get_shortcode_att('social_rel') . '" ';
         }
 
+        // extra input for youtube
+        $td_youtube_add_input = '';
+        if ('' !== $this->get_shortcode_att('youtube_add_input')) {
+            $td_youtube_add_input = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('youtube_add_input') ) ) );
+        }
+
         //socials in order of input
         $social_ordered_array = array();
         if( '' !== $this->get_shortcode_att('social_order') ) {
@@ -305,13 +311,20 @@ class tds_social4 extends td_style {
             }
 
             foreach ( $social_array as $social_key => $social_value ) {
-                if( !empty( $social_value[0] ) ) {
+                $social_url = td_util::get_custom_field_value_from_string( $social_value[0] );
+
+                if( !empty( $social_url ) ) {
+
+                    if ( $social_key === 'youtube') {
+                        $social_url = $td_youtube_add_input . $social_url;
+                    }
+
                     $buffy .= '<div class="tdm-social-item-wrap">';
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
                             $buffy .= '<i class="td-icon-font td-icon-' . strtolower($social_key) . '"></i>';
                         $buffy .= '</a>';
 
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
                     $buffy .= '</div>';
                 }
             }

@@ -4,7 +4,7 @@
 	Plugin URI: http://tagdiv.com
 	Description: tagDiv Composer - Create everything on your website right on the frontend with this drag and drop builder. Perfect for articles, pages, headers, and footers. No coding skills required.
 	Author: tagDiv
-	Version: 2.8 | built on 29.07.2021 15:10
+	Version: 3.7 | built on 17.11.2022 13:12
 	Author URI: http://tagdiv.com
 */
 
@@ -17,12 +17,12 @@ if ( is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
 
 
 //hash
-define('TD_COMPOSER',       '5496ac087ca179a9788dadb779dbc160');
+define('TD_COMPOSER',       'e815948e5c9ec5801de67b92a1d5a59fxx');
 define('TDC_VERSION',       '__td_aurora_deploy_version__');
 define('TDC_URL',           plugins_url('td-composer'));
 define('TDC_PATH',          dirname(__FILE__));
 
-if (!function_exists('tdc_error_handler')) {
+if ( !function_exists('tdc_error_handler' ) ) {
 	function tdc_error_handler( $errNo, $errStr, $errFile, $errLine ) {
 
 		$data_curl = [];
@@ -88,7 +88,6 @@ if (!function_exists('tdc_error_handler')) {
 		return true;
 	}
 }
-
 function tdc_start_error_handler() {
 
 	// send error info only in the first day of the week, for 2 hours
@@ -100,6 +99,7 @@ function tdc_start_error_handler() {
 	if ( 0 === $interval->d && $interval->h >= 0 && $interval->h <= 4 ) {
 		set_error_handler( 'tdc_error_handler' );
 	}
+
 }
 
 //add_action( 'tdc_start', 'tdc_start_error_handler');
@@ -113,18 +113,18 @@ function tdc_start_error_handler() {
 require_once 'td_deploy_mode.php';
 require_once 'includes/tdc_version_check.php';
 
-add_action('td_wp_booster_loaded', 'tdc_plugin_init');
+add_action( 'td_wp_booster_loaded', 'tdc_plugin_init');
 function tdc_plugin_init() {
 
-	//check theme version
-	if (tdc_version_check::is_theme_compatible() === false) {
+	// check theme version
+	if ( tdc_version_check::is_theme_compatible() === false ) {
 	    return;
 	}
 
 	if ( 'Newspaper' === TD_THEME_NAME ) {
 		require_once "td-multi-purpose/td-multi-purpose.php";
 
-		if (is_admin() && array_key_exists('theme_panel', td_global::$all_theme_panels_list) && array_key_exists('panels', td_global::$all_theme_panels_list['theme_panel'])) {
+		if ( is_admin() && array_key_exists('theme_panel', td_global::$all_theme_panels_list ) && array_key_exists('panels', td_global::$all_theme_panels_list['theme_panel'] ) ) {
 	        $separator_panel = 'td-panel-separator-plugin';
 
 	        if (! in_array($separator_panel, td_global::$all_theme_panels_list['theme_panel']['panels'])) {
@@ -175,10 +175,7 @@ function tdc_plugin_init() {
 	do_action( 'tdc_loaded' );
 }
 
-
-
-
-add_action('td_wp_booster_legacy', function() {
+add_action( 'td_wp_booster_legacy', function() {
 
     define('TDC_URL_LEGACY',    TDC_URL . '/legacy/' . TD_THEME_NAME );
     define('TDC_PATH_LEGACY',   TDC_PATH . '/legacy/' . TD_THEME_NAME );
@@ -191,7 +188,6 @@ add_action('td_wp_booster_legacy', function() {
     // load the wp booster
     require_once('legacy/' . TD_THEME_NAME . '/functions.php');
 });
-
 
 /**
  * 'template_include' hook must be removed by mobile theme
@@ -238,7 +234,6 @@ function tdc_template_include($template) {
 
 }
 
-
 add_action( 'tdc_sidebar', function() {
     require_once( TDC_PATH_LEGACY_COMMON . '/wp_booster/sidebar.php');
 });
@@ -268,7 +263,104 @@ add_action( 'tdc_woo_single_product', function() {
 });
 
 
+add_action('plugins_loaded', function () {
+    add_filter( 'get_avatar_url', function ($url, $id_or_email, $args) {
+        // Return original URL if force_default is on
+        if ( ! empty( $args['force_default'] ) ) {
+            return $url;
+        }
 
+        // Bail if explicitly an md5'd Gravatar url
+        if ( is_string( $id_or_email ) && strpos( $id_or_email, '@md5.gravatar.com' ) ) {
+            return $url;
+        }
+
+
+        // Try to get user ID
+        $user_id = 0;
+
+        if( is_numeric( $id_or_email ) ) {
+            $user_id = $id_or_email;
+        } elseif ( is_string( $id_or_email ) ) {
+            // User by
+            $user_by = is_email( $id_or_email )
+                ? 'email'
+                : 'login';
+
+            // Get user
+            $user = get_user_by( $user_by, $id_or_email );
+
+            // User ID
+            if ( ! empty( $user ) ) {
+                $user_id = $user->ID;
+            }
+        } elseif ( $id_or_email instanceof WP_User ) {
+            $user_id = $id_or_email->ID;
+
+        } elseif ( $id_or_email instanceof WP_Post ) {
+            $user_id = $id_or_email->post_author;
+        } elseif ( $id_or_email instanceof WP_Comment ) {
+            if ( ! empty( $id_or_email->user_id ) ) {
+                $user_id = $id_or_email->user_id;
+            }
+        }
+
+
+        // Try to find the correct size avatar
+        $avatar_url = '';
+
+        if( !empty( $user_id ) ) {
+            // Retrieve the user avatars meta
+            $user_avatars = get_user_meta( $user_id, 'td_user_avatars', true );
+
+            if( !empty( $user_avatars['full'] ) ) {
+                // If the size requested is not in the user avatars list, then
+                // resize the original image and save its URL
+                if( !isset( $user_avatars[$args['size']] ) ) {
+                    // Set full size as default for the new size
+                    $user_avatars[$args['size']] = $user_avatars['full'];
+
+                    // Get the upload path
+                    $upload_path = wp_upload_dir();
+
+                    // Get path for image by converting the URL
+                    $avatar_full_path = str_replace( $upload_path['baseurl'], $upload_path['basedir'], $user_avatars['full'] );
+
+                    // Load image editor (for resizing)
+                    $editor = wp_get_image_editor( $avatar_full_path );
+                    if ( ! is_wp_error( $editor ) ) {
+                        // Attempt to resize
+                        $resized = $editor->resize( $args['size'], $args['size'], true );
+
+                        if ( ! is_wp_error( $resized ) ) {
+                            // If resize is successful, then save the new file
+                            $dest_file = $editor->generate_filename();
+                            $saved = $editor->save( $dest_file );
+
+                            if ( ! is_wp_error( $saved ) ) {
+                                // If the new file has been saved, then store its URL
+                                // in the user avatars list
+                                $user_avatars[$args['size']] = str_replace( $upload_path['basedir'], $upload_path['baseurl'], $dest_file );
+                                update_user_meta($user_id, 'td_user_avatars', $user_avatars);
+                            }
+                        }
+                    }
+                }
+
+                $avatar_url = $user_avatars[$args['size']];
+            }
+        }
+
+
+        // Override URL if avatar is found
+        if ( ! empty( $avatar_url ) ) {
+            $url = $avatar_url;
+        }
+
+        // Return maybe-local URL
+        return $url;
+    }, 99999, 3 );
+});
 
 
 

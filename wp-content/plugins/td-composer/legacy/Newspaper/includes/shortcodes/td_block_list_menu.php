@@ -12,7 +12,17 @@ class td_block_list_menu extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -33,6 +43,11 @@ class td_block_list_menu extends td_block {
                 .td_block_list_menu .sub-menu li {
                   font-size: 13px;
                 }
+                .td_block_list_menu li.current-menu-item > a,
+				.td_block_list_menu li.current-menu-ancestor > a,
+				.td_block_list_menu li.current-category-ancestor > a {
+				    color: #4db2ec;
+				}
 
                 
                 /* @inline */
@@ -85,7 +100,10 @@ class td_block_list_menu extends td_block {
 					color: @menu_color;
 				}
 				/* @menu_hover_color */
-				.$unique_block_class a:hover {
+				body .$unique_block_class li.current-menu-item > a,
+				body .$unique_block_class li.current-menu-ancestor > a,
+				body .$unique_block_class li.current-category-ancestor > a,
+				body .$unique_block_class a:hover {
 					color: @menu_hover_color;
 				}
 				

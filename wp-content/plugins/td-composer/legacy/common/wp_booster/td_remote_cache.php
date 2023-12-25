@@ -76,7 +76,7 @@ class td_remote_cache {
 	 * extends the expiration date of an item
 	 * @param $group - the caching group
 	 * @param $item_id - the item id, must be unique in the group
-	 * @param $new_expires_value - new expiration value (WARNING: this will overwride the current expiration value of the item
+	 * @param $new_expires_value - new expiration value (WARNING: this will overwrite the current expiration value of the item
 	 * it does not append the value to the existing expiration value)
 	 */
 	static function extend($group, $item_id, $new_expires_value) {
@@ -94,7 +94,7 @@ class td_remote_cache {
 	 * sets an item to the cache. If the item is already present, it will overwrite it
 	 * @param $group - the caching group
 	 * @param $item_id - the item id, must be unique in the group
-	 * @param $item_value - the item (it can be string|array|bool etc)
+	 * @param $item_value - the item (it can be string|array|bool etc.)
 	 * @param $expires - in seconds, after how many seconds the item has expired
 	 */
 	static function set($group, $item_id, $item_value, $expires) {
@@ -104,6 +104,20 @@ class td_remote_cache {
 			'expires' => $expires,
 			'timestamp' => time()
 		);
+		self::schedule_save_cache();
+	}
+
+	/**
+	 * updates an item's value to the cache without affecting the expiration date
+	 * @param $group - the caching group
+	 * @param $item_id - the item id, must be unique in the group
+	 * @param $new_item_value - the new item value (it can be string|array|bool etc.) (WARNING: this will not affect the current expiration value of the item)
+	 */
+	static function update($group, $item_id, $new_item_value) {
+		self::read_cache_meta();
+		if ( isset( self::$cache[$group][$item_id] ) ) {
+			self::$cache[$group][$item_id]['value'] = $new_item_value;
+		}
 		self::schedule_save_cache();
 	}
 

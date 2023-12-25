@@ -9,7 +9,7 @@
 class td_config_helper {
 
 	// fonts atts
-	static function get_map_block_font_array( $param_name, $font_header = false, $font_title = '', $group = '', $index_style = '', $class = '', $info_img = '', $info_descr = '' ) {
+	static function get_map_block_font_array( $param_name, $font_header = false, $font_title = '', $group = '', $index_style = '', $class = '', $info_img = '', $info_descr = '', $toggle_enabled_by = '' ) {
 
 		$params = td_fonts::get_block_font_params();
 
@@ -18,6 +18,7 @@ class td_config_helper {
 				"type" => "font_settings",
 				"value" => '',
 				"class" => $class,
+                "toggle_enabled_by" => $toggle_enabled_by
 			)
 		);
 
@@ -28,7 +29,8 @@ class td_config_helper {
 					"value" => $font_title,
 					"class" => $class,
                     "info_img" => $info_img,
-                    "description" => $info_descr
+                    "description" => $info_descr,
+                    "toggle_enabled_by" => $toggle_enabled_by
 				)
 			);
 		}
@@ -39,6 +41,7 @@ class td_config_helper {
 					"type" => "font_header",
 					"value" => '',
 					"class" => $class,
+                    "toggle_enabled_by" => $toggle_enabled_by
 				)
 			);
 		}
@@ -57,12 +60,16 @@ class td_config_helper {
             if ( ! empty( $class ) ) {
                 $param['class'] .= ' ' . $class;
             }
+
+            if ( ! empty( $toggle_enabled_by ) ) {
+                $param['toggle_enabled_by'] =  $toggle_enabled_by;
+            }
 		}
 		return $params;
 	}
 
 
-	static function get_map_block_shadow_array( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '', $shadow_spread = 0, $shadow_header = true, $class = '', $info_img = '', $info_descr = '' ) {
+	static function get_map_block_shadow_array( $param_name, $shadow_title, $shadow_size, $shadow_offset_h, $shadow_offset_v, $group = '', $index_style = '', $shadow_spread = 0, $shadow_header = true, $class = '', $info_img = '', $info_descr = '', $toggle_enabled_by = '' ) {
 		$params = array(
 		    array(
                 "param_name" => "shadow_size",
@@ -72,6 +79,7 @@ class td_config_helper {
                 'class' => 'tdc-shadow-contr-textfield ' . $class,
                 'description' => 'Change shadow size',
                 'placeholder' => '',
+                "toggle_enabled_by" => $toggle_enabled_by
             ),
             array(
                 "param_name" => "shadow_offset_horizontal",
@@ -81,6 +89,7 @@ class td_config_helper {
                 'class' => 'tdc-shadow-contr-textfield ' . $class,
                 'description' => 'Change shadow horizontal offset',
                 'placeholder' => '',
+                "toggle_enabled_by" => $toggle_enabled_by
             ),
             array(
                 "param_name" => "shadow_offset_vertical",
@@ -90,6 +99,7 @@ class td_config_helper {
                 'class' => 'tdc-shadow-contr-textfield ' . $class,
                 'description' => 'Change shadow vertical offset',
                 'placeholder' => '',
+                "toggle_enabled_by" => $toggle_enabled_by
             ),
             array(
                 "param_name" => "shadow_spread",
@@ -99,6 +109,7 @@ class td_config_helper {
                 'class' => 'tdc-shadow-contr-textfield td-shadow-contr-spread ' . $class,
                 'description' => 'Change shadow spread',
                 'placeholder' => '',
+                "toggle_enabled_by" => $toggle_enabled_by
             ),
             array(
                 "param_name" => "shadow_color",
@@ -108,6 +119,7 @@ class td_config_helper {
                 "heading" => '',
                 "value" => '',
                 "description" => 'Change shadow color',
+                "toggle_enabled_by" => $toggle_enabled_by
             ),
         );
 
@@ -117,7 +129,8 @@ class td_config_helper {
                 "value" => $shadow_title,
                 "class" => $class,
                 "info_img" => $info_img,
-                "description" => $info_descr
+                "description" => $info_descr,
+                "toggle_enabled_by" => $toggle_enabled_by
             )
         );
 
@@ -129,6 +142,7 @@ class td_config_helper {
                     "type" => "shadow_header",
                     "value" => '',
                     "class" => $class,
+                    "toggle_enabled_by" => $toggle_enabled_by
                 )
             );
         }
@@ -156,6 +170,10 @@ class td_config_helper {
 
             if ( ! empty( $class ) ) {
                 $param['class'] .= ' ' . $class;
+            }
+
+            if ( ! empty( $toggle_enabled_by ) ) {
+                $param['toggle_enabled_by'] =  $toggle_enabled_by;
             }
 
         }

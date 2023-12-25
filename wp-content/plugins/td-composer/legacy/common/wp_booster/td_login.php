@@ -108,12 +108,12 @@ class td_login {
             // Now insert the new md5 key into the db
             $wpdb->update($wpdb->users, array('user_activation_key' => $key_hash), array('user_login' => $user_login));
         //}
-        $message = __( 'Someone has requested a password reset for the following account:' ) . "\r\n\r\n";
+        $message = __td( 'Someone has requested a password reset for the following account:', TD_THEME_NAME ) . "\r\n\r\n";
         $message .= network_home_url( '/' ) . "\r\n\r\n";
-        $message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
-        $message .= __( 'If this was a mistake, just ignore this email and nothing will happen.' ) . "\r\n\r\n";
-        $message .= __( 'To reset your password, visit the following address:' ) . "\r\n\r\n";
-        $message .= '<' . network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login') . ">\r\n";
+        $message .= sprintf( __td( 'Username: %s', TD_THEME_NAME ), $user_login ) . "\r\n\r\n";
+        $message .= __td( 'If this was a mistake, just ignore this email and nothing will happen.',TD_THEME_NAME ) . "\r\n\r\n";
+        $message .= __td( 'To reset your password, visit the following address:',TD_THEME_NAME ) . "\r\n\r\n";
+        $message .= network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login') . "\r\n";
 
         if ( is_multisite() )
             $blogname = $GLOBALS['current_site']->site_name;

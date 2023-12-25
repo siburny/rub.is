@@ -137,6 +137,16 @@ class td_ajax {
         // set the atts for this block. We get the atts via ajax
         $block_instance->set_all_atts($ajax_parameters['td_atts']);
 
+        if ( $ajax_parameters['block_type'] === 'td_flex_block_6' ) {
+            $block_instance->shortcode_atts = shortcode_atts(
+                array_merge(
+                    td_global_blocks::get_mapped_atts( __CLASS__ ),
+                    td_api_style::get_style_group_params( 'tds_module_loop_style' )
+                ), $ajax_parameters['td_atts'] );
+
+            //var_dump($block_instance->shortcode_atts);
+        }
+
         // these blocks work with the data type of array
         $block_array_data_type = array('tdb_loop', 'tdb_loop_2');
 
@@ -411,14 +421,14 @@ class td_ajax {
 		$buffy_msg = '';
 
 		// the search string
-		if ( ! empty( $_POST['td_string'] ) ) {
+		if ( !empty( $_POST['td_string'] ) ) {
 			$td_string = stripslashes( $_POST['td_string'] );
 		} else {
 			$td_string = '';
 		}
 
 		// module
-		if ( ! empty($_POST['module'] ) ) {
+		if ( !empty( $_POST['module'] ) ) {
 		    $td_module = esc_html( $_POST['module'] );
 		    $td_results_class_prefix = 'tdb';
         } else {
@@ -431,7 +441,7 @@ class td_ajax {
         }
 
 		// block atts
-        if ( ! empty( $_POST['atts'] ) ) {
+        if ( !empty( $_POST['atts'] ) ) {
             $block_atts = json_decode( stripslashes( $_POST['atts'] ), true );
         } else {
             $block_atts = array();
@@ -439,30 +449,114 @@ class td_ajax {
 
         // limit
         $limit = 4;
-        if ( ! empty( $_POST['limit'] ) ) {
+        if ( !empty( $_POST['limit'] ) ) {
             $limit = $_POST['limit'];
         }
 
-        // query post type
+        // query post type, used for products search
 		$post_type = '';
-		if ( ! empty( $_POST['post_type'] ) ) {
+		if ( !empty( $_POST['post_type'] ) ) {
 			$post_type = $_POST['post_type'];
 		}
 
-		// get the data
+		// set post type from block atts
+		$atts_post_type = $block_atts['post_type'] ?? '';
+		if ( !empty( $atts_post_type ) ) {
+			$post_type = $atts_post_type;
+		} else {
+			// exclude pages/posts from live search
+			$post_types_to_remove = array();
+			$get_post_types = get_post_types( array( 'exclude_from_search' => false ) );
+
+			$exclude_pages = $block_atts['exclude_pages'] ?? '';
+			$exclude_posts = $block_atts['exclude_posts'] ?? '';
+
+			if ( $exclude_pages == 'yes') {
+				$post_types_to_remove[] = 'page';
+			}
+
+			if ( $exclude_posts == 'yes') {
+				$post_types_to_remove[] = 'post';
+			}
+
+			foreach ( $post_types_to_remove as $post_type ) {
+				if ( is_array( $get_post_types ) && in_array( $post_type, $get_post_types ) ) {
+					unset( $get_post_types[$post_type] );
+					$post_type = $get_post_types;
+				}
+			}
+		}
+
+        // get the data
 		$td_query = &td_data_source::get_wp_query_search( $td_string, $limit, $post_type ); // by ref .. do the query
 
 		// build the results
-		if ( ! empty( $td_query->posts ) ) {
+		if ( !empty( $td_query->posts ) ) {
+
+			// sections data init
+			$sections_data = array();
+
+			for ( $i = 1 ; $i <= 3; $i++ ) {
+
+				// section data array init
+				$sections_data[$i] = array();
+
+				// set section title
+				$sections_data[$i]['title'] = $block_atts["results_section_{$i}_title"] ?? '';
+
+				// section terms array init
+				$sections_data[$i]['terms'] = array();
+
+			}
+
+			// process block atts search query matching terms section if enabled
+			$results_section_search_query_terms = $block_atts["results_section_search_query_terms"] ?? '';
+			if ( $results_section_search_query_terms === 'yes' ) {
+
+				// search query terms section init
+				$sections_data['search_query'] = array();
+
+				// set search query terms section title
+				$sections_data['search_query']['title'] = $block_atts["results_section_search_query_terms_title"] ?? '';
+
+				// search query terms section terms array init
+				$sections_data['search_query']['terms'] = array();
+
+				// set search query terms section block atts taxonomies
+				$results_section_search_query_terms_taxonomies = $block_atts["results_section_search_query_terms_taxonomies"] ?? '';
+
+				// if taxes are set ...
+				if ( !empty( $results_section_search_query_terms_taxonomies ) ) {
+
+					// set search query terms taxonomies section slugs array
+					$search_query_terms_section_taxonomies_slugs = explode(',', $results_section_search_query_terms_taxonomies );
+					$search_query_terms_section_taxonomies_slugs = array_map( 'trim', $search_query_terms_section_taxonomies_slugs );
+
+					// get terms by search query and given block atts taxes
+					$search_query_terms = get_terms(
+						array(
+							'taxonomy' => $search_query_terms_section_taxonomies_slugs, // array of taxes slugs
+							'search' => $td_string
+						)
+					);
+
+					if ( !empty( $search_query_terms ) && is_array( $search_query_terms ) ) {
+						$sections_data['search_query']['terms'] = $search_query_terms;
+					}
+
+				}
+
+			}
+
 			foreach ( $td_query->posts as $post ) {
+
 			    if( $td_module == 'td_module_mx2' || $td_module == 'td_module_flex_1' || $td_module == 'td_woo_product_module' ) {
                     if( $td_module == 'td_woo_product_module' ) {
-			            $td_module_search = new $td_module($post, $block_atts);
+			            $td_module_search = new $td_module( $post, $block_atts );
                     } else {
-                        $td_module_search = new $td_module($post);
+                        $td_module_search = new $td_module( $post );
                     }
-
-                    $buffy .= $td_module_search->render($post);
+                    $buffy .= $td_module_search->render( $post );
                 } else {
 			        $tdb_post = array(
                         'post_id' => $post->ID,
@@ -483,20 +577,112 @@ class td_ajax {
                         'post_comments_link' => get_comments_link( $post->ID ),
                         'post_theme_settings' => td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' ),
                     );
-                    $td_module_search = new $td_module($tdb_post, $block_atts);
-                    $buffy .= $td_module_search->render($tdb_post);
+                    $td_module_search = new $td_module( $tdb_post, $block_atts );
+                    $buffy .= $td_module_search->render( $tdb_post );
                 }
+
+				// process cpt taxes sections
+				if ( !empty( $atts_post_type ) ) {
+
+					// block atts taxonomies sections
+					for ( $i = 1 ; $i <= 3; $i++ ) {
+
+						// set block atts > section taxes/level
+						$results_section_taxonomies = $block_atts["results_section_{$i}_taxonomies"] ?? '';
+						$results_section_level = $block_atts["results_section_{$i}_level"] ?? '';
+
+						if ( !empty( $results_section_taxonomies ) ) {
+
+							// set taxonomies slugs array
+							$taxonomies_slugs = explode(',', $results_section_taxonomies );
+
+							// post taxonomies terms init
+							$post_taxonomies_terms = array();
+							foreach ( $taxonomies_slugs as $tax_slug ) {
+
+								// get post tax terms for current tax slug
+								$post_tax_terms = get_the_terms( $post->ID, $tax_slug );
+
+								if ( is_array( $post_tax_terms ) ) {
+
+									// add current tax post terms to post taxonomies terms array
+									$post_taxonomies_terms = array_merge(
+										$post_taxonomies_terms,
+										get_the_terms( $post->ID, $tax_slug )
+									);
+
+								}
+
+							}
+
+							if ( !empty( $post_taxonomies_terms ) ) {
+
+								foreach ( $post_taxonomies_terms as $term ) {
+
+									switch ( $results_section_level ) {
+										case '0': // main(0) level
+
+											if ( $term->parent === 0 ) {
+												$sections_data[$i]['terms'][$term->term_id] = $term;
+											}
+
+											break;
+
+										case '1': // 1st level
+
+											// it's a child term
+											if ( $term->parent !== 0 ) {
+
+												$ancestors = get_ancestors( $term->term_id, $results_section_taxonomies );
+
+												// it's a first level term (it has only one parent)
+												if ( count( $ancestors ) === 1 ) {
+													$sections_data[$i]['terms'][$term->term_id] = $term;
+												}
+
+											}
+
+											break;
+
+										case '2': // 2nd level
+
+											// it's a child term
+											if ( $term->parent !== 0 ) {
+
+												$ancestors = get_ancestors( $term->term_id, $results_section_taxonomies );
+
+												// it's a second level term (has 2 parent terms)
+												if ( count( $ancestors ) === 2 ) {
+													$sections_data[$i]['terms'][$term->term_id] = $term;
+												}
+
+											}
+
+											break;
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
 			}
+
 		}
 
-		if (count($td_query->posts) == 0) {
-			//no results
-			$buffy = '<div class="result-msg no-result">' . __td('No results', TD_THEME_NAME) . '</div>';
+		if ( count( $td_query->posts ) == 0 ) {
+			// no results
+			$buffy = '<div class="result-msg no-result">' . __td('No results', TD_THEME_NAME ) . '</div>';
 		} else {
-			//show the results
+			// show the results
 			/**
 			 * @note:
-			 * we use esc_url(home_url( '/' )) instead of the WordPress @see get_search_link function because that's what the internal
+			 * we use esc_url( home_url( '/' ) ) instead of the WordPress @see get_search_link function because that's what the internal
 			 * WordPress widget it's using and it was creating duplicate links like: yoursite.com/search/search_query and yoursite.com?s=search_query
 			 *
 			 * also note that esc_url - as of today strips spaces (WTF) https://core.trac.wordpress.org/ticket/23605 so we used urlencode - to encode the query param with + instead of %20 as rawurlencode does
@@ -504,44 +690,97 @@ class td_ajax {
 			if ( $td_module === 'td_woo_product_module' ) {
 				// home_url/?s=search_query&post_type=product
 				$search_url = home_url( '/?s=' . urlencode( $td_string ) . '&post_type=product' );
+			} elseif ( !empty( $atts_post_type ) ) {
+				$search_url = home_url( '/?s=' . urlencode( $td_string ) . '&post_type=' . esc_attr( $atts_post_type ) );
 			} else {
 				$search_url = home_url( '/?s=' . urlencode( $td_string ) );
 			}
 
 			$buffy_msg .= '<div class="result-msg"><a href="' . $search_url . '">' . __td('View all results', TD_THEME_NAME ) . '</a></div>';
 
-			//add wrap
+			// add wrap
 			if ( $td_module === 'td_woo_product_module' ) {
 				$buffy = '<div class="tdw-aj-search-results"><div class="tdw-aj-search-inner">' . $buffy . '</div></div>' . $buffy_msg;
-			} elseif( ! empty( $_POST['module'] ) ) {
-                $buffy = '<div class="tdb-aj-search-results"><div class="tdb-aj-search-inner">' . $buffy . '</div></div>' . $buffy_msg;
+			} elseif( !empty( $_POST['module'] ) ) {
+
+				$atts_post_type = $block_atts['post_type'] != '' ? $block_atts['post_type'] : 'post';
+				if ( !empty( $atts_post_type ) ) {
+
+					$post_type_object = get_post_type_object( $atts_post_type );
+					if ( $post_type_object ) {
+						$results_section_1_title_html = '<div class="tdb-aj-srs-title">' . esc_attr( $post_type_object->labels->name ) . '</div>';
+						$buffy = '<div class="tdb-aj-search-results">' . $results_section_1_title_html . '<div class="tdb-aj-search-inner">' . $buffy . '</div></div>';
+
+						// process sections data
+						if ( !empty( $sections_data ) ) {
+
+							foreach ( $sections_data as $section_id => $section_data ) {
+
+								// output
+								$section_html = "";
+
+								// section title
+								$section_title = '<div class="tdb-aj-srs-title">' . esc_attr( $section_data['title'] ) . '</div>';
+
+								// process section terms
+								$section_terms = $section_data['terms'];
+								usort($section_terms, function( $a, $b ) { return strcmp( $a->name, $b->name ); } ); // sort by name
+
+                                if( !empty( $section_terms ) ) {
+                                    $section_html .= '<div class="tdb-aj-sr-taxonomies">';
+                                        foreach ( $section_terms as $term ) {
+                                            $section_html .= '<a class="tdb-aj-sr-taxonomy" href="' . esc_url( get_term_link( $term ) ) . '" target="_blank">' . $term->name . '</a>';
+                                        }
+                                    $section_html .= '</div>';
+                                }
+
+								// output
+								if ( !empty( $section_html ) ) {
+									$buffy .= '<div class="tdb-aj-search-results">';
+                                        $buffy .= $section_title;
+                                        $buffy .= $section_html;
+                                    $buffy .= '</div>';
+								}
+
+							}
+
+						}
+
+						// add results msg
+						$buffy .= $buffy_msg;
+
+					}
+
+				} else {
+					$buffy = '<div class="tdb-aj-search-results"><div class="tdb-aj-search-inner">' . $buffy . '</div></div>' . $buffy_msg;
+				}
+
             } else {
                 $buffy = '<div class="td-aj-search-results">' . $buffy . '</div>' . $buffy_msg;
             }
 		}
 
-		//prepare array for ajax
+		// prepare array for ajax
 		$buffyArray = array(
 			'td_data' => $buffy,
 			'td_total_results' => 2,
 			'td_total_in_list' => count($td_query->posts),
-			'td_search_query'=> $td_string,
+			'td_search_query'=> esc_attr($td_string),
 			//'td_search_query'=> strip_tags ($td_string)
 		);
 
-		// Return the String
-		die(json_encode($buffyArray));
+		die( json_encode( $buffyArray ) );
 	}
 
 	static function on_ajax_login() {
-		/**
-		 * The ajax login is allowed when:
-		 * 1. the mobile theme is active and its login option is also active
-		 * 2. the main theme is active (the mobile theme is not active) and its login option is also active
-		 */
+        /**
+         * The ajax login is allowed when:
+         * 1. the mobile theme is active and its login option is also active
+         * 2. the main theme is active (the mobile theme is not active) and its login option is also active
+         */
 
-		// The 'mobile' post param is set only by the login requests from the mobile theme
-		// The login requests from theme version (or responsive version) do not set it
+        // The 'mobile' post param is set only by the login requests from the mobile theme
+        // The login requests from theme version (or responsive version) do not set it
 //		if (empty($_POST['mobile'])) {
 //			if (td_util::get_option('tds_login_sign_in_widget') != 'show') {
 //				//exit();
@@ -552,35 +791,110 @@ class td_ajax {
 //			}
 //		}
 
-		//json login fail
-		$json_login_fail = json_encode(array('login', 0, __td('User or password incorrect!', TD_THEME_NAME)));
+        //json login fail
+        $json_login_fail = json_encode(array('login', 0, __td('User or password incorrect!', TD_THEME_NAME)));
+        $json_captcha_fail = json_encode(array('login', 0, __td('CAPTCHA verification failed!', TD_THEME_NAME)));
+        $json_captcha_score_fail = json_encode(array('login', 0, __td('CAPTCHA user score failed. Please contact us!', TD_THEME_NAME)));
 
-		//get the email address from ajax() call
-		$login_email = '';
-		if (!empty($_POST['email'])) {
-			$login_email = $_POST['email'];
-		}
+        //get the email address from ajax() call
+        $login_email = '';
+        if (!empty($_POST['email'])) {
+            $login_email = $_POST['email'];
+        }
 
-		//get password from ajax() call
-		$login_password = '';
-		if (!empty($_POST['pass'])) {
-			$login_password = $_POST['pass'];
-		}
+        //get password from ajax() call
+        $login_password = '';
+        if (!empty($_POST['pass'])) {
+            $login_password = $_POST['pass'];
+        }
 
-		//try to login
-		if (!empty($login_email) and !empty($login_password)) {
-			$obj_wp_login = td_login::login_user($login_email, $login_password);
+        //get recaptcha
+        $login_captcha = '';
+        if (!empty($_POST['captcha'])) {
+            $login_captcha = $_POST['captcha'];
+        }
+        //recaptcha option from panel
+        $show_captcha = td_util::get_option('tds_captcha');
 
-			if (is_wp_error($obj_wp_login)) {
-				die($json_login_fail);
-			} else {
-				die(json_encode(array('login', 1,'OK')));
-			}
+        // recaptcha is active
+        if ($show_captcha == 'show' && $login_captcha != '') {
 
-		} else {
-			die($json_login_fail);
-		}
-	}
+            //get google secret key from panel
+            $captcha_secret_key = td_util::get_option('tds_captcha_secret_key');
+            //alter captcha result=>score
+            $captcha_score = td_util::get_option('tds_captcha_score');
+            if ($captcha_score == ''){
+                $captcha_score = 0.5;
+            }
+
+            // for cloudflare
+            if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+                $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+            }
+            //google recaptcha verify
+            $post_data = http_build_query(
+                array(
+                    'secret' => $captcha_secret_key,
+                    'response' => $login_captcha,
+                    'remoteip' => $_SERVER['REMOTE_ADDR']
+                )
+            );
+            $opts = array('http' =>
+                array(
+                    'method' => 'POST',
+                    'header' => 'Content-type: application/x-www-form-urlencoded',
+                    'content' => $post_data
+                )
+            );
+            $context = stream_context_create($opts);
+            $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+            $result = json_decode($response);
+//        var_dump($result);
+
+            //die with error
+            if ($result->success === false) {
+                die($json_captcha_fail);
+            }
+
+            //check captcha score result - default is 0.5
+            if ($result->success === true && $result->score <= $captcha_score) {
+                die($json_captcha_score_fail);
+            }
+
+            //try to login if we get recaptcha result
+            if ( $result->success ) {
+                if (!empty($login_email) && !empty($login_password) ) {
+
+                    $obj_wp_login = td_login::login_user($login_email, $login_password);
+
+                    if (is_wp_error($obj_wp_login)) {
+                        die($json_login_fail);
+                    } else {
+                        die(json_encode(array('login', 1, 'OK')));
+                    }
+                }
+            } else {
+                die($json_captcha_fail);
+            }
+
+        } else { // recaptcha is disabled
+
+                if (!empty($login_email) and !empty($login_password)) {
+                    $obj_wp_login = td_login::login_user($login_email, $login_password);
+
+                    if (is_wp_error($obj_wp_login)) {
+                        die($json_login_fail);
+                    } else {
+                        die(json_encode(array('login', 1, 'OK')));
+                    }
+
+                } else {
+                    die($json_login_fail);
+                }
+            }
+
+
+    }
 
 	static function on_ajax_register() {
 
@@ -590,6 +904,8 @@ class td_ajax {
 			// json predefined return text
 			$json_fail = json_encode(array('register', 0, __td('Email or username incorrect!', TD_THEME_NAME)));
 			$json_user_pass_exists = json_encode(array('register', 0, __td('User or email already exists!', TD_THEME_NAME)));
+            $json_captcha_fail = json_encode(array('register', 0, __td('CAPTCHA verification failed!', TD_THEME_NAME)));
+            $json_captcha_score_fail = json_encode(array('register', 0, __td('CAPTCHA user score failed. Please contact us!', TD_THEME_NAME)));
 
 			// get the email address from ajax() call
 			$register_email = '';
@@ -603,53 +919,336 @@ class td_ajax {
 				$register_user = $_POST['user'];
 			}
 
-			// try to login
-			if (!empty($register_email) and !empty($register_user)) {
+            //get recaptcha
+            $register_captcha = '';
+            if (!empty($_POST['captcha'])) {
+                $register_captcha = $_POST['captcha'];
+            }
 
-				//check user existence before adding it
-				$user_id = username_exists($register_user);
+            //recaptcha option from panel
+            $show_captcha = td_util::get_option('tds_captcha');
 
-				if (!$user_id and email_exists($register_email) == false ) {
+            // recaptcha is active
+            if ($show_captcha == 'show' && $register_captcha != '') {
 
-					//generate random pass
-					$random_password = wp_generate_password($length=12, $include_standard_special_chars=false);
+                //get google secret key from panel
+                $captcha_secret_key = td_util::get_option('tds_captcha_secret_key');
+                //alter captcha result=>score
+                $captcha_score = td_util::get_option('tds_captcha_score');
+                if ($captcha_score == ''){
+                    $captcha_score = 0.5;
+                }
 
-					//create user
-					$user_id = wp_create_user($register_user, $random_password, $register_email);
+                // for cloudflare
+                if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+                    $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+                }
+                //google recaptcha verify
+                $post_data = http_build_query(
+                    array(
+                        'secret' => $captcha_secret_key,
+                        'response' => $register_captcha,
+                        'remoteip' => $_SERVER['REMOTE_ADDR']
+                    )
+                );
+                $opts = array('http' =>
+                    array(
+                        'method' => 'POST',
+                        'header' => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => $post_data
+                    )
+                );
+                $context = stream_context_create($opts);
+                $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+                $result = json_decode($response);
+//        var_dump($result);
 
-					if (intval($user_id) > 0) {
-						//send email to $register_email
-						wp_new_user_notification($user_id, null, 'both');
-						die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder), the password was sent there.', TD_THEME_NAME))));
-					} else {
-						die($json_user_pass_exists);
-					}
-				} else {
-					die($json_user_pass_exists);
-				}
-			} else {
-				die($json_fail);
-			}
+                //die with error
+                if ($result->success === false) {
+                    die($json_captcha_fail);
+                }
+
+                //check captcha score result - default is 0.5
+                if ($result->success === true && $result->score <= $captcha_score) {
+                    die($json_captcha_score_fail);
+                }
+
+                //try to login if we get captcha success result
+                if ( $result->success ) {
+                    // try to login
+                    if (!empty($register_email) and !empty($register_user)) {
+
+                        //check user existence before adding it
+                        $user_id = username_exists($register_user);
+
+                        if (!$user_id and email_exists($register_email) == false ) {
+
+                            //generate random pass
+                            $random_password = wp_generate_password($length=12, $include_standard_special_chars=false);
+
+                            //create user
+                            $user_id = wp_create_user($register_user, $random_password, $register_email);
+
+                            if (intval($user_id) > 0) {
+                                //send email to $register_email
+                                wp_new_user_notification($user_id, null, 'both');
+                                die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder), the password was sent there.', TD_THEME_NAME))));
+
+                            } else {
+                                die($json_user_pass_exists);
+                            }
+                        } else {
+                            die($json_user_pass_exists);
+                        }
+                    } else {
+                        die($json_fail);
+                    }
+                } else {
+                    die($json_captcha_fail);
+                }
+
+            } else {
+                // try to login
+                if (!empty($register_email) and !empty($register_user)) {
+
+                    //check user existence before adding it
+                    $user_id = username_exists($register_user);
+
+                    if (!$user_id and email_exists($register_email) == false ) {
+
+                        //generate random pass
+                        $random_password = wp_generate_password($length=12, $include_standard_special_chars=false);
+
+                        //create user
+                        $user_id = wp_create_user($register_user, $random_password, $register_email);
+
+                        if (intval($user_id) > 0) {
+                            //send email to $register_email
+                            wp_new_user_notification($user_id, null, 'both');
+                            die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder), the password was sent there.', TD_THEME_NAME))));
+
+                        } else {
+                            die($json_user_pass_exists);
+                        }
+                    } else {
+                        die($json_user_pass_exists);
+                    }
+                } else {
+                    die($json_fail);
+                }
+            }
+
 		}//end if admin permits registration
 	}
 
-	static function on_ajax_remember_pass() {
+	static function on_ajax_subscription_register() {
 
-		//json predefined return text
-		$json_fail = json_encode(array('remember_pass', 0, __td('Email address not found!', TD_THEME_NAME)));
+		//if registration is open from wp-admin/Settings,  then try to create a new user
+		if (get_option('users_can_register') == 1){
 
-		//get the email address from ajax() call
-		$remember_email = '';
-		if (!empty($_POST['email'])) {
-			$remember_email = $_POST['email'];
-		}
+            $json_captcha_fail = json_encode(array('register', 0, __td('CAPTCHA verification failed!', TD_THEME_NAME)));
+            $json_captcha_score_fail = json_encode(array('register', 0, __td('CAPTCHA user score failed. Please contact us!', TD_THEME_NAME)));
 
-		if (td_login::recover_password($remember_email)) {
-			die(json_encode(array('remember_pass', 1, __td('Your password is reset, check your email.', TD_THEME_NAME))));
-		} else {
-			die($json_fail);
-		}
+			// get the email address from ajax() call
+			$register_email = '';
+			if (!empty($_POST['email'])) {
+				$register_email = $_POST['email'];
+			}
+			if (empty($register_email)) {
+				die(json_encode(array('register', 0, __td('Email empty!', TD_THEME_NAME))));
+			}
+
+			// get user from ajax() call
+			$register_user = '';
+			if (!empty($_POST['user'])) {
+				$register_user = $_POST['user'];
+			}
+			if (empty($register_user)) {
+				die(json_encode(array('register', 0, __td('Username empty!', TD_THEME_NAME))));
+			}
+
+			$register_pass = '';
+			if (!empty($_POST['pass'])) {
+				$register_pass = $_POST['pass'];
+			}
+			if (empty($register_pass)) {
+				die(json_encode(array('register', 0, __td('Pass empty!', TD_THEME_NAME))));
+			}
+
+			preg_match('/^(?=.{6,})(?=.*[a-z])(?=.*[A-Z])/', $register_pass, $output_array);
+			if (!count($output_array)) {
+				die(json_encode(array('register', 0, __td('Pass pattern incorrect!', TD_THEME_NAME))));
+			}
+
+			$register_retype_pass = '';
+			if (!empty($_POST['retype_pass'])) {
+				$register_retype_pass = $_POST['retype_pass'];
+			}
+			if (empty($register_retype_pass)) {
+				die(json_encode(array('register', 0, __td('Retyped pass empty!', TD_THEME_NAME))));
+			}
+
+			if ( $register_pass !== $register_retype_pass) {
+				die(json_encode(array('register', 0, __td('Retyped pass exactly!', TD_THEME_NAME))));
+			}
+
+
+			//check user existence before adding it
+			$user_id = username_exists($register_user);
+			if ( $user_id ) {
+				die(json_encode(array('register', 0, __td('User already exists!', TD_THEME_NAME))));
+			}
+
+			if (email_exists($register_email)) {
+				die(json_encode(array('register', 0, __td('Email already exists!', TD_THEME_NAME))));
+			}
+            //get recaptcha
+            $register_captcha = '';
+            if (!empty($_POST['captcha'])) {
+                $register_captcha = $_POST['captcha'];
+            }
+
+            //recaptcha option from panel
+            $show_captcha = td_util::get_option('tds_captcha');
+
+            // recaptcha is active
+            if ($show_captcha == 'show' && $register_captcha != '') {
+
+                //get google secret key from panel
+                $captcha_secret_key = td_util::get_option('tds_captcha_secret_key');
+                //alter captcha result=>score
+                $captcha_score = td_util::get_option('tds_captcha_score');
+                if ($captcha_score == ''){
+                    $captcha_score = 0.5;
+                }
+
+                // for cloudflare
+                if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+                    $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+                }
+                //google recaptcha verify
+                $post_data = http_build_query(
+                    array(
+                        'secret' => $captcha_secret_key,
+                        'response' => $register_captcha,
+                        'remoteip' => $_SERVER['REMOTE_ADDR']
+                    )
+                );
+                $opts = array('http' =>
+                    array(
+                        'method' => 'POST',
+                        'header' => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => $post_data
+                    )
+                );
+                $context = stream_context_create($opts);
+                $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+                $result = json_decode($response);
+
+                //die with error
+                if ($result->success === false) {
+                    die($json_captcha_fail);
+                }
+
+                //check captcha score result - default is 0.5
+                if ($result->success === true && $result->score <= $captcha_score) {
+                    die($json_captcha_score_fail);
+                }
+
+                //try to login if we get captcha success result
+                if ( $result->success ) {
+
+                    $user_id = wp_create_user($register_user, $register_pass, $register_email);
+                    if (is_wp_error($user_id)) {
+                        die(json_encode(array('register', 0,__td('Your account could not be created.', TD_THEME_NAME))));
+                    }
+
+                    add_user_meta($user_id, 'tds_validate', [
+                        'key' => td_global::td_generate_unique_id(),
+                        'creation_time' => strtotime('now'),
+                        'validation_time' => ''
+                    ]);
+
+                    //send email to $register_email
+                    td_util::td_new_subscriber_user_notifications($user_id, 'both');
+
+                    wp_signon( array(
+                        'user_login'    => $register_user,
+                        'user_password' => $register_pass,
+                        'remember'      => true
+                    ), false );
+
+                    die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder) to validate your account.', TD_THEME_NAME))));
+                } else {
+                    die($json_captcha_fail);
+                }
+
+            } else {
+                $user_id = wp_create_user($register_user, $register_pass, $register_email);
+                if (is_wp_error($user_id)) {
+                    die(json_encode(array('register', 0,__td('Your account could not be created.', TD_THEME_NAME))));
+                }
+
+                add_user_meta($user_id, 'tds_validate', [
+                    'key' => td_global::td_generate_unique_id(),
+                    'creation_time' => strtotime('now'),
+                    'validation_time' => ''
+                ]);
+
+                //send email to $register_email
+                td_util::td_new_subscriber_user_notifications($user_id, 'both');
+
+                wp_signon( array(
+                    'user_login'    => $register_user,
+                    'user_password' => $register_pass,
+                    'remember'      => true
+                ), false );
+
+                die(json_encode(array('register', 1,__td('Please check your email (inbox or spam folder) to validate your account.', TD_THEME_NAME))));
+            }
+
+		}//end if admin permits registration
 	}
+
+	static function on_ajax_resend_subscription_activation_link() {
+		// get user from ajax() call
+		$register_user = '';
+		if (!empty($_POST['user'])) {
+			$register_user = $_POST['user'];
+		}
+		if (empty($register_user)) {
+			die(json_encode(array('resend_activation_link', 0, __td('User empty!', TD_THEME_NAME))));
+		}
+
+		//check user existence before adding it
+		$user = get_user_by( 'id', $register_user );
+		if ( ! $user ) {
+			die(json_encode(array('resend_activation_link', 0, __td('User does not exists!', TD_THEME_NAME))));
+		}
+
+		//send email to $register_email
+		td_util::td_new_subscriber_user_notifications($register_user, 'user');
+
+		die(json_encode(array('resend_activation_link', 1,__td('New activation link was generated. Please check your email (inbox or spam folder) to validate your account.', TD_THEME_NAME))));
+	}
+
+    static function on_ajax_remember_pass() {
+
+        //json predefined return text
+        $json_fail = json_encode(array('remember_pass', 0, __td('Email address not found!', TD_THEME_NAME)));
+
+        //get the email address from ajax() call
+        $remember_email = '';
+        if (!empty($_POST['email'])) {
+            $remember_email = $_POST['email'];
+        }
+
+        if (td_login::recover_password($remember_email)) {
+            die(json_encode(array('remember_pass', 1, __td('Your password is reset, check your email.', TD_THEME_NAME))));
+        } else {
+            die($json_fail);
+        }
+    }
 
 	static function on_ajax_new_sidebar() {
 
@@ -864,17 +1463,22 @@ class td_ajax {
      * 'theme_activated' - bool
      */
     static function on_ajax_check_envato_code() {
-        if (empty($_POST['envato_code'])) {
+
+        if ( empty( $_POST['envato_code'] ) || empty( $_POST['create_support_account'] ) ) {
             return;
         }
 
+        // create support account
+        $create_support_account = $_POST['create_support_account'] === 'yes';
+
         //forum check url
-        $forum_check_url = 'http://forum.tagdiv.com/wp-json/tagdiv/check_user/';
+        $forum_check_url = 'https://forum.tagdiv.com/wp-json/tagdiv/check_user/';
 
         //td_cake url
-        $td_cake_url = 'http://td_cake.themesafe.com/td_cake/auto.php';
+        $td_cake_url = 'https://td_cake.themesafe.com/td_cake/auto.php';
 
-        $envato_code = preg_replace('/\s+/', '', $_POST['envato_code']);
+        // envato code
+        $envato_code = preg_replace('/\s+/', '', $_POST['envato_code'] );
 
         //return buffer
         $buffy = array(
@@ -888,7 +1492,6 @@ class td_ajax {
             'theme_activated'         => false
         );
 
-
         //td_cake - check envato code
         $td_cake_response = wp_remote_post($td_cake_url, array (
             'method' => 'POST',
@@ -900,70 +1503,71 @@ class td_ajax {
             'timeout' => 12
         ));
 
-        if (is_wp_error($td_cake_response)) {
+        if ( is_wp_error( $td_cake_response ) ) {
             //error http
             $buffy['envato_check_failed'] = true;
 
         } else {
-            if (isset($td_cake_response['response']['code']) and $td_cake_response['response']['code'] != '200') {
+
+            if ( isset( $td_cake_response['response']['code'] ) and $td_cake_response['response']['code'] != '200' ) {
                 //response code != 200
                 $buffy['envato_check_failed'] = true;
                 $buffy['envato_check_status'] = $td_cake_response['response']['code'];
-            } elseif (!empty($td_cake_response['body'])) {
+
+            } elseif ( !empty( $td_cake_response['body'] ) ) {
                 //we have a response
-                $api_response = @unserialize($td_cake_response['body']);
+                $api_response = @unserialize( $td_cake_response['body'] );
 
-                if (!empty($api_response['envato_is_valid']) and !empty($api_response['envato_is_valid_msg'])) {
+                if ( !empty( $api_response['envato_is_valid'] ) and !empty( $api_response['envato_is_valid_msg'] ) ) {
 
-                    if ($api_response['envato_is_valid'] == 'valid' or $api_response['envato_is_valid'] == 'td_fake_valid') {
+                    if ( $api_response['envato_is_valid'] == 'valid' or $api_response['envato_is_valid'] == 'td_fake_valid' ) {
+
                         //code is valid
                         $buffy['envato_code_status'] = 'valid';
-                        td_util::update_option( 'theme_update_to_version_complete', '1' );
 
-                        //check forum
-                        $td_forum_response = wp_remote_post($forum_check_url, array (
-                            'method' => 'POST',
-                            'body' => array(
-                                'envato_key' => $envato_code,
-                            ),
-                            'timeout' => 12
-                        ));
+                        // create support account check
+                        if ( $create_support_account ) {
+	                        //check forum
+	                        $td_forum_response = wp_remote_post( $forum_check_url, array (
+		                        'method' => 'POST',
+		                        'body' => array(
+			                        'envato_key' => $envato_code,
+		                        ),
+		                        'timeout' => 12
+	                        ) );
 
-                        if (is_wp_error($td_forum_response) ||                                                                   //wp error
-                            (isset($td_forum_response['response']['code']) and $td_forum_response['response']['code'] != '200')) //response code != 200
-                        {
-                            //connection failed
-                            $buffy['forum_check_failed'] = true;
+	                        if ( is_wp_error( $td_forum_response ) ||                                                                     // wp error
+	                             ( isset( $td_forum_response['response']['code'] ) and $td_forum_response['response']['code'] != '200' ) ) // response code != 200
+	                        {
+		                        //connection failed
+		                        $buffy['forum_check_failed'] = true;
 
-                        } else {
-                            if (isset($td_forum_response['query_failed']) && $td_forum_response['query_failed'] === true) {
-                                //query failed
-                                $buffy['forum_check_failed'] = true;
+	                        } else {
+		                        if ( isset( $td_forum_response['query_failed'] ) && $td_forum_response['query_failed'] === true ) {
+			                        //query failed
+			                        $buffy['forum_check_failed'] = true;
 
-                            } else {
-                                if (empty($td_forum_response['body'])) {
-                                    //reply body is empty
-                                    $buffy['forum_check_failed'] = true;
+		                        } else {
+			                        if ( empty( $td_forum_response['body'] ) ) {
+				                        //reply body is empty
+				                        $buffy['forum_check_failed'] = true;
 
-                                } else {
+			                        } else {
+				                        $forum_api_response = @json_decode( $td_forum_response['body'], true );
+				                        if ( isset( $forum_api_response['user_exists'] ) && $forum_api_response['user_exists'] === true ) {
+					                        //envato code already used
+					                        td_util::ajax_handle( $envato_code );
+					                        $buffy['used_on_forum'] = true;
+					                        $buffy['theme_activated'] = true;
 
-                                    $forum_api_response = @json_decode($td_forum_response['body'], true);
-
-                                    if (isset($forum_api_response['user_exists']) && $forum_api_response['user_exists'] === true) {
-                                        //envato code already used
-                                        td_util::ajax_handle($envato_code);
-                                        $buffy['used_on_forum'] = true;
-                                        $buffy['theme_activated'] = true;
-
-                                    } else {
-                                        //envato code not used
-                                        //load registration panel
-                                    }
-                                }
-                            }
+				                        } else {
+					                        //envato code not used
+					                        //load registration panel
+				                        }
+			                        }
+		                        }
+	                        }
                         }
-
-
 
                     } else {
                         //code is invalid (do nothing because default is invalid)
@@ -982,10 +1586,12 @@ class td_ajax {
 
         }
 
-        if ($buffy['forum_check_failed'] === true) {
-            //forum check failed
+        if ( $buffy['forum_check_failed'] === true || ( !$create_support_account && $buffy['envato_code_status'] === 'valid' ) ) {
+
+            // forum check has failed or has been skipped
             td_util::ajax_handle($envato_code);
             $buffy['theme_activated'] = true;
+
         }
 
 
@@ -1148,33 +1754,33 @@ class td_ajax {
      * manual activation
      * @return json encoded array
      */
-    static function on_ajax_manual_activation() {
-        //required data
-        if (empty($_POST['td_server_id']) ||
-            empty($_POST['envato_code']) ||
-            empty($_POST['td_key']))
-        {
-            return;
-        }
+	static function on_ajax_manual_activation() {
+	    //required data
+	    if (empty($_POST['td_server_id']) ||
+	        empty($_POST['envato_code']) ||
+	        empty($_POST['td_key']))
+	    {
+	        return;
+	    }
 
-        $id = trim($_POST['td_server_id']);
-        $ec = preg_replace('/\s+/', '', $_POST['envato_code']);
-        $ad = trim($_POST['td_key']);
+	    $id = trim($_POST['td_server_id']);
+	    $ec = preg_replace('/\s+/', '', $_POST['envato_code']);
+	    $ad = trim($_POST['td_key']);
 
-        //return buffer
-        $buffy = array(
-            'envato_code' => $ec,
-            'theme_activated' => false
-        );
+	    //return buffer
+	    $buffy = array(
+	        'envato_code' => $ec,
+	        'theme_activated' => false
+	    );
 
-        if (self::self_check($id, $ec, $ad) === true) {
-            td_util::ajax_handle($ec);
-            $buffy['theme_activated'] = true;
-            td_util::update_option( 'theme_update_to_version_complete', '1' );
-        }
+	    if (self::self_check($id, $ec, $ad) === true) {
+	        td_util::ajax_handle($ec);
+	        $buffy['theme_activated'] = true;
+	        td_util::update_option( 'theme_update_to_version_complete', '1' );
+	    }
 
-        die(json_encode($buffy));
-    }
+	    die(json_encode($buffy));
+	}
 
     /**
      * AJAX call
@@ -1325,6 +1931,8 @@ class td_ajax {
 
 	    	$version = str_replace( [ TD_THEME_NAME, '-', ' '], '', $version);
 
+	    	td_options::save_panel_history( $version );
+
 		    tagdiv_util::update_option( 'theme_update_to_version', json_encode( array( $version => $url ) ) );
 
 		    add_filter( 'pre_set_site_transient_update_themes', function( $transient ) {
@@ -1363,6 +1971,7 @@ class td_ajax {
     	$reply = array();
 
 	    $response = tagdiv_check_theme_version();
+	    tagdiv_check_plugin_subscription_version();
 
 	    if ( false !== $response ) {
 	    	$reply['versions'] = $response;
@@ -1373,7 +1982,7 @@ class td_ajax {
 
     static function on_ajax_backup_panel() {
 
-    	$status = $_POST['status'];    	
+    	$status = $_POST['status'];
 
 	    $reply = array();
 
@@ -1401,10 +2010,11 @@ class td_ajax {
         $buffy_array = array();
 
         $video_url = $_POST['td_video_url'];
+        $video_autoplay = $_POST['td_video_autoplay'];
 
         if( $video_url != '' ) {
             $buffy_array['video_service'] = td_video_support::detect_video_service($video_url);
-            $buffy_array['video_embed'] = td_video_support::render_video($video_url, 'yes', 'yes', '', true);
+            $buffy_array['video_embed'] = td_video_support::render_video($video_url, 'yes', $video_autoplay, '', true);
         }
 
         die( json_encode( $buffy_array ) );
@@ -1442,6 +2052,120 @@ class td_ajax {
         } else {
             setcookie('td_dark_mode', '', time() - 3600, '/' );
         }
+    }
+
+    static function on_ajax_video_cache_videos() {
+
+        $buffy_array = array();
+
+        $video_service = $_POST['td_video_service'];
+        $video_source = $_POST['td_video_source'];
+        $video_source_name = $_POST['td_video_source_name'];
+
+        $td_videos_pool = get_option('td_playlist_videos_pool');
+
+        $videos_ids_data_from_db = array();
+        $videos_ids = array();
+
+        switch ($video_source) {
+            case 'video_ids':
+                $videos_ids_data_from_db = get_option('td_playlist_video_video_ids');
+                $videos_ids = $videos_ids_data_from_db[$video_service]['items'];
+
+                break;
+
+            case 'channel_id':
+            case 'username':
+            case 'playlist_id':
+                if( $video_source == 'channel_id' ) {
+                    $videos_ids_data_from_db = get_option('td_playlist_video_channel_id');
+                } else if( $video_source == 'username' ) {
+                    $videos_ids_data_from_db = get_option('td_playlist_video_username');
+                } else if( $video_source == 'playlist_id' ) {
+                    $videos_ids_data_from_db = get_option('td_playlist_video_playlist_id');
+                }
+
+                foreach ($videos_ids_data_from_db[$video_service][$video_source_name]['items'] as $video_data) {
+                    $videos_ids[] = $video_data['id'];
+                }
+
+                break;
+        }
+
+        if( !empty( $videos_ids ) ) {
+            foreach ( $videos_ids as $video_id ) {
+                if ( isset($td_videos_pool[$video_service][$video_id]) ) {
+                    $buffy_array[] = $td_videos_pool[$video_service][$video_id];
+                }
+            }
+        }
+
+        die( json_encode( $buffy_array ) );
+
+    }
+
+    static function on_ajax_comment_submit_captcha() {
+
+        $data = array(
+			'error' => '',
+			'success' => ''
+        );
+
+        if ( !empty( $_POST['token'] ) ) {
+            $captcha = $_POST['token'];
+        }
+
+        // recaptcha option from panel
+        $show_captcha = td_util::get_option('tds_captcha' );
+        // recaptcha is active
+        if ( $show_captcha == 'show' && $captcha != '' ) {
+
+            // get google secret key from panel
+            $captcha_secret_key = td_util::get_option('tds_captcha_secret_key' );
+
+            // alter captcha result=>score
+            $captcha_score = td_util::get_option('tds_captcha_score' );
+            if ( $captcha_score == '' ) {
+                $captcha_score = 0.5;
+            }
+
+            // for cloudflare
+            if ( isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
+                $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+            }
+            $captcha_postdata = http_build_query( array(
+	                'secret' => $captcha_secret_key,
+	                'response' => $captcha,
+	                'remoteip' => $_SERVER['REMOTE_ADDR']
+	            )
+            );
+            $captcha_opts = array(
+				'http' => array(
+	                'method' => 'POST',
+	                'header' => 'Content-type: application/x-www-form-urlencoded',
+	                'content' => $captcha_postdata
+				)
+            );
+            $captcha_context = stream_context_create( $captcha_opts );
+            $captcha_response = json_decode( file_get_contents("https://www.google.com/recaptcha/api/siteverify", false, $captcha_context ), true );
+			//var_dump( $captcha_response );
+
+            // check also captcha score result - default is 0.5
+            if ( $captcha_response['success'] && $captcha_response['score'] > $captcha_score ) {
+                $data['success'] = $captcha_response['success'];
+
+            } elseif ( $captcha_response['success'] && $captcha_response['score'] <= $captcha_score ) {
+                $data['success'] = false;
+                $data['error'] = 'score failed';
+            }
+            else {
+                $data['success'] = false;
+            }
+
+            die( json_encode( $data ) );
+
+        }
+
     }
 
 }

@@ -228,7 +228,7 @@ if(!empty($_REQUEST['action_export_demo']) && $_REQUEST['action_export_demo'] ==
                                                     tdConfirm.modal({
                                                             caption: 'Your panel backup will stop!',
                                                             htmlInfoContent: function() {
-                                                                return 'You can reactivate it anytime.<br><div>' +
+                                                                return 'You can reactivate it anytime.<br><div class="td-backup-wrap">' +
                                                                     '<input type="checkbox" name="tdc-delete-backups" style="background-color: #FFF; width: auto">' +
                                                                     '<label for="tdc-delete-backups">Do you want to delete existing backups?</label>' +
                                                                     '</div>'

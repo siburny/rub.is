@@ -269,7 +269,7 @@ $external_shortcodes = array(
 					"type" => "textfield",
 					"value" => "",
 					"heading" => __("TikTok username", TD_THEME_NAME),
-					"description" => "User: @username",
+					"description" => "User: @username OR @username/video_id",
 					"holder" => "div",
 					"class" => "tdc-textfield-big"
 				),
@@ -1578,9 +1578,9 @@ $rowParams = array_merge(
             'param_name' => 'video_background',
             'type' => 'textfield',
             'value' => '',
-            'heading' => 'Youtube ID',
+            'heading' => 'Youtube ID or self hosted url',
             'description' => '',
-            'class' => 'tdc-textfield-big',
+            'class' => 'tdc-textfield-extrabig',
             "info_img" => "https://cloud.tagdiv.com/help/row_video_background.png",
         ),
 		array(
@@ -1665,6 +1665,21 @@ $rowParams = array_merge(
             'description' => 'Add a class to this row',
             'class' => 'tdc-textfield-extrabig',
         ),
+        array(
+            'param_name' => 'row_height',
+            'type' => 'textfield-responsive',
+            'value' => '',
+            'heading' => 'Height',
+            'description' => '',
+            'placeholder' => 'auto',
+            'class' => 'tdc-textfield-small',
+            "info_img" => "https://cloud.tagdiv.com/help/row_height.png",
+        ),
+    ),
+
+    td_util::get_display_restrictions_atts(),
+
+    array(
 
 	    array(
 		    "type" => 'textfield-responsive',
@@ -1901,18 +1916,8 @@ $rowParams = array_merge(
 
     $flexParams,
     $flexWidth,
-    array(
-        array(
-            'param_name' => 'row_height',
-            'type' => 'textfield-responsive',
-            'value' => '',
-            'heading' => 'Height',
-            'description' => '',
-            'placeholder' => 'auto',
-            'class' => 'tdc-textfield-small',
-            "info_img" => "https://cloud.tagdiv.com/help/row_height.png",
-        ),
 
+    array(
         array (
             'param_name' => 'css',
             'value' => '',
@@ -2046,11 +2051,6 @@ tdc_mapper::map_shortcode(
                     'description' => 'Add a class to this column',
                     'class' => 'tdc-textfield-extrabig'
                 ),
-            ),
-
-            $flexParams,
-            $flexWidth,
-            array(
                 array(
                     'type' => 'textfield-responsive',
                     'heading' => 'Height',
@@ -2060,6 +2060,12 @@ tdc_mapper::map_shortcode(
                     "info_img" => "https://cloud.tagdiv.com/help/row_height.png",
                 ),
             ),
+
+            td_util::get_display_restrictions_atts(),
+
+            $flexParams,
+            $flexWidth,
+
             $flexOccupy,
             array(
                 array (
@@ -2240,7 +2246,6 @@ tdc_mapper::map_shortcode(
                     "value" => "",
                     "class" => ""
                 ),
-
                 array(
                     'type' => 'textfield', // should have been vc_el_id but we use textfield
                     'heading' => 'Row ID',
@@ -2255,10 +2260,6 @@ tdc_mapper::map_shortcode(
                     'description' => 'Add a class to this row',
                     'class' => 'tdc-textfield-extrabig',
                 ),
-            ),
-
-            $flexParams,
-            array(
                 array(
                     'type' => 'textfield-responsive',
                     'heading' => 'Height',
@@ -2269,7 +2270,12 @@ tdc_mapper::map_shortcode(
                 ),
 
             ),
+
+            td_util::get_display_restrictions_atts(),
+
+            $flexParams,
             $flexOccupy,
+
             array(
                 array (
                     'param_name' => 'css',
@@ -2335,11 +2341,6 @@ tdc_mapper::map_shortcode(
                     'description' => 'Add a class to this inner column',
                     'class' => 'tdc-textfield-extrabig',
                 ),
-            ),
-
-            $flexParams,
-            $flexWidth,
-            array(
                 array(
                     'type' => 'textfield-responsive',
                     'heading' => 'Height',
@@ -2349,7 +2350,13 @@ tdc_mapper::map_shortcode(
                     "info_img" => "https://cloud.tagdiv.com/help/row_height.png",
                 ),
             ),
+
+            td_util::get_display_restrictions_atts(),
+
+            $flexParams,
+            $flexWidth,
             $flexOccupy,
+
             array(
                 array (
                     'param_name' => 'css',
@@ -2384,10 +2391,10 @@ tdc_mapper::map_shortcode(
 		'params' => array(
 			array(
 				"param_name" => "content",
-				"type" => "textarea_raw_html",
+				"type" => "textarea_raw_html_ace",
 				"holder" => "div",
 				'class' => '',
-				"heading" => 'Text',
+				"heading" => 'HTML Code',
 				"value" => base64_encode(__('Html code here! Replace this with any non empty raw html code and that\'s it', 'td_composer' ) ),
 				"description" => 'Enter your content.'
 			),
@@ -2987,6 +2994,16 @@ $single_image_video_popup = array();
             "group"       => "",
         ),
         array(
+            "param_name"  => "autoplay_vid",
+            "type"        => "checkbox",
+            "value"       => 'yes',
+            "heading"     => "Autoplay video",
+            "description" => "When it is inactive, the sound will be ON",
+            "holder"      => "div",
+            "class"       => "",
+            "group"       => ''
+        ),
+        array(
             "param_name" => "video_rec",
             "type" => "textarea_raw_html",
             "holder" => "div",
@@ -3385,7 +3402,7 @@ $tdc_api_blocks = array(
 	),
 	array(
 		'base' => 'vc_single_image',
-		'name' => __( 'Single image', 'td_composer' ),
+		'name' => __( 'Single background image', 'td_composer' ),
 		'icon' => 'icon-wpb-empty-space',
 		'category' => __( 'Content', 'td_composer' ),
 		'tdc_category' => 'Extended',
@@ -3393,6 +3410,21 @@ $tdc_api_blocks = array(
         'tdc_style_params' => array(
             'image',
             'image_url',
+            'open_in_new_window',
+            'url_rel',
+            'title_attr',
+            'display_inline',
+            'height',
+            'width',
+            'video_popup',
+            'video_url',
+            'video_rec',
+            'video_rec_title',
+            'ga_event_action',
+            'ga_event_category',
+            'ga_event_label',
+            'fb_pixel_event_name',
+            'fb_pixel_event_content_name',
             'el_class'
         ),
 		'params' => array_merge(
@@ -3405,6 +3437,15 @@ $tdc_api_blocks = array(
                     "description" => "",
                     "holder" => "div",
                     "class" => "",
+                ),
+                array(
+                    "param_name" => "image_cf",
+                    "type" => "textfield",
+                    "value" => '',
+                    "heading" => __( "External image", 'td_composer' ),
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-extrabig"
                 ),
                 array(
                     "param_name" => "image_url",

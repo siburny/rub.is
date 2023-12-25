@@ -8,6 +8,7 @@ function td_js_generator_mob() {
     td_js_buffer::add_variable('td_email_user_incorrect', __td('Email or username incorrect!', TD_THEME_NAME));
     td_js_buffer::add_variable('td_email_incorrect', __td('Email incorrect!', TD_THEME_NAME));
 
+
     // The mini detector - ads classes to the HTML tag, it enables us to fix issues in each device.
     // Has to run as fast as possible
     ob_start();

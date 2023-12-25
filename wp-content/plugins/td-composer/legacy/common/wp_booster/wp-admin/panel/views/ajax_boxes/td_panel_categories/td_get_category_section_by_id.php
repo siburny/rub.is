@@ -34,13 +34,25 @@ $category_id = td_util::get_http_post_val('category_id');
             }
         }
 
+        $option_id = 'tdb_category_template';
+        if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $option_id .= $sitepress->get_current_language();
+                }
+            }
+        }
+
 ?>
 
     <!-- TDB Category template -->
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">Category Cloud Library Template</span>
-            <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=category#/' ) ?>" target="_blank">Cloud Library</a> category template for this category.</p>
+            <p>Set a <a href="<?php echo admin_url( 'admin.php?page=tdb_cloud_templates' ) ?>" target="_blank">Cloud Library</a> category template for this category.</p>
         </div>
         <div class="td-box-control-full">
 
@@ -49,7 +61,7 @@ $category_id = td_util::get_http_post_val('category_id');
             echo td_panel_generator::dropdown(array(
                 'ds' => 'td_category',
                 'item_id' => $category_id,
-                'option_id' => 'tdb_category_template',
+                'option_id' => $option_id,
                 'values' => array_merge(
                     array(
                         array(
@@ -74,7 +86,7 @@ $category_id = td_util::get_http_post_val('category_id');
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">Post Cloud Library Template</span>
-            <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=category#/' ) ?>" target="_blank">Cloud Library</a> post template for posts of this category.</p>
+            <p>Set a <a href="<?php echo admin_url( 'admin.php?page=tdb_cloud_templates' ) ?>" target="_blank">Cloud Library</a> post template for posts of this category.</p>
         </div>
         <div class="td-box-control-full">
 

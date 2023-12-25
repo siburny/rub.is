@@ -4,10 +4,7 @@
  */
 class td_demo_installer {
 
-
-
 	public $templates;
-
 
     function __construct() {
         //AJAX VIEW PANEL LOADING
@@ -17,51 +14,119 @@ class td_demo_installer {
     }
 
 
+    function remove_subscription_content() {
+    	if (is_plugin_active('td-subscription/td-subscription.php') ) {
+
+            global $wpdb;
+
+			//$tds_plans = $wpdb->get_results( "SELECT * FROM tds_plans", ARRAY_A );
+			//if ( null !== $tds_plans && count( $tds_plans ) ) {
+			//	foreach ($tds_plans as $plan) {
+			//		if (!empty($plan['options'])) {
+			//			$options = maybe_unserialize($plan['options']);
+			//			if (!empty($options['td_demo_content'])) {
+			//				$wpdb->delete( 'tds_plans',
+			//				array(
+			//					'id' => $plan['id']
+			//				),
+			//				array( '%d' ) );
+			//			}
+			//		}
+			//	}
+			//}
+
+            $disable_wizard_demo = $wpdb->get_var( "SELECT value FROM tds_options WHERE name = 'td_demo_content'");
+			if ( ! empty($disable_wizard_demo)) {
+                $wpdb->delete( 'tds_options', array( 'name' => 'td_demo_content' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'disable_wizard' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'go_wizard' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'wizard_company_complete' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'wizard_payments_complete' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'wizard_plans_complete' ), array( '%s' ) );
+                $wpdb->delete( 'tds_options', array( 'name' => 'wizard_locker_complete' ), array( '%s' ) );
+            }
+
+            $tds_companies = $wpdb->get_results( "SELECT * FROM tds_companies", ARRAY_A );
+            if ( null !== $tds_companies && count( $tds_companies ) ) {
+				foreach ($tds_companies as $company) {
+					if (!empty($company['options'])) {
+						$options = maybe_unserialize($company['options']);
+						if (!empty($options['td_demo_content'])) {
+							$wpdb->delete( 'tds_companies',
+							array(
+								'id' => $company['id']
+							),
+							array( '%d' ) );
+						}
+					}
+				}
+            }
+
+            $tds_payment_bank = $wpdb->get_results( "SELECT * FROM tds_payment_bank", ARRAY_A );
+            if ( null !== $tds_payment_bank && count( $tds_payment_bank ) ) {
+				foreach ($tds_payment_bank as $payment_bank) {
+					if (!empty($payment_bank['options'])) {
+						$options = maybe_unserialize($payment_bank['options']);
+						if (!empty($options['td_demo_content'])) {
+							$wpdb->delete( 'tds_payment_bank',
+							array(
+								'id' => $payment_bank['id']
+							),
+							array( '%d' ) );
+						}
+					}
+				}
+            }
+        }
+    }
+
+
     function ajax_demos_controller() {
-
-
 
 		// die if request is fake
 	    check_ajax_referer('td-demo-install', 'td_magic_token');
 
-        if (!current_user_can('switch_themes')) {
+        if ( !current_user_can('switch_themes' ) ) {
             die;
         }
 
         // try to extend the time limit
         @set_time_limit(300);
 
-
         $td_demo_action = td_util::get_http_post_val('td_demo_action');
         $td_demo_id = td_util::get_http_post_val('td_demo_id');
-
 
 
         /*  ----------------------------------------------------------------------------
             Uninstall button - do uninstall with content
          */
-        if ($td_demo_action == 'uninstall_demo') {
-            // remove our content
-            td_demo_media::remove();
-            td_demo_content::remove();
-            td_demo_category::remove();
-            td_demo_menus::remove();
-            td_demo_widgets::remove();
+	    if ( $td_demo_action == 'uninstall_demo' ) {
 
-            // woo
-	        td_woo_demo_product_category::remove();
-	        td_woo_demo_product_tag::remove();
-	        td_woo_demo_product_attribute::remove();
+		    // remove our content
+		    td_demo_media::remove();
+		    td_demo_content::remove();
+		    td_demo_category::remove();
+		    td_demo_menus::remove();
+		    td_demo_widgets::remove();
 
-            // restore all settings to the state before a demo was loaded
-            $td_demo_history = new td_demo_history();
-            $td_demo_history->restore_all();
+		    // woo
+		    td_woo_demo_product_category::remove();
+		    td_woo_demo_product_tag::remove();
+		    td_woo_demo_product_attribute::remove();
 
-            // update our state - no stack installed
-            td_demo_state::update_state('', '');
-        }
+		    // custom taxonomies
+		    td_demo_tax::remove();
 
+		    // restore all settings to the state before a demo was loaded
+		    $td_demo_history = new td_demo_history();
+		    $td_demo_history->restore_all();
 
+		    // update our state - no stack installed
+		    td_demo_state::update_state('', '');
+
+		    $this->remove_subscription_content();
+
+	    }
 
 
         /*  ----------------------------------------------------------------------------
@@ -69,17 +134,14 @@ class td_demo_installer {
         */
 
 
-
         /*  ----------------------------------------------------------------------------
            Install content only - remove old settings
        */
-        else if ($td_demo_action == 'remove_content_before_install_no_content') {
+        else if ( $td_demo_action == 'remove_content_before_install_no_content' ) {
 
             // save the history - this class will save the history only when going from user settings -> stack
             $td_demo_history = new td_demo_history();
             $td_demo_history->save_all();
-
-
 
             // clean the user settings
             td_demo_media::remove();
@@ -88,34 +150,40 @@ class td_demo_installer {
             td_demo_menus::remove();
             td_demo_widgets::remove();
 
+	        // woo
+	        td_woo_demo_product_category::remove();
+	        td_woo_demo_product_tag::remove();
+	        td_woo_demo_product_attribute::remove();
+
+	        // custom taxonomies
+	        td_demo_tax::remove();
+
             // change our state
             td_demo_state::update_state($td_demo_id, 'no_content');
 
             // load panel settings
             $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', false);
+
+            $this->remove_subscription_content();
+
         }
 
         /*  ----------------------------------------------------------------------------
             Install with no content
         */
-        else if ($td_demo_action == 'install_no_content_demo') {
+        else if ( $td_demo_action == 'install_no_content_demo' ) {
             td_demo_state::update_state($td_demo_id, 'no_content');
             // load panel settings - this will also recompile the css
-            $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', false);
+            $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt' );
         }
 
 
-
-
-
         // step 1
-        else if ($td_demo_action == 'remove_content_before_install') {
+        else if ( $td_demo_action == 'remove_content_before_install' ) {
 
             // save the history - this class will save the history only when going from user settings -> stack
             $td_demo_history = new td_demo_history();
             $td_demo_history->save_all();
-
-
 
             // clean the user settings
             td_demo_media::remove();
@@ -124,62 +192,66 @@ class td_demo_installer {
             td_demo_menus::remove();
             td_demo_widgets::remove();
 
+	        // woo
+	        td_woo_demo_product_category::remove();
+	        td_woo_demo_product_tag::remove();
+	        td_woo_demo_product_attribute::remove();
+
+	        // custom taxonomies
+	        td_demo_tax::remove();
+
             // change our state
             td_demo_state::update_state($td_demo_id, 'full');
 
             // load panel settings
-            $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', true);
+            $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', true );
+
         }
         /*  ----------------------------------------------------------------------------
             install Full
         */
-        else if ($td_demo_action == 'td_media_1') {
-
-
+        else if ( $td_demo_action == 'td_media_1' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_1.php');
         }
-
-
-        else if ($td_demo_action == 'td_media_2') {
-	        //echo 'sss';
+        else if ( $td_demo_action == 'td_media_2' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_2.php');
         }
-        else if ($td_demo_action == 'td_media_3') {
+        else if ( $td_demo_action == 'td_media_3' ) {
 
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_3.php');
         }
-        else if ($td_demo_action == 'td_media_4') {
+        else if ( $td_demo_action == 'td_media_4' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_4.php');
         }
-        else if ($td_demo_action == 'td_media_5') {
+        else if ( $td_demo_action == 'td_media_5' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_5.php');
         }
-        else if ($td_demo_action == 'td_media_6') {
+        else if ( $td_demo_action == 'td_media_6' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_6.php');
         }
-        else if ($td_demo_action == 'td_media_7') {
+        else if ( $td_demo_action == 'td_media_7' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_7.php');
         }
-        else if ($td_demo_action == 'td_media_8') {
+        else if ( $td_demo_action == 'td_media_8' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_8.php');
         }
-        else if ($td_demo_action == 'td_media_9') {
+        else if ( $td_demo_action == 'td_media_9' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_9.php');
         }
-        else if ($td_demo_action == 'td_media_10') {
+        else if ( $td_demo_action == 'td_media_10' ) {
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_10.php');
         }
-        else if ($td_demo_action == 'td_import')  {
+        else if ( $td_demo_action == 'td_import' )  {
 
 	        $api_url = 'https://cloud.tagdiv.com/demos/' . TD_THEME_NAME . '/' . $td_demo_id . '/pages/';
 	        $api_index_url = $api_url . 'index';
@@ -209,11 +281,11 @@ class td_demo_installer {
 		        }
 	        }
 
-            require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_import.php');
+            require_once( td_global::$demo_list[$td_demo_id]['folder'] . 'td_import.php' );
 
 	        $this->register_demo($td_demo_id);
 
-        } else if ( file_exists(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php')) {
+        } else if ( file_exists(td_global::$demo_list[$td_demo_id]['folder'] . $td_demo_action . '.php' ) ) {
 
         	if ( 0 === strpos( $td_demo_action, 'td_import_' )) {
 
@@ -254,7 +326,6 @@ class td_demo_installer {
 
 
     private function register_demo( $demo_id ) {
-
     	$server_addr = "https://cloud.tagdiv.com";
     	$token = td_remote_http::get_page( $server_addr . "/wp-json/td-register-install-demo/get_token/", __CLASS__);
         if ( ! empty( $token )) {
@@ -263,7 +334,7 @@ class td_demo_installer {
     }
 
 
-    public function import_panel_settings($file_path, $empty_ignored_settings = false) { //it's public only for testing
+    public function import_panel_settings( $file_path, $empty_ignored_settings = false ) { //it's public only for testing
 	    $td_options = &td_options::get_all_by_ref();
 
         // this settings will be "" out when any of the imports is runned

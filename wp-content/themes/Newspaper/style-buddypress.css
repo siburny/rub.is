@@ -1003,7 +1003,7 @@ body.activity-permalink #buddypress div.activity-comments ul li {
     Members Page
 */
 #buddypress div.dir-search {
-  margin-top: -45px;
+  margin-top: 0;
   min-width: 280px;
   position: relative;
 }

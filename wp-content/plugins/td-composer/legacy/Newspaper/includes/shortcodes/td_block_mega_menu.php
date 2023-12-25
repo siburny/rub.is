@@ -29,9 +29,16 @@ class td_block_mega_menu extends td_block {
 	    if (!empty($show_child_cat) and
 	        !empty($category_id)) {
 
-		    // check for subcats existence
+            $taxonomy_name = '';
+            $term_obj = get_term( (int)$category_id);
+            if ( $term_obj instanceof WP_Term ) {
+                $taxonomy_name = $term_obj->taxonomy;
+            }
+
+            // check for subcats existence
 		    $td_subcats = get_categories(array(
-                'child_of' => $category_id,
+                'taxonomy' => $taxonomy_name,
+                'child_of' => (int)$category_id,
                 'number' => 1
             ));
 
@@ -136,9 +143,19 @@ class td_block_mega_menu extends td_block {
         $buffy = '';
 
         if (!empty($show_child_cat) and !empty($category_id)) {
+
+            $taxonomy_name = '';
+            $term_obj = get_term( (int)$category_id);
+            if ( $term_obj instanceof WP_Term ) {
+                $taxonomy_name = $term_obj->taxonomy;
+            }
+
+            //cache_domain was added from WP 6.0, to get uncached result
             $td_subcategories = get_categories(array(
-                'child_of' => $category_id,
-                'number' => $show_child_cat
+                'taxonomy' => $taxonomy_name,
+                'child_of' => (int)$category_id,
+                'number' => $show_child_cat,
+                'cache_domain' => microtime()
             ));
 
 	        if (!empty($td_subcategories)) {

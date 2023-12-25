@@ -21,7 +21,7 @@ class tdc_mapper {
 	 * @param $attributes
 	 */
 	static function map_shortcode($attributes) {
-		// 'base' attribute is requiered! is used as a key. It's probably some kind of backwards compatibility in VC
+		// 'base' attribute is required! is used as a key. It's probably some kind of backwards compatibility in VC
 		if (!isset($attributes['base'])) {
 		    echo 'The base attribute is requiered for all the shortcodes';
 		}

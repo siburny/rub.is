@@ -113,7 +113,7 @@ class tds_title1 extends td_style {
 
 		$title_tag = $this->get_shortcode_att( 'title_tag' );
 		$title_size = $this->get_shortcode_att( 'title_size' );
-		$title_text = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'title_text' ) ) ) );
+		$title_text = td_util::get_custom_field_value_from_string( rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'title_text' ) ) ) ) );
 
 		$buffy = $this->get_style($this->get_css());
 

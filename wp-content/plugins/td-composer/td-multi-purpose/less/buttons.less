@@ -249,6 +249,31 @@
 }
 
 
+// Styles 2 - bordered
+.tds-button2 {
+  transform: translateZ(0);
+
+  &:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    .transition(opacity 0.3s ease);
+  }
+
+  &:hover:after {
+    opacity: 1;
+  }
+}
+.td-scroll-in-view .tds-button2:after {
+  opacity: 1;
+}
+
+
 // Styles 3 - shadow
 .tds-button3 {
   color: #000;

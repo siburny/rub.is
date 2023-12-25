@@ -12,15 +12,15 @@ class tagdiv_global {
 	 * @var array
 	 */
 	private static $td_plugins = array(
-		'TD_COMPOSER'       => array( 'version' => '5496ac087ca179a9788dadb779dbc160',         'class' => 'tdc_version_check' ),
-		'TD_CLOUD_LIBRARY'  => array( 'version' => 'c19aec6a20dc470dea3def4ce71e04d5',    'class' => 'tdb_version_check' ),
-		'TD_SOCIAL_COUNTER' => array( 'version' => '72fa9334bad65b54a380f20dbbde94d0',   'class' => 'td_social_counter_plugin' ),
-		'TD_NEWSLETTER'     => array( 'version' => 'fb78c20f1c592d0d1907a1a43bd5cce1',       'class' => 'td_newsletter_version_check' ),
-		'TD_SUBSCRIPTION'   => array( 'version' => '18da952bde8fab1875ba66b9c5072e53',     'class' => 'tds_version_check' ),
-		'TD_MOBILE_PLUGIN'  => array( 'version' => '6c637736a1bbdf7e42f21cf3650dfb1b',    'class' => 'td_mobile_theme' ),
+		'TD_COMPOSER'       => array( 'version' => 'e815948e5c9ec5801de67b92a1d5a59fxx',         'class' => 'tdc_version_check' ),
+		'TD_CLOUD_LIBRARY'  => array( 'version' => '87b3292f51aec51c00e6ce7db9b73ed1',    'class' => 'tdb_version_check' ),
+		'TD_SOCIAL_COUNTER' => array( 'version' => 'f70b7664cb5224295a91f7d2e89fc57e',   'class' => 'td_social_counter_plugin' ),
+		'TD_NEWSLETTER'     => array( 'version' => 'a3f39aadc2441dfee5f4cbdb817eeaca',       'class' => 'td_newsletter_version_check' ),
+		'TD_SUBSCRIPTION'   => array( 'version' => '___td-subscription___',     'class' => 'tds_version_check' ),
+		'TD_MOBILE_PLUGIN'  => array( 'version' => '1fb779f30bda2ecbaaacbc59e4f40249',    'class' => 'td_mobile_theme' ),
 		'AMP'               => array( 'version' => '___amp___',                 'class' => 'AMP_Autoloader' ),
-		'TD_STANDARD_PACK'  => array( 'version' => '9214a050dc0a6c6eeaa5c1aa35f9cfe3',    'class' => 'tdsp_version_check' ),
-		'TD_WOO'            => array( 'version' => 'ba3f9555bcfe508b99c8d5d68ca4ed68',              'class' => 'td_woo_version_check' )
+		'TD_STANDARD_PACK'  => array( 'version' => '48767bfdc5698c9103b4ef9b700012fd',    'class' => 'tdsp_version_check' ),
+		'TD_WOO'            => array( 'version' => '869e2636dd880dbe286a0d9627f91f9a',              'class' => 'td_woo_version_check' )
 	);
 
 

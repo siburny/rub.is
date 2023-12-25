@@ -26,7 +26,7 @@ class td_ig_personal {
 
 		add_filter( 'cron_schedules', array( $this, 'add_3hours' ) );
 
-		if ( ! wp_next_scheduled( 'td_instagram_cron_job' ) ) {
+		if ( !wp_next_scheduled( 'td_instagram_cron_job' ) ) {
 			wp_schedule_event( time(), '3hours', 'td_instagram_cron_job' );
 		}
 
@@ -68,7 +68,7 @@ class td_ig_personal {
 	/*
 	 * used to test an instagram account and generate a long lived access token after app authorization has been made
 	 *
-	 * @since 29.07.2020 - not used anymore.. ( the test and long lived access token is made on https://tagdiv.com/td_instagram_api/v2/td-instagram-api-v2.php )
+	 * @since 29.07.2020 - not used anymore ... ( the test and long-lived access token is made on https://tagdiv.com/td_instagram_api/v2/td-instagram-api-v2.php )
 	 */
 	function td_after_connection() {
 
@@ -347,7 +347,7 @@ class td_ig_personal {
 		// get db saved instagram account settings
 		$instagram_access_settings = td_options::get_array( 'td_instagram_connected_account');
 
-		$instagram_connected_account = isset( $instagram_access_settings['connected_account'] ) ? $instagram_access_settings['connected_account'] : array();
+		$instagram_connected_account = $instagram_access_settings['connected_account'] ?? array();
 
 		// return here if we don't have a connected account
 		if ( empty( $instagram_connected_account ) ) {
@@ -493,7 +493,7 @@ class td_ig_personal {
 	 */
 	private static function get_media_url( $feed ) {
 
-		if ( $feed['media_type'] === 'CAROUSEL_ALBUM' || $feed['media_type'] === 'VIDEO' ) {
+		if ( isset( $feed['media_type'] ) && ( $feed['media_type'] === 'CAROUSEL_ALBUM' || $feed['media_type'] === 'VIDEO' ) ) {
 			if ( isset( $feed['thumbnail_url'] ) ) {
 				return $feed['thumbnail_url'];
 			} elseif ( $feed['media_type'] === 'CAROUSEL_ALBUM' && isset( $feed['media_url'] ) ) {

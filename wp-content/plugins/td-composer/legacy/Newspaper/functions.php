@@ -80,20 +80,17 @@ function test_td () {
 /**
  * tdStyleCustomizer.js is required
  */
-if (TD_DEBUG_LIVE_THEME_STYLE) {
+if ( TD_DEBUG_LIVE_THEME_STYLE && !( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ) ) {
     add_action('wp_footer', 'td_theme_style_footer');
 		// new live theme demos
 	    function td_theme_style_footer() {
 		    ?>
-            <a href="https://demo.tagdiv.com/select_demo/select_demo_newspaper?utm_source=live_preview&utm_medium=click&utm_campaign=demos&utm_content=demos_button#demos" target="_blank" rel="noreferrer" id="td-theme-demos-button" class="td-right-demos-button">DEMOS</a>
+            <a href="https://demo.tagdiv.com/select_demo/newspaper-prebuilt-websites/?utm_source=live_pre[…]&utm_medium=click&utm_campaign=demos&utm_content=demos_button" target="_blank" rel="noreferrer" id="td-theme-demos-button" class="td-right-demos-button">DEMOS</a>
+            <a href="https://tagdiv.com/web-development-services/?utm_source=live_demo&utm_medium=click&utm_campaign=demos&utm_content=ser_sticky" id="td-theme-services-button" class="td-right-demos-button" >SERVICES</a>
             <a href="https://themeforest.net/item/newspaper/5489609?utm_source=live_preview&utm_medium=click&utm_campaign=demos&utm_content=buy_button" id="td-theme-buy-button" class="td-right-demos-button">BUY</a>
 		    <?php
 	    }
 
 }
 
-//td_demo_state::update_state("shop_apocryph_pro", 'full');
-
-
-
-
+//td_demo_state::update_state("music_life", 'full');

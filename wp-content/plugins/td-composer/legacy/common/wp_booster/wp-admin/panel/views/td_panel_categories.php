@@ -42,7 +42,7 @@ if ( td_global::is_tdb_registered() ) {
 <div class="td-box-row">
     <div class="td-box-description">
         <span class="td-box-title">Cloud Library Template</span>
-        <p>Set a <a href="<?php echo admin_url( 'edit.php?post_type=tdb_templates&meta_key=tdb_template_type&meta_value=category#/' ) ?>" target="_blank">Cloud Library</a> category template for all categories.</p>
+        <p>Set a <a href="<?php echo admin_url( 'admin.php?page=tdb_cloud_templates' ) ?>" target="_blank">Cloud Library</a> category template for all categories.</p>
     </div>
     <div class="td-box-control-full">
 

@@ -80,6 +80,14 @@ class tds_social5 extends td_style {
 				.$unique_style_class .tdm-social-item-wrap:hover .tdm-social-item {
 					background: @icons_background_hover_color;
 				}
+				/* @all_border_width */
+				body .$unique_style_class .tdm-social-item {
+				    border: @all_border_width @all_border_style @all_icons_border_color;
+				}
+				/* @icons_border_hover_color */
+				body .$unique_style_class .tdm-social-item-wrap:hover .tdm-social-item {
+					border-color: @icons_border_hover_color;
+				}
 				/* @border_radius */
 				.$unique_style_class .tdm-social-item {
 					border-radius: @border_radius;
@@ -188,6 +196,31 @@ class tds_social5 extends td_style {
 
 
         /*-- BORDER -- */
+        // border width
+        $border_width = $res_ctx->get_style_att( 'all_border_width', __CLASS__ );
+        if( $border_width != '' ) {
+            if( is_numeric( $border_width ) ) {
+                $res_ctx->load_settings_raw( 'all_border_width', $border_width . 'px' );
+            }
+        }
+
+        // border style
+        $border_style = $res_ctx->get_style_att( 'all_border_style', __CLASS__ );
+        $res_ctx->load_settings_raw( 'all_border_style', 'solid' );
+        if( $border_style != '' ) {
+            $res_ctx->load_settings_raw( 'all_border_style', $border_style );
+        }
+
+        // border color
+        $border_color = $res_ctx->get_style_att( 'all_icons_border_color', __CLASS__ );
+        $res_ctx->load_settings_raw( 'all_icons_border_color', '#000' );
+        if( $border_color != '' ) {
+            $res_ctx->load_settings_raw( 'all_icons_border_color', $border_color );
+        }
+
+        // border hover color
+        $res_ctx->load_settings_raw( 'icons_border_hover_color', $res_ctx->get_style_att( 'icons_border_hover_color', __CLASS__ ) );
+
         // border radius
         $border_radius = $res_ctx->get_style_att( 'border_radius', __CLASS__ );
         $res_ctx->load_settings_raw( 'border_radius', $border_radius );
@@ -257,6 +290,12 @@ class tds_social5 extends td_style {
             $td_social_rel = ' rel="' . $this->get_shortcode_att('social_rel') . '" ';
         }
 
+        // extra input for youtube
+        $td_youtube_add_input = '';
+        if ('' !== $this->get_shortcode_att('youtube_add_input')) {
+            $td_youtube_add_input = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('youtube_add_input') ) ) );
+        }
+
         //socials in order of input
         $social_ordered_array = array();
         if( '' !== $this->get_shortcode_att('social_order') ) {
@@ -281,13 +320,20 @@ class tds_social5 extends td_style {
             }
 
             foreach ( $social_array as $social_key => $social_value ) {
-                if( !empty( $social_value[0] ) ) {
+                $social_url = td_util::get_custom_field_value_from_string( $social_value[0] );
+
+                if( !empty( $social_url ) ) {
+
+                    if ( $social_key === 'youtube') {
+                        $social_url = $td_youtube_add_input . $social_url;
+                    }
+
                     $buffy .= '<div class="tdm-social-item-wrap">';
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
                             $buffy .= '<i class="td-icon-font td-icon-' . strtolower($social_key) . '"></i>';
                         $buffy .= '</a>';
 
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
                     $buffy .= '</div>';
                 }
             }

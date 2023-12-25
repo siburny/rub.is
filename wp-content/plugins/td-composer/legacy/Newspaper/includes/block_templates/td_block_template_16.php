@@ -181,9 +181,9 @@ class td_block_template_16 extends td_block_template {
         $buffy = '';
         $buffy .= '<' . $title_tag . ' class="td-block-title">';
         if (!empty($custom_url)) {
-            $buffy .= '<a href="' . esc_url($custom_url) . '" class="td-pulldown-size">' . esc_html($custom_title) . '</a>';
+            $buffy .= '<a href="' . esc_url($custom_url) . '" class="td-pulldown-size" data-ui-param="custom_title">' . esc_html($custom_title) . '</a>';
         } else {
-            $buffy .= '<span class="td-pulldown-size">' . esc_html($custom_title) . '</span>';
+            $buffy .= '<span class="td-pulldown-size" data-ui-param="custom_title">' . esc_html($custom_title) . '</span>';
         }
         $buffy .= '</' . $title_tag . '>';
         return $buffy;

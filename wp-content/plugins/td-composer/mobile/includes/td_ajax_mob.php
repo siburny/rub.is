@@ -8,21 +8,21 @@ class td_ajax_mob {
 	    $buffy = '';
         $buffy_msg = '';
 
-        //the search string
-        if (!empty($_POST['td_string'])) {
-            $td_string = esc_html($_POST['td_string']);
-        } elseif (!empty($_POST['s'])) {
-            $td_string = esc_html($_POST['s']);;
+        // the search string
+        if ( !empty( $_POST['td_string'] ) ) {
+            $td_string = esc_html( $_POST['td_string'] );
+        } elseif ( !empty( $_POST['s'] ) ) {
+            $td_string = esc_html( $_POST['s'] );;
         } else {
             $td_string = '';
         }
 
-        //get the data
-        $td_query = &td_data_source::get_wp_query_search($td_string); //by ref  do the query
+        // get the data
+        $td_query = &td_data_source::get_wp_query_search( $td_string ); // by ref.. do the query
         $td_query_amp = array();
 
         //build the results
-        if (!empty($td_query->posts)) {
+        if ( !empty( $td_query->posts ) ) {
 
 	        foreach ( $td_query->posts as $index => $post ) {
                 $td_module_mob_1 = new td_module_mob_1($post);
@@ -42,7 +42,7 @@ class td_ajax_mob {
             }
         }
 
-        if (count($td_query->posts) == 0) {
+        if ( count( $td_query->posts ) == 0 ) {
             //no results
             $buffy = '<div class="result-msg no-result">' . __td('No results', TD_THEME_NAME) . '</div>';
         } else {
@@ -68,6 +68,6 @@ class td_ajax_mob {
         );
 
         // Return the String
-        die(json_encode($buffyArray));
+        die( json_encode( $buffyArray ) );
     }
 }

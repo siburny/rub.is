@@ -2,31 +2,22 @@
  * Created by ra on 5/14/2015.
  */
 
-
 /* global jQuery:{} */
 /* global console:{} */
 /* global alert:{} */
 /* global confirm:{} */
 /* global td_ajax_url:{} */
+/* global td_admin_url:{} */
 /* global tdDemoProgressBar:{} */
 /* global tdDemoFullInstaller:{} */
-
-
-
-
+/* global theme_plugins_list:{} */
 
 var td_wp_admin_demos = {};
-
-
 
 (function () {
     'use strict';
 
-
     td_wp_admin_demos = {
-
-
-
 
         init: function init() {
 
@@ -51,12 +42,10 @@ var td_wp_admin_demos = {};
                 );
                 td_wp_admin_demos._update_installed_demo();
 
-
                 // disable the demo install button for demos that require additional plugins installation/activation
                 jQuery('.td-req-demo-disabled').on( 'click', function(event) {
                     event.preventDefault();
                 });
-
 
                 // quick install - right menu
                 jQuery('.td-button-install-demo-quick').on( 'click', function(event) {
@@ -82,31 +71,26 @@ var td_wp_admin_demos = {};
                     );
                 });
 
-
-
-
                 // install (via normal button)
                 jQuery('.td-wp-admin-demo .td-button-install-demo').on( 'click', function(event) {
                     event.preventDefault();
                     var include_demo_content_check = jQuery(this).parent().parent().find('input[type=hidden]');
                     var demo_id = jQuery(this).data('demo-id');
+                    var demo_req_plugins = jQuery(this).data('demo-req-plugins');
+                    var demo_plugins = ( demo_req_plugins !== undefined ) ? demo_req_plugins : [];
                     var td_confirm = '';
 
-
-
-                    if (include_demo_content_check.val() === 'no') {
+                    if ( include_demo_content_check.val() === 'no' ) {
 
                         // install no content
                         tdConfirm.showModal( 'Install demo without content',
                             td_wp_admin_demos,
-                            function(demoId) {
-                                //testtestest
-                                td_wp_admin_demos._install(demoId, true);
+                            function(demoId,demoPlugins) {
+                                td_wp_admin_demos._install(demoId, true, demoPlugins);
                                 tb_remove();
                             },
-                            [demo_id],
+                            [demo_id,demo_plugins],
                             'Are you sure you want to install the demo without the sample content? This will import our predefined settings for the demo (background, template layouts, fonts, colors etc...) but no sample content will be added to the site.<br>'
-
                         );
 
                     } else {
@@ -114,12 +98,11 @@ var td_wp_admin_demos = {};
                         // install with content
                         tdConfirm.showModal( 'Install the full demo',
                             td_wp_admin_demos,
-                            function(demoId) {
-
-                                td_wp_admin_demos._install(demoId);
+                            function(demoId,demoPlugins) {
+                                td_wp_admin_demos._install(demoId, false, demoPlugins);
                                 tb_remove();
                             },
-                            [demo_id],
+                            [demo_id,demo_plugins],
                             'Are you sure you want to install the full demo? This will import homepages, sample content with images, backgrounds, template layouts, fonts, colors.<br><br>' +
                             '<strong>Notice</strong>: The demo can be fully uninstalled and the system will attempt to rollback to your previous state. Any content, menus and attachment created by the demo are removable via the uninstall button.<br><br>' +
                             '<strong>Please backup your settings</strong> to be sure that you don\'t lose them by accident.'
@@ -127,10 +110,18 @@ var td_wp_admin_demos = {};
                     }
 
                 });
-
+                
                 // uninstall
                 jQuery('.td-wp-admin-demo .td-button-uninstall-demo').on( 'click', function(event) {
                     event.preventDefault();
+
+                    var $this = jQuery(this),
+                        dataDemoId = $this.data('demo-id'),
+                        dataText = $this.data('text');
+
+                    if ('undefined' === typeof dataText) {
+                        dataText = 'Are you sure? The theme will remove all the installed content and settings and it will try to revert your site to the previous state.';
+                    }
 
                     // install with content
                     tdConfirm.showModal( 'Uninstall demo',
@@ -140,8 +131,8 @@ var td_wp_admin_demos = {};
                             td_wp_admin_demos._uninstall(demoId);
                             tb_remove();
                         },
-                        [jQuery(this).data('demo-id')],
-                        'Are you sure? The theme will remove all the installed content and settings and it will try to revert your site to the previous state.'
+                        [dataDemoId],
+                        dataText
                     );
                 });
 
@@ -161,6 +152,7 @@ var td_wp_admin_demos = {};
 
                 });
             });
+
         },
 
         _update_installed_demo: function() {
@@ -173,9 +165,12 @@ var td_wp_admin_demos = {};
                     jQuery('.td-theme-demo-button').attr('data-demo-id', demoId);
                     jQuery('.td-theme-demo-installed').show();
                 }
+
+                //remove old demo which has a PRO version, but keep the uninstall option
+                jQuery('.td-hide-demo').remove();
+
             }, 500);
         },
-
 
         _uninstall: function(demo_id) {
             td_wp_admin_demos._block_navigation();
@@ -309,8 +304,6 @@ var td_wp_admin_demos = {};
         //
         // },
 
-
-
         //
         // _install_full: function (demoId ) {
         //     td_wp_admin_demos._block_navigation();
@@ -324,10 +317,7 @@ var td_wp_admin_demos = {};
         //     });
         // },
 
-
-
-
-        _install: function(demoId, noContent) {
+        _install: function(demoId, noContent, demoPlugins) {
 
             var content;
             if ( 'undefined' !== typeof noContent && true === noContent ) {
@@ -338,17 +328,59 @@ var td_wp_admin_demos = {};
             td_wp_admin_demos._ui_install_start(demoId);
             tdDemoProgressBar.timer_change(10);
 
-            tdDemoFullInstaller.installNextStep(demoId, 0, function () {
-                // on finish!
-                td_wp_admin_demos._unblock_navigation();
-                td_wp_admin_demos._ui_install_end(demoId);
-                td_wp_admin_demos._update_installed_demo();
-            }, content);
+            // plugins
+            if ( 'undefined' !== typeof demoPlugins && demoPlugins.length ) {
+
+                // console.log( '%c plugins to install: ' + demoPlugins.toString(), 'color: #40a200;' );
+
+                var plugins = new DemoPluginManager;
+                plugins.init(demoPlugins);
+
+                // trigger the demo installer event to continue demo install after plugins install
+                jQuery(document).on('tdDemoFullInstaller', function ( event, data ) {
+
+                    var failed_plugins = data.failed_plugins;
+
+                    if ( failed_plugins.length ) {
+
+                        var failed_plugins_names = [];
+                        failed_plugins.forEach( function(plugin) {
+                            failed_plugins_names.push( theme_plugins_list[plugin] );
+                        });
+
+                        var td_theme_plugins_url = td_admin_url + 'admin.php?page=td_theme_plugins';
+
+                        tdConfirm.showModalOk(
+                            'Demo Required Plugins Install Failed',
+                            '<p>An error occurred, and demo required plugins installation failed. <br>Please <a href="' + td_theme_plugins_url + '" target="_blank">manually install/activate</a> the following plugins:<br><span style="font-weight: bold;">' + failed_plugins_names.toString() + '</span><br> and install demo again.</p>',
+                            function () {
+                                td_wp_admin_demos._ui_install_stop(demoId);
+                                tb_remove();
+                            }
+                        );
+
+                    } else {
+                        tdDemoFullInstaller.installNextStep( demoId, 0, function () {
+                            // on finish !
+                            td_wp_admin_demos._unblock_navigation();
+                            td_wp_admin_demos._ui_install_end(demoId);
+                            td_wp_admin_demos._update_installed_demo();
+                        }, content );
+                    }
+
+                });
+
+            } else {
+                //console.log( '%c no plugins to install !', 'color: #40a200;' );
+                tdDemoFullInstaller.installNextStep( demoId, 0, function () {
+                    // on finish !
+                    td_wp_admin_demos._unblock_navigation();
+                    td_wp_admin_demos._ui_install_end(demoId);
+                    td_wp_admin_demos._update_installed_demo();
+                }, content );
+            }
+
         },
-
-
-
-
 
         _show_network_error:function (td_ajax_request_name, MLHttpRequest, textStatus, errorThrown) {
 
@@ -362,12 +394,8 @@ var td_wp_admin_demos = {};
                 'responseText: ' + responseText
             );
 
-
-
             console.log(responseText);
         },
-
-
 
         _ui_install_start:function (demo_id) {
             // disable the rest of the demos + remove the installed class form the other demo
@@ -399,14 +427,35 @@ var td_wp_admin_demos = {};
                     .addClass('td-demo-installed');
 
 
-                // remove the disable class from the other demos
+                // remove the disabled class from the other demos
                 jQuery('.td-demo-disabled').removeClass('td-demo-disabled');
+
+                // unbind `tdDemoFullInstaller` event
+                jQuery(document).unbind('tdDemoFullInstaller');
 
             }, 500);
 
         },
 
+        _ui_install_stop: function (demo_id) {
+            tdDemoProgressBar.change(100);
+            setTimeout(function() {
+                // hide and reset the progress bar
+                tdDemoProgressBar.hide();
+                tdDemoProgressBar.reset();
 
+                //remove the installing class and add the installed class
+                jQuery('.td-demo-' + demo_id).removeClass('td-demo-installing');
+
+                // remove the disabled class from the other demos
+                jQuery('.td-demo-disabled').removeClass('td-demo-disabled');
+
+                // unbind `tdDemoFullInstaller` event
+                jQuery(document).unbind('tdDemoFullInstaller');
+
+            }, 500);
+            td_wp_admin_demos._unblock_navigation();
+        },
 
         _block_navigation: function () {
             window.onbeforeunload = function() {
@@ -414,17 +463,16 @@ var td_wp_admin_demos = {};
             };
         },
 
-        _unblock_navigation: function() {
+        _unblock_navigation: function () {
             window.onbeforeunload = '';
         },
-
 
         /**
          * generates an unique ID. Used for cache busting
          * @returns {string}
          * @private
          */
-        _getAdminAjax: function(stepName) {
+        _getAdminAjax: function (stepName) {
             if (typeof stepName === 'undefined') {
                 stepName = 'not_set';
             }
@@ -437,18 +485,129 @@ var td_wp_admin_demos = {};
             return td_ajax_url + '&step=' + stepName + '&uid=' + s4() + s4() + s4() + s4();
         }
 
-
     };
 
 })();
 
+function DemoPluginManager() {
+
+    var plugins_to_process;
+    var failed_plugins = [];
+    var completed = [];
+    var current_item = '';
+    var current_item_hash = '';
+
+    function ajax_callback(response) {
+
+        if( typeof response === 'object' && typeof response.message !== 'undefined' ) {
+
+            //console.log( 'ajax_callback > response.message: ' + response.message );
+
+            if( typeof response.url !== 'undefined' ) {
+
+                // we have an ajax url action to perform.
+                if( response.hash === current_item_hash ) {
+
+                    //console.log( 'response.hash === current_item_hash: ' + response.hash );
+                    failed_plugins.push( current_item ); // add current to failed list
+
+                    find_next();
+
+                } else {
+
+                    current_item_hash = response.hash;
+
+                    jQuery.post( response.url, response, function() { process_current(); } ).fail( ajax_callback );
+
+                }
+
+            } else if( typeof response.done !== 'undefined' ) {
+
+                // finished processing this plugin, move onto next
+                find_next();
+
+            } else {
+
+                // error processing this plugin
+                find_next();
+
+            }
+        } else {
+
+            failed_plugins.push( current_item ); // add current to failed list
+
+            // error - try again with next plugin
+            //console.log( 'ajax_callback > status: failed: Ajax error !' );
+            find_next();
+        }
+
+    }
+
+    function process_current() {
+
+        if ( current_item ) {
+
+            //console.log( '%c process_current: current_plugin: ' + current_item, 'color: orangered;' );
+
+            // query our ajax handler to get the ajax to send to TGM
+            // if we don't get a reply we can assume everything worked and continue onto the next one.
+            jQuery.post(
+                theme_plugins_setup_params.ajaxurl,
+                {
+                    action: 'theme_plugins_setup',
+                    wpnonce: theme_plugins_setup_params.wpnonce,
+                    slug: current_item
+                },
+                ajax_callback
+            ).fail(ajax_callback);
+
+        }
+
+    }
+
+    function find_next() {
+
+        var do_next = false;
+        if ( current_item !== '' && !completed.includes(current_item) ) {
+            completed.push(current_item);
+        }
+
+        plugins_to_process.forEach( function(plugin) {
+
+            if ( current_item === '' || do_next ) {
+                current_item = plugin;
+                process_current();
+                do_next = false;
+            } else if ( plugin === current_item ) {
+                do_next = true;
+            }
+
+        });
+
+        if( completed.length >= plugins_to_process.length ) {
+
+            // finished all plugins!
+            //console.log( '%c finished all plugins!', 'color: orangered;' );
+
+            // ..trigger demo installer
+            jQuery(document).trigger( 'tdDemoFullInstaller', { 'failed_plugins': failed_plugins } );
+
+        }
+
+    }
+
+    return {
+        init: function(plugins) {
+            //console.log(plugins);
+            plugins_to_process = plugins;
+            find_next();
+
+        }
+    }
+
+}
 
 td_wp_admin_demos.init();
-
-
-
-
-
 
 
 var _extends=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var o in n)Object.prototype.hasOwnProperty.call(n,o)&&(e[o]=n[o])}return e},_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};!function(e,t){"object"===("undefined"==typeof exports?"undefined":_typeof(exports))&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.LazyLoad=t()}(this,function(){"use strict";var e={elements_selector:"img",container:window,threshold:300,throttle:150,data_src:"src",data_srcset:"srcset",class_loading:"loading",class_loaded:"loaded",class_error:"error",class_initial:"initial",skip_invisible:!0,callback_load:null,callback_error:null,callback_set:null,callback_processed:null},t=!("onscroll"in window)||/glebot/.test(navigator.userAgent),n=function(e,t){e&&e(t)},o=function(e){return e.getBoundingClientRect().top+window.pageYOffset-e.ownerDocument.documentElement.clientTop},i=function(e,t,n){return(t===window?window.innerHeight+window.pageYOffset:o(t)+t.offsetHeight)<=o(e)-n},s=function(e){return e.getBoundingClientRect().left+window.pageXOffset-e.ownerDocument.documentElement.clientLeft},r=function(e,t,n){var o=window.innerWidth;return(t===window?o+window.pageXOffset:s(t)+o)<=s(e)-n},l=function(e,t,n){return(t===window?window.pageYOffset:o(t))>=o(e)+n+e.offsetHeight},a=function(e,t,n){return(t===window?window.pageXOffset:s(t))>=s(e)+n+e.offsetWidth},c=function(e,t,n){return!(i(e,t,n)||l(e,t,n)||r(e,t,n)||a(e,t,n))},u=function(e,t){var n,o=new e(t);try{n=new CustomEvent("LazyLoad::Initialized",{detail:{instance:o}})}catch(e){(n=document.createEvent("CustomEvent")).initCustomEvent("LazyLoad::Initialized",!1,!1,{instance:o})}window.dispatchEvent(n)},d=function(e,t){return e.getAttribute("data-"+t)},h=function(e,t,n){return e.setAttribute("data-"+t,n)},f=function(e,t){var n=e.parentNode;if("PICTURE"===n.tagName)for(var o=0;o<n.children.length;o++){var i=n.children[o];if("SOURCE"===i.tagName){var s=d(i,t);s&&i.setAttribute("srcset",s)}}},_=function(e,t,n){var o=e.tagName,i=d(e,n);if("IMG"===o){f(e,t);var s=d(e,t);return s&&e.setAttribute("srcset",s),void(i&&e.setAttribute("src",i))}"IFRAME"!==o?i&&(e.style.backgroundImage='url("'+i+'")'):i&&e.setAttribute("src",i)},p="classList"in document.createElement("p"),m=function(e,t){p?e.classList.add(t):e.className+=(e.className?" ":"")+t},g=function(e,t){p?e.classList.remove(t):e.className=e.className.replace(new RegExp("(^|\\s+)"+t+"(\\s+|$)")," ").replace(/^\s+/,"").replace(/\s+$/,"")},v=function(t){this._settings=_extends({},e,t),this._queryOriginNode=this._settings.container===window?document:this._settings.container,this._previousLoopTime=0,this._loopTimeout=null,this._boundHandleScroll=this.handleScroll.bind(this),this._isFirstLoop=!0,window.addEventListener("resize",this._boundHandleScroll),this.update()};v.prototype={_reveal:function(e){var t=this._settings,o=function o(){t&&(e.removeEventListener("load",i),e.removeEventListener("error",o),g(e,t.class_loading),m(e,t.class_error),n(t.callback_error,e))},i=function i(){t&&(g(e,t.class_loading),m(e,t.class_loaded),e.removeEventListener("load",i),e.removeEventListener("error",o),n(t.callback_load,e))};"IMG"!==e.tagName&&"IFRAME"!==e.tagName||(e.addEventListener("load",i),e.addEventListener("error",o),m(e,t.class_loading)),_(e,t.data_srcset,t.data_src),n(t.callback_set,e)},_loopThroughElements:function(){var e=this._settings,o=this._elements,i=o?o.length:0,s=void 0,r=[],l=this._isFirstLoop;for(s=0;s<i;s++){var a=o[s];e.skip_invisible&&null===a.offsetParent||(t||c(a,e.container,e.threshold))&&(l&&m(a,e.class_initial),this._reveal(a),r.push(s),h(a,"was-processed",!0))}for(;r.length;)o.splice(r.pop(),1),n(e.callback_processed,o.length);0===i&&this._stopScrollHandler(),l&&(this._isFirstLoop=!1)},_purgeElements:function(){var e=this._elements,t=e.length,n=void 0,o=[];for(n=0;n<t;n++){var i=e[n];d(i,"was-processed")&&o.push(n)}for(;o.length>0;)e.splice(o.pop(),1)},_startScrollHandler:function(){this._isHandlingScroll||(this._isHandlingScroll=!0,this._settings.container.addEventListener("scroll",this._boundHandleScroll))},_stopScrollHandler:function(){this._isHandlingScroll&&(this._isHandlingScroll=!1,this._settings.container.removeEventListener("scroll",this._boundHandleScroll))},handleScroll:function(){var e=this._settings.throttle;if(0!==e){var t=Date.now(),n=e-(t-this._previousLoopTime);n<=0||n>e?(this._loopTimeout&&(clearTimeout(this._loopTimeout),this._loopTimeout=null),this._previousLoopTime=t,this._loopThroughElements()):this._loopTimeout||(this._loopTimeout=setTimeout(function(){this._previousLoopTime=Date.now(),this._loopTimeout=null,this._loopThroughElements()}.bind(this),n))}else this._loopThroughElements()},update:function(){this._elements=Array.prototype.slice.call(this._queryOriginNode.querySelectorAll(this._settings.elements_selector)),this._purgeElements(),this._loopThroughElements(),this._startScrollHandler()},destroy:function(){window.removeEventListener("resize",this._boundHandleScroll),this._loopTimeout&&(clearTimeout(this._loopTimeout),this._loopTimeout=null),this._stopScrollHandler(),this._elements=null,this._queryOriginNode=null,this._settings=null}};var w=window.lazyLoadOptions;return w&&function(e,t){var n=t.length;if(n)for(var o=0;o<n;o++)u(e,t[o]);else u(e,t)}(v,w),v});
@@ -488,7 +647,7 @@ function scrollToPosition ( pxFromTop, duration ) {
     );
 }
 jQuery(document).ready(function($) {
-    $(".td-to-demos").click(function(event){
+    $(".td-to-demos").on('click', function(event){
         event.preventDefault();
         if(tdIsScrollingAnimation) {
             return;
@@ -497,7 +656,7 @@ jQuery(document).ready(function($) {
     });
 
     // click on the little mouse :)
-    $(".td-scroll-to-demos").click(function(event){
+    $(".td-scroll-to-demos").on('click', function(event){
         event.preventDefault();
         if(tdIsScrollingAnimation) {
             return;
@@ -510,7 +669,7 @@ jQuery(document).ready(function($) {
 });
 
 jQuery(document).ready(function($) {
-    $(".td-to-support").click(function(event){
+    $(".td-to-support").on('click', function(event){
         event.preventDefault();
         if(tdIsScrollingAnimation) {
             return;
@@ -589,7 +748,7 @@ var tdFilter = {};
 
         init: function() {
 
-            jQuery( window).resize(function(event) {
+            jQuery( window).on('resize', function(event) {
 
                 for ( var i = 0; i < tdFilter.items.length; i++ ) {
 
@@ -722,7 +881,7 @@ var tdFilter = {};
 
 
 
-            $filterLinks.find('a').click(function(event) {
+            $filterLinks.find('a').on('click', function(event) {
 
                 event.preventDefault();
 
@@ -819,9 +978,6 @@ var tdFilter = {};
     };
 })( jQuery );
 
-
-
-
 var tdImageLoader = {};
 var tdPresentation = {};
 
@@ -889,7 +1045,7 @@ var tdPresentation = {};
 
             for ( var i = 0; i < tdPresentation.items.length; i++ ) {
 
-                tdPresentation.items[i].$element.click(function(event) {
+                tdPresentation.items[i].$element.on('click', function(event) {
                     event.preventDefault();
 
 

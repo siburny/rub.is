@@ -1,5 +1,8 @@
 .td-system-status-table {
   margin-bottom: 35px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12) !important;
+  border-radius: 3px;
+  border: none !important;
 
   tr:nth-child(2n) td, table.wc_status_table tr:nth-child(2n) th {
     background: #fcfcfc;
@@ -8,10 +11,12 @@
   th {
     padding: 10px 10px 10px 15px;
     font-weight: bold;
+    border-color: #ececec !important;
   }
 
   td {
     padding: 10px;
+    border-color: #ececec !important;
   }
 
 
@@ -178,11 +183,13 @@
   text-decoration: none;
 }
 .td-button-system-status-details:hover,
-.td-button-system-status-details:focus,
 .td-button-system-status:hover,
-.td-button-system-status:focus,
 .td-button-ss-pressed  {
   background: #58AD58;
+  color: #fff;
+}
+.td-button-system-status-details:focus,
+.td-button-system-status:focus {
   color: #fff;
 }
 .td-button-system-status {
@@ -226,5 +233,68 @@
 
   .td-video-id-container {
     min-width: 100px;
+  }
+
+  .td-button-system-status-view {
+    position: relative;
+    margin-left: 0;
+    transition: padding-right 0.3s;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      margin-top: -6px;
+      margin-left: -5px;
+      transition: opacity 0.3s;
+      border: 1px solid #fff;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-radius: 50%;
+      -webkit-animation: fullspin 1s infinite ease-out;
+      animation: fullspin 1s infinite ease-out;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    &.td-button-system-status-view-loading {
+      padding-right: 28px;
+
+      &:after {
+        opacity: 1;
+      }
+    }
+  }
+
+  .td-system-status-inner-table-videos-info {
+    &:not(:empty) {
+      margin-top: 10px;
+    }
+  }
+
+  @-webkit-keyframes fullspin {
+    0% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0)
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg)
+    }
+  }
+
+  @keyframes fullspin {
+    0% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0)
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg)
+    }
   }
 }

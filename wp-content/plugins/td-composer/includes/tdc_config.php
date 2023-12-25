@@ -14,6 +14,15 @@ class tdc_config {
 		'tdcInit'               => '/assets/js/wp-admin/tdcInit.js',  //@todo this should load only on edit post in wp-admin
 		'tdcDebug'              => '/assets/js/tdcDebug.js',  //inject tdcDebug in the iframe also
 		'tdcStore'              => '/assets/js/tdcStore.js',
+
+		'tdcVue'                => '/assets/js/admin/vue/external/vue.js',
+        'tdcVueRouter'          => '/assets/js/admin/vue/external/vue-router.js',
+        'tdcError'              => '/assets/js/admin/vue/error.js',
+
+		'tdcApi'                => '/assets/js/admin/tdcApi.js',
+
+		'tdcCheckKey'           => '/assets/js/admin/check-key.js',
+		'tdcCheckLicence'       => '/assets/js/admin/check-licence.js',
 	);
 
 	static $js_files_for_wrapper = array (
@@ -144,6 +153,12 @@ class tdc_config {
 			'css_file' => '/font-newspaper.css',
 			'template_file' => 'font-newspaper.php',
 			'theme_font' => true,
+		),
+		'custom_svg_icons' => array(
+			'name' => 'Custom SVG Icons',
+            'css_file' => '',
+			'template_file' => 'custom-svg-icons.php',
+			'theme_font' => false,
 		),
 	);
 

@@ -196,6 +196,7 @@ class tdm_block_fancy_text_image extends td_block {
 		$title1 = $this->get_shortcode_att( 'title1' );
 		$title2 = $this->get_shortcode_att( 'title2' );
 		$button_text = $this->get_shortcode_att( 'button_text' );
+        $button_icon = $this->get_shortcode_att( 'button_tdicon' );
 		$content_align_horizontal = $this->get_shortcode_att( 'content_align_horizontal' );
 		$content_align_vertical = $this->get_shortcode_att( 'content_align_vertical' );
 		$layout = $this->get_shortcode_att( 'layout' );
@@ -261,7 +262,7 @@ class tdm_block_fancy_text_image extends td_block {
                     $buffy_text .= '<' . $title_tag . ' class="tdm-fancy-title"><span class="tdm-fancy-title1">' . $title1 . '</span><span class="tdm-fancy-title2">' . $title2 . '</span></' . $title_tag . '>';
                     $buffy_text .= '<p class="tdm-descr">' . $description . '</p>';
 
-                    if ( ! empty( $button_text ) ) {
+                    if ( ! empty( $button_text ) || ! empty( $button_icon ) ) {
                         $tds_button = $this->get_shortcode_att('tds_button');
                         if ( empty( $tds_button ) ) {
                             $tds_button = td_util::get_option( 'tds_button', 'tds_button1' );

@@ -7,8 +7,12 @@
 function td_css_generator_mob() {
 
     $raw_css = "
+
 	    <style>
-	
+        /* @excl_label */
+        .td-module-exclusive .td-module-title a:before {
+            content: '@excl_label';
+        }
 	    /* @theme_color_mob */
 	    a,
 	    .td-post-author-name a,
@@ -331,6 +335,11 @@ function td_css_generator_mob() {
 
     // theme color
     $td_css_compiler->load_setting('theme_color_mob');
+
+    $excl_label_translation = __td('EXCLUSIVE', TD_THEME_NAME);
+    if( $excl_label_translation != 'EXCLUSIVE' ) {
+        $td_css_compiler->load_setting_raw('excl_label', $excl_label_translation);
+    }
 
     // menu color
     $td_css_compiler->load_setting('menu_background_mob');

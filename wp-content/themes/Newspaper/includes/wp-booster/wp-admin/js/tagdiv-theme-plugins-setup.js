@@ -311,9 +311,12 @@ jQuery(window).on('load', function () {
 
         if ( 'undefined' !== typeof window.tdData ) {
             tdConfirm.modal({
-                caption: 'Update / Downgrade Theme & Plugins',
-                htmlInfoContent: 'The theme version will change to ' + Object.keys(window.tdData.version)[0] + '. The activated plugins should be automatically updated and reactivated!',
-                hideNoButton: true,
+                caption: 'Update Theme & Plugins',
+                //htmlInfoContent: 'The theme version will change to ' + Object.keys(window.tdData.version)[0] + '. The activated plugins should be automatically updated and reactivated!',
+                url: '#TB_inline?inlineId=td-confirm&width=780',
+                htmlInfoContent: 'VERY IMPORTANT! Before updating to ' + Object.keys(window.tdData.version)[0] + ' version, please ensure the theme has full access permissions to the WordPress folders (or temporarily deactivate any security plugin). We also recommend you make a complete website and database backup. <a target="_blank" href="https://forum.tagdiv.com/how-to-update-the-theme-2/">Read more</a><br><br><br>Continue to update?',
+                switchButtons: false,
+                textYes: 'Update',
                 callbackYes: function () {
 
                     jQuery.ajax({

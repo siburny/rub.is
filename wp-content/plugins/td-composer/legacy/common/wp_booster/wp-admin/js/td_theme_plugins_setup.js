@@ -1,30 +1,8 @@
-
+/* global jQuery:{} */
+/* global theme_plugins_setup_params:{} */
 var ThemePluginsSetup = (function($){
 
     var t;
-
-    // callbacks from form button clicks.
-    var callbacks = {
-        install_plugins: function(btn){
-            var plugins = new PluginManager();
-            plugins.init(btn);
-        }
-    };
-
-    function window_loaded(){
-        // init button clicks:
-        $('.td-button-install-plugins').on( 'click', function(e) {
-
-            if( $(this).data('callback') && typeof callbacks[$(this).data('callback')] !== 'undefined' ){
-                // we have to process a callback before continue with form submission
-                callbacks[$(this).data('callback')](this);
-                return false;
-            } else {
-                return true;
-            }
-
-        });
-    }
 
     function PluginManager(){
 
@@ -142,7 +120,6 @@ var ThemePluginsSetup = (function($){
                 jQuery(btn).attr( 'disabled', true );
 
                 complete = function() {
-
                     setTimeout( function () {
                         var failedPlugins = [];
 
@@ -194,7 +171,31 @@ var ThemePluginsSetup = (function($){
 
                 find_next();
             }
+        };
+
+    }
+
+    // callbacks from form button clicks.
+    var callbacks = {
+        install_plugins: function(btn){
+            var plugins = new PluginManager();
+            plugins.init(btn);
         }
+    };
+
+    function window_loaded(){
+        // init button clicks:
+        $('.td-button-install-plugins').on( 'click', function(e) {
+
+            if( $(this).data('callback') && typeof callbacks[$(this).data('callback')] !== 'undefined' ){
+                // we have to process a callback before continue with form submission
+                callbacks[$(this).data('callback')](this);
+                return false;
+            } else {
+                return true;
+            }
+
+        });
     }
 
     return {
@@ -202,7 +203,7 @@ var ThemePluginsSetup = (function($){
             t = this;
             $(window_loaded);
         }
-    }
+    };
 
 })(jQuery);
 

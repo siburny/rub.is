@@ -35,7 +35,7 @@ class td_css_res_compiler  {
 
 		$this->responsive_context = new td_res_context( $index_style );
 
-		if ( empty( $atts ) ) {
+		if ( empty( $atts ) || td_util::is_mobile_theme() ) {
 			return;
 		}
 
@@ -253,6 +253,19 @@ class td_css_res_compiler  {
 			}
 		}
 
+		// Important! For mobile theme, td_global::$viewport_settings is not set, because the shortcodes usually comes with specific css. But there are shortcodes (like those of tds_locker plugin) which need it.
+		// For those shortcodes we set a media viewport with 'all'. but the media query is for phones (@media (max-width: 767px))
+		if ( empty(td_global::$viewport_settings) && class_exists('Mobile_Detect')) {
+			$mobile_detect = new Mobile_Detect();
+			if ( $mobile_detect->isMobile() ) {
+				td_global::$viewport_settings = array(
+					'all' => array(
+						'media_query' => '@media (max-width: 767px)',
+					)
+				);
+			}
+		}
+
 		// This keep the order: all, landscape, portrait, phone.
 		foreach ( td_global::$viewport_settings as $media => $media_settings ) {
 
@@ -418,6 +431,7 @@ class td_res_context {
 
 	function load_font_settings( $param_name = '', $style_class = '' ) {
 		$font_family_list = td_util::get_font_family_list( false );
+		$tdc_wm_global_fonts = td_util::get_option('tdc_wm_global_fonts' );
 
 		$font_settings = array(
 			'font_family' => 'font-family',
@@ -453,13 +467,28 @@ class td_res_context {
 					$loaded_value = 'DEFAULT';
 
 					if ( empty( $font_setting_value ) ) {
-
 						$font_family_loaded = $loaded_value;
-
 					} else {
 
-						$font_family_loaded = $font_setting_value;
+						if ( strpos( $font_setting_value, '_global' ) !== false ) {
+							$font_setting_option_id = str_replace( '_global', '', $font_setting_value );
+
+							if ( !empty( $tdc_wm_global_fonts ) && is_array( $tdc_wm_global_fonts ) ) {
+								foreach ( $tdc_wm_global_fonts as $font_option_id => $font_data ) {
+
+									if ( $font_option_id === $font_setting_option_id ) {
+										$font_family_loaded = $font_data['key'];
+									}
+
+								}
+							}
+
+						} else {
+							$font_family_loaded = $font_setting_value;
+						}
+
 					}
+
 					break;
 
 				case 'font-size':
@@ -480,8 +509,29 @@ class td_res_context {
 
 			if ( '' !== $font_setting_value ) {
 				if ( 'font-family' === $font_setting ) {
-					if ( 'DEFAULT' !== $font_setting_value && !empty($font_family_list[ $font_setting_value ])) {
-						$param_value .= $font_setting . ':' . $font_family_list[ $font_setting_value ] . ' !important;';
+
+					if ( 'DEFAULT' !== $font_setting_value && !empty( $font_family_list[$font_setting_value] ) ) {
+
+						if ( strpos( $font_setting_value, '_global' ) !== false ) {
+
+							// global fonts
+							$f_var = '';
+							if ( !empty( $tdc_wm_global_fonts ) && is_array( $tdc_wm_global_fonts ) ) {
+								foreach ( $tdc_wm_global_fonts as $font_option_id => $font_data ) {
+
+									if ( $font_data['name'] /*. ' -- ' . trim( $font_data['key'] )*/ === $font_family_list[$font_setting_value] ) {
+										$f_var = 'var(--' . $font_option_id . ')';
+									}
+
+								}
+							}
+
+							$param_value .= $font_setting . ': ' . $f_var . ' !important;';
+
+						} else {
+							$param_value .= $font_setting . ':' . $font_family_list[$font_setting_value] . ' !important;';
+						}
+
 					}
 				} else {
 					$param_value .= $font_setting . ':' . $font_setting_value . ' !important;';
@@ -552,6 +602,9 @@ class td_res_context {
 
 					$shadow_setting_value = $default_shadow_size;
 				}
+                if ( 'solid' === $shadow_setting_value ) {
+                    $shadow_setting_value = 0;
+                }
 
                 if( $shadow_setting_value < 0 ) {
                     $param_value = 'inset' . $param_value;
@@ -632,5 +685,26 @@ class td_res_context {
         }
 
         return $icon_class;
+    }
+
+
+    function calc_full_ad_spot_width( $cols_count, $col_width, $ad_spot_repeat, $ad_loop_full ) {
+
+        $result = $col_width;
+
+        if( $ad_loop_full != '' ) {
+            if( $ad_spot_repeat > ( $cols_count - 1 ) ) {
+                if( $ad_spot_repeat % $cols_count == 0 ) {
+                    $result = 100;
+                } else {
+                    $result = 100 - ( $ad_spot_repeat % $cols_count ) * $col_width;
+                }
+            } else {
+                $result = ( $cols_count - $ad_spot_repeat ) * $col_width;
+            }
+        }
+
+        return $result;
+
     }
 }

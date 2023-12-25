@@ -24,7 +24,7 @@ $are_custom_post_types_installed = false;
 // add here the slug of the wp cpt you want to exclude from theme's panel cpt settings
 $exclude = array( 'vc_grid_item', 'tdb_templates', 'amp_validated_url', 'tds_email', 'tds_locker' );
 
-foreach ($td_custom_post_types_obj as $custom_post_type_obj) {
+foreach ( $td_custom_post_types_obj as $custom_post_type_obj ) {
     if (
             in_array( $custom_post_type_obj->name, $exclude )
             or ( // do not show settings for woocommerce CPT because we set up woocommerce from a different panel
@@ -36,22 +36,26 @@ foreach ($td_custom_post_types_obj as $custom_post_type_obj) {
                     or $custom_post_type_obj->name == 'shop_order_refund'
                     or $custom_post_type_obj->name == 'shop_coupon'
                     or $custom_post_type_obj->name == 'shop_webhook'
+                    or $custom_post_type_obj->name == 'tdc-review'
+                    or $custom_post_type_obj->name == 'tdc-review-email'
                 )
             )
         ) {
         continue;
     }
-    echo td_panel_generator::ajax_box($custom_post_type_obj->labels->name . '<span class="td-excerpt-arrow"></span><span class="td-box-title-label">' . $custom_post_type_obj->name . '</span>', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_get_cpt_settings_by_post_type',
-            'custom_post_type' => $custom_post_type_obj->name
-        ), '', 'td_panel_box_' . $custom_post_type_obj->labels->name
+    echo td_panel_generator::ajax_box(
+            $custom_post_type_obj->labels->name . '<span class="td-excerpt-arrow"></span><span class="td-box-title-label">' . $custom_post_type_obj->name . '</span>',
+            array(
+                'td_ajax_calling_file' => basename(__FILE__),
+                'td_ajax_box_id' => 'td_get_cpt_settings_by_post_type',
+                'custom_post_type' => $custom_post_type_obj->name
+            ), '', 'td_panel_box_' . $custom_post_type_obj->labels->name
     );
 
     $are_custom_post_types_installed = true;
 }
 
-if ($are_custom_post_types_installed === false) {
+if ( $are_custom_post_types_installed === false ) {
     echo    '<div class="td-panel-no-settings-found" style="text-align: center">
                 <strong>No custom post types detected</strong> <br>
                 <span>
@@ -62,12 +66,11 @@ if ($are_custom_post_types_installed === false) {
 }
 ?>
 
-
-
-
 <hr>
 <div class="td-section-separator">Custom taxonomies</div>
+
 <?php
+
 // get all the taxonomies - except the built ones
 $td_taxonomies_obj = get_taxonomies(
     array(
@@ -77,7 +80,7 @@ $td_taxonomies_obj = get_taxonomies(
 );
 
 $are_custom_taxonomies_installed = false;
-foreach ($td_taxonomies_obj as $td_taxonomy_obj) {
+foreach ( $td_taxonomies_obj as $td_taxonomy_obj ) {
 
     if ( // ignore woocommerce taxonomies because we set up woocommerce from a different panel
         td_global::$is_woocommerce_installed === true
@@ -88,6 +91,7 @@ foreach ($td_taxonomies_obj as $td_taxonomy_obj) {
             or $td_taxonomy_obj->name == 'product_tag'
             or $td_taxonomy_obj->name == 'product_visibility'
             or $td_taxonomy_obj->name == 'tds_list'
+            or $td_taxonomy_obj->name == 'tdc-review-criteria'
             or ( strpos( $td_taxonomy_obj->name, 'pa_' ) !== false ) // ignores product attributes taxonomies
         )
     ) {

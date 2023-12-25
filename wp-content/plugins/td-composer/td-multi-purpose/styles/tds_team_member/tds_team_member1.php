@@ -59,6 +59,10 @@ class tds_team_member1 extends td_style {
 				.$unique_style_class .tdm-title {
 				    color: @name_color;
 				}
+				/* @name_color_hover */
+				.$unique_style_class .tdm-title a:hover {
+				    color: @name_color_hover;
+				}
 				/* @title_color */
 				body .$unique_style_class .tdm-member-title {
 				    color: @title_color;
@@ -155,6 +159,9 @@ class tds_team_member1 extends td_style {
         // name color
         $res_ctx->load_settings_raw( 'name_color', $res_ctx->get_style_att( 'name_color', __CLASS__ ) );
 
+        // name color hover
+        $res_ctx->load_settings_raw( 'name_color_hover', $res_ctx->get_style_att( 'name_color_hover', __CLASS__ ) );
+
         // job title color
         $res_ctx->load_settings_raw( 'title_color', $res_ctx->get_style_att( 'title_color', __CLASS__ ) );
 
@@ -190,9 +197,15 @@ class tds_team_member1 extends td_style {
 
         $image = $this->get_shortcode_att( 'image' );
         $name = $this->get_shortcode_att( 'name' );
-        $job_title = $this->get_shortcode_att( 'job_title' );
+        $name_url = $this->get_shortcode_att( 'name_url' );
         $name_tag = $this->get_shortcode_att( 'name_tag' );
+        $job_title = $this->get_shortcode_att( 'job_title' );
         $description = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'description' ) ) ) );
+
+        // name url
+        if ( $name_url != '' )  {
+            $name = '<a href="' . $name_url . '">' . $name . '</a>';
+        }
 
         // name tag
         if ( empty($name_tag ) ) {

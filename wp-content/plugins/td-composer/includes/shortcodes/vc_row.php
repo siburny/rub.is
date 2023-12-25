@@ -626,6 +626,10 @@ class vc_row extends tdc_composer_block {
             'flex_order' => '',
             'flex_width' => '',
 
+            'hide_for_user_type' => '',
+            'logged_plan_id' => '',
+            'author_plan_id' => '',
+
 		), $atts);
 
 		$row_class = 'tdc-row';
@@ -703,10 +707,10 @@ class vc_row extends tdc_composer_block {
             $clearfixColumns = false;
 
             if ( ! empty( $this->atts['video_background'] ) ) {
-
+                $self_hosted_video = td_video_support::detect_video_service($this->atts['video_background']) === 'self-hosted';
                 $output = '';
 
-                if( td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' ) {
+                if( td_util::get_option('tds_yt_api_key') == '' && TD_DEPLOY_MODE == 'deploy' && !$self_hosted_video ) {
                     if ( is_user_logged_in() ) {
                         ob_start();
                         ?>
@@ -746,7 +750,7 @@ class vc_row extends tdc_composer_block {
                 } else {
                     $videos_info = td_remote_video::api_get_videos_info( array( $this->atts['video_background'] ), 'youtube');
 
-                    if ( is_array( $videos_info ) && count( $videos_info ) ) {
+                    if ( (is_array( $videos_info ) && count( $videos_info )) || $self_hosted_video ) {
                         $row_class .= ' tdc-row-video-background';
 
                         ob_start();
@@ -795,7 +799,8 @@ class vc_row extends tdc_composer_block {
                                 right: 0;
                             }
 
-                            .tdc-video-inner-wrapper iframe {
+                            .tdc-video-inner-wrapper iframe,
+                            .tdc-video-inner-wrapper video{
                                 opacity: 0;
                                 transition: opacity 0.4s;
                                 position: absolute;
@@ -808,7 +813,8 @@ class vc_row extends tdc_composer_block {
                                 -o-transform: translate3d(-50%, -50%, 0);
                             }
 
-                            .tdc-video-inner-wrapper iframe.tdc-video-background-visible {
+                            .tdc-video-inner-wrapper iframe.tdc-video-background-visible,
+                            .tdc-video-inner-wrapper video.tdc-video-background-visible {
                                 opacity: 1 !important;
                             }
 
@@ -831,10 +837,14 @@ class vc_row extends tdc_composer_block {
                         $output .= '<div class="tdc-video-parallax-wrapper">';
                         $output .= '<div class="tdc-video-inner-wrapper" data-video-scale="' . $this->atts['video_scale'] . '" data-video-opacity="' . $this->atts['video_opacity'] . '">';
 
-                        foreach ( $videos_info as $video_id => $video_info ) {
-                            $output .= $videos_info[ $video_id ]['embedHtml'];
-                            $output .= '<div class="tdc-video-thumb-on-mobile" style="background-image:url(' . $video_info['standard'] . ');"></div>';
-                            break;
+                        if ($self_hosted_video) {
+                            $output .= td_video_support::render_video($this->atts['video_background'], 'no','yes', 'yes');
+                        } else {
+                            foreach ( $videos_info as $video_id => $video_info ) {
+                                $output .= $videos_info[ $video_id ]['embedHtml'];
+                                $output .= '<div class="tdc-video-thumb-on-mobile" style="background-image:url(' . $video_info['standard'] . ');"></div>';
+                                break;
+                            }
                         }
 
                         $output .= '</div>';
@@ -875,6 +885,7 @@ class vc_row extends tdc_composer_block {
                                         var $wrapper = jQuery(this);
 
                                         var $iframe = $wrapper.find('iframe');
+                                        var $video = $wrapper.find('video');
 
                                         if ('undefined' !== typeof $wrapper.data('video-scale')) {
                                             $wrapper.css({
@@ -885,6 +896,34 @@ class vc_row extends tdc_composer_block {
                                             $wrapper.css({
                                                 opacity: $wrapper.data('video-opacity')
                                             });
+                                        }
+
+                                        if ( $video.length ) {
+                                            var videoWidth = $video.width(),
+                                                videoHeight = $video.height(),
+                                                videoAspectRatio = videoHeight / videoWidth,
+                                                wrapperWidth = $wrapper.width(),
+                                                wrapperHeight = $wrapper.height(),
+                                                wrapperAspectRatio = wrapperHeight / wrapperWidth;
+
+                                            $video.attr( 'aspect-ratio', videoAspectRatio );
+
+                                            if (videoAspectRatio < wrapperAspectRatio) {
+                                                $video.css({
+                                                    width: wrapperHeight / videoAspectRatio,
+                                                    height: wrapperHeight
+                                                });
+                                            } else if (videoAspectRatio > wrapperAspectRatio) {
+                                                $video.css({
+                                                    width: '100%',
+                                                    height: videoAspectRatio * wrapperWidth
+                                                });
+                                            }
+
+                                            setTimeout(function () {
+                                                $video.addClass('tdc-video-background-visible');
+                                            }, 100);
+
                                         }
 
                                         if ( $iframe.length ) {
@@ -987,10 +1026,20 @@ class vc_row extends tdc_composer_block {
                             <?php
                             $output = ob_get_clean();
 
-
-                            $output .= '<div class="tdc-row-video-background-error">';
+                            $home_url = esc_url(get_home_url());
+//
+                            //is selfhosted url, but it cannot be found?
+                            if ( strpos( $this->atts['video_background'], $home_url) !== false ) {
+                                $output .= '<div class="tdc-row-video-background-error">';
+                                $output .= td_util::get_block_error('Row video background', '<strong>Self hosted video </strong> was not found. Please make sure you use a sef hosted video url.');
+                                $output .= '</div>';
+                            } else {
+                                $output .= '<div class="tdc-row-video-background-error">';
                                 $output .= td_util::get_block_error('Row video background', '<strong>YouTube API Key</strong> invalid or <strong>Video id</strong> was not found or can\'t be retrieved.');
-                            $output .= '</div>';
+                                $output .= '</div>';
+                            }
+
+
                         }
                     }
                 }
@@ -1107,6 +1156,26 @@ class vc_row extends tdc_composer_block {
 		if ( !empty( $full_width ) ) {
 			$row_class .= ' ' . $full_width;
 		}
+
+        // display restrictions
+        $hide_for_user_type = $this->atts['hide_for_user_type'];
+        if( $hide_for_user_type != '' ) {
+            if( !( td_util::tdc_is_live_editor_ajax() || td_util::tdc_is_live_editor_iframe() ) &&
+                (
+                    ( $hide_for_user_type == 'logged-in' && is_user_logged_in() ) ||
+                    ( $hide_for_user_type == 'guests' && !is_user_logged_in() )
+                )
+            ) {
+                $row_class .= ' tdc-restr-display-none';
+            }
+        } else {
+            $author_plan_ids = $this->atts['author_plan_id'];
+            $all_users_plan_ids = $this->atts['logged_plan_id'];
+
+            if( !td_util::plan_limit($author_plan_ids, $all_users_plan_ids) ) {
+                $row_class .= ' tdc-restr-display-none';
+            }
+        }
 
 
 		// The following commented code is for the new theme

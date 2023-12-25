@@ -43,7 +43,7 @@
                     ', 'right')
                 ?>
             </span>
-            <div class="td-inline-block-wrap">
+            <div class="td-inline-block-wrap td-post-templates-metabox">
                 <?php
                 echo td_panel_generator::visual_select_o(array(
                     'ds' => 'td_post_theme_settings',
@@ -100,9 +100,23 @@
             </div>
             <span class="td-page-o-info">If the posts has multiple categories, the one selected here will be used for settings and it appears in the category labels.</span>
         </div>
+<?php
+//global $post;
+//$post_id = $post->ID;
+//
+//$td_post_theme_settings = td_util::get_post_meta_array( $post_id, 'td_post_theme_settings' );
+//$default_template_id = td_util::get_option( 'td_default_site_post_template' );
+//$template_id = '';
 
+//// check if we have a specific template set on the current post
+//if ( !empty( $td_post_theme_settings[ 'td_post_template' ] ) ) {
+//    $template_id = $td_post_theme_settings['td_post_template'];
+//} else { //check global template
+//    $template_id = td_util::get_option( 'td_default_site_post_template' );
+//}
+//if ( !td_global::is_tdb_template( $template_id, true ) ) { ?>
         <!-- sidebar position -->
-        <div class="td-meta-box-row">
+        <div class="td-meta-box-row td-sidebar-box">
             <span class="td-page-o-custom-label">
                 Sidebar position:
                 <?php
@@ -136,7 +150,7 @@
         </div>
 
         <!-- custom sidebar -->
-        <div class="td-meta-box-row">
+        <div class="td-meta-box-row td-sidebar-box">
             <span class="td-page-o-custom-label">
                 Custom sidebar:
                 <?php
@@ -161,7 +175,7 @@
             ));
             ?>
         </div>
-
+<?php //} ?>
         <div class="td-meta-box-row">
             <?php $mb->the_field('td_subtitle'); ?>
             <span class="td-page-o-custom-label td_text_area_label">Subtitle:</span>
@@ -203,6 +217,20 @@
             <span class="td-page-o-custom-label">Via url:</span>
             <input class="td-input-text-post-settings" type="text" name="<?php $mb->the_name(); ?>" value="<?php $mb->the_value(); ?>"/>
             <span class="td-page-o-info">Full url for via</span>
+        </div>
+
+        <div class="td-meta-box-row">
+            <?php $mb->the_field('td_custom_cat_name'); ?>
+            <span class="td-page-o-custom-label">Custom Label:</span>
+            <input class="td-input-text-post-settings" type="text" name="<?php $mb->the_name(); ?>" value="<?php $mb->the_value(); ?>"/>
+            <span class="td-page-o-info">Custom Category Label name, this will appear on flex modules/blocks like a category tag</span>
+
+        </div>
+        <div class="td-meta-box-row">
+            <?php $mb->the_field('td_custom_cat_name_url'); ?>
+            <span class="td-page-o-custom-label">Custom Label url:</span>
+            <input class="td-input-text-post-settings" type="text" name="<?php $mb->the_name(); ?>" value="<?php $mb->the_value(); ?>"/>
+            <span class="td-page-o-info">Full url for Custom Label</span>
         </div>
 
     </div> <!-- /post option general -->

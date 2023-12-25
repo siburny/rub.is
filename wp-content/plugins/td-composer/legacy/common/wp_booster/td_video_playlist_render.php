@@ -49,29 +49,54 @@ class td_video_playlist_render {
                             if ( ( isset($atts['playlist_yt']) && empty($atts['playlist_yt']) ) || ( isset($atts['playlist_v']) && empty($atts['playlist_v']) ) ) {
                                 $buffy .= td_util::get_block_error('Video playlist', '<strong>Video id field</strong> is empty. Configure this block/widget and enter a list of video id\'s');
                             } else if ( $playlist_html == '' ) {
-                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Video ids</strong> were not found or can\'t be retrieved.');
+                                if (isset($atts['playlist_yt']) && !empty($atts['playlist_yt']) ) {
+                                    $video_id = current(explode(",", $atts['playlist_yt']));
+                                    $api_response = td_remote_video::youtube_api_key_check($video_id, 'video_ids');
+                                    if ( $api_response !== true ) {
+                                        $buffy .= $api_response;
+                                    } else {
+                                        $buffy .= td_util::get_block_error('Video playlist', '<strong>Video ids</strong> were not found or can\'t be retrieved.');
+                                    }
+                                } else {
+                                    $buffy .= td_util::get_block_error('Video playlist', '<strong>Video ids</strong> were not found or can\'t be retrieved.');
+                                }
                             }
                             break;
                         case 'channel_id':
                             if ( empty($atts['channel_id']) ) {
                                 $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel ID field</strong> is empty. Configure this block/widget and enter a youtube channel id');
                             } else if ( $playlist_html == '' ) {
-                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel</strong> doesn\'t exist or does not have any uploads');
+                                $api_response = td_remote_video::youtube_api_key_check($atts['channel_id'], 'channel');
+                                if ( $api_response !== true ) {
+                                    $buffy .= $api_response;
+                                } else {
+                                    $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel</strong> doesn\'t exist or does not have any uploads');
+                                }
                             }
                             break;
                         case 'username':
                             if ( empty($atts['username']) ) {
                                 $buffy .= td_util::get_block_error('Video playlist', '<strong>Username field</strong> is empty. Configure this block/widget and enter a youtube username');
                             } else if ( $playlist_html == '' ) {
-                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Channel</strong> doesn\'t exist or does not have any uploads');
+                                $api_response = td_remote_video::youtube_api_key_check($atts['username'],'username');
+
+                                if ( $api_response !== true ) {
+                                    $buffy .= $api_response;
+                                } else {
+                                    $buffy .= td_util::get_block_error('Video playlist', '<strong>User</strong> doesn\'t exist or does not have any uploads');
+                                }
                             }
                             break;
                         case 'playlist_id':
                             if ( empty($atts['playlist_id']) ) {
                                 $buffy .= td_util::get_block_error('Video playlist', '<strong>Playlist id field</strong> is empty. Configure this block/widget and enter a playlist id');
                             } else if ( $playlist_html == '' ) {
-                                $buffy .= td_util::get_block_error('Video playlist', '<strong>Playlist</strong> doesn\'t exist or has no videos');
-                            }
+                                $api_response = td_remote_video::youtube_api_key_check($atts['playlist_id'], 'playlist');
+                                if ( $api_response !== true ) {
+                                    $buffy .= $api_response;
+                                } else {
+                                    $buffy .= td_util::get_block_error('Video playlist', '<strong>Playlist</strong> doesn\'t exist or has no videos');
+                                }                            }
                             break;
                         default:
                             break;
@@ -305,7 +330,7 @@ class td_video_playlist_render {
                         if( $playlist_video_ids !== false ) {
                             $uncached_pool_ids = array();
                             foreach ($playlist_video_ids as $video_id) {
-                                if ( !isset($playlist_videos_pool[$list_name][$video_id]['id']) && $video_id['status'] == 'public' ) {
+                                if ( !isset($playlist_videos_pool[$list_name][$video_id['id']] ) && $video_id['status'] == 'public' ) {
                                     $uncached_pool_ids[] = $video_id['id'];
                                 }
                             }

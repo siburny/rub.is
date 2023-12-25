@@ -9,7 +9,17 @@ class td_block_pinterest extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -114,7 +124,11 @@ class td_block_pinterest extends td_block {
 				}
 				
 
-
+                /* @f_header */
+				body .$unique_block_class .td-block-title a,
+				body .$unique_block_class .td-block-title span {
+					@f_header
+				}
 				/* @f_user */
 				body .$unique_block_class .td-pinterest-header .td-pinterest-user-meta .td-pinterest-user {
 					@f_user
@@ -158,6 +172,7 @@ class td_block_pinterest extends td_block {
 
 
         /*-- FONTS -- */
+        $res_ctx->load_font_settings( 'f_header' );
         $res_ctx->load_font_settings( 'f_user' );
         $res_ctx->load_font_settings( 'f_board' );
         $res_ctx->load_font_settings( 'f_followers' );

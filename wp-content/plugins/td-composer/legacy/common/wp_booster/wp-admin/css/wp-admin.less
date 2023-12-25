@@ -4,6 +4,8 @@
 
 
 @import "tooltip.less";
+@import "components/notifications";
+@import "components/tables";
 
 //load the panel files
 @import "panel/theme-panel-general.less";
@@ -23,6 +25,7 @@
 @import "wp_panels/demos.less";
 @import "wp_panels/system_status.less";
 @import "wp_panels/activation.less";
+@import "wp_panels/license.less";
 @import "wp_panels/welcome.less";
 
 //page options
@@ -398,6 +401,14 @@
     .box-shadow(0 0 20px rgba(0, 0, 0, 0.2));
     overflow: hidden;
     padding: 0;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
 
     &:before {
       content: '';
@@ -435,6 +446,8 @@
 
   // content
   #TB_ajaxContent {
+    display: flex;
+    flex-direction: column;
     padding: 36px 15px 40px !important;
     height: auto !important;
     width: auto !important;
@@ -449,6 +462,18 @@
 
     // input in modal
     .td-confirm-info {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      a {
+        color: inherit;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
       input {
         background-color: transparent;
         border-width: 0 0 1px 0;
@@ -543,6 +568,15 @@
         }
       }
     }
+    .td-backup-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        margin-top: 0;
+      }
+    }
   }
 
   // buttons
@@ -635,6 +669,20 @@
     overflow-y: scroll;
   }
 }
+// green button on update page/themes page when you click to update the theme
+.newspaper_page_td_theme_updates,
+.themes-php {
+  .td-thickbox {
+    .td-confirm-yes {
+      background-color: #61ad66 !important;
+      color: #fff;
+
+      &:hover {
+        background-color: #538f57  !important;
+      }
+    }
+  }
+}
 
 // backup panel settings - diff panel
 .td-theme-settings-diff {
@@ -684,5 +732,113 @@
   .td-diff-val1,
   .td-diff-val2 {
     width: 35%;
+  }
+}
+
+
+// key check
+.td-check-key {
+  margin-right: 0;
+
+  .td-white-box {
+    margin: 0;
+    padding-top: 40px;
+  }
+
+  .td-check-notif {
+    background-color: rgba(255, 56, 56, 0.12);
+    margin-bottom: 25px;
+    padding: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #ff3838;
+  }
+
+  .button {
+    margin-top: 15px;
+  }
+}
+
+
+
+
+
+#tdb-check-key {
+  font-size: 14px;
+
+  @-webkit-keyframes fullspin {
+    0% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0)
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg)
+    }
+  }
+  @keyframes fullspin {
+    0% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0)
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg)
+    }
+  }
+}
+
+.tdb-checking-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 1055px;
+
+  &:before {
+    content: '';
+    display: none;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: -20px;
+    width: 36px;
+    height: 36px;
+    border: 3px solid #888;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: fullspin 1s infinite ease-out;
+    animation: fullspin 1s infinite ease-out;
+    z-index: 2;
+  }
+
+  &:after {
+    display: none;
+    margin-top: 13px;
+    font-size: 11px;
+    text-align: center;
+    color: #747f8b;
+  }
+}
+
+
+.tdb-checking-demo {
+  &:after {
+    content: 'Checking for new demos';
+  }
+}
+.tdb-checking-update {
+  &:after {
+    content: 'Checking for the latest updates';
+  }
+}
+
+.tdb-checking-loading {
+  min-height: 100px;
+
+  &:before,
+  &:after {
+    display: block;
   }
 }

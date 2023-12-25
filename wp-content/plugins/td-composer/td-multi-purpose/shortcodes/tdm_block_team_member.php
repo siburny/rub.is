@@ -6,9 +6,19 @@ class tdm_block_team_member extends td_block {
 	public function get_custom_css() {
 
 		$compiled_css = '';
-		$unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
 
-		$raw_css =
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
+
+        $raw_css =
 			"<style>
 				/* @style_general_team_member */
 				.tdm_block_team_member .tdm-member-image {
@@ -21,6 +31,9 @@ class tdm_block_team_member extends td_block {
                 }
                 .tdm_block_team_member .tdm-title {
                   margin-bottom: 0;
+                }
+                .tdm_block_team_member .tdm-title a {
+                    color: inherit;
                 }
                 .tdm_block_team_member .tdm-member-title {
                   display: block;

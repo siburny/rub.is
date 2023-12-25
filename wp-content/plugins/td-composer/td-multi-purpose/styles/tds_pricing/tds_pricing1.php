@@ -38,15 +38,15 @@ class tds_pricing1 extends td_style {
 				    color: @price_color;
 				}
 				/* @old_price_color */
-				.$unique_style_class .tdm-pricing-price-old {
+				.$unique_style_class span.tdm-pricing-price-old {
 				    color: @old_price_color;
 				}
 				/* @ribbon_background_color */
-				.$unique_style_class .tdm-pricing-ribbon {
+				.$unique_style_class div.tdm-pricing-ribbon {
 				    background-color: @ribbon_background_color;
 				}
 				/* @ribbon_text_color */
-				.$unique_style_class .tdm-pricing-ribbon {
+				.$unique_style_class div.tdm-pricing-ribbon {
 				    color: @ribbon_text_color;
 				}
 				/* @description_color */
@@ -58,7 +58,7 @@ class tds_pricing1 extends td_style {
 				    color: @features_color;
 				}
 				/* @icon_color */
-				.$unique_style_class .tdm-pricing-feature i {
+				.$unique_style_class .tdm-pricing-feature i.tdm-pricing-icon {
 				    color: @icon_color;
 				}
 				.$unique_style_class .tdm-pricing-feature .tdm-pricing-icon-svg svg,
@@ -288,11 +288,20 @@ class tds_pricing1 extends td_style {
         $button_position =  $this->get_shortcode_att( 'button_position' );
         $features = explode( "\n", rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'features' ) ) ) ) );
         $features_icon = $this->get_icon_att( 'features_tdicon' );
+        $features_icon_data = '';
+        if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+            $features_icon_data = 'data-td-svg-icon="' . $this->get_att( 'features_tdicon' ) . '"';
+        }
         $features_non_icon = $this->get_icon_att( 'features_non_tdicon' );
+        $features_non_icon_data = '';
+        if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+            $features_non_icon_data = 'data-td-svg-icon="' . $this->get_att( 'features_non_tdicon' ) . '"';
+        }
         $button_text = $this->get_shortcode_att( 'button_text' );
+        $button_icon = $this->get_shortcode_att( 'button_tdicon' );
 
         $buffy_button = '';
-        if ( ! empty( $button_text ) ) {
+        if ( ! empty( $button_text ) || ! empty( $button_icon ) ) {
             // Get tds_button
             $tds_button = $this->get_shortcode_att('tds_button');
             if ( empty( $tds_button ) ) {
@@ -305,7 +314,7 @@ class tds_pricing1 extends td_style {
         $buffy_features_icon = '';
         if( !empty( $features_icon ) ) {
             if( base64_encode( base64_decode( $features_icon ) ) == $features_icon ) {
-                $buffy_features_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg">' . base64_decode( $features_icon ) . '</span>';
+                $buffy_features_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg" ' . $features_icon_data . '>' . base64_decode( $features_icon ) . '</span>';
             } else {
                 $buffy_features_icon .= '<i class="tdm-pricing-icon ' . $features_icon . '"></i>';
             }
@@ -314,7 +323,7 @@ class tds_pricing1 extends td_style {
         $buffy_features_non_icon = '';
         if( !empty( $features_non_icon ) ) {
             if( base64_encode( base64_decode( $features_non_icon ) ) == $features_non_icon ) {
-                $buffy_features_non_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg">' . base64_decode( $features_non_icon ) . '</span>';
+                $buffy_features_non_icon .= '<span class="tdm-pricing-icon tdm-pricing-icon-svg" ' . $features_non_icon_data . '>' . base64_decode( $features_non_icon ) . '</span>';
             } else {
                 $buffy_features_non_icon .= '<i class="tdm-pricing-icon ' . $features_non_icon . '"></i>';
             }

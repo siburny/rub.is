@@ -70,7 +70,7 @@ function _etd($td_string, $td_domain = '') {
 
 /**
  * the Privacy Policy text is hardcoded in the new wp method
- * ONLY hook up if the user dosn't have another translation in po mo
+ * ONLY hook up if the user doesn't have another translation in po mo
  * @see get_the_privacy_policy_link
  */
 add_filter('gettext', 'td_translate_privacy_policy', 10, 3);

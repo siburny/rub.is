@@ -3,8 +3,309 @@
     var tdAdminPanelUrl = "<?php echo admin_url('admin.php?page=td_theme_panel'); ?>";
 </script>
 
+<!-- sharing -->
+<?php echo td_panel_generator::box_start('Social Share', false);
+if ( 'Newsmag' == TD_THEME_NAME || ( 'Newspaper' == TD_THEME_NAME && defined('TD_STANDARD_PACK') ) ) { ?>
+
+    <!-- text -->
+    <div class="td-box-row">
+        <div class="td-box-description td-box-full">
+            <p>All the articles of <?php echo TD_THEME_NAME ?> have sharing buttons at the start of the article
+                (usually under the title) and at the end of the article (after tags). You can sort the social
+                networks with drag and drop.</p>
+        </div>
+        <div class="td-box-row-margin-bottom"></div>
+    </div>
+
+
+    <div class="td-box-section-separator"></div>
+
+
+    <!-- ARTICLE sharing top -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">TOP ARTICLE SHARING</span>
+            <p>Show or hide the top article sharing on single post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_top_social_show',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- ARTICLE top like -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">TOP ARTICLE LIKE</span>
+            <p>Show or hide the top article like on single post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_top_like_show',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- ARTICLE top share text -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">TOP ARTICLE SHARE TEXT</span>
+            <p>Show or hide the top article share text on single post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_top_like_share_text_show',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- TOP sharing style -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">TOP SHARE BUTTONS STYLE</span>
+            <p>Change the appearance of the top sharing buttons.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_social_sharing_top_style',
+                'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
+            ));
+            ?>
+        </div>
+    </div>
+
+
+    <div class="td-box-section-separator"></div>
+
+
+    <!-- ARTICLE sharing bottom -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BOTTOM ARTICLE SHARING</span>
+            <p>Show or hide the bottom article sharing on post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_bottom_social_show',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
+
+    <!-- ARTICLE bottom like -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BOTTOM ARTICLE LIKE</span>
+            <p>Show or hide the bottom article like on post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_bottom_like_show',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- ARTICLE bottom share text -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BOTTOM ARTICLE SHARE TEXT</span>
+            <p>Show or hide the bottom article share text on single post</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_bottom_like_share_text_show',
+                'true_value' => 'show',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- BOTTOM sharing style -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BOTTOM SHARE BUTTONS STYLE</span>
+            <p>Change the appearance of the bottom sharing buttons.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_social_sharing_bottom_style',
+                'values' => td_api_social_sharing_styles::_helper_social_sharing_to_panel_values()
+            ));
+            ?>
+        </div>
+    </div>
+
+
+    <div class="td-box-section-separator"></div>
+<?php } ?>
+
+
+<!-- Twitter name -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">TWITTER USERNAME</span>
+        <p>This will be used in the tweet for the via parameter. The site name will be used if no twitter username
+            is provided. <br> Do not include the @</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_tweeter_username'
+        ));
+        ?>
+    </div>
+</div>
+
+
+<div class="td-box-section-separator"></div>
+
+
+<!-- Twitter name -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">SOCIAL NETWORKS</span>
+        <p>Select active social share links and sort them with drag and drop:</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::social_drag_and_drop(array(
+            'ds' => 'td_social_drag_and_drop'
+        ));
+        ?>
+    </div>
+</div>
+
+<?php echo td_panel_generator::box_end(); ?>
+
+<?php echo td_panel_generator::box_start( 'Google Recaptcha', false ); ?>
+
+<!-- text -->
+<div class="td-box-row">
+    <div class="td-box-description td-box-full">
+        <p>reCAPTCHA by Google is a free service that protects your website from spam and abuse. The latest version of the reCAPTCHA API v3 works in the background and it will provide a score that tells you how suspicious an interaction is.</p>
+        <p> Google reCAPTCHA v3 will apply on the following features:</p>
+        <ul>
+            <li>Login/Register Modal</li>
+            <li>Mobile Theme Login/Register(tagDiv Mobile Theme plugin)</li>
+            <li>Comments system</li>
+            <li>Subscription Login/Register(tagDiv Opt-In Bulder plugin)</li>
+        </ul>
+
+    </div>
+    <div class="td-box-row-margin-bottom"></div>
+</div>
+
+
+<div class="td-box-section-separator"></div>
+
+<!-- Recaptcha: enable disable -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Use Google reCAPTCHA v3</span>
+        <p>Enable/disable Google reCAPTCHA v3.
+            <?php td_util::tooltip_html('
+                        <p> If you enable this option, please fill up the <a href="https://www.google.com/recaptcha/about/" target="_blank">Google reCAPTCHA v3</a> keys bellow </p>
+                        
+                ', 'right')?>
+        </p>
+
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_captcha',
+            'true_value' => 'show',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
+<!-- Recaptcha Site Key -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Site KEY</span>
+        <p>Click <a href="https://www.google.com/recaptcha/admin/create" target="_blank">here</a> to generate your Google reCAPTCHA keys.</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_captcha_site_key'
+        ));
+        ?>
+    </div>
+</div>
+<!-- Recaptcha Secret Key -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Secret KEY</span>
+        <p>Click <a href="https://www.google.com/recaptcha/admin/create" target="_blank">here</a> to generate your Google reCAPTCHA keys.</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_captcha_secret_key'
+        ));
+        ?>
+    </div>
+</div>
+<!-- reCAPTCHA v3 user score -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">reCAPTCHA User Score Limit</span>
+        <p>The theme currently uses Google's default of 0.5 as a necessary score to clear the captcha (where 1.0 means the best user interaction with your site and 0.0 the worst interaction). See <a href="https://developers.google.com/recaptcha/docs/v3" target="_blank">this guide</a></p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_captcha_score',
+            'placeholder' => '0.5'
+        ));
+        ?>
+    </div>
+</div>
+
+<?php echo td_panel_generator::box_end(); ?>
+
 <!-- Facebook Account (Business) -->
-<?php echo td_panel_generator::box_start('Facebook Account' ); ?>
+<?php echo td_panel_generator::box_start( 'Facebook Account', false ); ?>
 
 <div class="td-box-row">
     <div class="td-box-description">
@@ -347,7 +648,7 @@
 <?php echo td_panel_generator::box_end(); ?>
 
 <!-- Instagram Business -->
-<?php echo td_panel_generator::box_start('Instagram Business' ); ?>
+<?php echo td_panel_generator::box_start('Instagram Business', false ); ?>
 
 <div class="td-box-row">
     <div class="td-box-description">
@@ -510,7 +811,7 @@
 <div class="td-box-row">
     <div class="td-box-description">
         <span class="td-box-title">API KEY</span>
-        <p>Follow <a href="https://forum.tagdiv.com/youtube-api-key/" target="_blank">this guide</a> to get your own Flickr API key</p>
+        <p>Follow <a href="https://forum.tagdiv.com/use-flickr-api/" target="_blank">this guide</a> to get your own Flickr API key</p>
     </div>
     <div class="td-box-control-full">
         <?php
@@ -523,6 +824,27 @@
 </div>
 
 <?php echo td_panel_generator::box_end(); ?>
+
+<?php if ( 'Newspaper' == TD_THEME_NAME && defined('TD_CLOUD_LIBRARY') ) {
+    echo td_panel_generator::box_start('Google Maps API Configuration', false); ?>
+
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">API KEY</span>
+            <p>Follow <a href="https://forum.tagdiv.com/use-google-maps-api/" target="_blank">this guide</a> to get your own Google Maps API key</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_gm_api_key'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <?php echo td_panel_generator::box_end();
+} ?>
 
 
 <?php echo td_panel_generator::box_start('Social Networks', false); ?>

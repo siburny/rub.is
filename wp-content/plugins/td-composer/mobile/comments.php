@@ -166,9 +166,9 @@ function td_comment( $comment, $args, $depth ) {
                 </footer>
 	            <div class="comment-content">
                     <?php if ($comment->comment_approved == '0') { ?>
-                        <em><?php __td('Your comment is awaiting moderation', TD_THEME_NAME); ?></em>
-                    <?php } ?>
-                    <?php comment_text() ?>
+                        <em><?php echo __td('Your comment is awaiting moderation', TD_THEME_NAME); ?></em>
+                    <?php }
+                    comment_text() ?>
                 </div>
 	            <div class="comment-meta" id="comment-<?php comment_ID() ?>">
                     <?php comment_reply_link(array_merge( $args, array(

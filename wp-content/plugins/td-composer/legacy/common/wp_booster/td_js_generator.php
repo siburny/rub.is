@@ -1,7 +1,14 @@
 <?php
 function td_js_generator() {
-	if (is_admin()) {
+	if ( is_admin() ) {
 		td_js_buffer::add_variable( 'td_admin_url', admin_url() );
+
+		$theme_plugins_list = array();
+		foreach ( tagdiv_global::$theme_plugins_list as $plugin ) {
+			$theme_plugins_list[$plugin['slug']] = $plugin['name'];
+		}
+
+		td_js_buffer::add_variable( 'theme_plugins_list', $theme_plugins_list );
 	}
 
 	if (td_util::tdc_is_installed()) {
@@ -18,6 +25,11 @@ function td_js_generator() {
     td_js_buffer::add_variable('td_email_user_pass_incorrect', __td('User or password incorrect!', TD_THEME_NAME));
     td_js_buffer::add_variable('td_email_user_incorrect', __td('Email or username incorrect!', TD_THEME_NAME));
     td_js_buffer::add_variable('td_email_incorrect', __td('Email incorrect!', TD_THEME_NAME));
+    td_js_buffer::add_variable('td_user_incorrect', __td('Username incorrect!', TD_THEME_NAME));
+    td_js_buffer::add_variable('td_email_user_empty', __td('Email or username empty!', TD_THEME_NAME));
+    td_js_buffer::add_variable('td_pass_empty', __td('Pass empty!', TD_THEME_NAME));
+    td_js_buffer::add_variable('td_pass_pattern_incorrect', __td('Invalid Pass Pattern!', TD_THEME_NAME));
+    td_js_buffer::add_variable('td_retype_pass_incorrect', __td('Retyped Pass incorrect!', TD_THEME_NAME));
 
     //use for more articles on post pages
     td_js_buffer::add_variable('tds_more_articles_on_post_enable', td_util::get_option('tds_more_articles_on_post_pages_enable'));
@@ -86,7 +98,6 @@ function td_js_generator() {
     if (td_api_features::is_enabled('video_playlists') === false){
         td_js_buffer::add_variable('tds_video_playlists', false);
     }
-
 
 
     // This js code has to run as fast as possible. No jQuery dependencies here

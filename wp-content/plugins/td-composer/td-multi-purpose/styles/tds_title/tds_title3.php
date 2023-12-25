@@ -246,9 +246,9 @@ class tds_title3 extends td_style {
 
 		$title_tag = $this->get_shortcode_att( 'title_tag' );
 		$title_size = $this->get_shortcode_att( 'title_size' );
-		$title_text = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'title_text' ) ) ) );
+        $title_text = td_util::get_custom_field_value_from_string( rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'title_text' ) ) ) ) );
         $subtitle_position = $this->get_style_att( 'subtitle_position' );
-		$subtitle_text = $this->get_style_att( 'subtitle_text' );
+		$subtitle_text = td_util::get_custom_field_value_from_string( $this->get_style_att( 'subtitle_text' ) );
 
 		$subtitle_position_class = '';
 		if ( !empty( $subtitle_position ) ) {

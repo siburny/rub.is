@@ -3,7 +3,6 @@
 define('TAGDIV_ROOT', get_template_directory_uri());
 define('TAGDIV_ROOT_DIR', get_template_directory());
 
-
 // load the deploy mode
 require_once( TAGDIV_ROOT_DIR . '/tagdiv-deploy-mode.php' );
 
@@ -153,7 +152,6 @@ add_action('wp_enqueue_scripts', 'tagdiv_theme_css', 1001);
 
 
 
-
 add_filter('upgrader_clear_destination', function($removed, $local_destination, $remote_destination, $args) {
     usleep(500);
     return $removed;
@@ -241,11 +239,70 @@ if ( defined('TD_COMPOSER' ) ) {
 					}
 				}
 			}
+
+			if ( is_plugin_active('td-subscription/td-subscription.php') && defined('TD_SUBSCRIPTION_VERSION')) {
+
+				$transient_plugin_subscription = get_transient( 'td_update_plugin_subscription' );
+				if ( false === $transient_plugin_subscription ) {
+
+					tagdiv_check_plugin_subscription_version();
+
+				} else {
+
+					$transient_update_plugin_subscription_latest_version = get_transient( 'td_update_plugin_subscription_latest_version' );
+
+					if ( false !== $transient_update_plugin_subscription_latest_version ) {
+
+						add_filter( 'pre_set_site_transient_update_plugins', function ( $transient ) {
+
+							$latest_version = tagdiv_util::get_option( 'plugin_subscription_update_latest_version' );
+							if ( ! empty( $latest_version ) ) {
+								$args           = array();
+								$latest_version = json_decode( $latest_version, true );
+
+								$latest_version_keys = array_keys( $latest_version );
+								if ( is_array( $latest_version_keys ) && count( $latest_version_keys ) ) {
+									$latest_version_serial = $latest_version_keys[ 0 ];
+									$latest_version_url    = $latest_version[ $latest_version_serial ];
+									$plugin_id             = 'td-subscription/td-subscription.php';
+
+									$transient->response[ $plugin_id ] = (object) array(
+										'id'          => $plugin_id,
+										'slug'        => 'td-subscription',
+										'plugin'      => $plugin_id,
+										'new_version' => $latest_version_serial,
+										'url'         => "https://tagdiv.com/td_subscription",
+										'package'     => add_query_arg( $args, $latest_version_url ),
+									);
+
+//                                      'id'            => 'my-plugin/my-plugin.php',
+//							            'slug'          => 'my-plugin',
+//							            'plugin'        => 'my-plugin/my-plugin.php',
+//							            'new_version'   => $myplugin_current_version,
+//							            'url'           => '',
+//							            'package'       => '',
+//							            'icons'         => array(),
+//							            'banners'       => array(),
+//							            'banners_rtl'   => array(),
+//							            'tested'        => '',
+//							            'requires_php'  => '',
+//							            'compatibility' => new stdClass(),
+								}
+							}
+
+							return $transient;
+						} );
+						delete_site_transient( 'update_plugins' );
+					}
+				}
+			}
 		}
     }
 
 
     add_filter( 'admin_body_class', function ( $classes ) {
+
+        // Check for Theme updates
 		$new_update_available = false;
         $latest_version = tagdiv_util::get_option( 'theme_update_latest_version' );
 
@@ -265,6 +322,20 @@ if ( defined('TD_COMPOSER' ) ) {
         if ( $new_update_available ) {
             $classes .= ' td-theme-update';
         }
+
+        // Check for Plugin updates
+		wp_update_plugins();
+		$plugin_updates = get_site_transient( 'update_plugins' );
+
+		foreach ( tagdiv_global::get_td_plugins() as $constant => $settings ) {
+		    $plugin_id = 'td-subscription/td-subscription.php';
+		    $plugin_name = strtolower( str_replace('_', '-', $constant ) );
+			$plugin = $plugin_name . '/' . $plugin_name . '.php';
+			if ( $plugin === $plugin_id && !empty($plugin_updates->response[$plugin_id]) ) {
+				$classes .= ' td-subscription-plugin-update';
+                break;
+			}
+		}
 
 		return $classes;
 	} );
@@ -320,7 +391,7 @@ add_action( 'comment_form_before', function() {
 function tdc_error_report() {
 
     ?>
-    <iframe id="iframe-reports" src="https://report.tagdiv.com/?name=form_report"
+    <iframe id="iframe-reports" src="http://report.tagdiv.com/?name=form_report"
             style="width:0px;height:0px;display:none"></iframe>
     <?php
 }
@@ -353,9 +424,12 @@ add_action('upgrader_process_complete', function($upgrader, $data) {
             ?>
 
             <script>
-                setTimeout(function(){
-                    jQuery('.td-button-install-plugins').trigger('click');
-                }, 1000);
+                window.onload = (event) =>
+                {
+                    setTimeout(function () {
+                        jQuery('.td-button-install-plugins').trigger('click');
+                    }, 1000);
+                }
             </script>
 
             <?php
@@ -366,6 +440,20 @@ add_action('upgrader_process_complete', function($upgrader, $data) {
 
 }, 10, 2);
 
+
+add_action('upgrader_process_complete', function($upgrader, $data) {
+
+    if ($data['action'] == 'update' && $data['type'] == 'plugin' &&
+        (( !empty($data['plugins']) && in_array('td-subscription/td-subscription.php', $data['plugins'])) || (!empty($data['plugin']) && 'td-subscription/td-subscription.php' === $data['plugin'])) )  {
+
+        // clear flag to update theme to latest version
+        delete_transient( 'td_update_plugin_subscription' );
+
+        // clear flag to update theme to specific version
+        delete_transient( 'td_update_plugin_subscription_latest_version');
+    }
+
+}, 10, 2);
 
 add_filter('upgrader_pre_install', function( $return, $theme) {
     if ( is_wp_error( $return ) ) {
@@ -448,3 +536,4 @@ function td_filter_youtube_embed( $block_content, $block ) {
 
   return $block_content;
 }
+

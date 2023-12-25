@@ -1,10 +1,9 @@
 <?php
 
-
-
 require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header.php'
 
 ?>
+
 <div class="about-wrap td-admin-wrap">
     <h1><?php echo TD_THEME_NAME ?> system status</h1>
     <div class="about-text" style="margin-bottom: 32px;">
@@ -21,7 +20,6 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 
 
     <?php
-
 
     /*  ----------------------------------------------------------------------------
         Theme config
@@ -59,9 +57,6 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
         'value' =>  td_util::get_option('td_version'),
         'status' => 'info'
     ));
-
-
-
 
     // Theme remote http channel used by the theme
     $td_remote_http = td_options::get_array('td_remote_http');
@@ -551,7 +546,26 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
     }
 
     // Clear Remote cache individual items
-    if(!empty($_REQUEST['td_remote_cache_group']) && !empty($_REQUEST['td_remote_cache_item'])) {
+    if( !empty( $_REQUEST['td_remote_cache_group'] ) && !empty( $_REQUEST['td_remote_cache_item'] ) ) {
+
+	    // ... check if it's an instagram business account cache group and also clear stored images
+        if ( $_REQUEST['td_remote_cache_group'] === 'td_instagram' && strpos( $_REQUEST['td_remote_cache_item'], 'td_instagram_tk_' ) !== false ) { // td_instagram_tk_tagdiv
+	        $args = array(
+		        'post_type' => array( 'attachment' ),
+		        'post_status' => 'inherit',
+		        'posts_per_page' => '-1',
+		        'meta_key' => 'td_ig_business_account_attachment',
+		        'meta_value' => $_REQUEST['td_remote_cache_item']
+	        );
+	        $query = new WP_Query( $args );
+
+	        if ( !empty( $query->posts ) ) {
+		        foreach ( $query->posts as $attachment ) {
+			        wp_delete_attachment( $attachment->ID, true );
+		        }
+	        }
+        }
+
         td_remote_cache::delete_item($_REQUEST['td_remote_cache_group'], $_REQUEST['td_remote_cache_item']);
         ?>
         <!-- redirect page -->
@@ -560,9 +574,30 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
     }
 
     // Clear the Remote cache - only if the reset button is used
-    if(!empty($_REQUEST['clear_remote_cache']) && $_REQUEST['clear_remote_cache'] == 1) {
-        //clear remote cache
-        update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', array());
+    if( !empty( $_REQUEST['clear_remote_cache'] ) && $_REQUEST['clear_remote_cache'] == 1 ) {
+
+        // ... also clear all stored instagram business accounts images
+	    $td_remote_cache = get_option( TD_THEME_OPTIONS_NAME . '_remote_cache' );
+        if ( !empty( $td_remote_cache ) && is_array( $td_remote_cache ) && array_key_exists('td_instagram', $td_remote_cache) ) {
+	        $args = array(
+		        'post_type'      => array( 'attachment' ),
+		        'post_status'    => 'inherit',
+		        'meta_key'       => 'td_ig_business_account_attachment',
+		        'posts_per_page' => '-1'
+	        );
+	        $query = new WP_Query( $args );
+
+	        if ( !empty( $query->posts ) ) {
+		        foreach ( $query->posts as $attachment ) {
+			        wp_delete_attachment( $attachment->ID, true );
+		        }
+	        }
+
+        }
+
+        // clear remote cache
+        update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', array() );
+
         ?>
         <!-- redirect page -->
         <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status#td-remote-cache-table';?>");</script>
@@ -718,7 +753,7 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
             }
 
             // show/hide script - used to display the array data on log and remote cache panels
-            jQuery('.td-button-system-status-details').on( 'click', function(){
+            jQuery('body').on( 'click', '.td-button-system-status-details', function(){
                 var arrayViewer = jQuery(this).parent().parent().find('.td-array-viewer');
                 // hide - if the td_array_viewer_visible is present remove it and return
                 if (arrayViewer.hasClass('td-array-viewer-visible')) {
@@ -774,15 +809,14 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 
 </div>
 
-
-
 <?php
    class td_system_status {
+
        static $system_status = array();
+
        static function add($section, $status_array) {
            self::$system_status[$section] []= $status_array;
        }
-
 
        static function render_tables() {
            foreach (self::$system_status as $section_name => $section_statuses) {
@@ -833,7 +867,6 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                 <?php
            }
        }
-
 
        /**
         * It renders the data from td_log
@@ -1071,7 +1104,7 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
 <?php
        }
 
-        static function render_td_video_playlists_new() {
+       static function render_td_video_playlists_new() {
 
             $td_playlist_videos = td_system_status::get_video_playlists_meta_new();
             $td_videos_pool = get_option('td_playlist_videos_pool');
@@ -1145,17 +1178,9 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                                                                     <tr>
                                                                         <td class="td-system-status-inner-table-name"></td>
                                                                         <td class="td-system-status-inner-table-video">
-                                                                            <?php
-                                                                            foreach ( $source_data['items'] as $key => $video_id ) {
-                                                                                if ( isset($td_videos_pool[$video_service][$video_id]) ) { ?>
-                                                                                    <div class="td-remote-value-data-container">
-                                                                                        <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video_id]['title']) ?></a></div>
-                                                                                        <div class="td-array-viewer"><pre>
-                                                                                            <?php print_r( $td_videos_pool[$video_service][$video_id] ) ?>
-                                                                                        </pre></div>
-                                                                                    </div>
-                                                                                <?php }
-                                                                            } ?>
+                                                                            <a href="#" class="td-button-system-status td-button-system-status-view" data-service="<?php echo $video_service ?>" data-source="<?php echo $source ?>" data-source-name="">View Details</a>
+
+                                                                            <div class="td-system-status-inner-table-videos-info"></div>
                                                                         </td>
                                                                         <td class="td-system-status-inner-table-time"></td>
                                                                     </tr>
@@ -1178,17 +1203,20 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                                                                                 <?php printf('%1$s', $name) ?>
                                                                             </td>
                                                                             <td class="td-system-status-inner-table-video">
-                                                                                <?php
-                                                                                foreach( $name_data['items'] as $video ) {
-                                                                                    if( $video['status'] == 'public' ) { ?>
-                                                                                        <div class="td-remote-value-data-container">
-                                                                                            <div class="td-video-id-details"><a class="td-button-system-status-details" title="<?php printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?>"><?php printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?></a></div>
-                                                                                            <div class="td-array-viewer"><pre>
-                                                                                                <?php print_r( $td_videos_pool[$video_service][$video['id']] ) ?>
-                                                                                            </pre></div>
-                                                                                        </div>
-                                                                                    <?php }
-                                                                                } ?>
+<!--                                                                                --><?php
+//                                                                                foreach( $name_data['items'] as $video ) {
+//                                                                                    if( $video['status'] == 'public' ) { ?>
+<!--                                                                                        <div class="td-remote-value-data-container">-->
+<!--                                                                                            <div class="td-video-id-details"><a class="td-button-system-status-details" title="--><?php //printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?><!--">--><?php //printf('%1$s', $td_videos_pool[$video_service][$video['id']]['title']) ?><!--</a></div>-->
+<!--                                                                                            <div class="td-array-viewer"><pre>-->
+<!--                                                                                                --><?php //print_r( $td_videos_pool[$video_service][$video['id']] ) ?>
+<!--                                                                                            </pre></div>-->
+<!--                                                                                        </div>-->
+<!--                                                                                    --><?php //}
+//                                                                                } ?>
+                                                                                <a href="#" class="td-button-system-status td-button-system-status-view" data-service="<?php echo $video_service ?>" data-source="<?php echo $source ?>" data-source-name="<?php echo $name ?>">View Details</a>
+
+                                                                                <div class="td-system-status-inner-table-videos-info"></div>
                                                                             </td>
                                                                             <td class="td-system-status-inner-table-time">
                                                                                 <?php printf('%1$s', date('H:i:s', time() - $name_data['timestamp']) . ' ago') ?>
@@ -1405,7 +1433,6 @@ require_once TAGDIV_ROOT_DIR . '/includes/wp-booster/wp-admin/tagdiv-view-header
                return array();
            }
        }
-
 
        static function get_video_playlists_meta_new () {
             $posts_video_playlist_meta_array = array();

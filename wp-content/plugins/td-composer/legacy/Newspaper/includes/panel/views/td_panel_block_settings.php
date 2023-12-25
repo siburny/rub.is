@@ -176,39 +176,62 @@
         ?>
     </div>
 </div>
+
+<!-- Show Nofollow -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">ADD NOFOLLOW</span>
+        <p>Add or remove nofollow on thumb link (on blocks and modules)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_m_nofollow_image',
+            'true_value' => 'yes',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
+
 <?php echo td_panel_generator::box_end();?>
 
-
-
 <!-- 7 days post sorting -->
-<?php echo td_panel_generator::box_start('7 days post sorting', false); ?>
-
+<?php echo td_panel_generator::box_start('24/48 hours and 7 days post sorting', false ); ?>
 
 <!-- text -->
 <div class="td-box-row">
 	<div class="td-box-description td-box-full">
-		<p>When you enable this option a new sorting option will work and it will be selectable on each block (7 days popular). This sorting option will pick posts that are popular in the last 7 days, ordered by page views. This option comes with a small performance penalty and it does not work well with caching plugins yet. When caching is enabled the sorting will be an estimation of the popularity in the last 7 days.</p>
+		<ul>
+            <li>When you enable this option new sorting options will work and will be selectable on each block (last 24/48 hours and last 7 days popular).</li>
+            <li>These sorting options will pick posts that are popular in the last 24/48 hours or 7 days, ordered by page views.</li>
+            <li>Please note that this option comes with a small performance penalty and it does not work well with caching plugins yet. When caching is enabled the sorting will be an estimation of the popularity in the last 24/48 hours or 7 days.</li>
+        </ul>
 	</div>
 	<div class="td-box-row-margin-bottom"></div>
 </div>
 
 <!-- use 7 days post sorting -->
 <div class="td-box-row">
-	<div class="td-box-description">
-		<span class="td-box-title">USE 7 DAYS POST SORTING</span>
-		<p>Enable or disable the popular last 7 days.</p>
+	<div class="td-box-description" style="width: 400px;">
+		<span class="td-box-title">USE LAST 24/48 HOURS & 7 DAYS POST SORTING</span>
+		<p>Enable or disable the popular last 24/48 hours & 7 days sorting.</p>
 	</div>
-	<div class="td-box-control-full">
+	<div class="td-box-control-full" style="width: 320px;">
 		<?php
-		echo td_panel_generator::checkbox(array(
-			'ds' => 'td_option',
-			'option_id' => 'tds_p_enable_7_days_count',
-			'true_value' => 'enabled',
-			'false_value' => ''
-		));
+		echo td_panel_generator::checkbox(
+            array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_p_enable_7_days_count',
+                'true_value' => 'enabled',
+                'false_value' => ''
+            )
+        );
 		?>
 	</div>
 </div>
+
 <?php echo td_panel_generator::box_end();?>
 
 

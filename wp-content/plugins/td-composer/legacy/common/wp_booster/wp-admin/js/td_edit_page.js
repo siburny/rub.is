@@ -1,10 +1,10 @@
 /**
  * used in wp-admin -> edit page, not on posts
- * this class hides and shows the metaboxes acording to the selected template
+ * this class hides and shows the metaboxes according to the selected template
  * @type {{init: Function, show_template_settings: Function, change_content: Function}}
  */
 
-/* global jQuery:{} */
+/* global jQuery:{}, window, document */
 
 var td_edit_page = {
 
@@ -143,9 +143,15 @@ var td_edit_page = {
 
             if( td_edit_page.is_block_editor ){
 
-                setTimeout(function() {
+                setTimeout( function() {
+
+                    const isSidebarOpened = wp.data.select('core/edit-post').isEditorPanelOpened('template');
+                    if ( !isSidebarOpened ) {
+                        wp.data.dispatch('core/edit-post').toggleEditorPanelOpened('template');
+                    }
+
                     var $control = jQuery('.components-select-control__input option[value="page-pagebuilder-latest.php"]');
-                    if ($control.length) {
+                    if ( $control.length ) {
                         td_edit_page.page_template_select = $control.parent();
 
                         td_edit_page.page_template_select.change(function () {
@@ -154,9 +160,16 @@ var td_edit_page = {
 
                         td_edit_page.show_template_settings();
                     }
-                }, 500);
-            }
+                }, 500 );
 
+            } else { // used on Classic Editor
+                td_edit_page.page_template_select = jQuery('#page_template');
+                td_edit_page.show_template_settings();
+
+                td_edit_page.page_template_select.change(function () {
+                    td_edit_page.show_template_settings();
+                });
+            }
 
             //disable sidebar settings - if any vc_row is present in the page content
             setInterval(function () {
@@ -168,7 +181,7 @@ var td_edit_page = {
                 }
 
                 var ver4EditorContent = jQuery('#content').text().match(/\[.*vc_row.*\]/m);
-                var ver5EditorContent = jQuery('.editor-block-list__layout').find('.mce-content-body p').text().match(/\[.*vc_row.*\]/m);
+                var ver5EditorContent = jQuery('.block-editor-block-list__layout').find('.mce-content-body p').text().match(/\[.*vc_row.*\]/m);
 
                 if ( ver4EditorContent !== null || ver5EditorContent !== null ) {
                     td_page_metabox.addClass('td-disable-settings');
@@ -244,6 +257,7 @@ var td_edit_page = {
                 //create the container
                 after_element = document.createElement("div");
                 after_element.setAttribute("id", "td_after_template_container_id");
+                after_element.setAttribute("class", "inside");
                 //insert the element in DOM, after template pull down
                 document.getElementById(page_template_select_id).parentNode.parentNode.insertBefore(after_element, document.getElementById(page_template_select_id).parentNode.nextSibling);
             }

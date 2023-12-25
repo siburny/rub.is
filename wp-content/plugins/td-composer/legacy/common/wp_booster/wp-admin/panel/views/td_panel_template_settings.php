@@ -847,7 +847,7 @@
     </div>
 </div>
 
-<?php echo td_panel_generator::box_end();?>
+<?php echo td_panel_generator::box_end(); ?>
 
 
 
@@ -913,6 +913,24 @@
                 ?>
                 <div class="td-panel-control-comment td-text-align-right">Create or select an existing sidebar</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Enable search in taxonomies terms -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">SEARCH IN TAXONOMY TERMS</span>
+            <p>If enabled, this will extend the default WordPress search behaviour and include in search results the posts that have assigned any taxonomies terms that include the search query in term's name or description. This option is disabled by default.</p>
+        </div>
+        <div class="td-box-control-full">
+			<?php
+			echo td_panel_generator::checkbox( array(
+				'ds' => 'td_option',
+				'option_id' => 'tds_search_taxonomies_terms',
+				'true_value' => 'yes',
+				'false_value' => ''
+			));
+			?>
         </div>
     </div>
 

@@ -88,6 +88,10 @@ abstract class td_style {
 
 	        $ref_id = $post->ID;
 
+            if ( function_exists( 'is_buddypress' ) && is_buddypress() ) {
+                $ref_id = get_queried_object_id();
+            }
+
 	        if ( class_exists( 'Mobile_Detect' ) ) {
 		        $mobile_detect = new Mobile_Detect();
 		        if ( $mobile_detect->isMobile() ) {

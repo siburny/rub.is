@@ -38,7 +38,16 @@ if (have_posts()) {
                         }
 
                         ?>
-                        <?php the_content(); ?>
+                        <?php
+                        $the_content = apply_filters('the_content', get_the_content());
+                        if ( current_user_can( 'publish_posts' ) && empty($the_content) ) {?>
+                            <div class="td-mobile-missing-content">
+                            <?php echo 'No mobile content! - ' ?><a href="<?php echo get_edit_post_link() . '#td_mobile_editor'?>"> Edit mobile content </a>
+                            </div>
+                            <?php
+                        } else {
+                            the_content();
+                        } ?>
 					</div>
 					<?php
 					if($td_enable_or_disable_page_comments == 'show_comments') {

@@ -38,7 +38,7 @@ abstract class td_module {
         }
 
 
-        //this filter is used by td_unique_posts.php - to add unique posts to the array for the datasource
+        // this filter is used by td_unique_posts.php - to add unique posts to the array for the datasource
         apply_filters("td_wp_booster_module_constructor", $this, $post);
 
         $this->post = $post;
@@ -149,7 +149,7 @@ abstract class td_module {
     }
 
 
-    function get_date($modified_date = '', $show_when_review = false, $time_ago = '', $time_ago_add_txt = '') {
+    function get_date($modified_date = '', $show_when_review = false, $time_ago = '', $time_ago_add_txt = '', $time_ago_txt_pos = '') {
         $visibility_class = '';
         if (td_util::get_option('tds_m_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
@@ -195,7 +195,12 @@ abstract class td_module {
                         if ( $diff < WEEK_IN_SECONDS ) {
                             $display_modified_date = human_time_diff( $post_time_u, $current_time );
                             if( $time_ago_add_txt != '' ) {
-                                $display_modified_date .= ' ' . $time_ago_add_txt;
+                                if ( $time_ago_txt_pos == 'yes' ) {
+                                    $display_modified_date = $time_ago_add_txt . ' ' . $display_modified_date;
+
+                                } else {
+                                    $display_modified_date .= ' ' . $time_ago_add_txt;
+                                }
                             }
                         }
                     }
@@ -212,8 +217,12 @@ abstract class td_module {
 
                         if ( $diff < WEEK_IN_SECONDS ) {
                             $display_date = human_time_diff( $post_time_u, $current_time );
-                            if( $time_ago_add_txt != '' ) {
-                                $display_date .= ' ' . $time_ago_add_txt;
+                            if ( $time_ago_add_txt != '' ) {
+                                if ( $time_ago_txt_pos == 'yes' ) {
+                                    $display_date = $time_ago_add_txt . ' ' . $display_date;
+                                } else {
+                                    $display_date .= ' ' . $time_ago_add_txt;
+                                }
                             }
                         }
                     }
@@ -248,10 +257,14 @@ abstract class td_module {
 
     function get_comments() {
         $buffy = '';
-        if (td_util::get_option('tds_m_show_comments') != 'hide') {
+        if ( td_util::get_option('tds_m_show_comments') != 'hide' ) {
+
+	        $comments_number_dsq = td_util::get_dsq_comments_number( $this->post );
+			$comments_number = $comments_number_dsq ?: get_comments_number( $this->post->ID );
+
             $buffy .= '<span class="td-module-comments">';
-                $buffy .= '<a href="' . get_comments_link($this->post->ID) . '">';
-                    $buffy .= get_comments_number($this->post->ID);
+                $buffy .= '<a href="' . get_comments_link( $this->post->ID ) . '">';
+                    $buffy .= $comments_number;
                 $buffy .= '</a>';
             $buffy .= '</span>';
         }
@@ -273,20 +286,20 @@ abstract class td_module {
      * @param $css_image
      * @return string
      */
-    function get_image($thumbType, $css_image = false) {
+    function get_image( $thumbType, $css_image = false ) {
         $buffy = ''; //the output buffer
         $tds_hide_featured_image_placeholder = td_util::get_option('tds_hide_featured_image_placeholder');
         //retina image
         $srcset_sizes = '';
 
         // do we have a post thumb or a placeholder?
-        if (!is_null($this->post_thumb_id) or ($tds_hide_featured_image_placeholder != 'hide_placeholder')) {
+        if ( !is_null( $this->post_thumb_id ) or ( $tds_hide_featured_image_placeholder != 'hide_placeholder' ) ) {
 
-            if (!is_null($this->post_thumb_id)) {
+            if ( !is_null( $this->post_thumb_id ) ) {
                 //if we have a thumb
                 // check to see if the thumb size is enabled in the panel, we don't have to check for the default wordpress
                 // thumbs (the default ones are already cut and we don't have  a panel setting for them)
-                if (td_util::get_option('tds_thumb_' . $thumbType) != 'yes' and $thumbType != 'thumbnail' and $thumbType != 'medium_large') {
+                if ( td_util::get_option('tds_thumb_' . $thumbType ) != 'yes' and $thumbType != 'thumbnail' and $thumbType != 'medium_large' ) {
                     //the thumb is disabled, show a placeholder thumb from the theme with the "thumb disabled" message
                     global $_wp_additional_image_sizes;
 
@@ -304,8 +317,8 @@ abstract class td_module {
 
 					// For custom wordpress sizes (not 'thumbnail', 'medium', 'medium_large' or 'large'), get the image path using the api (no_image_path)
 	                $thumb_disabled_path = td_global::$get_template_directory_uri;
-	                if (strpos($thumbType, 'td_') === 0) {
-			            $thumb_disabled_path = td_api_thumb::get_key($thumbType, 'no_image_path');
+	                if ( strpos( $thumbType, 'td_' ) === 0 ) {
+			            $thumb_disabled_path = td_api_thumb::get_key( $thumbType, 'no_image_path' );
 		            }
 			        $td_temp_image_url[0] = $thumb_disabled_path . '/images/thumb-disabled/' . $thumbType . '.png';
 
@@ -364,7 +377,7 @@ abstract class td_module {
                  * The api thumb is checked only for additional sizes registered and if at least one of the settings (width or height) is empty.
                  * This should be enough to avoid getting a non existing id using api thumb.
                  */
-	            if (!empty($_wp_additional_image_sizes) && array_key_exists($thumbType, $_wp_additional_image_sizes) && ($td_temp_image_url[1] == '' || $td_temp_image_url[2] == '')) {
+	            if ( !empty( $_wp_additional_image_sizes ) && array_key_exists( $thumbType, $_wp_additional_image_sizes ) && ( $td_temp_image_url[1] == '' || $td_temp_image_url[2] == '' ) ) {
                     $td_thumb_parameters = td_api_thumb::get_by_id($thumbType);
 	                $td_temp_image_url[1] = $td_thumb_parameters['width'];
                     $td_temp_image_url[2] = $td_thumb_parameters['height'];
@@ -377,6 +390,8 @@ abstract class td_module {
                     $placeholder_id = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid='%s';", $custom_placeholder ));
                     $td_temp_image_url = wp_get_attachment_image_src($placeholder_id[0], $thumbType);
                 } else if( $custom_placeholder != '' && $css_image === true ) {
+                    $td_temp_image_url[0] = $custom_placeholder;
+                } else if( $custom_placeholder != '' && td_util::is_mobile_theme() ) {
                     $td_temp_image_url[0] = $custom_placeholder;
                 } else {
 	            	// For custom wordpress sizes (not 'thumbnail', 'medium', 'medium_large' or 'large'), get the image path using the api (no_image_path)
@@ -431,8 +446,13 @@ abstract class td_module {
                     if( isset($video_url[0]['td_video']) && $video_url[0]['td_video'] != '' ) {
                         $video_source = td_video_support::detect_video_service($video_url[0]['td_video']);
 
+                        $autoplay_vid = '';
+                        if( isset($this->module_atts['autoplay_vid' . $video_popup_param_no]) ) {
+                            $autoplay_vid = $this->module_atts['autoplay_vid' . $video_popup_param_no];
+                        }
+
                         $video_popup_class = 'td-module-video-modal';
-                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url[0]['td_video'] ) . '"';
+                        $video_popup_data = 'data-video-source="' . $video_source . '" data-video-autoplay="' . $autoplay_vid . '" data-video-url="'. esc_url( $video_url[0]['td_video'] ) . '"';
 
                         $video_rec = '';
                         if( isset($this->module_atts['video_rec' . $video_popup_param_no]) ) {
@@ -450,7 +470,7 @@ abstract class td_module {
                         }
 
                         $video_popup_ad = array(
-                            'code' => $video_rec,
+                            'code' => do_shortcode( stripslashes( $video_rec ) ),
                             'title' => $video_rec_title,
                             'disable' => $video_rec_disable,
                         );
@@ -473,7 +493,11 @@ abstract class td_module {
                     }
                 }
 
-                $buffy .= '<a href="' . $this->href . '" rel="bookmark" class="td-image-wrap ' . $video_popup_class . '" title="' . $this->title_attribute . '" ' . $video_popup_data . '>';
+                $nofollow = '';
+                if ( td_util::get_option('tds_m_nofollow_image') == 'yes') {
+                    $nofollow = 'nofollow ';
+                }
+                $buffy .= '<a href="' . $this->href . '" rel="' . $nofollow . 'bookmark" class="td-image-wrap ' . $video_popup_class . '" title="' . $this->title_attribute . '" ' . $video_popup_data . '>';
 
                     $tds_animation_stack = td_util::get_option('tds_animation_stack');
                     $tds_ajax_preloading = '';
@@ -931,28 +955,241 @@ abstract class td_module {
      * Gets a shortcode att but only if the module received them
      * @param $att_name
      * @param $default_value
+     * @param $style_class
      * @return mixed|string
      */
-    function get_shortcode_att($att_name, $default_value = '') {
+    function get_shortcode_att($att_name, $default_value = '', $style_class = '') {
         // returns '' if not set - for loops and other places where modules are not in blocks
+
+        $att_prefix = '';
+        if( $style_class != '' ) {
+            $att_prefix = $style_class . '-';
+        }
 
         if (empty($this->module_atts)) {
             return '';
         }
-        if (!isset($this->module_atts[$att_name])) {
-            td_util::error(__FILE__, $att_name . ' - Is not mapped in the shortcode that uses this module ( <strong>' . get_class($this) . '</strong>)', $this->module_atts);
+        if (!isset($this->module_atts[$att_prefix . $att_name])) {
+            td_util::error(__FILE__, $att_prefix . $att_name . ' - Is not mapped in the shortcode that uses this module ( <strong>' . get_class($this) . '</strong>)', $this->module_atts);
 
             //die;
             return $default_value;
         }
 
         //we need to decode the square bracket case
-        $attr_value = $this->module_atts[$att_name];
+        $attr_value = $this->module_atts[$att_prefix . $att_name];
         if (strpos($attr_value, 'td_encval') === 0) {
             $attr_value = str_replace('td_encval', '', $attr_value);
             $attr_value = base64_decode($attr_value);
         }
 
         return $attr_value;
+    }
+
+    function get_icon_att( $att_name ) {
+        $icon_class = $this->get_shortcode_att($att_name);
+        $svg_list = td_global::$svg_theme_font_list;
+
+        if( array_key_exists( $icon_class, $svg_list ) ) {
+            return $svg_list[$icon_class];
+        }
+
+        return $icon_class;
+    }
+
+
+    /**
+     * Displays the user ratings stars
+     * @param $full_star_icon
+     * @param $half_star_icon
+     * @param $empty_star_icon
+     * @return string
+     */
+    function show_user_ratings_stars( $full_star_icon = '', $half_star_icon = '', $empty_star_icon = '', $show_empty_rating = false ) {
+
+        $buffy = '';
+
+        // Rating stars
+        $full_star_icon_html = '<i class="td-icon-user-rev-star-full"></i>';
+        $full_star_icon_data = '';
+        if( $full_star_icon != '' ) {
+            $full_star_icon_att = $this->get_icon_att( $full_star_icon );
+            if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                $full_star_icon_data = 'data-td-svg-icon="' . $this->get_shortcode_att( $full_star_icon ) . '"';
+            }
+            if ( !empty( $full_star_icon_att ) ) {
+                if( base64_encode( base64_decode( $full_star_icon_att ) ) == $full_star_icon_att ) {
+                    $full_star_icon_html = base64_decode( $full_star_icon_att ) ;
+                } else {
+                    $full_star_icon_html = '<i class="' . $full_star_icon_att . '"></i>';
+                }
+            }
+        }
+
+        $half_star_icon_html = '<i class="td-icon-user-rev-star-half"></i>';
+        $half_star_icon_data = '';
+        if( $half_star_icon != '' ) {
+            $half_star_icon_att = $this->get_icon_att( $half_star_icon );
+            if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                $half_star_icon_data = 'data-td-svg-icon="' . $this->get_shortcode_att( $half_star_icon ) . '"';
+            }
+            if ( !empty( $half_star_icon_att ) ) {
+                if( base64_encode( base64_decode( $half_star_icon_att ) ) == $half_star_icon_att ) {
+                    $half_star_icon_html = base64_decode( $half_star_icon_att ) ;
+                } else {
+                    $half_star_icon_html = '<i class="' . $half_star_icon_att . '"></i>';
+                }
+            }
+        }
+
+        $empty_star_icon_html = '<i class="td-icon-user-rev-star-empty"></i>';
+        $empty_star_icon_data = '';
+        if( $empty_star_icon != '' ) {
+            $empty_star_icon_att = $this->get_icon_att( $empty_star_icon );
+            if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                $empty_star_icon_data = 'data-td-svg-icon="' . $this->get_shortcode_att( $empty_star_icon ) . '"';
+            }
+            if ( !empty( $empty_star_icon_att ) ) {
+                if( base64_encode( base64_decode( $empty_star_icon_att ) ) == $empty_star_icon_att ) {
+                    $empty_star_icon_html = base64_decode( $empty_star_icon_att ) ;
+                } else {
+                    $empty_star_icon_html = '<i class="' . $empty_star_icon_att . '"></i>';
+                }
+            }
+        }
+
+        $overall_post_rating = td_util::get_overall_post_rating($this->post->ID);
+        if( $overall_post_rating ) {
+            // Display the ratings
+            $buffy = td_util::display_user_ratings_stars($overall_post_rating, $full_star_icon_html, $full_star_icon_data, $half_star_icon_html, $half_star_icon_data, $empty_star_icon_html, $empty_star_icon_data);
+        } else {
+            if( $show_empty_rating ) {
+                // Display the ratings
+                $buffy = td_util::display_user_ratings_stars(0, $full_star_icon_html, $full_star_icon_data, $half_star_icon_html, $half_star_icon_data, $empty_star_icon_html, $empty_star_icon_data);
+            }
+        }
+
+        return $buffy;
+
+    }
+
+
+    /**
+     * Get a custom field data
+     * @param $field_name
+     * @return array
+     */
+    function get_custom_field_data($field_name) {
+
+        $post_id = $this->post->ID;
+
+        $field_data = array(
+            'value' => '',
+            'type' => '',
+            'meta_exists' => false,
+        );
+
+        if( $field_name == 'td_source_title' ) {
+            $source_post_id = get_post_meta( $post_id, 'tdc-parent-post-id', true );
+
+            if ( !empty( $source_post_id ) ) {
+                $field_data['value'] = get_the_title($source_post_id);
+                $field_data['type'] = 'text';
+                $field_data['meta_exists'] = true;
+            }
+        } else {
+            $field_data = td_util::get_acf_field_data( $field_name, $post_id );
+
+            if( !$field_data['meta_exists'] ) {
+                if( metadata_exists('post', $post_id, $field_name ) ) {
+                    $field_data['value'] = get_post_meta( $post_id, $field_name, true );
+                    $field_data['type'] = 'text';
+                    $field_data['meta_exists'] = true;
+                }
+            }
+        }
+
+        return $field_data;
+
+    }
+
+
+    /**
+     * Get a custom field data
+     * @param $field_name
+     * @return string
+     */
+    function show_custom_field_value($field_name) {
+
+        $buffy = '';
+
+
+        $custom_field_data = $this->get_custom_field_data($field_name);
+
+        if( !empty( $custom_field_data ) ) {
+            switch ( $custom_field_data['type'] ) {
+                case 'image';
+                    $img_url = '';
+
+                    if( is_array( $custom_field_data['value'] ) ) {
+                        $img_url = $custom_field_data['value']['url'];
+                    } else if( is_string( $custom_field_data['value'] ) ) {
+                        $img_url = $custom_field_data['value'];
+                    } else if ( is_numeric( $custom_field_data['value'] ) ) {
+                        $img_id = $custom_field_data['value'];
+                        $img_info = get_post( $img_id );
+
+                        if( $img_info ) {
+                            $img_url = $img_info->guid;
+                        }
+                    }
+
+                    $buffy .= $img_url;
+
+                    break;
+
+                case 'taxonomy':
+                    foreach ( $custom_field_data['value'] as $field_value ) {
+                        $term_type = $custom_field_data['taxonomy'];
+                        $term_data = $field_value;
+                        if( is_numeric( $field_value ) ) {
+                            $term_data = get_term_by('term_id', $field_value, $term_type);
+                        }
+
+                        if( $term_data ) {
+                            $buffy .= '<a href="' . get_term_link($term_data->term_id, $term_type) . '">' . $term_data->name . '</a>';
+                        }
+                    }
+
+                    break;
+
+                default:
+                    if( is_array( $custom_field_data['value'] ) ) {
+                        foreach ( $custom_field_data['value'] as $key => $value ) {
+                            if( is_array( $value ) ) {
+                                $buffy .= $value['label'];
+                            } else if( td_util::isAssocArray( $custom_field_data['value'] ) ) {
+                                if( $key == 'label' ) {
+                                    $buffy .= $value;
+                                }
+                            } else {
+                                $buffy .= $value;
+                            }
+
+                            if( $key != array_key_last( $custom_field_data['value'] ) ) {
+                                $buffy .= ', ';
+                            }
+                        }
+                    } else {
+                        $buffy .= $custom_field_data['value'];
+                    }
+
+                    break;
+            }
+        }
+
+
+        return $buffy;
+
     }
 }

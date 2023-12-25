@@ -194,7 +194,7 @@ class vc_wp_recentcomments extends td_block {
 
 						case '1': //one column layout
 							$buffy .= $td_block_layout->open12(); //added in 010 theme - span 12 doesn't use rows
-							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> on <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
+							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> ' . __td('on', TD_THEME_NAME) . ' <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
 							$buffy .= $td_block_layout->close12();
 							break;
 
@@ -202,7 +202,7 @@ class vc_wp_recentcomments extends td_block {
 							$buffy .= $td_block_layout->open_row();
 
 							$buffy .= $td_block_layout->open6(); //added in 010 theme - span 12 doesn't use rows
-							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> on <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
+							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> ' . __td('on', TD_THEME_NAME) . ' <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
 							$buffy .= $td_block_layout->close6();
 
 							if ($td_current_column == 2) {
@@ -215,7 +215,7 @@ class vc_wp_recentcomments extends td_block {
 							$buffy .= $td_block_layout->open_row();
 
 							$buffy .= $td_block_layout->open4();
-							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> on <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
+							$buffy .= '<span class="recentcomments"><span class="comment-author-link">' . $comment_author_link . '</span> ' . __td('on', TD_THEME_NAME) . ' <a href="' . $comment_link . '">' . get_the_title($comment->comment_post_ID) . '</a></span>';
 							$buffy .= $td_block_layout->close4();
 
 							if ($td_current_column == 3) {

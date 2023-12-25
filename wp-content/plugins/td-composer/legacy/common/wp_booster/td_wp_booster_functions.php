@@ -79,8 +79,18 @@ td_api_autoload::add('td_social_sharing', td_global::$get_template_directory . '
  * PageView support
  */
 td_api_autoload::add('td_page_views', td_global::$get_template_directory . '/legacy/common/wp_booster/td_page_views.php');
-add_filter('manage_post_posts_columns', array('td_page_views', 'on_manage_posts_columns_views'));
-add_action('manage_post_posts_custom_column', array('td_page_views', 'on_manage_posts_custom_column'), 5, 2);
+
+$excluded_post_types = array( 'acf-field-group', 'acf-field', 'product_variation', 'product','page', 'shop_order', 'shop_order_refund', 'shop_coupon', 'shop_webhook', 'vc_grid_item', 'tdb_templates', 'amp_validated_url', 'tds_email', 'tds_locker' );
+$post_type = 'post';
+if (!empty($_GET['post_type'])) {
+    $post_type = $_GET['post_type'];
+}
+
+if ( !in_array($post_type, $excluded_post_types) ) {
+    add_filter('manage_' . $post_type . '_posts_columns', array('td_page_views', 'on_manage_posts_columns_views'));
+    add_action('manage_' . $post_type . '_posts_custom_column', array('td_page_views', 'on_manage_posts_custom_column'), 5, 2);
+}
+
 
 
 /* ----------------------------------------------------------------------------
@@ -121,6 +131,12 @@ add_action('wp_ajax_td_mod_login',        array('td_ajax', 'on_ajax_login'));
 add_action('wp_ajax_nopriv_td_mod_register', array('td_ajax', 'on_ajax_register'));
 add_action('wp_ajax_td_mod_register',        array('td_ajax', 'on_ajax_register'));
 
+add_action('wp_ajax_nopriv_td_mod_subscription_register', array('td_ajax', 'on_ajax_subscription_register'));
+add_action('wp_ajax_td_mod_subscription_register',        array('td_ajax', 'on_ajax_subscription_register'));
+
+add_action('wp_ajax_nopriv_td_resend_subscription_activation_link', array('td_ajax', 'on_ajax_resend_subscription_activation_link'));
+add_action('wp_ajax_td_resend_subscription_activation_link',        array('td_ajax', 'on_ajax_resend_subscription_activation_link'));
+
 // ajax: login window remember pass?
 add_action('wp_ajax_nopriv_td_mod_remember_pass', array('td_ajax', 'on_ajax_remember_pass'));
 add_action('wp_ajax_td_mod_remember_pass',        array('td_ajax', 'on_ajax_remember_pass'));
@@ -144,7 +160,7 @@ add_action('wp_ajax_td_ajax_get_translation', array('td_ajax', 'on_ajax_get_tran
 //ajax: activation
 add_action('wp_ajax_td_ajax_check_envato_code', array('td_ajax', 'on_ajax_check_envato_code'));
 add_action('wp_ajax_td_ajax_register_forum_user', array('td_ajax', 'on_ajax_register_forum_user'));
-add_action('wp_ajax_td_ajax_manual_activation', array('td_ajax', 'on_ajax_manual_activation'));
+//add_action('wp_ajax_td_ajax_manual_activation', array('td_ajax', 'on_ajax_manual_activation'));
 
 //ajax: db check
 add_action('wp_ajax_td_ajax_db_check', array('td_ajax', 'on_ajax_db_check'));
@@ -189,6 +205,17 @@ add_action('wp_ajax_td_ajax_dark_mode',        array('td_ajax', 'on_ajax_dark_mo
 // ajax: facebook/instagram with access token
 require_once( 'td_ig_personal.php' ); // instagram personal account
 require_once( 'td_fb_ig_business.php' ); // facebook/instagram business accounts
+
+
+// ajax: system status video playlist cache video info
+add_action('wp_ajax_nopriv_td_ajax_video_cache_videos', array('td_ajax', 'on_ajax_video_cache_videos'));
+add_action('wp_ajax_td_ajax_video_cache_videos',        array('td_ajax', 'on_ajax_video_cache_videos'));
+
+
+// ajax: comments captcha retrieve details
+add_action('wp_ajax_nopriv_td_ajax_comment_submit_captcha', array('td_ajax', 'on_ajax_comment_submit_captcha'));
+add_action('wp_ajax_td_ajax_comment_submit_captcha',        array('td_ajax', 'on_ajax_comment_submit_captcha'));
+
 
 
 /**
@@ -431,7 +458,7 @@ add_action('wp_enqueue_scripts', function() {
 	        $template_id = td_util::get_template_id();
 
 	        if (empty($template_id)) {
-                $ref_id = $post->ID;
+                $ref_id = !empty($post) ? $post->ID : null;
             } else {
                 $ref_id = $template_id;
             }
@@ -555,7 +582,7 @@ function load_front_css_remove() {
 	        $template_id = td_util::get_template_id();
 
 	        if (empty($template_id)) {
-                $ref_id = $post->ID;
+                $ref_id = !empty($post) ? $post->ID : null;
             } else {
                 $ref_id = $template_id;
             }
@@ -932,7 +959,7 @@ function load_wp_admin_js() {
 
 
 
-    if (isset($_GET['page']) && $_GET['page'] === 'td_theme_panel') {
+    if ( isset( $_GET['page'] ) && ( $_GET['page'] === 'td_theme_panel' || $_GET['page'] === 'td_link_tracker' ) ) {
         $last_js_file_id = '';
         foreach (td_global::$js_files_for_td_theme_panel as $js_file_id => $js_file_params) {
             if ($last_js_file_id == '') {
@@ -1049,6 +1076,11 @@ function hook_wp_head() {
 		echo '<link rel="icon" type="image/png" href="' . $tds_favicon_upload . '">';
 	}
 
+    // mobile toolbar color
+    $tds_mob_toolbar_color = td_util::get_option('tds_mob_toolbar_color');
+	if ( $tds_mob_toolbar_color != '' ) {
+		echo '<meta name="theme-color" content="' . $tds_mob_toolbar_color . '">';
+	}
 
 	// ios bookmark icon support
 	$tds_ios_76 = td_util::get_option('tds_ios_icon_76');
@@ -1169,6 +1201,14 @@ function hook_wp_head() {
 	if (!empty($tds_video_lazy)) {
 		td_js_buffer::add_variable('tds_video_lazy', $tds_video_lazy);
 	}
+
+    //load google recaptcha js for login modal ( @td-login-modal.php )
+    $show_captcha = td_util::get_option('tds_captcha');
+    $captcha_site_key = td_util::get_option('tds_captcha_site_key');
+    if ( $show_captcha == 'show' && $captcha_site_key != '' ) { ?>
+            <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $captcha_site_key ?>"></script>
+   <?php }
+
 }
 
 
@@ -1329,7 +1369,7 @@ function theme_get_archives_link ( $link_html ) {
  */
 add_filter('wp_list_categories', 'cat_count_span');
 function cat_count_span($links) {
-	$pattern = '/<\/a> \(([\d]+)\)/';
+	$pattern = '/<\/a> \(([\d.?]+)\)/';
 	$links = preg_replace($pattern, '<span class="td-widget-no">$1</span></a>', $links);
 
 	return $links;
@@ -1379,7 +1419,7 @@ function td_bottom_code() {
 
     <!--
 
-        Theme: ' . TD_THEME_NAME .' by tagDiv.com 2021
+        Theme: ' . TD_THEME_NAME .' by tagDiv.com 2022
         Version: ' . TD_THEME_VERSION . ' (rara)
         Deploy mode: ' . TD_DEPLOY_MODE . '
         ' . $speed_booster . '
@@ -1471,7 +1511,12 @@ if ( ! tdc_state::is_live_editor_iframe() ) {
 	function td_header_analytics_code() {
 		$td_analytics = td_util::get_option( 'td_analytics' );
 		echo stripslashes( $td_analytics );
+	}
 
+	add_action( 'td_wp_body_open', 'td_body_script_code', 40 );
+	function td_body_script_code() {
+		$td_body_code = td_util::get_option( 'td_body_code' );
+		echo stripslashes( $td_body_code );
 	}
 
 	add_action( 'wp_footer', 'td_footer_script_code', 40 );
@@ -2249,7 +2294,7 @@ function td_gallery_shortcode($output = '', $atts = [], $content = false) {
                             onSliderResize: td_gallery_resize_update_vars_' . $gallery_slider_unique_id . ',
                             onSliderLoaded: doubleSlider2Load_' . $gallery_slider_unique_id . ',
                             onSlideChange: doubleSlider2Load_' . $gallery_slider_unique_id . ',
-                            keyboardControls:true
+                            keyboardControls: true
                         });
 
                         //small image slide
@@ -3031,15 +3076,22 @@ function td_template_include_filter( $wordpress_template_path ) {
     if ($td_is_td_template_include_filter) {
         global $post;
 
-        // if we are on a custom post type, leave the defaul loaded wordpress template
-        if ( $post->post_type != 'post' ) {
-            return $wordpress_template_path;
+        $lang = '';
+        if (class_exists('SitePress', false)) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if (1 === $translation_mode) {
+                    $lang = $sitepress->get_current_language();
+                }
+            }
         }
 
         // check if we have a specific template set on the current post
         $td_post_theme_settings = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
 
-        if ( !empty( $td_post_theme_settings['td_post_template'] ) ) {
+        if ( !empty( $td_post_theme_settings['td_post_template'] ) && $post->post_type == 'post'  ) {
             $single_template_id = $td_post_theme_settings['td_post_template'];
 
             if ( td_global::is_tdb_template($single_template_id)) {
@@ -3068,6 +3120,52 @@ function td_template_include_filter( $wordpress_template_path ) {
             }
         }
 
+        // if we are on a custom post type, leave the default loaded wordpress template
+        if ( $post->post_type != 'post' ) {
+
+            $cpts = td_util::get_cpts();
+            $td_cpt = td_util::get_option('td_cpt');
+            $option_id = 'td_default_site_post_template' . $lang;
+
+            foreach ($cpts as $cpt) {
+
+                if ( $post->post_type === $cpt->name ) {
+                    if ( !empty( $td_post_theme_settings['td_post_template'] ) ) {
+                        $single_template_id = $td_post_theme_settings['td_post_template'];
+
+                        if ( td_global::is_tdb_template( $single_template_id, true ) ) {
+                            $tdb_template_id = td_global::tdb_get_template_id($single_template_id);
+
+                            // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                            $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                            if ( $td_single_override != $tdb_template_id ) {
+                                return $td_single_override;
+                            }
+                        }
+                    } elseif ( !empty($td_cpt[$cpt->name][$option_id]) ) {
+
+                         $default_template_id = $td_cpt[$cpt->name][$option_id];
+
+                         // make sure the template exists, maybe it was deleted or something
+                         if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+
+                             // load the default tdb template
+                             $tdb_template_id = td_global::tdb_get_template_id($default_template_id);
+
+                             // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
+                             $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
+                             if ( $td_single_override != $tdb_template_id ) {
+                                 return $td_single_override;
+                             }
+                         }
+                    }
+                }
+            }
+            return $wordpress_template_path;
+        }
+
         // Get primary category - post template settings
         td_global::load_single_post($post);
         $td_primary_category = td_global::get_primary_category_id();
@@ -3091,17 +3189,7 @@ function td_template_include_filter( $wordpress_template_path ) {
         }
 
         // read the global setting
-        $option_id = 'td_default_site_post_template';
-        if (class_exists('SitePress', false )) {
-            global $sitepress;
-            $sitepress_settings = $sitepress->get_settings();
-            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
-                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
-                if (1 === $translation_mode) {
-                    $option_id .= $sitepress->get_current_language();
-                }
-            }
-        }
+        $option_id = 'td_default_site_post_template' . $lang;
         $default_template_id = td_util::get_option($option_id);
 
         // STOP here and load the default template if there's a single template id - The template builder does it's own thing in it's template_include if it's available!
@@ -3115,6 +3203,7 @@ function td_template_include_filter( $wordpress_template_path ) {
 
                 // run our filter and check it's returned value. If tdb did nothing or it's not installed, we do nothing.
                 $td_single_override = apply_filters( 'td_single_override', $tdb_template_id ); // in: template id    out: tdb view single template path
+
 
                 if ( $td_single_override != $tdb_template_id ) {
                     return $td_single_override;
@@ -3157,6 +3246,17 @@ if (TD_DEPLOY_MODE === 'demo') {
     add_filter( 'allow_dev_auto_core_updates', '__return_false' );
     add_filter( 'allow_major_auto_core_updates', '__return_false' );
     add_filter( 'allow_minor_auto_core_updates', '__return_false' );
+
+    /**
+     * Send a HTTP header to limit rendering of pages to same origin iframes for security reasons.
+     */
+    send_frame_options_header();
+
+    /**
+     * Disable the XML-RPC API.
+     */
+    add_filter('xmlrpc_enabled', '__return_false');
+
 }
 
 // remove the "Mobile Theme - Pagebuilder + latest articles + pagination" template from page templates list if the mobile theme plugin is not active
@@ -3177,6 +3277,28 @@ add_filter( 'comments_template', function (){
 	return TDC_PATH_LEGACY . '/comments.php';
 }, 9);
 
+/**
+ * add google recapcha on comments
+ */
+$show_captcha = td_util::get_option('tds_captcha');
+$captcha_site_key = td_util::get_option('tds_captcha_site_key');
+
+function add_google_recaptcha($submit_field) {
+    $captcha_site_key = td_util::get_option('tds_captcha_site_key');
+
+    $submit_field['submit_field'] = '<input type="hidden" aria-required="true" id="g-recaptcha-response" name="g-recaptcha-response" data-sitekey="' . $captcha_site_key . '">
+                                     <input type="hidden" name="action" value="validate_captcha"> 
+                                     <input name="buttonSubmit" type="submit" id="buttonSubmit" class="submit" value="' . __td( 'Post Comment', TD_THEME_NAME ) . '" /> 
+                                     <input type="hidden" name="comment_post_ID" value="'. get_the_id() . '" id="comment_post_ID" />
+                                     <input type="hidden" name="comment_parent" id="comment_parent" value="0" />
+                                     <div class="td-warning-captcha">' . __td( 'Captcha verification failed!', TD_THEME_NAME ) . '</div>
+                                     <div class="td-warning-captcha-score">' . __td( 'CAPTCHA user score failed. Please contact us!', TD_THEME_NAME ) . '</div>
+                                     ';
+    return $submit_field;
+}
+if ( !is_user_logged_in() && $show_captcha && $captcha_site_key != '' ) {
+    add_filter('comment_form_defaults','add_google_recaptcha');
+}
 
 
 //wp_oembed_add_provider( '#https?://(www\.)?tiktok\.com/.*/video/.*#i', 'https://www.tiktok.com/oembed', true );
@@ -3205,3 +3327,75 @@ add_filter( 'comments_template', function (){
 //	    )
 //    );
 //});
+
+// get theme panel option for search in taxonomies terms
+$tds_search_taxonomies_terms = td_util::get_option('tds_search_taxonomies_terms' );
+
+// add search in taxonomies terms
+if ( $tds_search_taxonomies_terms === 'yes' ) {
+
+	// add the search_query argument to td_block queries @see td_data_source::get_wp_query()
+	add_filter( 'td_data_source_blocks_query_args', function ( $td_query_args, $td_block_atts ) {
+
+		// set td_block_search_query
+		$td_block_search_query = $td_block_atts['search_query'] ?? null;
+
+		// if it's a search query on a td_block
+		if ( $td_block_search_query ) {
+
+			// set the td_block_query wp query argument(query var)
+			$td_query_args['td_block_query'] = 'search_query';
+
+		}
+
+		return $td_query_args;
+
+	}, 10, 2 );
+
+	function td_tax_search_join( $join, $wp_query ) {
+		global $wpdb;
+		if( ( is_search() && $wp_query->is_main_query() ) || $wp_query->get( 'td_block_query' ) === 'search_query' ) {
+
+			$join .= "
+            INNER JOIN
+              {$wpdb->term_relationships} ON {$wpdb->posts}.ID = {$wpdb->term_relationships}.object_id
+            INNER JOIN
+              {$wpdb->term_taxonomy} ON {$wpdb->term_taxonomy}.term_taxonomy_id = {$wpdb->term_relationships}.term_taxonomy_id
+            INNER JOIN
+              {$wpdb->terms} ON {$wpdb->terms}.term_id = {$wpdb->term_taxonomy}.term_id
+        ";
+
+		}
+		return $join;
+	}
+	add_filter( 'posts_join', 'td_tax_search_join', 10, 2 );
+
+	function td_tax_search_where( $where, $wp_query ) {
+		global $wpdb;
+		if( ( is_search() && $wp_query->is_main_query() ) || $wp_query->get( 'td_block_query' ) === 'search_query' ) {
+
+			// add search in terms name
+			$where .= " OR (";
+			$where .= " {$wpdb->terms}.name LIKE ('%" . $wpdb->esc_like( $wp_query->get( 's' ) ) . "%') ";
+			$where .= ")";
+
+			// add search in terms tax description
+			$where .= " OR (";
+			$where .= " {$wpdb->term_taxonomy}.description LIKE ('%" . esc_sql( $wp_query->get( 's' ) ) . "%') ";
+			$where .= ")";
+
+		}
+		return $where;
+	}
+	add_filter( 'posts_where', 'td_tax_search_where', 10, 2 );
+
+	function td_tax_search_groupby( $groupby, $wp_query ) {
+		global $wpdb;
+		if( ( is_search() && $wp_query->is_main_query() ) || $wp_query->get( 'td_block_query' ) === 'search_query' ) {
+			$groupby = "{$wpdb->posts}.ID";
+		}
+		return $groupby;
+	}
+	add_filter( 'posts_groupby', 'td_tax_search_groupby', 10, 2 );
+
+}

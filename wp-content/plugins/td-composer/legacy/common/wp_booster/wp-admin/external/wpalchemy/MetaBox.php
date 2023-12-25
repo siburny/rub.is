@@ -497,7 +497,7 @@ if ( ! class_exists( 'WPAlchemy_MetaBox' ) ) {
                 if ($this->lock_on_top) $this->lock = WPALCHEMY_LOCK_TOP;
                 elseif ($this->lock_on_bottom) $this->lock = WPALCHEMY_LOCK_BOTTOM;
 
-                add_action('admin_init', array($this, '_init'));
+                add_action('admin_init', array($this, '_init'), 9);
 
                 // uses the default wordpress-importer plugin hook
                 add_action('import_post_meta', array($this, '_import'), 10, 3);

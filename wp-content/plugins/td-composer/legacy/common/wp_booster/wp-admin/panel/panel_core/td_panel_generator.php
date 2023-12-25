@@ -384,7 +384,7 @@ class td_panel_generator {
                                     <span class="td-check-icon">
                                         <i class="icon-tagdiv-<?php echo esc_attr( $social_network ) ?>"></i>
                                     </span>
-                                    <?php printf( '%1$s', $social_network ) ?>
+                                    <?php printf( '%1$s', ucwords(str_replace('_', ' ', $social_network)) ) ?>
                                 </span>
                             </label>
 

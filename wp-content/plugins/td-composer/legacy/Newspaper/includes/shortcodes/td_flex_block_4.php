@@ -126,6 +126,22 @@ class td_flex_block_4 extends td_block {
             $res_ctx->load_settings_raw( 'image_height2', $image_height2 );
         }
 
+        // image_floated
+        $image_floated2 = $res_ctx->get_shortcode_att('image_floated2');
+        if ( $image_floated2 == '' || $image_floated2 == 'float_left' ) {
+            $res_ctx->load_settings_raw( 'float_left2',  1 );
+        }
+        if ( $image_floated2 == 'float_right' ) {
+            $res_ctx->load_settings_raw( 'float_right2',  1 );
+        }
+        if ( $image_floated2 == 'hidden' ) {
+            if ( $res_ctx->is( 'all' ) && !$res_ctx->is_responsive_att( 'image_floated' ) ) {
+                $res_ctx->load_settings_raw( 'hide_desktop2',  1 );
+            } else {
+                $res_ctx->load_settings_raw( 'hide2',  1 );
+            }
+        }
+
         // image radius
         $image_radius1 = $res_ctx->get_shortcode_att('image_radius1');
         $res_ctx->load_settings_raw( 'image_radius1', $image_radius1 );
@@ -452,7 +468,9 @@ class td_flex_block_4 extends td_block {
             $res_ctx->load_settings_raw( 'review_space1', $review_space1 . 'px' );
         }
         $review_size1 = $res_ctx->get_shortcode_att('review_size1');
-        $res_ctx->load_settings_raw( 'review_size1', 10 + $review_size1/0.5 . 'px' );
+        if ( $review_size1 != '' && is_numeric( $review_size1 ) ) {
+            $res_ctx->load_settings_raw('review_size1', 10 + $review_size1 / 0.5 . 'px');
+        }
         $review_distance1 = $res_ctx->get_shortcode_att('review_distance1');
         $res_ctx->load_settings_raw( 'review_distance1', $review_distance1 );
         if( $review_distance1 != '' && is_numeric( $review_distance1 ) ) {
@@ -479,7 +497,9 @@ class td_flex_block_4 extends td_block {
             $res_ctx->load_settings_raw( 'review_space2', $review_space2 . 'px' );
         }
         $review_size2 = $res_ctx->get_shortcode_att('review_size2');
-        $res_ctx->load_settings_raw( 'review_size2', 10 + $review_size2/0.5 . 'px' );
+        if ( $review_size2 != '' && is_numeric( $review_size2 ) ) {
+            $res_ctx->load_settings_raw('review_size2', 10 + $review_size2 / 0.5 . 'px');
+        }
         $review_distance2 = $res_ctx->get_shortcode_att('review_distance2');
         $res_ctx->load_settings_raw( 'review_distance2', $review_distance2 );
         if( $review_distance2 != '' && is_numeric( $review_distance2 ) ) {
@@ -586,6 +606,9 @@ class td_flex_block_4 extends td_block {
         $res_ctx->load_settings_raw( 'com_bg2', $res_ctx->get_shortcode_att('com_bg2') );
         $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
         $res_ctx->load_settings_raw( 'com_txt2', $res_ctx->get_shortcode_att('com_txt2') );
+        $res_ctx->load_settings_raw( 'rev_txt', $res_ctx->get_shortcode_att('rev_txt') );
+        $res_ctx->load_settings_raw( 'rev_txt2', $res_ctx->get_shortcode_att('rev_txt2') );
+
 
         $res_ctx->load_settings_raw( 'audio_btn_color', $res_ctx->get_shortcode_att( 'audio_btn_color' ) );
         $res_ctx->load_settings_raw( 'audio_btn_color2', $res_ctx->get_shortcode_att( 'audio_btn_color2' ) );
@@ -801,7 +824,18 @@ class td_flex_block_4 extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
+
         $unique_block_modal_class = $this->block_uid . '_m';
 
         $compiled_css = '';
@@ -814,6 +848,9 @@ class td_flex_block_4 extends td_block {
                     .$unique_block_class .td_module_wrap {
                         width: @columns;
                         float: left;
+                    }
+                    .rtl .$unique_block_class .td_module_wrap {
+                        float: right;
                     }
                 }
 				/* @clearfix */
@@ -997,6 +1034,32 @@ class td_flex_block_4 extends td_block {
 				.ie11 .$unique_block_class .td_module_flex_4 .td-image-container {
 				 	flex: 0 0 auto;
 			    }
+				/* @float_left2 */
+                .$unique_block_class .td_module_flex_4 .td-image-container {
+                	display: block; order: 0;
+                }
+                .ie10 .$unique_block_class .td_module_flex_4 .td-module-meta-info,
+				.ie11 .$unique_block_class .td_module_flex_4 .td-module-meta-info {
+				 	flex: 1;
+			    }
+				/* @float_right2 */
+                .$unique_block_class .td_module_flex_4 .td-image-container {
+                	display: block; order: 1;
+                }
+                .$unique_block_class .td_module_flex_4 .td-module-meta-info {
+                	flex: 1;
+                }
+                /* @hide_desktop2 */
+                .$unique_block_class .td_module_flex_4 .td-image-container {
+                	display: none;
+                }
+                .$unique_block_class .td_module_flex_4 .entry-thumb {
+                	background-image: none !important;
+                }
+				/* @hide2 */
+				.$unique_block_class .td_module_flex_4 .td-image-container {
+					display: none;
+				}
 			    
 			    /* @image_radius1 */
 				.$unique_block_class .td_module_flex_1 .entry-thumb,
@@ -1070,7 +1133,7 @@ class td_flex_block_4 extends td_block {
 				.$unique_block_class .td_module_flex_1 .td-module-meta-info {
 					position: relative;
 				}
-				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
+				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					top: 0;
 					bottom: auto;
 				}
@@ -1081,7 +1144,7 @@ class td_flex_block_4 extends td_block {
 				.$unique_block_class .td_module_flex_1 .td-module-meta-info {
 					position: relative;
 				}
-				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
+				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					top: auto;
 					bottom: 0;
 				}
@@ -1092,7 +1155,7 @@ class td_flex_block_4 extends td_block {
 					left: 0;
 					width: 100%;
 				}
-				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
+				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					top: auto;
 					bottom: 0;
 				}
@@ -1105,7 +1168,7 @@ class td_flex_block_4 extends td_block {
 					margin-left: auto;
                     margin-right: auto;
 				}
-				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category {
+				.$unique_block_class .td_module_flex_1 .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					left: 50%;
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
@@ -1126,12 +1189,12 @@ class td_flex_block_4 extends td_block {
 					margin-left: auto;
                     margin-right: auto;
 				}
-				.$unique_block_class .td_module_flex_4 .td-category-pos-image .td-post-category {
+				.$unique_block_class .td_module_flex_4 .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					left: 50%;
 					transform: translateX(-50%);
 					-webkit-transform: translateX(-50%);
 				}
-				.$unique_block_class.td-h-effect-up-shadow .td_module_flex_4:hover .td-category-pos-image .td-post-category {
+				.$unique_block_class.td-h-effect-up-shadow .td_module_flex_4:hover .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 				    transform: translate(-50%, -2px);
 					-webkit-transform: translate(-50%, -2px);
 				}
@@ -1298,11 +1361,11 @@ class td_flex_block_4 extends td_block {
 				}
 				
 				/* @show_cat1 */
-				.$unique_block_class .td_module_flex_1 .td-post-category {
+				.$unique_block_class .td_module_flex_1 .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat1;
 				}
 				/* @show_cat2 */
-				.$unique_block_class .td_module_flex_4 .td-post-category {
+				.$unique_block_class .td_module_flex_4 .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat2;
 				}
 				
@@ -1507,7 +1570,7 @@ class td_flex_block_4 extends td_block {
 				}
 				
 				/* @align_category_bottom */
-				.$unique_block_class .td-category-pos-image .td-post-category {
+				.$unique_block_class .td-category-pos-image .td-post-category:not(.td-post-extra-category) {
 					top: auto;
 				 	bottom: 0;
 			    }
@@ -1692,7 +1755,15 @@ class td_flex_block_4 extends td_block {
 				/* @com_txt2 */
 				.$unique_block_class .td_module_flex_4 .td-module-comments a {
 					color: @com_txt2;
-				}zq`
+				}
+				/* @rev_txt */
+				.$unique_block_class .td_module_flex_1 .entry-review-stars {
+					color: @rev_txt;
+				}
+				/* @rev_txt2 */
+				.$unique_block_class .td_module_flex_4 .entry-review-stars {
+					color: @rev_txt2;
+				}
 				
 				/* @audio_btn_color */
                 .$unique_block_class .td_module_flex_1 .td-audio-player .mejs-button button:after {
@@ -2088,8 +2159,10 @@ class td_flex_block_4 extends td_block {
 
             //get the ajax pagination for this block
             $prev_icon = $this->get_icon_att('prev_tdicon');
+            $prev_icon_class = $this->get_att('prev_tdicon');
             $next_icon = $this->get_icon_att('next_tdicon');
-            $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
+            $next_icon_class = $this->get_att('next_tdicon');
+            $buffy .= $this->get_block_pagination($prev_icon, $next_icon, $prev_icon_class, $next_icon_class);
         $buffy .= '</div>';
         return $buffy;
     }

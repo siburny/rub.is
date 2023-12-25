@@ -374,3 +374,12 @@ function td_get_template_style( $template = null, &$style = '', &$content_width 
 		}
 	}
 }
+
+
+/**
+ * add a cookie exception for darkmode in the case of WP Super Cache plugin
+ */
+add_action('init', 'add_wpsc_cookie_darkmode');
+function add_wpsc_cookie_darkmode() {
+    do_action( 'wpsc_add_cookie', 'td_dark_mode' );
+}

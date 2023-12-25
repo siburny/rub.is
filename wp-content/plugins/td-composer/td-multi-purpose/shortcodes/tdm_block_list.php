@@ -8,62 +8,72 @@ class tdm_block_list extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $raw_css =
             "<style>
             
 				/* @style_general_list */
 				.tdm_block_list .tdm-list-items {
-                  margin: 0;
-                  font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
-                  font-size: 15px;
-                  line-height: 24px;
-                  color: #666;
+				    display: flex;
+				    flex-direction: column;
+                    margin: 0;
+                    font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
+                    font-size: 15px;
+                    line-height: 24px;
+                    color: #666;
                 }
-                .tdm_block_list.tdm-content-horiz-center .tdm-list-item {
-                  margin-left: auto;
-                  margin-right: auto;
+                .tdm_block_list.tdm-content-horiz-center .tdm-list-items {
+                    align-items: center;
                 }
-                .tdm_block_list.tdm-content-horiz-right .tdm-list-item {
-                  margin-right: 0;
-                  margin-left: auto;
+                .tdm_block_list.tdm-content-horiz-right .tdm-list-items {
+                    align-items: flex-end;
                 }
                 .tdm_block_list .tdm-list-item {
-                  margin-bottom: 8px;
-                  margin-left: 0;
+                    margin-bottom: 8px;
+                    margin-left: 0;
                 }
                 .tdm_block_list .tdm-list-item:after {
-                  content: '';
-                  display: table;
-                  clear: both;
+                    content: '';
+                    display: table;
+                    clear: both;
                 }
                 .tdm_block_list .tdm-list-item .tdm-list-icon {
-                  vertical-align: middle;
+                    vertical-align: middle;
                 }
                 .tdm_block_list .tdm-list-item i {
-                  position: relative;
-                  float: left;
-                  line-height: inherit;
-                  vertical-align: middle;
-                  color: #4db2ec;
+                    position: relative;
+                    float: left;
+                    line-height: inherit;
+                    vertical-align: middle;
+                    color: #4db2ec;
                 }
                 .tdm_block_list .tdm-list-item .tdm-list-icon-svg {
-                  margin-top: -3px;
-                  display: inline-flex;
-                  align-items: center;
-                  justify-content: center;
+                    margin-top: -3px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
                 }
                 .tdm_block_list .tdm-list-item svg {
-                  width: 15px;
-                  height: auto;
+                    width: 15px;
+                    height: auto;
                 }
                 .tdm_block_list .tdm-list-item svg,
                 .tdm_block_list .tdm-list-item svg * {
-                  fill: #4db2ec;
+                    fill: #4db2ec;
                 }
                 .tdm_block_list.tdm-list-with-icons .tdm-list-item {
-                  list-style-type: none;
+                    list-style-type: none;
                 }
 
 				
@@ -206,7 +216,7 @@ class tdm_block_list extends td_block {
 			, $atts);
 
 	    $content_align_horizontal = $this->get_shortcode_att( 'content_align_horizontal' );
-        $items = explode( "\n", rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'items' ) ) ) ) );
+        $items = explode( "\n", td_util::get_custom_field_value_from_string( rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'items' ) ) ) ) ) );
         $icon = $this->get_icon_att( 'tdicon' );
 
         $additional_classes = array();

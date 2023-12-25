@@ -107,3 +107,5 @@ if (have_posts()) {
         <h2><?php esc_html_e('No posts to display', 'newspaper') ?></h2>
     </div>
 <?php }
+
+wp_reset_query();

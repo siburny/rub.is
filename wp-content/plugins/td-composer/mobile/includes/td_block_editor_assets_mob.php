@@ -10,7 +10,7 @@ add_action( 'enqueue_block_editor_assets', function(){
 	
 	global $pagenow;
 
-	if (TDC_DEPLOY_MODE == 'deploy') {
+	if (TDC_DEPLOY_MODE == 'deploy' && 'widgets.php' !== $pagenow) {
 		wp_enqueue_script(
 			'tdBlocksEditorAssets',
 			TDC_URL . '/mobile/js/js_mob_files_for_admin.min.js',

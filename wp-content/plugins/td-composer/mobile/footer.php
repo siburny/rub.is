@@ -61,6 +61,9 @@
                 $td_footer_logo_title = $td_logo_title;
             }
 
+            $logo_image_width_html = '';
+            $logo_image_height_html = '';
+
             if( $td_footer_logo != '' ) {
                 $attachment_id = attachment_url_to_postid( $td_footer_logo );
                 $info_img = wp_get_attachment_image_src( $attachment_id, 'full');

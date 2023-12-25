@@ -218,12 +218,12 @@ class td_cake {
                                 <span class="td-activate-err td-envato-missing" style="display:none;">Code is required</span>
                                 <span class="td-activate-err td-envato-length" style="display:none;">Code is too short</span>
                                 <span class="td-activate-err td-envato-invalid" style="display:none;">Code is not valid</span>
-                                <span class="td-activate-err td-envato-check-error" style="display:none;">Envato API is down, please try again later or use the manual registration.</span>
+                                <span class="td-activate-err td-envato-check-error" style="display:none;">Envato API is down, please try again later.</span>
                             </div>
 
 
                             <button class="td-activate-button td-envato-code-button">Activate</button>
-                            <div class="td-envato-code-info"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Find your Envato code</a></div>
+                            <div class="td-envato-code-info"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Find your Envato code</a><span><svg style="vertical-align: middle; margin-left: 20px;" width="17" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M22,9a1,1,0,0,0,0,1.42l4.6,4.6H3.06a1,1,0,1,0,0,2H26.58L22,21.59A1,1,0,0,0,22,23a1,1,0,0,0,1.41,0l6.36-6.36a.88.88,0,0,0,0-1.27L23.42,9A1,1,0,0,0,22,9Z"/></g></svg> If you don't have a license key, you can get one now. </span><a href="https://themeforest.net/item/newspaper/5489609?utm_source=NP_theme_panel&utm_medium=click&utm_campaign=cta&utm_content=buy_new_activ" target="_blank">Buy Newspaper Theme</a></div>
                         </div>
 
                         <!-- Step 2 - Forum Registration -->
@@ -399,13 +399,13 @@ class td_cake {
                 <div class="td-wp-admin-top">
                     <div class="td-tagdiv-brand-wrap">
                         <img class="td-tagdiv-gradient" src="<?php echo td_global::$get_template_directory_uri ?>/legacy/common/wp_booster/wp-admin/images/gradient.png" />
-                        <img class="td-tagdiv-brand" src="<?php echo td_global::$get_template_directory_uri ?>/legacy/common/wp_booster/wp-admin/images/logo-tagdiv.png" />
+                        <a class="td-tagdiv-link" href="https://tagdiv.com?utm_source=theme&utm_medium=logo&utm_campaign=tagdiv&utm_content=click_hp"><img class="td-tagdiv-brand" src="<?php echo td_global::$get_template_directory_uri ?>/legacy/common/wp_booster/wp-admin/images/logo-tagdiv.png" /></a>
                     </div>
                     <div class="td-wp-admin-theme">
                         <h1>Your license of <?php echo TD_THEME_NAME ?> Theme is <b style="color: red;">not registered!</b></h1>
                         <p>
-                            Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. Activation system gives you <strong>access to the support center</strong>.
-                            It also prevents mass piracy, allowing us to better serve you <strong>with free updates, upcoming premium features, top notch support and guarantees compatibility with the latest WordPress versions</strong>.
+                            Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. The activation system gives you <strong>access to the support center and premium features</strong>.
+                            It also prevents piracy, allowing us to provide <strong>free updates, upcoming premium features, top-notch support, and compatibility with the latest WordPress versions</strong>.
                         </p>
                         <p><?php echo '<a class="td-wp-admin-button" href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Activate now</a><a href="' . $td_activate_url . '">How to activate the theme</a>'; ?></p>
                     </div>

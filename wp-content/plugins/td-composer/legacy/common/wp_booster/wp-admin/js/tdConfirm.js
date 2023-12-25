@@ -137,10 +137,6 @@ var tdConfirm;
 
             $TBWindow.addClass( 'td-thickbox' );
 
-            if (tdConfirm._$infoContent.height() > 400) {
-                $TBWindow.addClass( 'td-thickbox-fixed' );
-            }
-
             tdConfirm._$body.removeClass( 'td-thickbox-loading' );
 
             tdConfirm._$content.remove();
@@ -211,10 +207,6 @@ var tdConfirm;
             }
 
             $TBWindow.addClass( 'td-thickbox' );
-
-            if (tdConfirm._$infoContent.height() > 400) {
-                $TBWindow.addClass( 'td-thickbox-fixed' );
-            }
 
             tdConfirm._$body.removeClass( 'td-thickbox-loading' );
 
@@ -301,10 +293,6 @@ var tdConfirm;
             var $TBWindow = jQuery( '#TB_window' );
 
             $TBWindow.addClass( 'td-thickbox' );
-
-            if (tdConfirm._$infoContent.height() > 400) {
-                $TBWindow.addClass( 'td-thickbox-fixed' );
-            }
 
             tdConfirm._$body.removeClass( 'td-thickbox-loading' );
 

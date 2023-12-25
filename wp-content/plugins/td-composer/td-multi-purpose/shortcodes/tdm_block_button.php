@@ -5,7 +5,17 @@ class tdm_block_button extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -118,7 +128,31 @@ class tdm_block_button extends td_block {
             $data_scroll_offset = ' data-scroll-offset="' . $scroll_offset . '" ';
         }
 
+
 		$buffy = '';
+
+
+        // display restrictions
+        $hide_for_user_type = $this->get_shortcode_att( 'hide_for_user_type' );
+        if( $hide_for_user_type != '' ) {
+            if( !( td_util::tdc_is_live_editor_ajax() || td_util::tdc_is_live_editor_iframe() ) &&
+                (
+                    ( $hide_for_user_type == 'logged-in' && is_user_logged_in() ) ||
+                    ( $hide_for_user_type == 'guest' && !is_user_logged_in() )
+                )
+            ) {
+                return $buffy;
+            }
+        } else {
+            $author_plan_ids = $this->get_att('author_plan_id');
+            $all_users_plan_ids = $this->get_att('logged_plan_id');
+
+            if( !td_util::plan_limit($author_plan_ids, $all_users_plan_ids) ) {
+                return $buffy;
+            }
+        }
+
+
 
 		$buffy .= '<div class="tdm_block ' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . ' ' . $data_inline . ' ' . $data_video_popup . ' ' . $data_scroll_to_class . ' ' . $data_scroll_offset . '>';
 
@@ -127,15 +161,20 @@ class tdm_block_button extends td_block {
 
             // button
             $button_text = $this->get_shortcode_att('button_text');
-            if ( ! empty( $button_text ) ) {
-                $tds_button = $this->get_shortcode_att('tds_button');
-                if ( empty( $tds_button ) ) {
-                    $tds_button = td_util::get_option( 'tds_button', 'tds_button1' );
-                }
-                $tds_button_instance = new $tds_button( $this->shortcode_atts, '', $this->unique_block_class );
-                $buffy .= $tds_button_instance->render();
-            }
+            $button_icon = $this->get_shortcode_att( 'button_tdicon' );
 
+//            if ( $hide_for_logged =='yes' && is_user_logged_in() && !td_util::tdc_is_live_editor_ajax() && !td_util::tdc_is_live_editor_iframe()) {
+//                   //return false;
+//            } else {
+                if ( !empty($button_text) || !empty($button_icon) ) {
+                    $tds_button = $this->get_shortcode_att('tds_button');
+                    if (empty($tds_button)) {
+                        $tds_button = td_util::get_option('tds_button', 'tds_button1');
+                    }
+                    $tds_button_instance = new $tds_button($this->shortcode_atts, '', $this->unique_block_class);
+                    $buffy .= $tds_button_instance->render();
+                }
+            //}
 		$buffy .= '</div>';
 
 		return $buffy;

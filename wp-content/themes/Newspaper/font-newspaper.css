@@ -26,8 +26,8 @@ usage:
  */
 @font-face {
   font-family: 'newspaper';
-  src: url('images/icons/newspaper.eot?19');
-  src: url('images/icons/newspaper.eot?19#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?19') format('woff'), url('images/icons/newspaper.ttf?19') format('truetype'), url('images/icons/newspaper.svg?19#newspaper') format('svg');
+  src: url('images/icons/newspaper.eot?21');
+  src: url('images/icons/newspaper.eot?21#iefix') format('embedded-opentype'), url('images/icons/newspaper.woff?21') format('woff'), url('images/icons/newspaper.ttf?21') format('truetype'), url('images/icons/newspaper.svg?21#newspaper') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -92,6 +92,12 @@ usage:
 }
 .td-icon-menu-right:before {
   content: '\e80d';
+}
+.rtl .td-next-prev-wrap .td-icon-menu-left:before {
+  content: '\e80d';
+}
+.rtl .td-next-prev-wrap .td-icon-menu-right:before {
+  content: '\e80c';
 }
 .td-icon-star:before {
   content: '\e80f';
@@ -229,6 +235,9 @@ usage:
   content: '\e83e';
 }
 .td-icon-whatsapp:before {
+  content: '\f232';
+}
+.td-icon-website:before {
   content: '\f232';
 }
 .td-icon-commenting:before {
@@ -423,6 +432,51 @@ usage:
 .td-icon-audio-refresh:before {
   content: "\e9d2";
 }
+.td-icon-medium:before {
+  content: "\e929";
+}
+.td-icon-github:before {
+  content: "\e92a";
+}
+.td-icon-patreon:before {
+  content: "\e92b";
+}
+.td-icon-rumble:before {
+  content: "\e92c";
+}
+.td-icon-clouthub:before {
+  content: "\e92d";
+}
+.td-icon-gab:before {
+  content: "\e92e";
+}
+.td-icon-parler:before {
+  content: "\e92f";
+}
+.td-icon-gettr:before {
+  content: "\e930";
+}
+.td-icon-koo:before {
+  content: "\e937";
+}
+.td-icon-copy_url:before {
+  content: "\e931";
+}
+.td-icon-user-rev-star-empty:before {
+  content: "\e932";
+}
+.td-icon-user-rev-star-half:before {
+  content: "\e933";
+}
+.td-icon-user-rev-star-full:before {
+  content: "\e934";
+}
+.td-icon-kakao:before {
+  content: "\e935";
+}
+.td-icon-strava:before {
+  content: "\e936";
+}
 .td-social-icon-wrap:hover .td-icon-font {
   -webkit-transition: color 0.3s;
   transition: color 0.3s;
@@ -568,4 +622,7 @@ usage:
 }
 .td-social-icon-wrap:hover i.td-icon-discord {
   color: #7289DA;
+}
+.td-social-icon-wrap:hover i.td-icon-whatsapp {
+  color: #7bbf6a;
 }

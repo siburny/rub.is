@@ -507,6 +507,16 @@ class td_demo_misc extends td_demo_base {
         $td_options = &td_options::get_all_by_ref();
         $td_options['tdb_woo_shop_base_template'] = $template_id;
     }
+
+    static function update_global_cpt_template( $template_id, $cpt ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['td_cpt'][$cpt]['td_default_site_post_template'] = $template_id;
+    }
+
+    static function update_global_cpt_tax_template( $template_id, $tax ) {
+        $td_options = &td_options::get_all_by_ref();
+        $td_options['td_cpt_tax'][$tax]['tdb_category_template'] = $template_id;
+    }
 }
 
 
@@ -717,6 +727,139 @@ class td_woo_demo_product_category extends td_demo_base {
 
 }
 
+class td_demo_tax extends td_demo_base {
+
+    static function add_taxonomy( $params_array ) {
+
+    	// it's probably safe to also schedule a save here
+	    $td_options = &td_options::get_all_by_ref();
+
+		self::check_params(
+			__CLASS__,
+			__FUNCTION__,
+			$params_array,
+			array(
+		        'taxonomy_name' => 'Param is required !',
+		        'taxonomy' => 'Param is required !',
+			)
+		);
+
+		// process args @see wp_insert_term()
+	    $args = array();
+
+	    // description
+	    if ( !empty( $params_array['description'] ) ) {
+	    	$args['description'] = $params_array['description'];
+	    }
+
+	    // parent
+	    if ( !empty( $params_array['parent_id'] ) ) {
+	    	$args['parent'] = $params_array['parent_id'];
+	    }
+
+	    // insert taxonomy
+	    $new_term_data = wp_insert_term( $params_array['taxonomy_name'], $params_array['taxonomy'], $args );
+
+	    // check for errors
+	    if ( is_wp_error( $new_term_data ) ) {
+
+		    td_log::log(
+		    	__CLASS__,
+			    __FUNCTION__,
+			    'failed to insert term: ' . $params_array['taxonomy_name'] . ' in taxonomy: ' . $params_array['taxonomy'] . ' on demo install',
+			    $new_term_data
+		    );
+
+			//self::kill(
+			//    __CLASS__,
+			//    __FUNCTION__,
+			//    $params_array,
+			//    array(
+			//	    'wp_insert_term > wp_error' => $new_term_data->get_error_message(),
+			//	    'new_tax_data' => $new_term_data
+			//    )
+			//);
+
+		    // return here on wp error
+		    return '';
+	    }
+
+	    $new_tax_term_id = $new_term_data['term_id'];
+
+	    // update the taxonomy cloud template
+		//if ( !empty( $params_array['taxonomy_template'] ) ) {
+		//    $td_options['td_cpt_tax'][$params_array['taxonomy']]['tdb_category_template'] = 'tdb_template_' . $params_array['taxonomy_template'];
+		//}
+
+        // add image if it is set
+        if( isset( $params_array['filter_image'] ) ) {
+            if( $params_array['filter_image'] != '' ) {
+                update_term_meta( $new_tax_term_id, 'tdb_filter_image', td_demo_media::get_by_td_id( $params_array['filter_image'] ) );
+            }
+        }
+
+	    // add tax term meta ( demo custom fields )
+	    if( !empty( $params_array['tax_term_meta'] ) && is_array( $params_array['tax_term_meta'] ) ) {
+
+		    foreach ( $params_array['tax_term_meta'] as $meta_key => $meta_value ) {
+
+			    $term_meta_value = '';
+				if ( $meta_key === 'tdb_filter_color' ) {
+					$term_meta_value = esc_html( $meta_value );
+				} elseif( $meta_key === 'tdb-location-type' ) {
+                    $term_meta_value = $meta_value;
+                } elseif ( str_starts_with( $meta_key, 'tdcf_' ) ) {
+					$term_meta_value = base64_decode( $meta_value );
+				}
+
+				if ( empty( $term_meta_value ) )
+					continue;
+
+			    update_term_meta( $new_tax_term_id, $meta_key, $term_meta_value );
+
+		    }
+
+	    }
+
+        // update once the prod category options
+	    td_options::schedule_save();
+
+        // keep a list of installed taxonomy terms ids, so we can delete them later if needed
+	    $td_stacks_td_demo_taxonomies_ids = get_option( 'td_demo_taxonomies_terms_ids', array() );
+
+		// process term's taxonomy in td_demo_taxonomies_terms_ids option array
+		if ( !empty( $td_stacks_td_demo_taxonomies_ids[$params_array['taxonomy']] ) && is_array( $td_stacks_td_demo_taxonomies_ids[$params_array['taxonomy']] ) ) {
+			// add new term id to taxonomy's terms array
+			$td_stacks_td_demo_taxonomies_ids[$params_array['taxonomy']][] = $new_tax_term_id;
+		} else {
+			// initialize taxonomy's terms array adn add the new term id
+			$td_stacks_td_demo_taxonomies_ids[$params_array['taxonomy']] = array( $new_tax_term_id );
+		}
+
+        update_option('td_demo_taxonomies_terms_ids', $td_stacks_td_demo_taxonomies_ids );
+
+        return $new_tax_term_id;
+
+    }
+
+    static function remove() {
+	    $td_stacks_td_demo_taxonomies_terms_ids = get_option( 'td_demo_taxonomies_terms_ids' );
+        if ( is_array( $td_stacks_td_demo_taxonomies_terms_ids ) ) {
+            foreach ( $td_stacks_td_demo_taxonomies_terms_ids as $tax => $tax_terms_ids ) {
+
+	            if ( !is_array( $tax_terms_ids ) )
+					continue;
+
+				foreach ( $tax_terms_ids as $tax_term_id ) {
+					wp_delete_term( $tax_term_id, $tax );
+				}
+
+            }
+        }
+    }
+
+}
+
 class td_woo_demo_product_tag extends td_demo_base {
 
     static function remove() {
@@ -864,7 +1007,9 @@ class td_woo_demo_product_attribute extends td_demo_base {
         $td_stacks_td_woo_demo_product_attributes_ids = get_option('td_woo_demo_product_attributes_ids');
         if ( is_array( $td_stacks_td_woo_demo_product_attributes_ids ) ) {
             foreach ( $td_stacks_td_woo_demo_product_attributes_ids as $product_attribute_id ) {
-	            wc_delete_attribute( $product_attribute_id );
+				if ( function_exists( 'wc_delete_attribute' ) ) {
+					wc_delete_attribute( $product_attribute_id );
+				}
             }
         }
     }
@@ -879,7 +1024,7 @@ class td_woo_demo_product_attribute extends td_demo_base {
 class td_demo_content extends td_demo_base {
 
 
-	static function parse_content( $file_content ) {
+	static function parse_content( $file_content, $template_type = '' ) {
 		$b64_encodable = false;
 
         if ( td_util::tdc_is_installed() ) {
@@ -890,14 +1035,18 @@ class td_demo_content extends td_demo_base {
 	        }
         }
 
-        $search_in_file = self::multi_instring($file_content, array(
+        $search_in_file = self::multi_instring( $file_content, array(
             '0div',
             'localhost',
             '192.168.0.'
         ));
 
-        if ($search_in_file !== false) {
-            self::kill(__CLASS__, __FUNCTION__, 'found in file content: ' . $search_in_file);
+        if ( $search_in_file !== false ) {
+            self::kill( __CLASS__, __FUNCTION__, 'found in file content: ' . $search_in_file,
+	            array(
+					//'$file_content' => $file_content
+	            )
+            );
         }
 
 
@@ -978,6 +1127,43 @@ class td_demo_content extends td_demo_base {
             //echo '<!-- file content -->' . $file_content;
         }
 
+        preg_match_all('/ad_loop=\"\S*\"/', $file_content, $ad_loop_matches, PREG_PATTERN_ORDER);
+        if (!empty($ad_loop_matches) && is_array($ad_loop_matches) && count($ad_loop_matches[0])) {
+
+            foreach ($ad_loop_matches[0] as $css_key => $ad_loop_match) {
+
+                $match = str_replace(array('ad_loop="', 'ad_loop=\"', '\"', '"'), '', $ad_loop_match);
+
+                $decoded_match = '';
+
+                if ( td_util::tdc_is_installed() ) {
+                    $decoded_match = rawurldecode(tdc_b64_decode(strip_tags($match)));
+                }
+
+
+                $img_matches = array();
+                preg_match_all('/src="(\S*)xxx_(\S*)_xxx(\S*)"/U', $decoded_match, $img_matches);
+
+                if (!empty($img_matches) &&
+                    count($img_matches) >= 3 &&
+                    is_array($img_matches[0]) && !empty($img_matches[0]) &&
+                    is_array($img_matches[1]) &&
+                    is_array($img_matches[2])
+                ) {
+
+                    foreach ($img_matches[0] as $index => $img_match) {
+                        $decoded_match = str_replace($img_match, 'src="' . td_demo_media::get_image_url_by_td_id($img_matches[2][$index]) . '"', $decoded_match);
+                    }
+
+                }
+
+                if ( td_util::tdc_is_installed() ) {
+                    $file_content = str_replace($ad_loop_matches[0][$css_key], 'ad_loop="' . tdc_b64_encode(rawurlencode($decoded_match)) . '"', $file_content);
+                }
+            }
+            //echo '<!-- file content -->' . $file_content;
+        }
+
         preg_match_all('/tdc_css=\\\"\S*\\\"/', $file_content, $css_matches, PREG_PATTERN_ORDER);
         if (!empty($css_matches) && is_array($css_matches) && count($css_matches[0])) {
 
@@ -1047,12 +1233,208 @@ class td_demo_content extends td_demo_base {
                 $file_content = str_replace($matches[0][$index], td_demo_media::get_menu_id($match), $file_content);
             }
         }
+
+
+        if (is_plugin_active('td-subscription/td-subscription.php') ) {
+
+        	global $wpdb;
+
+            $db_plans = $wpdb->get_results( "SELECT * FROM tds_plans", ARRAY_A);
+            if ( null !== $db_plans && count($db_plans)) {
+
+                unset( $matches );
+	            preg_match_all( "/jjj_(.*)_jjj/U", $file_content, $matches, PREG_PATTERN_ORDER );
+
+		        if ( ! empty( $matches ) and is_array( $matches ) ) {
+
+			        foreach ( $matches[ 1 ] as $index => $match ) {
+
+				        foreach ($db_plans as $db_plan) {
+				        	if (!empty($db_plan['options'])) {
+				        		$options = maybe_unserialize($db_plan['options']);
+
+				        		if (!empty($options['unique_id']) && $options['unique_id'] == $match ) {
+				        			$file_content = str_replace( $matches[ 0 ][ $index ], $db_plan['id'], $file_content );
+				        			break;
+						        }
+					        }
+				        }
+			        }
+		        }
+	        }
+		}
+
+		if (!empty($template_type)) {
+			if ('header' === $template_type ) {
+				$header_content = json_decode( $file_content );
+				foreach ($header_content as $key => &$val ) {
+					$val = self::parse_template_shortcodes( $val );
+				}
+				$file_content = json_encode( $header_content );
+			} else {
+				$file_content = self::parse_template_shortcodes( $file_content );
+			}
+		}
+
         if ($b64_encodable == true && td_util::tdc_is_installed() ) {
             $file_content = tdc_b64_encode($file_content);
         }
         return $file_content;
 
     }
+
+
+    static function parse_template_shortcodes( &$content = null ) {
+
+		$new_content = '';
+
+		if ( preg_match_all( '/' . get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER ) ) {
+			foreach ( $matches as &$shortcode ) {
+				//var_dump($shortcode[ 2 ]);
+
+				$attributes = shortcode_parse_atts( $shortcode[ 3 ] );
+
+				//var_dump($matches);
+				//var_dump($attributes);
+
+				$wrapper_shortcode = false;
+
+				if (strpos( $content, "[/" . $shortcode[ 2 ] . "]") > 0 ) {
+					$wrapper_shortcode = true;
+				}
+
+
+				if ( ! empty( $shortcode[5] ) ) {
+					$new_content .= '[' . $shortcode[2];
+
+					if (is_array($attributes)) {
+						self::parse_template_attr( $new_content, $shortcode[2], $attributes );
+					}
+
+					$new_content .= ']';
+
+					$new_content .= self::parse_template_shortcodes($shortcode[5] );
+
+					$new_content .= '[/' . $shortcode[2] . ']';
+
+				} else {
+
+					$new_content .= '[' . $shortcode[2];
+
+					if (is_array($attributes)) {
+						self::parse_template_attr( $new_content, $shortcode[ 2 ], $attributes );
+					}
+
+					$new_content .= ']';
+					if ( $wrapper_shortcode ) {
+						$new_content .= '[/' . $shortcode[ 2 ] . ']';
+					}
+				}
+			}
+			return $new_content;
+		} else {
+			return $content;
+		}
+	}
+
+
+	private static function parse_template_attr( &$content, $shortcode, $attributes) {
+		$demo_unique_page_ids = [];
+
+		$demo_pages = new WP_Query( array(
+                'post_type' => 'page',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key'     => 'demo_unique_id',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+            )
+        );
+
+        if (!empty($demo_pages)) {
+            foreach ( $demo_pages->posts as $demo_page ) {
+                $demo_unique_id = get_post_meta($demo_page->ID, 'demo_unique_id', true);
+                if (!empty($demo_unique_id)) {
+                    $demo_unique_page_ids[$demo_page->ID] = $demo_unique_id;
+                }
+            }
+        }
+
+		foreach ( $attributes as $key => $val ) {
+
+			switch ($shortcode) {
+				case 'tdm_block_popup':
+					switch ($key) {
+						case 'page_id':
+							$real_page_id = array_search($val, $demo_unique_page_ids);
+							if (!empty($real_page_id)) {
+								$val = $real_page_id;
+							}
+
+							break;
+					}
+					break;
+
+                case 'td_block_tabbed_content':
+                    switch ($key) {
+						case 'page_0_id':
+                        case 'page_1_id':
+                        case 'page_2_id':
+                        case 'page_3_id':
+                        case 'page_4_id':
+							$real_page_id = array_search($val, $demo_unique_page_ids);
+							if (!empty($real_page_id)) {
+								$val = $real_page_id;
+							}
+
+							break;
+					}
+					break;
+
+                case 'tds_menu_login':
+                    switch ($key) {
+						case 'page_0_url':
+                        case 'page_1_url':
+                        case 'page_2_url':
+                        case 'page_3_url':
+                        case 'page_4_url':
+							$real_page_id = array_search($val, $demo_unique_page_ids);
+							if (!empty($real_page_id)) {
+								$val = $real_page_id;
+							}
+
+							break;
+					}
+					break;
+                    
+                case 'tds_my_account':
+                    switch ($key) {
+                        case 'page_0_id':
+                        case 'page_1_id':
+                        case 'page_2_id':
+                        case 'page_3_id':
+                        case 'page_4_id':
+                        case 'page_5_id':
+                        case 'page_6_id':
+                            $real_page_id = array_search($val, $demo_unique_page_ids);
+                            if (!empty($real_page_id)) {
+                                $val = $real_page_id;
+                            }
+
+                            break;
+                    }
+                    break;
+			}
+
+            if ( $val != 'undefined' ) {
+                $content .= " $key=\"$val\"";
+            }
+
+		}
+	}
+
 
 	/**
 	 * @param $params
@@ -1063,23 +1445,34 @@ class td_demo_content extends td_demo_base {
 
 	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
 		    'title' => 'Param is required!',
-		    'file' => 'Param is required!',
-		    'categories_id_array' => 'Param is required!',
+		    //'file' => 'Param is required!',
+		    //'categories_id_array' => 'Param is required!',
 		    //'featured_image_td_id' => 'Param is required!',
 	    ));
 
 
-	    $template_name = basename( $params['file'] );
-
+        if (!empty($params['file'])) {
+            $template_name = basename($params['file']);
+        }
 	    $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
-            'post_type' => 'post',
-            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'post content template not set!' ) ) ?: 'failed to parse post content/post content empty!',
-            'comment_status' => 'open',
-            'post_category' => $params['categories_id_array'], //adding category to this post
+            'post_type' => empty($params['post_type']) ? 'post' : $params['post_type'],
+//            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'post content template not set!' ) ) ?: 'failed to parse post content/post content empty!',
+//            'comment_status' => 'open',
+            //'post_category' => $params['categories_id_array'], //adding category to this post
             'guid' => td_global::td_generate_unique_id()
         );
+
+        // lockers don't have text content
+        if (!empty($params['file'])) {
+            $new_post['post_content'] = ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? file_get_contents( $params['file'] ) ) ) ?: 'failed to parse post content/post content empty!';
+            $new_post['comment_status'] = 'open';
+        }
+
+	    if (!empty($params['categories_id_array'])) {
+	    	$new_post['post_category'] = $params['categories_id_array'];
+	    }
 
         // new post / page
         $post_id = wp_insert_post($new_post);
@@ -1129,9 +1522,45 @@ class td_demo_content extends td_demo_base {
             }
         }
 
+        if (!empty($params['tds_lock_content'])) {
+            $td_post_theme_settings['tds_lock_content'] = $params['tds_lock_content'];
+            update_post_meta($post_id, 'tds_lock_content', 1, true);
+        }
+
+		if (!empty($params['tds_locker'])) {
+            $td_post_theme_settings['tds_locker'] = $params['tds_locker'];
+        }
+
         // update the post metadata only if we have something new
         if (!empty($td_post_theme_settings)) {
             update_post_meta($post_id, 'td_post_theme_settings', $td_post_theme_settings, true);
+        }
+
+
+
+        if (!empty($params['tds_locker_settings'])) {
+        	update_post_meta($post_id, 'tds_locker_settings', $params['tds_locker_settings'], true);
+        }
+
+        if (!empty($params['tds_locker_styles'])) {
+        	update_post_meta($post_id, 'tds_locker_styles', $params['tds_locker_styles'], true);
+        }
+
+
+        if (!empty($params['tds_payable'])) {
+            $tds_locker_types['tds_payable'] = $params['tds_payable'];
+        }
+        if (!empty($params['tds_paid_subs_page_id'])) {
+            $tds_locker_types['tds_paid_subs_page_id'] = $params['tds_paid_subs_page_id'];
+        }
+        if (!empty($params['tds_paid_subs_plan_ids'])) {
+            $tds_locker_types['tds_paid_subs_plan_ids'] = $params['tds_paid_subs_plan_ids'];
+        }
+        if (!empty($params['tds_locker_slug'])) {
+            $tds_locker_types['tds_locker_slug'] = $params['tds_locker_slug'];
+        }
+        if (!empty($tds_locker_types)) {
+            update_post_meta($post_id, 'tds_locker_types', $tds_locker_types, true);
         }
 
 
@@ -1150,10 +1579,6 @@ class td_demo_content extends td_demo_base {
             wp_update_post(get_post($post_id));
         }
 
-
-
-
-
         return $post_id;
     }
 
@@ -1171,7 +1596,7 @@ class td_demo_content extends td_demo_base {
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'page',
-            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'page content template not set!' ) ) ?: 'failed to parse page content/page content empty!',
+            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'page content template not set!', 'page' ) ) ?: 'failed to parse page content/page content empty!',
             'comment_status' => 'open',
             'guid' => td_global::td_generate_unique_id()
         );
@@ -1224,9 +1649,10 @@ class td_demo_content extends td_demo_base {
 
 
         // set as homepage?
-        if (!empty($params['homepage']) and $params['homepage'] === true) {
-            update_option( 'page_on_front', $page_id);
+        if ( !empty( $params['homepage'] ) and $params['homepage'] === true ) {
+            update_option( 'page_on_front', $page_id );
             update_option( 'show_on_front', 'page' );
+	        update_post_meta( $page_id, 'tdc_homepage_cloud_import', 1 );
         }
 
 
@@ -1255,7 +1681,11 @@ class td_demo_content extends td_demo_base {
             update_post_meta($page_id, 'tdc_template_name', $template_name);
         }
 
-	    // Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
+        if (!empty($params['demo_unique_id'])) {
+            update_post_meta($page_id, 'demo_unique_id', $params['demo_unique_id']);
+        }
+
+		// Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
 	    update_post_meta($page_id, 'tdc_dirty_content', false);
 
         return $page_id;
@@ -1276,7 +1706,8 @@ class td_demo_content extends td_demo_base {
 
         $template_types = array(
             'single', 'category', 'author', 'search', 'date', 'tag', 'attachment', '404', 'page', 'header', 'footer',
-	        'woo_product', 'woo_archive', 'woo_search_archive', 'woo_shop_base' // td woo templates
+	        'woo_product', 'woo_archive', 'woo_search_archive', 'woo_shop_base', // td woo templates
+	        'cpt', 'cpt_tax' // custom post types/taxonomies templates
         );
 
         if ( in_array( $template_type, $template_types) === false ) {
@@ -1288,7 +1719,7 @@ class td_demo_content extends td_demo_base {
             'post_title' => $params['title'],
             'post_status' => 'publish',
             'post_type' => 'tdb_templates',
-            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'cloud_template content template not set!' ) ) ?: 'failed to parse cloud_template content/cloud_template content empty!',
+            'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'cloud_template content template not set!', $template_type ) ) ?: 'failed to parse cloud_template content/cloud_template content empty!',
             'comment_status' => 'closed',
             'meta_input'   => array(
                 'tdb_template_type' => $template_type,
@@ -1299,32 +1730,41 @@ class td_demo_content extends td_demo_base {
         );
 
         //new template
-        $template_id = wp_insert_post ($new_post);
+        $template_id = wp_insert_post($new_post);
 
-	    if (is_wp_error($template_id)) {
+	    if ( is_wp_error( $template_id ) ) {
 		    self::kill(__CLASS__, __FUNCTION__, $template_id->get_error_message());
 	    }
 
-	    if ($template_id === 0) {
+	    if ( $template_id === 0 ) {
 		    self::kill(__CLASS__, __FUNCTION__, 'wp_insert_post returned 0. Not ok! Page title: ' . $params['title']);
 	    }
 
         // set the cloud template template type post meta
-        update_post_meta($template_id, 'tdb_template_type', $template_type);
+        update_post_meta( $template_id, 'tdb_template_type', $template_type );
 
         // add our demo custom meta field, using this field we will delete all the pages
-        update_post_meta($template_id, 'td_demo_content', true);
+        update_post_meta( $template_id, 'td_demo_content', true );
 
 	    // Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
-	    update_post_meta($template_id, 'tdc_dirty_content', false);
+	    update_post_meta( $template_id, 'tdc_dirty_content', false );
 
         // set the header template if we have one
-        if (!empty($params['header_template_id'])) {
-            update_post_meta($template_id, 'tdc_header_template_id', $params['header_template_id']);
+        if ( !empty( $params['header_template_id'] ) ) {
+            update_post_meta( $template_id, 'tdc_header_template_id', $params['header_template_id'] );
         }
 
-        if ('header' === $template_type) {
-        	update_post_meta($template_id, 'tdc_header_template_id', $template_id);
+        // set the footer template if we have one
+        if ( !empty( $params['footer_template_id'] ) ) {
+            update_post_meta( $template_id, 'tdc_footer_template_id', $params['footer_template_id'] );
+        }
+
+        if ( 'header' === $template_type ) {
+        	update_post_meta( $template_id, 'tdc_header_template_id', $template_id );
+        }
+
+        if ( 'footer' === $template_type ) {
+        	update_post_meta( $template_id, 'tdc_footer_template_id', $template_id );
         }
 
         return $template_id;
@@ -1351,7 +1791,7 @@ class td_demo_content extends td_demo_base {
 			'post_type' => 'product',
 			'post_status' => 'publish',
 			'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? 'product content template not set!' ) ) ?: 'failed to parse product content/product content empty!',
-			'post_excerpt'  => !empty($params['short_description']) ? $params['short_description'] : '',
+			'post_excerpt'  => !empty( $params['short_description'] ) ? $params['short_description'] : '',
 			'guid' => td_global::td_generate_unique_id()
 		);
 
@@ -1516,11 +1956,81 @@ class td_demo_content extends td_demo_base {
 		return $new_product_id;
 	}
 
+
+	static function add_cpt($params) {
+
+		self::check_params(
+			__CLASS__,
+			__FUNCTION__,
+			$params,
+			array(
+				'title' => 'Param is required !',
+				'file' => 'Param is required !',
+			)
+		);
+
+		// cpt_{cpt_name}_default_content.txt
+		$template_name = basename( $params['file'] );
+
+		$new_cpt_data = array(
+			'post_title' => $params['title'],
+			'post_type' => $params['type'],
+			'post_status' => 'publish',
+			//'post_content' => ( self::parse_content( file_get_contents( $params['file'] ) ) ) ?: 'failed to parse cpt content/cpt content empty!',
+			'post_content' => ( self::parse_content( td_global::$td_demo_installer->templates[ $template_name ] ?? file_get_contents( $params['file'] ) ) ) ?: 'failed to parse cpt content/cpt content empty!',
+			'post_excerpt'  => !empty( $params['short_description'] ) ? $params['short_description'] : '',
+			'guid' => td_global::td_generate_unique_id()
+		);
+
+		// new product
+		$new_cpt_id = wp_insert_post( $new_cpt_data );
+
+		// check for errors
+		if ( is_wp_error( $new_cpt_id ) ) {
+			self::kill(
+				__CLASS__,
+				__FUNCTION__,
+				$params,
+				array(
+					'wp_insert_post > wp_error' => $new_cpt_id->get_error_message(),
+					'new_cpt_data' => $new_cpt_data
+				)
+			);
+		}
+
+		// add post meta ( custom fields )
+		if( !empty( $params['post_meta'] ) && is_array( $params['post_meta'] ) ) {
+			foreach ( $params['post_meta'] as $meta_key => $meta_value ) {
+				update_post_meta( $new_cpt_id, $meta_key, base64_decode( $meta_value ) );
+			}
+		}
+
+		// set cpt image
+		if ( !empty( $params['cpt_image_td_id'] ) ) {
+			set_post_thumbnail( $new_cpt_id, td_demo_media::get_by_td_id( $params['cpt_image_td_id'] ) );
+		}
+
+		// set cpt taxonomies
+		if ( !empty( $params['cpt_taxonomies'] ) ) {
+
+			foreach ( $params['cpt_taxonomies'] as $cpt_taxonomy => $cpt_taxonomy_terms ) {
+				wp_set_object_terms( $new_cpt_id, $cpt_taxonomy_terms, $cpt_taxonomy );
+			}
+
+		}
+
+		// add our demo custom meta field, using this field we will delete all cpt s created during demo install
+		update_post_meta( $new_cpt_id, 'td_demo_content', true );
+
+		return $new_cpt_id;
+
+	}
+
 	/**
 	 * Creates all possible combinations of variations from the attributes, without creating duplicates.
 	 * @see WC_Product_Data_Store_CPT->create_all_product_variations
 	 *
-	 * @param  WC_Product $product Variable product.
+	 * @param  $product - variable product.
 	 */
 	static function create_product_variations( $product ) {
 
@@ -1586,23 +2096,32 @@ class td_demo_content extends td_demo_base {
 	}
 
     static function remove() {
+
+	    $post_types = get_post_types();
+		$demo_cpts = array();
+
+		foreach ( $post_types as $post_type ) {
+			if ( str_contains( $post_type, 'tdcpt_' ) ) {
+				$demo_cpts[] = $post_type;
+			}
+		}
+
         $args = array(
-            'post_type' => array( 'page', 'post', 'tdb_templates', 'product' ),
+            'post_type' => array_merge( array( 'page', 'post', 'tdb_templates', 'product', 'tds_locker' ), $demo_cpts ),
             'meta_key'  => 'td_demo_content',
             'posts_per_page' => '-1'
         );
+
         $query = new WP_Query( $args );
-        if (!empty($query->posts)) {
-            foreach ($query->posts as $post) {
-                wp_delete_post($post->ID, true);
+
+        if ( !empty( $query->posts ) ) {
+            foreach ( $query->posts as $post ) {
+                wp_delete_post( $post->ID, true );
             }
        }
+
     }
 }
-
-
-
-
 
 
 class td_demo_widgets extends td_demo_base {
@@ -1836,7 +2355,7 @@ class td_demo_menus extends td_demo_base {
             $itemData['menu-item-parent-id'] = $menu_params['parent_id'];
         }
 
-	    // if no titlte is provided, wordpress will show the title of the page
+	    // if no title is provided, wordpress will show the title of the page
         if (!empty($menu_params['title'])) {
             $itemData['menu-item-title'] = $menu_params['title'];
         }
@@ -1896,7 +2415,7 @@ class td_demo_menus extends td_demo_base {
 	    // requiered parameters
 	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
 		    'title' => 'Param is requiered!',
-		    'category_id' => 'Param is requiered! - this is the category id that will be used to generate the mega menu',
+		    //'category_id' => 'Param is requiered! - this is the category id that will be used to generate the mega menu',
 		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
 	    ));
 
@@ -1910,7 +2429,11 @@ class td_demo_menus extends td_demo_base {
         );
 
         $menu_item_id =  wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
-        update_post_meta($menu_item_id, 'td_mega_menu_cat', $menu_params['category_id']);
+        if(isset($menu_params['category_id'])) {
+            update_post_meta($menu_item_id, 'td_mega_menu_cat', $menu_params['category_id']);
+        } else if(isset($menu_params['page_id'])) {
+            update_post_meta($menu_item_id, 'td_mega_menu_page_id', $menu_params['page_id']);
+        }
         return $menu_item_id;
     }
 
@@ -1979,6 +2502,41 @@ class td_demo_menus extends td_demo_base {
 	}
 
 
+	/**
+	 * adds a taxonomy to a menu
+	 * @param $params
+	 * @return false|int|WP_Error|WP_Term
+	 */
+	static function add_taxonomy($params) {
+
+		// required parameters
+		self::check_params(__CLASS__, __FUNCTION__, $params, array(
+			'title' => 'Param is required!',
+			'taxonomy' => 'Param is required!',
+			'tax_id' => 'Param is required!',
+			'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is required'
+		));
+
+		$term_link = get_term_link( $params['tax_id'] );
+		$menu_item_data = array(
+			'menu-item-title' => $params['title'],
+			'menu-item-object-id' => $params['tax_id'],
+			'menu-item-db-id' => 0,
+			'menu-item-url' => !is_wp_error( $term_link ) ? $term_link : '#',
+			'menu-item-type' => 'taxonomy', // taxonomy
+			'menu-item-status' => 'publish',
+			'menu-item-object' => $params['taxonomy'],
+		);
+
+		if ( !empty($params['parent_id']) ) {
+			$menu_item_data['menu-item-parent-id'] = $params['parent_id'];
+		}
+
+		return wp_update_nav_menu_item( $params['add_to_menu_id'], 0, $menu_item_data );
+
+	}
+
+
     /**
      * removes all the menus, used by uninstall
      */
@@ -1988,10 +2546,6 @@ class td_demo_menus extends td_demo_base {
         }
     }
 }
-
-
-
-
 
 
 //$td_stacks_media->td_media_sideload_image('http://demo.tagdiv.com/newsmag/wp-content/uploads/2014/08/38.jpg', '');
@@ -2034,7 +2588,7 @@ class td_demo_media extends td_demo_base {
         }
 
         // Do the validation and storage stuff.
-        $id = media_handle_sideload( $file_array, $post_id, $desc ); //$id of attachement or wp_error
+        $id = media_handle_sideload( $file_array, $post_id, $desc ); //$id of attachment or wp_error
 
         // If error storing permanently, unlink.
         if ( is_wp_error( $id ) ) {
@@ -2118,6 +2672,139 @@ class td_demo_media extends td_demo_base {
 
         return '';
     }
+}
 
 
+class td_demo_subscription extends td_demo_base {
+
+	static function add_account_details($data) {
+		global $wpdb;
+
+		$data_values = [];
+		$data_format = [];
+
+		foreach (['company_name', 'billing_cui', 'billing_j', 'billing_address', 'billing_city', 'billing_country', 'billing_email', 'billing_bank_account', 'billing_post_code', 'billing_vat_number', 'options'] as $item ) {
+			if (isset($data[$item])) {
+				$data_values[$item] = $data[$item];
+				$data_format[] = '%s';
+			} else {
+				return null;
+			}
+		}
+
+		$wpdb->suppress_errors = true;
+
+		$insert_result = $wpdb->insert( 'tds_companies',
+			$data_values,
+			$data_format );
+
+		if ( false !== $insert_result ) {
+			return $wpdb->insert_id;
+		}
+		return null;
+	}
+
+	static function add_payment_bank($data) {
+		global $wpdb;
+
+		$data_values = [];
+		$data_format = [];
+
+		foreach (['account_name', 'account_number', 'bank_name', 'routing_number', 'iban', 'bic_swift', 'description', 'instruction', 'is_active', 'options'] as $item ) {
+			if (isset($data[$item])) {
+				$data_values[$item] = $data[$item];
+				$data_format[] = '%s';
+			} else {
+				return null;
+			}
+		}
+
+		$wpdb->suppress_errors = true;
+
+		$insert_result = $wpdb->insert( 'tds_payment_bank',
+			$data_values,
+			$data_format );
+
+		if ( false !== $insert_result ) {
+			return $wpdb->insert_id;
+		}
+		return null;
+	}
+
+	static function add_plan($data) {
+		global $wpdb;
+
+		$data_values = [];
+		$data_format = [];
+
+		foreach (['name', 'price', 'months_in_cycle', 'trial_days', 'is_free', 'options'] as $item ) {
+			if (isset($data[$item])) {
+				$data_values[$item] = $data[$item];
+				$data_format[] = '%s';
+			} else {
+				return null;
+			}
+		}
+
+		$wpdb->suppress_errors = true;
+
+		$insert_result = $wpdb->insert( 'tds_plans',
+			$data_values,
+			$data_format );
+
+		if ( false !== $insert_result ) {
+			return $wpdb->insert_id;
+		}
+		return null;
+	}
+
+	static function add_option($data) {
+		global $wpdb;
+
+		$data_values = [];
+		$data_format = [];
+
+		if (in_array($data['name'], ['payment_page_id',
+			'my_account_page_id',
+			'create_account_page_id',
+			'go_wizard',
+			'wizard_company_complete',
+			'wizard_payments_complete',
+			'wizard_plans_complete',
+			'wizard_locker_complete',
+			'disable_wizard',
+			'td_demo_content'])) {
+
+			$data_values['name'] = $data['name'];
+			$data_values['value'] = $data['value'];
+			$data_format[] = '%s';
+			$data_format[] = '%s';
+		} else {
+			return null;
+		}
+
+		if (in_array($data['name'], ['payment_page_id',
+			'my_account_page_id',
+			'create_account_page_id'])) {
+
+			$update_result = $wpdb->update( 'tds_options',
+				$data_values,
+				['name' => $data['name']],
+				$data_format );
+
+			if ( false !== $update_result ) {
+				return $wpdb->rows_affected;
+			}
+
+		} else {
+			$insert_result = $wpdb->insert( 'tds_options',
+				$data_values,
+				$data_format );
+
+			if ( false !== $insert_result ) {
+				return $wpdb->insert_id;
+			}
+		}
+		return null;
+	}
 }

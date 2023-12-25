@@ -164,14 +164,14 @@ class td_options {
 		//echo "SETTINGS SAVED";
 	}
 
-	static function save_panel_history() {
+	static function save_panel_history($to_version = '') {
 
 		$options_settings_id = TD_THEME_OPTIONS_NAME . '_settings';
 
 		$option_settings_on = tagdiv_util::get_option($options_settings_id . '_disabled');
 		if (empty($option_settings_on)) {
 
-			$current_time = current_time( 'Y-m-d H:i:s' );
+			$current_time = current_time( 'Y-m-d H:i:s' ) . (empty($to_version) ? '' : ' UPDATE ' . TD_THEME_VERSION . ' to ' . $to_version);
 
 			$option_settings = get_option( $options_settings_id );
 			if ( false === $option_settings || ! is_array( $option_settings ) ) {
@@ -190,7 +190,7 @@ class td_options {
 					}
 					break;
 				}
-				// keep 100 positions
+				// keep 10 positions
 				$option_settings = array_slice( $option_settings, 0, 10 );
 				update_option( $options_settings_id, $option_settings );
 			}

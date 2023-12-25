@@ -20,7 +20,7 @@ class td_remote_video {
 
         $yt_api_key = '';
         if ( TDC_DEPLOY_MODE == 'dev' || TD_DEPLOY_MODE == 'demo' ) {
-            $yt_api_key = 'AIzaSyAIJUvOPvZ66iV2PV065As0FbxzI0QUItA';
+            $yt_api_key = 'AIzaSyCPjbehyt-iFfde07PUVVOM6PTgi1TtYhw';
         } else {
             if( td_util::get_option('tds_yt_api_key') != '' ) {
                 $yt_api_key = td_util::get_option('tds_yt_api_key');
@@ -204,7 +204,49 @@ class td_remote_video {
 		return false;
 	}
 
+    /**
+* Verify youtube API key using just one api call to YT for wanrning message on playlist shortcode
+* @param $video_id
+*
+* @return array|bool
+*/
+    static function youtube_api_key_check($video_id, $type){
 
+        if (!empty($video_id) && !empty($type)) {
+
+            switch ($type) {
+                case   'video_ids':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/videos?id=' . $video_id . '&part=id,contentDetails,snippet,player&key=' . self::get_yt_api_key();
+                    break;
+
+                case  'channel':
+                case  'username':
+                    $channel_variable = '&forUsername=' . $video_id;
+                    if ($type == 'channel_id') {
+                        $channel_variable = '&id=' . $video_id;
+                    }
+                    $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails' . $channel_variable . '&key=' . self::get_yt_api_key();
+                    break;
+
+                case  'playlist':
+                    $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=id,snippet,contentDetails,status&maxResults=1&playlistId=' . $video_id . '&key=' . self::get_yt_api_key();
+                    break;
+                }
+
+            $json_api_response = self::check_api_response(td_remote_http::get_page($api_url, __CLASS__), $api_url);
+            if (isset($json_api_response ["error"]['code']) && !empty($json_api_response ["error"]['code'])) {
+                $msg = td_util::get_block_error('Video playlist', 'There is an issue with your Api Key. Api error code: <b>'. $json_api_response ['error']['code'] . '</b>');
+
+                // playlist may have this error
+                if ( $json_api_response ["error"]['code'] == '404' ) {
+                    $msg = td_util::get_block_error('Video playlist', '<strong>' . ucfirst($type) . '</strong> doesn\'t exist or has no videos');
+                }
+                return $msg;
+            }
+        }
+
+        return true;
+    }
 	/**
 	 * Pulls information about multiple vimeo IDs but for each id it makes an api call
 	 * @param $video_ids

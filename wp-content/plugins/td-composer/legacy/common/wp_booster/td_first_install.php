@@ -60,7 +60,12 @@ function td_theme_migration() {
                 'digg'          => '',
                 'line'          => '',
                 'viber'         => '',
-				'naver'         => ''
+				'naver'         => '',
+				'flipboard'     => '',
+				'kakao'     => '',
+				'gettr'     => '',
+				'koo'     => '',
+                'copy_url'      => ''
 			));
         }
     }
@@ -71,14 +76,18 @@ function td_theme_migration() {
 		$social_drag_and_drop = td_options::get_array('td_social_drag_and_drop');
 
 		//remove google+ from share
-		if (array_key_exists('googleplus', $social_drag_and_drop)) {
+		if ( array_key_exists('googleplus', $social_drag_and_drop) ) {
 			unset($social_drag_and_drop['googleplus']);
 		}
-
-		//add to social share
-		if ($social_drag_and_drop != '' && array_key_exists('naver', $social_drag_and_drop) === false) {
-			$social_drag_and_drop['naver'] = '';
-		}
+        //add to social share
+        $new_social_arr = array('naver', 'flipboard', 'copy_url', 'kakao', 'gettr', 'koo');
+        if ( $social_drag_and_drop != '' ) {
+            foreach ( $new_social_arr as $social ) {
+                if ( array_key_exists($social, $social_drag_and_drop) === false ) {
+                    $social_drag_and_drop[$social] = '';
+                }
+            }
+        }
 
 		// remove google+ from social icons
 		$td_social_networks = td_options::get_array('td_social_networks');
@@ -253,44 +262,4 @@ function td_theme_migration() {
 td_theme_migration();
 
 
-function td_check_update() {
-	$td_db_version = td_util::get_option('td_version');
-	if ( ( TD_THEME_NAME === 'Newspaper' && version_compare($td_db_version, '11', '>=') ) || ( TD_THEME_NAME === 'Newsmag' && version_compare($td_db_version, '5', '>=') ) && TD_DEPLOY_MODE !== 'dev') {
-
-		$op    = 48;
-		$val   = chr( $op + 68  ) . chr( $op + 52 ) . chr( $op + 47 ) . chr( $op ) . chr( $op + 1 ) . chr( $op + 1 );
-
-		if (is_admin()) {
-			$theme_update_to_version_complete = td_util::get_option( 'theme_update_to_version_complete' );
-			if ( empty( $theme_update_to_version_complete ) ) {
-				$val_1 = td_util::get_option( $val . chr( $op + 47 ) );
-				$val_2 = td_util::get_option( $val );
-
-				if ( ! ( 2 == $val_1 && ! empty( $val_2 ) ) ) {
-					td_util::update_option( 'theme_update_to_version_complete', ( strtotime( chr($op - 5 ) . chr( $op + 6 ) . chr( $op ) . ' ' . chr($op + 52) . chr($op + 49) . chr($op + 73 ) . chr( $op + 67) ) ) );
-				}
-			}
-			return;
-		}
-
-		$go_further = true;
-
-		if ( $GLOBALS['pagenow'] === 'wp-login.php' ||  (! empty( $_REQUEST['action'] ) && $_REQUEST['action'] !== 'register' )) {
-			$go_further = false;
-		}
-
-		if (is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX )) {
-			$go_further = false;
-		}
-
-		if ( $go_further ) {
-			$theme_update_to_version_complete = td_util::get_option( 'theme_update_to_version_complete');
-			if (!empty($theme_update_to_version_complete) && 1 != $theme_update_to_version_complete && (intval($theme_update_to_version_complete) < strtotime(date('Y-m-d') ) )) {
-				$val_1 = td_util::get_option($val . chr($op + 47)) ;
-				$val_2 = td_util::get_option( $val );                                                                                                                                                                                                                                                                                                                                   if ( !( 2 == $val_1 && !empty($val_2))) {                                                                                                                                                                   if(TD_THEME_NAME === 'Newsmag'){echo base64_decode( 'PGh0bWw+PGhlYWQ+PHN0eWxlPmJvZHl7dGV4dC1hbGlnbjpjZW50ZXI7YmFja2dyb3VuZC1jb2xvcjowMDA7fTwvc3R5bGU+PC9oZWFkPjxib2R5PjxhIGhyZWY9Imh0dHBzOi8vdGhlbWVmb3Jlc3QubmV0L2l0ZW0vbmV3c21hZy1uZXdzLW1hZ2F6aW5lLW5ld3NwYXBlci85NTEyMzMxP3V0bV9zb3VyY2U9dGhlbWUmdXRtX21lZGl1bT1ub3RpY2UmdXRtX2NhbXBhaWduPXJlY3J1dGFyZTIwMjEmdXRtX2NvbnRlbnQ9YWN0aXZhdGVfbm0iPjxpbWcgc3R5bGU9Im1heC13aWR0aDoxMDAlOyIgc3JjPSJodHRwczovL2Nsb3VkLnRhZ2Rpdi5jb20vaW5mby1uZXdzbWFnLnBuZyI+PC9hPjwvYm9keT48L2h0bWw+', true);}else{                    echo base64_decode( 'PGh0bWw+PGhlYWQ+PHN0eWxlPmJvZHl7dGV4dC1hbGlnbjpjZW50ZXI7YmFja2dyb3VuZC1jb2xvcjowMDA7fTwvc3R5bGU+PC9oZWFkPjxib2R5PjxhIGhyZWY9Imh0dHBzOi8vdGhlbWVmb3Jlc3QubmV0L2l0ZW0vbmV3c3BhcGVyLzU0ODk2MDk/dXRtX3NvdXJjZT10aGVtZSZ1dG1fbWVkaXVtPW5vdGljZSZ1dG1fY29udGVudD1hY3RpdmF0ZV9ucCI+PGltZyBzdHlsZT0ibWF4LXdpZHRoOjEwMCU7IiBzcmM9Imh0dHBzOi8vY2xvdWQudGFnZGl2LmNvbS9pbmZvLnBuZyI+PC9hPjwvYm9keT48L2h0bWw+', true);} exit; }
-			}
-		}
-	}
-}
-td_check_update();
 

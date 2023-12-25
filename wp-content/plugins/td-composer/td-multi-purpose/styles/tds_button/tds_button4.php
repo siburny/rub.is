@@ -377,7 +377,14 @@ class tds_button4 extends td_style {
         }
         $this->unique_style_class = td_global::td_generate_unique_id();
 
+
+        $button_text = td_util::get_custom_field_value_from_string($this->get_shortcode_att('button_text', $this->index_style));
+
         $icon = $this->get_icon_att('button_tdicon', $this->index_style);
+        $icon_data = '';
+        if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+            $icon_data = 'data-td-svg-icon="' . $this->get_att( 'button_tdicon', $this->index_style ) . '"';
+        }
         $icon_position = $this->get_shortcode_att('button_icon_position', $this->index_style);
 
         $target = '';
@@ -385,7 +392,7 @@ class tds_button4 extends td_style {
             $target = ' target="_blank" ';
         }
 
-        $button_url = $this->get_shortcode_att('button_url', $this->index_style);
+        $button_url = td_util::get_custom_field_value_from_string($this->get_shortcode_att('button_url', $this->index_style));
         if ( '' == $button_url) {
             $button_url = '#';
         }
@@ -396,15 +403,15 @@ class tds_button4 extends td_style {
             $td_link_rel = ' rel="' . $this->get_shortcode_att('button_url_rel', $this->index_style) . '" ';
         }
 
-        $text = $this->get_shortcode_att('button_text', $this->index_style);
+        $text = $button_text;
         if ( '' !== $this->get_style_att( 'text_other' ) ) {
-            $text = $this->get_style_att( 'text_other' );
+            $text = td_util::get_custom_field_value_from_string($this->get_style_att( 'text_other' ));
         }
 
         $buffy_icon = '';
         if ( !empty( $icon ) ) {
             if( base64_encode( base64_decode( $icon ) ) == $icon ) {
-                $buffy_icon .= '<span class="tdm-btn-icon tdm-btn-icon-svg">' . base64_decode( $icon ) . '</span>';
+                $buffy_icon .= '<span class="tdm-btn-icon tdm-btn-icon-svg" ' . $icon_data . '>' . base64_decode( $icon ) . '</span>';
             } else {
                 $buffy_icon .= '<i class="tdm-btn-icon ' . $icon . '"></i>';
             }
@@ -461,7 +468,7 @@ class tds_button4 extends td_style {
                         $buffy .= $buffy_icon;
                     }
 
-                    $buffy .= '<span class="tdm-btn-text">' . $this->get_shortcode_att('button_text', $this->index_style) . '</span>';
+                    $buffy .= '<span class="tdm-btn-text">' . $button_text . '</span>';
 
                     if ( $icon_position == '' ) {
                         $buffy .= $buffy_icon;

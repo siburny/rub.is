@@ -67,7 +67,7 @@ class td_covid19 {
      */
     static function get_data_from_novel() {
 
-        $url = 'https://corona.lmao.ninja/v2/countries';
+        $url = 'https://disease.sh/v3/covid-19/countries';
         // initialize a new cURL session
         $curl = curl_init($url);
         // set CURLOPT_RETURNTRANSFER option to true,
@@ -80,7 +80,7 @@ class td_covid19 {
 
         // try to decode our cURL request response
         $data = json_decode($curl_response);
-
+//var_dump($curl_response);
         // if data is in json format, try and parse it
         if( $data != NULL ) {
             $data_parsed = self::parse_data($data);

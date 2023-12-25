@@ -137,6 +137,11 @@ class   tdc_composer_block extends td_block {
 		if (!empty($custom_css)) {
 			$buffy .= PHP_EOL . '/* custom css */' . PHP_EOL . $custom_css;
 		}
+		
+		$inline_css = $this->get_inline_css();
+		if ( ! empty( $inline_css ) ) {
+			$buffy .= PHP_EOL . '/* inline css */' . PHP_EOL . $inline_css;
+		}
 
 		$tdcCss = $this->get_att( 'tdc_css' );
 		$cssOutput = '';

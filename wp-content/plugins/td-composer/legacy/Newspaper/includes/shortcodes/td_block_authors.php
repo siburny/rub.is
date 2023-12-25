@@ -3,7 +3,17 @@ class td_block_authors extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -135,6 +145,24 @@ class td_block_authors extends td_block {
                     background-color: #444;
                 }
                 
+                 /* @photo_size */
+				.$unique_block_class .avatar {
+					width: @photo_size;
+					max-width: @photo_size;
+				}
+				.$unique_block_class.td_top_authors .item-details {
+				margin-left: calc(@photo_size + 15px);
+				height: @photo_size;
+				}
+				.$unique_block_class.td_top_authors .td_mod_wrap {
+				min-height: @photo_size;
+				}
+                /* @photo_radius */
+				.$unique_block_class .avatar,
+				.$unique_block_class .td-author-image:before,
+				.$unique_block_class .td-author-image:after {
+					border-radius: @photo_radius;
+				}
 				
 			</style>";
 
@@ -151,6 +179,20 @@ class td_block_authors extends td_block {
         /*-- GENERAL -- */
         $res_ctx->load_settings_raw( 'style_general_authors', 1 );
 
+        /*-- IMAGE -- */
+        // author image size
+        $author_photo_size = $res_ctx->get_shortcode_att('photo_size');
+        $res_ctx->load_settings_raw( 'photo_size', $author_photo_size );
+        if( $author_photo_size != '' && is_numeric( $author_photo_size ) ) {
+            $res_ctx->load_settings_raw( 'photo_size', $author_photo_size . 'px' );
+        }
+
+        // author image radius
+        $author_photo_radius = $res_ctx->get_shortcode_att('photo_radius');
+        $res_ctx->load_settings_raw( 'photo_radius', $author_photo_radius );
+        if( $author_photo_radius != '' && is_numeric( $author_photo_radius ) ) {
+            $res_ctx->load_settings_raw( 'photo_radius', $author_photo_radius . 'px' );
+        }
 
     }
 
@@ -216,6 +258,17 @@ class td_block_authors extends td_block {
             $get_users_array['role__in'] = $roles_in;
         }
 
+        if ($this->get_att('number') != '' ) {
+            $get_users_array['number'] = $this->get_att('number');
+        }
+        $photo_size = '70';
+        if ($this->get_att('photo_size') != '' ) {
+            $photo_size = $this->get_att('photo_size');
+        }
+        $show_posts = $this->get_att('show_posts');
+        $show_comments = $this->get_att('show_comments');
+
+
         $td_authors = get_users($get_users_array);
 
 
@@ -240,28 +293,32 @@ class td_block_authors extends td_block {
                     $current_author_class = ' td-active';
                 }
                 $buffy .= '<div class="td_mod_wrap td-pb-padding-side' . $current_author_class . '">';
-                $buffy .= '<a href="' . get_author_posts_url($td_author->ID) . '">' . get_avatar($td_author->user_email, '70') . '</a>';
-                $buffy .= '<div class="item-details">';
+                $buffy .= '<a href="' . get_author_posts_url($td_author->ID) . '">' . get_avatar($td_author->user_email, $photo_size) . '</a>';
+                    $buffy .= '<div class="item-details">';
 
-                $buffy .= '<div class="td-authors-name">';
-                $buffy .= '<a href="' . get_author_posts_url($td_author->ID) . '">' . $td_author->display_name . '</a>';
-                $buffy .= '</div>';
+                        $buffy .= '<div class="td-authors-name">';
+                        $buffy .= '<a href="' . get_author_posts_url($td_author->ID) . '">' . $td_author->display_name . '</a>';
+                        $buffy .= '</div>';
+
+                    if ( $show_posts == 'yes') {
+                        $buffy .= '<span class="td-author-post-count">';
+                        $buffy .= count_user_posts($td_author->ID). ' '  . __td('POSTS', TD_THEME_NAME);
+                        $buffy .= '</span>';
+                    }
+
+                    if ( $show_comments == 'yes' ) {
+                        $buffy .= '<span class="td-author-comments-count">';
+                        $comment_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) AS total FROM $wpdb->comments WHERE comment_approved = 1 AND user_id = %d", $td_author->ID));
+                        $buffy .= $comment_count . ' '  . __td('COMMENTS', TD_THEME_NAME);
+                        $buffy .= '</span>';
+                    }
 
 
-                $buffy .= '<span class="td-author-post-count">';
-                $buffy .= count_user_posts($td_author->ID). ' '  . __td('POSTS', TD_THEME_NAME);
-                $buffy .= '</span>';
+                    $buffy .= '<div class="td-authors-url">';
+                    $buffy .= '<a href="' . $td_author->user_url . '">' . $td_author->user_url .'</a>';
+                    $buffy .= '</div>';
 
-                $buffy .= '<span class="td-author-comments-count">';
-                $comment_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) AS total FROM $wpdb->comments WHERE comment_approved = 1 AND user_id = %d", $td_author->ID));
-                $buffy .= $comment_count . ' '  . __td('COMMENTS', TD_THEME_NAME);
-                $buffy .= '</span>';
-
-                $buffy .= '<div class="td-authors-url">';
-                $buffy .= '<a href="' . $td_author->user_url . '">' . $td_author->user_url .'</a>';
-                $buffy .= '</div>';
-
-                $buffy .= '</div>';
+                    $buffy .= '</div>';
 
                 $buffy .= '</div>';
             }

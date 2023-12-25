@@ -23,11 +23,16 @@ class vc_raw_html extends tdc_composer_block {
 
 		$content = rawurldecode( base64_decode( strip_tags( $content ) ) );
 
+
         $buffy = '<div class="wpb_wrapper ' . $this->get_wrapper_class() . ' ' . $this->get_block_classes( array( $atts['el_class'] ) ) . '">';
-        //get the block css
-        $buffy .= $this->get_block_css();
-        //td-fix-index class to fix background color z-index
-        $buffy .= '<div class="td-fix-index">' . $content . '</div>';
+
+            //get the block css
+            $buffy .= $this->get_block_css();
+
+
+            //td-fix-index class to fix background color z-index
+            $buffy .= '<div class="td-fix-index">' . $content . '</div>';
+
         $buffy .= '</div>';
         return $buffy;
 	}

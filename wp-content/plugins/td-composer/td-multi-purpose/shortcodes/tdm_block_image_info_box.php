@@ -9,9 +9,19 @@ class tdm_block_image_info_box extends td_block {
         $compiled_css = '';
 
 		// $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-		$unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
 
-		$raw_css =
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
+
+        $raw_css =
 			"<style>
                 /* @style_general_image_info_box */
                 .tdm_block_image_info_box .tdm-col {

@@ -272,6 +272,12 @@ class tds_social2 extends td_style {
             $td_social_rel = ' rel="' . $this->get_shortcode_att('social_rel') . '" ';
         }
 
+        // extra input for youtube
+        $td_youtube_add_input = '';
+        if ('' !== $this->get_shortcode_att('youtube_add_input')) {
+            $td_youtube_add_input = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att('youtube_add_input') ) ) );
+        }
+
         //socials in order of input
         $social_ordered_array = array();
         if( '' !== $this->get_shortcode_att('social_order') ) {
@@ -288,7 +294,8 @@ class tds_social2 extends td_style {
                 foreach ( $social_ordered_array as $index => $social_id ) {
                     if ( array_key_exists ( strtolower($social_id), td_social_icons::$td_social_icons_array ) ) {
                         $social_array[$social_id] = array($this->get_shortcode_att(strtolower($social_id)), ucfirst($social_id));
-                    }                }
+                    }
+                }
             } else { //get all
                 foreach ( td_social_icons::$td_social_icons_array as $social_id => $social_name ) {
                     $social_array[$social_id] = array( $this->get_shortcode_att( $social_id ), $social_name );
@@ -297,13 +304,20 @@ class tds_social2 extends td_style {
 
             //display only the socials with url
             foreach ( $social_array as $social_key => $social_value ) {
-                if( !empty( $social_value[0] ) ) {
+                $social_url = td_util::get_custom_field_value_from_string( $social_value[0] );
+
+                if( !empty( $social_url ) ) {
+
+                    if ( $social_key === 'youtube') {
+                        $social_url = $td_youtube_add_input . $social_url;
+                    }
+
                     $buffy .= '<div class="tdm-social-item-wrap">';
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . ' title="' . $social_value[1] . '" class="tdm-social-item">';
                             $buffy .= '<i class="td-icon-font td-icon-' . strtolower($social_key) . '"></i>';
                         $buffy .= '</a>';
 
-                        $buffy .= '<a href="' . $social_value[0] . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
+                        $buffy .= '<a href="' . $social_url . '" ' . $target . $td_social_rel . 'class="tdm-social-text">' . $social_value[1] . '</a>';
                     $buffy .= '</div>';
                 }
             }

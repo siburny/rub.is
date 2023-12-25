@@ -316,7 +316,14 @@ class tagdiv_theme_plugins_setup {
 			$json['hash'] = md5( serialize( $json ) ); // used for checking if duplicates happen, move to next plugin
 			wp_send_json($json);
 		} else {
-			wp_send_json( array( 'done' => 1, 'message' => 'Success' ) );
+			wp_send_json(
+                array(
+                    //'$plugins' => $plugins,
+                    //'$post_slug' => $post_slug,
+                    'done' => 1,
+                    'message' => 'Success'
+                )
+            );
 		}
 		exit;
 
@@ -324,7 +331,8 @@ class tagdiv_theme_plugins_setup {
 
 	public function theme_plugin_has_update( $slug ) {
 
-		$plugins_path = ABSPATH . 'wp-content/plugins';
+        //there are issues with ABSPATH on wp.com servers, so we use WP_PLUGIN_DIR check $file_data bellow
+//		$plugins_path = ABSPATH . 'wp-content/plugins';
 		$plugin = $slug . '/' . $slug . '.php';
 
 	    $has_update = false;
@@ -339,9 +347,10 @@ class tagdiv_theme_plugins_setup {
 
             //read plugin file
             global $wp_filesystem;
-            $file_data = $wp_filesystem->get_contents( $plugins_path . '/' . $plugin );
+            //there are issues with ABSPATH on wp.com servers, so we use WP_PLUGIN_DIR
+            $file_data = $wp_filesystem->get_contents( WP_PLUGIN_DIR . '/' . $plugin );
 
-			preg_match('/define\(\'' . $constant . '\',\s+\'(.*)\'\)/', $file_data, $matches);
+            preg_match('/define\s*\(\s*\'' . $constant . '\'\s*\,\s*\'(.*)\'\s*\)/', $file_data, $matches);
 
 			if ( ! isset( $matches[1] ) || $matches[1] !== $settings['version'] ) {
 				$has_update = true;

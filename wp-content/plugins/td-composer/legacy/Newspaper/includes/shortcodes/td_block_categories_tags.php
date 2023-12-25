@@ -4,7 +4,17 @@ class td_block_categories_tags extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -34,8 +44,12 @@ class td_block_categories_tags extends td_block {
                   height: 100%;
                   z-index: -1;
                 }
+                .td_block_categories_tags .td-ct-item-name {
+                  line-height: 30px;
+                }
                 .td_block_categories_tags .td-ct-item-no {
                   float: right;
+                  line-height: 30px;
                 }
                 .td_block_categories_tags .td-ct-item-sep {
                   position: relative;
@@ -361,9 +375,13 @@ class td_block_categories_tags extends td_block {
         // icon separator
         $tdicon_html = '';
         $tdicon = $this->get_icon_att( 'tdicon' );
+        $tdicon_data = '';
+        if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+            $tdicon_data = 'data-td-svg-icon="' . $this->get_att('tdicon') . '"';
+        }
         if( $tdicon != '' ) {
             if( base64_encode( base64_decode( $tdicon ) ) == $tdicon ) {
-                $tdicon_html = '<span class="td-ct-item-sep td-ct-item-sep-svg">' . base64_decode( $tdicon ) . '</span>';
+                $tdicon_html = '<span class="td-ct-item-sep td-ct-item-sep-svg" ' . $tdicon_data . '>' . base64_decode( $tdicon ) . '</span>';
             } else {
                 $tdicon_html = '<i class="' . $tdicon . ' td-ct-item-sep"></i>';
             }

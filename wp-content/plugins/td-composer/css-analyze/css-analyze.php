@@ -250,7 +250,7 @@ if ( is_user_logged_in() ) {
                         <div class="tda-load">
                             <div class="tda-header-wrap">
                                 <div class="tda-header">
-                                    <span class="tda-header-title">Welcome to tagDiv CSS Analyzer (beta)</span>
+                                    <span class="tda-header-title">Welcome to tagDiv CSS Analyzer</span>
 
                                     <button class="td-icon-close-mobile tda-close"></button>
                                 </div>
@@ -259,11 +259,9 @@ if ( is_user_logged_in() ) {
                             <div class="tda-content-wrap">
                                 <div class="tda-content">
                                     <div class="tda-btns-wrap">
-                                        <?php if ( is_page()) { ?>
-                                        <a href="#" class="tda-btn tda-btn-auto" title="This generate a clean CSS files, will perform an automatic test to remove unused CSS">Remove unused CSS</a>
-                                        <?php } ?>
+
                                         <a href="#" class="tda-btn tda-btn-manual" title="This allows you to interact manually with a section/component from the page and the tool will record all the CSS involved">Find Manual</a>
-                                        <a href="#" class="tda-btn tda-btn-save tda-save-essential-css" title="This will generate the Critical CSS file for this page and the Rest CSS will be loaded in footer">
+                                        <a href="#" class="tda-btn tda-btn-save tda-save-essential-css" title="This process generates the Critical CSS file and moves the non-critical (Rest CSS) in the footer to later load. It gives your site a performance boost both for user experience and speed tests.">
                                             <span class="tda-submit">Generate Critical CSS</span>
                                             <span class="tda-saving"><span class="tda-dots"></span>Saving</span>
                                             <span class="tda-done"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="1229" height="1024" viewBox="0 0 1229 1024"><path d="M409.6 730.453l-286.72-286.72-95.573 95.573 382.293 382.293 819.2-819.2-95.573-95.573-723.627 723.627z"></path></svg>Done</span>
@@ -318,7 +316,11 @@ if ( is_user_logged_in() ) {
                                                            id="tda-rsfc-viewport" class="tda-range-window">
                                                 </div>
                                             </div>
+                                            <?php if ( is_page()) { ?>
+                                                <a class="tda-btn-auto" href="#"  title="This command performs an automatic test on this page to find all the CSS style rules. It generates a clean CSS file and removes the unused CSS, making the page load faster.(use with caution)">Remove unused CSS (beta)</a>
+                                            <?php } ?>
                                         </div>
+
 
                                     </div>
 
@@ -464,7 +466,7 @@ function td_analyze_css_admin_bar_button() {
     }
 
     $class = '';
-    $link_title = 'tagDiv Css Analyzer';
+    $link_title = 'Increase the website speed with the tagdiv CSS Analizer';
 
     $td_page = get_query_var('page') ? get_query_var('page') : 1; //rewrite the global var
     $td_paged = get_query_var('paged') ? get_query_var('paged') : 1; //rewrite the global var
@@ -508,7 +510,7 @@ function td_analyze_css_admin_bar_button() {
             'title'  => 'Run CSS Analyzer',
             'href'   => '#',
             'meta'   => array(
-                'title' => 'Analyzer will find all the css style rules used on this page'
+                'title' => 'Boost performance - Run Analyzer to find all the CSS style rules used on this page'
             ),
         );
         $wp_admin_bar->add_node( $args );

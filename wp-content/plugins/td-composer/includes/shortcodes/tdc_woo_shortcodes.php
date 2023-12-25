@@ -234,7 +234,7 @@ class tdc_woo_shortcodes extends tdc_composer_block {
 
     }
 
-    function render($atts, $content = null) {
+    function render( $atts, $content = null ) {
         parent::render($atts);
 
         $this->atts = shortcode_atts(
@@ -305,19 +305,22 @@ class tdc_woo_shortcodes extends tdc_composer_block {
                 'el_class' => '',
             ), $atts, 'tdc_woo_shortcodes');
 
-        if (is_null($content) || empty($content)) {
+        if ( empty( $content ) ) {
             $content = $this->atts['content'];
             return '<div class="wpb_wrapper ' . $this->get_wrapper_class() . '">' . $content . '</div>';
         }
 
-        $content = rawurldecode(base64_decode(strip_tags($content)));
-        $content = do_shortcode(shortcode_unautop($content));
+        $content = rawurldecode( base64_decode( strip_tags( $content ) ) );
+        $content = do_shortcode( shortcode_unautop( $content ) );
         
-        $buffy = '<div class="wpb_wrapper ' . $this->get_wrapper_class() . ' ' . $this->get_block_classes(array($this->atts['el_class'])) . '">';
-            //get the block css
+        $buffy = '<div class="wpb_wrapper ' . $this->get_wrapper_class() . ' ' . $this->get_block_classes( array( $this->atts['el_class'] ) ) . '">';
+
+            // get the block css
             $buffy .= $this->get_block_css();
-            //td-fix-index class to fix background color z-index
+
+            // td-fix-index class to fix background color z-index
             $buffy .= '<div class="td-fix-index">' . $content . '</div>';
+
         $buffy .= '</div>';
 
         return $buffy;

@@ -12,6 +12,8 @@ require_once (td_global_mob::$get_parent_template_directory . '/tagdiv-deploy-mo
 
 require_once (td_global_mob::$get_parent_template_directory . '/includes/tagdiv-config.php');
 
+do_action( 'tdm_functions' );
+
 if ( ! defined( 'TDC_PATH_LEGACY' ) ) {
 	define( 'TDC_PATH_LEGACY', TDC_PATH . '/legacy/' . TD_THEME_NAME );
 }
@@ -49,7 +51,7 @@ require_once(TDC_PATH_LEGACY_COMMON . '/wp_booster/td_api.php');
 
 /**
  * add wp blocks editor(gutenberg) assets
- * .. is loaded from the mob theme plugin @see td-mobile-plugin.php because we need this to always run.. not just on mob theme setup 
+ * .. is loaded from the mob theme plugin @see td-mobile-plugin.php because we need this to always run.. not just on mob theme setup
  */
 //require_once('/includes/td_block_editor_assets_mob.php');
 
@@ -301,7 +303,7 @@ function td_bottom_code() {
 
     echo '
     <!--
-        Theme: ' . TD_THEME_NAME . ' Mobile Theme by tagDiv 2021
+        Theme: ' . TD_THEME_NAME . ' Mobile Theme by tagDiv 2022
         Version: ' . TD_THEME_VERSION . ' (rara)
         Deploy mode: ' . TD_DEPLOY_MODE . '
         ' . $speed_booster . '
@@ -403,6 +405,13 @@ function hook_wp_head() {
 	if( ! empty( $tds_ios_144 ) ) {
 		echo '<link rel="apple-touch-icon" sizes="144x144" href="' . $tds_ios_144 . '"/>';
 	}
+
+    //load google recaptcha js for login modal ( @td-login-modal.php )
+    $show_captcha = td_util::get_option('tds_captcha');
+    $captcha_site_key = td_util::get_option('tds_captcha_site_key');
+    if ( $show_captcha == 'show' ) { ?>
+        <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $captcha_site_key ?>"></script>
+    <?php }
 }
 
 /* ----------------------------------------------------------------------------
@@ -412,6 +421,14 @@ add_action('wp_head', 'td_header_analytics_code', 40);
 function td_header_analytics_code() {
     $td_analytics = td_util::get_option('td_analytics');
     echo stripslashes($td_analytics);
+}
+/* ----------------------------------------------------------------------------
+ * js after body
+ */
+add_action( 'td_wp_body_open', 'td_body_script_code', 40 );
+function td_body_script_code() {
+    $td_body_code = td_util::get_option( 'td_body_code' );
+    echo stripslashes( $td_body_code );
 }
 
 /* ----------------------------------------------------------------------------
@@ -424,6 +441,12 @@ function td_add_js_variable() {
 	if ( empty( $tds_login_mobile ) ) {
 		td_js_buffer::add_variable('tds_login_mobile', $tds_login_mobile );
 	}
+
+    $tdm_sticky_menu = td_util::get_option( 'tdm_sticky_menu' );
+    if ( $tdm_sticky_menu === 'hide' ) {
+        td_js_buffer::add_variable('tdm_sticky_menu', td_util::get_option('tdm_sticky_menu'));
+    }
+
 }
 
 /* ----------------------------------------------------------------------------

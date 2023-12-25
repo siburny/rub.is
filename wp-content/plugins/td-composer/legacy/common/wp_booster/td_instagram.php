@@ -35,7 +35,7 @@ class td_instagram {
 
 	    //$atts['instagram_account_source'] = '';
 
-        // instagram_account_source .. set $instagram_connected_account
+        // instagram_account_source ... set $instagram_connected_account
 	    if ( !empty( $atts['instagram_account_source'] ) ) {
 
 	        switch ( $atts['instagram_account_source'] ) {
@@ -88,9 +88,21 @@ class td_instagram {
             }
 
         } else {
+            // business account for footer instagram
+            if ( td_util::get_option( 'tds_footer_instagram_business' ) === 'show' ) {
+                if ( !empty( $td_instagram_business_accounts ) && is_array( $td_instagram_business_accounts ) ) {
+                    $tds_footer_instagram_id = td_instagram::strip_instagram_user( td_util::get_option( 'tds_footer_instagram_id' ) );
+                    foreach ($td_instagram_business_accounts as $ig_business_account) {
+                        if (isset($ig_business_account['username']) && $ig_business_account['username'] === $tds_footer_instagram_id) {
+                            self::$instagram_connected_account = $ig_business_account;
+                        }
+                    }
+                }
+            } else {
+                // if no ig account source check for.. & load the personal connected account
+                self::$instagram_connected_account = $td_instagram_personal_account['connected_account'] ?? array();
+            }
 
-	        // if no ig account source check for.. & load the personal connected account
-		    self::$instagram_connected_account = $td_instagram_personal_account['connected_account'] ?? array();
 
         }
 
@@ -337,10 +349,11 @@ class td_instagram {
 
 			            $media_type = strtolower( str_replace( '_ALBUM','', $feed['media_type'] ) );
 			            $image_size = ( isset( $atts['instagram_images_size'] ) && $atts['instagram_images_size'] != '' ) ? $atts['instagram_images_size'] : 'full';
-			            $feed_attachment_id = isset( $feed['attachment_id'] ) ? $feed['attachment_id'] : '';
+			            $feed_attachment_id = $feed['attachment_id'] ?? '';
 
-			            if ( ! empty( $feed_attachment_id ) ) {
-				            $media_url = wp_get_attachment_image_url( $feed_attachment_id, $image_size );
+			            if ( !empty( $feed_attachment_id ) ) {
+				            $attachment_image_url = wp_get_attachment_image_url( $feed_attachment_id, $image_size );
+				            $media_url = $attachment_image_url ?: ( $media_type === 'video' ? $feed['thumbnail_url'] : $feed['media_url'] );
 			            } else {
 				            $media_url = $media_type === 'video' ? $feed['thumbnail_url'] : $feed['media_url'];
 			            }
@@ -391,6 +404,7 @@ class td_instagram {
 			        foreach ( $user_shared_images as $image ) {
 				        // display only if the code and thumbnail are set
 				        if ( isset( $image['node']['shortcode'] ) && isset( $image['node']['thumbnail_src'] ) ) {
+					        $image_alt = '';
 				            if ( isset($image['node']['edge_media_to_caption']['edges'][0]['node']['text']) ) {
 				                $image_alt = ' alt="' . $image['node']['edge_media_to_caption']['edges'][0]['node']['text'] . '"';
                             }

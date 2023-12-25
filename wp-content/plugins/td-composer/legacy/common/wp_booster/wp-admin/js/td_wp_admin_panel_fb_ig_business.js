@@ -300,6 +300,8 @@ jQuery(document).ready(function($) {
                     console.log( '%c' + reply.status, 'color: #f48024e8');
                 }
 
+                console.log( '%c' + reply.ig_acc_images_remove_status, 'color: #4DB1EC');
+
             },
             error: function (jqXHR,textStatus,errorThrown ) {
                 console.log( '%c' + errorThrown, 'color: #dc2121c7');
@@ -334,6 +336,8 @@ jQuery(document).ready(function($) {
                 if ( reply.status.includes('warning') ) {
                     console.log( '%c' + reply.status, 'color: #f48024e8');
                 }
+
+                console.log( '%c' + reply.fb_page_profile_image_remove_status, 'color: #4DB1EC');
 
             },
             error: function (jqXHR,textStatus,errorThrown ) {
@@ -420,6 +424,7 @@ jQuery(document).ready(function($) {
                         if ( reply.status.includes('warning') ) {
                             console.log( '%c' + reply.status, 'color: #f48024e8');
                         }
+                        console.log( '%c' + reply.fb_profile_images_remove_status, 'color: #4DB1EC');
                     },
                     error: function (jqXHR,textStatus,errorThrown ) {
                         console.log( '%c' + errorThrown, 'color: #dc2121c7');
@@ -429,7 +434,7 @@ jQuery(document).ready(function($) {
             },
             [],
             'Are you sure you want to remove this facebook account?<br>' +
-            'This action will also remove all pages managed trough your facebook account.<br><br>'
+            'This action will also remove all pages managed through your facebook account.<br><br>'
         );
 
     });
@@ -462,6 +467,7 @@ jQuery(document).ready(function($) {
                         if ( reply.status.includes('warning') ) {
                             console.log( '%c' + reply.status, 'color: #f48024e8');
                         }
+                        console.log( '%c' + reply.fb_profile_images_remove_status, 'color: #4DB1EC');
                     },
                     error: function (jqXHR,textStatus,errorThrown ) {
                         console.log( '%c' + errorThrown, 'color: #dc2121c7');

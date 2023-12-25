@@ -68,7 +68,26 @@ if (have_posts()) {
                 <?php } ?>
 
                 <div class="td-post-text-content td-post-content tagdiv-type">
-                    <?php the_content(esc_html('Continue')) ?>
+                    <?php
+
+                    if ( is_plugin_active('td-subscription/td-subscription.php') ) {
+
+                        // run locker init
+	                    tds_email_locker::instance()->locker_init();
+
+                        // get content
+	                    the_content( esc_html( 'Continue' ) );
+
+                        // remove the content filter
+                        if ( has_filter( 'the_content', array( tds_email_locker::instance(), 'lock_content' ) ) ) {
+	                        remove_filter( 'the_content', array( tds_email_locker::instance(), 'lock_content' ) );
+                        }
+
+                    } else {
+	                    the_content( esc_html( 'Continue' ) );
+                    }
+
+                    ?>
                 </div>
             </div>
 
@@ -79,7 +98,7 @@ if (have_posts()) {
 } else {
     /**
      * no posts to display. This function generates the __td('No posts to display').
-     * the text can be overwritten by the themplate using the global @see td_global::$custom_no_posts_message
+     * the text can be overwritten by the template using the global @see td_global::$custom_no_posts_message
      */
 
     echo td_page_generator::no_posts();

@@ -18,8 +18,8 @@ if ( has_action( 'tdc_header' ) ) {
 
 
     <!-- Mobile Search -->
-    <div class="td-search-background"></div>
-    <div class="td-search-wrap-mob">
+    <div class="td-search-background" style="visibility:hidden"></div>
+    <div class="td-search-wrap-mob" style="visibility:hidden">
         <div class="td-drop-down-search" aria-labelledby="td-header-search-button">
             <form method="get" class="td-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
                 <div class="td-search-close">
@@ -37,8 +37,8 @@ if ( has_action( 'tdc_header' ) ) {
     </div>
 
     <!-- Mobile Menu -->
-    <div class="td-menu-background"></div>
-    <div id="td-mobile-nav">
+    <div class="td-menu-background" style="visibility:hidden"></div>
+    <div id="td-mobile-nav" style="visibility:hidden">
         <div class="td-mobile-container">
             <!-- mobile menu top section -->
             <div class="td-menu-socials-wrap">

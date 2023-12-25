@@ -5,463 +5,1263 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ro_RO\n"
 
-#: no reference:
+
 msgid "View all results"
 msgstr "Vedeți toate rezultatele"
 
-#: no reference:
+
 msgid "No results"
 msgstr "Niciun rezultat"
 
-#: no reference:
+
 msgid "Home"
 msgstr "Acasă"
 
-#: no reference:
+
 msgid "CLOSE"
 msgstr "ÎNCHIDEȚI"
 
-#: no reference:
+
 msgid "Page"
 msgstr "Pagina"
 
-#: no reference:
+
 msgid "All"
 msgstr "Toate"
 
-#: no reference:
+
 msgid "By"
 msgstr "De către"
 
-#: no reference:
+
 msgid "Load more"
 msgstr "Încărcați mai multe"
 
-#: no reference:
+
 msgid "View all posts in"
 msgstr "Vedeți toate articolele în"
 
-#: no reference:
+
 msgid "Tags"
 msgstr "Etichete"
 
-#: no reference:
+
 msgid "Previous article"
 msgstr "Articolul precedent"
 
-#: no reference:
+
 msgid "Next article"
 msgstr "Articolul următor"
 
-#: no reference:
+
 msgid "Authors"
 msgstr "Autori"
 
-#: no reference:
+
 msgid "Author"
 msgstr "Autor"
 
-#: no reference:
+
 msgid "RELATED ARTICLES"
 msgstr "ARTICOLE SIMILARE"
 
-#: no reference:
+
 msgid "MORE FROM AUTHOR"
 msgstr "DE LA ACELAȘI AUTOR"
 
-#: no reference:
+
 msgid "VIA"
 msgstr "VIA"
 
-#: no reference:
+
 msgid "SOURCE"
 msgstr "SURSĂ"
 
-#: no reference:
+
 msgid "TAGS"
 msgstr "ETICHETE"
 
-#: no reference:
+
 msgid "SHARE"
 msgstr "DISTRIBUIȚI"
 
-#: no reference:
+
 msgid "Continue"
 msgstr "Continuați"
 
-#: no reference:
+
 msgid "Read more"
 msgstr "Citiți mai mult"
 
-#: no reference:
+
 msgid "Name:"
 msgstr "Nume:"
 
-#: no reference:
+
 msgid "Email:"
 msgstr "Email:"
 
-#: no reference:
+
 msgid "Website:"
 msgstr "Website:"
 
-#: no reference:
+
 msgid "Comment:"
 msgstr "Comentariu:"
 
-#: no reference:
+
 msgid "LEAVE A REPLY"
 msgstr "LĂSAȚI UN MESAJ"
 
-#: no reference:
+
 msgid "Post Comment"
 msgstr "Trimiteți comentariu"
 
-#: no reference:
+
 msgid "Cancel reply"
 msgstr "Renunțați la răspuns"
 
-#: no reference:
+
 msgid "Reply"
 msgstr "Răspundeți"
 
-#: no reference:
+
 msgid "Log in to leave a comment"
 msgstr "Autentificați-vă pentru a lăsa un comentariu"
 
-#: no reference:
+
 msgid "NO COMMENTS"
 msgstr "NICIUN COMENTARIU"
 
-#: no reference:
+
 msgid "1 COMMENT"
 msgstr "1 COMENTARIU"
 
-#: no reference:
+
 msgid "COMMENTS"
 msgstr "COMENTARII"
 
-#: no reference:
+
 msgid "REVIEW OVERVIEW"
 msgstr "REVEDEȚI PREZENTAREA"
 
-#: no reference:
+
 msgid "SUMMARY"
 msgstr "CUPRINS"
 
-#: no reference:
+
 msgid "OVERALL SCORE"
 msgstr "SCOR GENERAL"
 
-#: no reference:
+
 msgid "Ooops... Error 404"
 msgstr "Upps ... Eroare 404"
 
-#: no reference:
+
 msgid "Sorry, but the page you are looking for doesn't exist."
 msgstr "Ne pare rău, dar pagina pe care o cautați nu există."
 
-#: no reference:
+
 msgid "You can go to the"
 msgstr "Puteți merge la"
 
-#: no reference:
+
 msgid "HOMEPAGE"
 msgstr "HOMEPAGE"
 
-#: no reference:
+
 msgid "OUR LATEST POSTS"
 msgstr "ULTIMELE NOASTRE ARTICOLE"
 
-#: no reference:
+
 msgid "Posts by"
 msgstr "Articole adaugate de către"
 
-#: no reference:
+
 msgid "POSTS"
 msgstr "ARTICOLE"
 
-#: no reference:
+
 msgid "Posts tagged with"
 msgstr "Articole etichetate cu"
 
-#: no reference:
+
 msgid "Tag"
 msgstr "Etichetă"
 
-#: no reference:
+
 msgid "Daily Archives:"
 msgstr "Arhive Zilnice:"
 
-#: no reference:
+
 msgid "Monthly Archives:"
 msgstr "Arhive Lunare:"
 
-#: no reference:
+
 msgid "Yearly Archives:"
 msgstr "Arhive Anuale:"
 
-#: no reference:
+
 msgid "Archives"
 msgstr "Arhive"
 
-#: no reference:
+
 msgid "LATEST ARTICLES"
 msgstr "ULTIMELE ARTICOLE"
 
-#: no reference:
+
 msgid "search results"
 msgstr "rezultatele căutării"
 
-#: no reference:
+
 msgid "Search"
 msgstr "Căutați"
 
-#: no reference:
+
 msgid "If you're not happy with the results, please do another search"
 msgstr "Dacă nu sunteți mulțumiți de rezultate, vă rugăm folosiți alt criteriu de căutare"
 
-#: no reference:
+
 msgid "Contact us"
 msgstr "Contactați-ne"
 
-#: no reference:
+
 msgid "Page %CURRENT_PAGE% of %TOTAL_PAGES%"
 msgstr "Pagina %CURRENT_PAGE% din %TOTAL_PAGES%"
 
-#: no reference:
+
 msgid "Next"
 msgstr "Înainte"
 
-#: no reference:
+
 msgid "Prev"
 msgstr "Înapoi"
 
-#: no reference:
+
 msgid "No results for your search"
 msgstr "Niciun rezultat pentru căutarea dvs"
 
-#: no reference:
+
 msgid "No posts to display"
 msgstr "Niciun articol afișat"
 
-#: no reference:
+
 msgid "LOG IN"
 msgstr "AUTENTIFICAȚI-VĂ"
 
-#: no reference:
+
 msgid "Sign in / Join"
 msgstr "Autentificați-vă / Înregistrați-vă"
 
-#: no reference:
+
 msgid "Log In"
 msgstr "Autentificați-vă"
 
-#: no reference:
+
 msgid "REGISTER"
 msgstr "ÎNREGISTRAȚI-VĂ"
 
-#: no reference:
+
 msgid "Send My Pass"
 msgstr "Trimiteți-mi parola"
 
-#: no reference:
+
 msgid "Forgot your password?"
 msgstr "V-ați uitat parola?"
 
-#: no reference:
+
 msgid "Please wait..."
 msgstr "Vă rugăm așteptați..."
 
-#: no reference:
+
 msgid "User or password incorrect!"
 msgstr "Nume de utilizator sau parola incorectă!"
 
-#: no reference:
+
 msgid "Email or username incorrect!"
 msgstr "Email sau nume de utilizator incorect!"
 
-#: no reference:
+
 msgid "Email incorrect!"
 msgstr "Email incorect!"
 
-#: no reference:
+
 msgid "User or email already exists!"
 msgstr "Nume de utilizator sau email deja existent!"
 
-#: no reference:
-msgid "Please check your email (index or spam folder), the password was sent there."
+
+msgid "Please check you email (index or spam folder), the password was sent there."
 msgstr "Vă rugăm verificați-vă email-ul (directorul index sau spam), parola v-a fost trimisă într-unul dintre acestea"
 
-#: no reference:
+
 msgid "Email address not found!"
 msgstr "Adresa de email nu a fost gasită!"
 
-#: no reference:
+
 msgid "Your password is reset, check your email."
 msgstr "Parola dvs a fost resetată, verificați-vă adresa de email."
 
-#: no reference:
+
 msgid "Welcome! Log into your account"
 msgstr "Bine ați venit! Autentificați-vă in contul dvs"
 
-#: no reference:
+
 msgid "Register for an account"
 msgstr "Inregistrați-vă pentru un cont"
 
-#: no reference:
+
 msgid "Recover your password"
 msgstr "Recuperați-vă parola"
 
-#: no reference:
+
 msgid "your username"
 msgstr "numele dvs de utilizator"
 
-#: no reference:
+
 msgid "your password"
 msgstr "parola dvs"
 
-#: no reference:
+
 msgid "your email"
 msgstr "adresa dvs de email"
 
-#: no reference:
+
 msgid "A password will be e-mailed to you."
 msgstr "O parola va fi trimisă pe adresa dvs de email."
 
-#: no reference:
+
 msgid "Logout"
 msgstr "Ieșire"
 
-#: no reference:
+
 msgid "Like"
 msgstr "Îmi place"
 
-#: no reference:
+
 msgid "Fans"
 msgstr "Fani"
 
-#: no reference:
+
 msgid "Follow"
 msgstr "Conectați-vă"
 
-#: no reference:
+
 msgid "Followers"
 msgstr "Cititori"
 
-#: no reference:
+
 msgid "Subscribe"
 msgstr "Abonați-vă"
 
-#: no reference:
+
 msgid "Subscribers"
 msgstr "Abonați"
 
-#: no reference:
+
 msgid "MORE STORIES"
 msgstr "MAI MULTE ARTICOLE"
 
-#: no reference:
+
 msgid "Latest"
 msgstr "Ultimele"
 
-#: no reference:
+
 msgid "Featured posts"
 msgstr "Articole recomandate"
 
-#: no reference:
+
 msgid "Most popular"
 msgstr "Cele mai populare"
 
-#: no reference:
+
 msgid "7 days popular"
 msgstr "Cele mai populare din ultimele 7 zile"
 
-#: no reference:
+
 msgid "By review score"
 msgstr "După recenzie"
 
-#: no reference:
+
 msgid "Random"
 msgstr "Aleator"
 
-#: no reference:
+
 msgid "Trending Now"
 msgstr "De Actualitate"
 
-#: no reference:
+
 msgid "POPULAR CATEGORY"
 msgstr "CATEGORIE POPULARĂ"
 
-#: no reference:
+
 msgid "EVEN MORE NEWS"
 msgstr "ȘI MAI MULTE ȘTIRI"
 
-#: no reference:
+
 msgid "Previous (Left arrow key)"
 msgstr "Înainte (Tasta direcționare stânga)"
 
-#: no reference:
+
 msgid "Next (Right arrow key)"
 msgstr "Înapoi (Tasta direcționare dreapta)"
 
-#: no reference:
+
 msgid "%curr% of %total%"
 msgstr "%curr% din %total%"
 
-#: no reference:
+
 msgid "The content from %url% could not be loaded."
 msgstr "Conținutul de la %url% nu poate fi încărcat."
 
-#: no reference:
+
 msgid "The image #%curr% could not be loaded."
 msgstr "Imaginea #%curr% nu poate fi încărcată."
 
-#: no reference:
+
 msgid "Blog"
 msgstr "Blog"
 
-#: no reference:
+
 msgid "Share on Facebook"
 msgstr "Distribuiți pe Facebook"
 
-#: no reference:
+
 msgid "Tweet on Twitter"
 msgstr "Distribuiți pe Twitter"
 
-#: no reference:
+
 msgid "EDITOR PICKS"
 msgstr "ALEGEREA EDITORULUI"
 
-#: no reference:
-msgid "POPULAR POSTS"
-msgstr "POSTURI POPULARE"
 
-#: no reference:
+msgid "POPULAR POSTS"
+msgstr "POSTĂRI POPULARE"
+
+
 msgid "FOLLOW US"
 msgstr "URMAȚI-NE"
 
-#: no reference:
+
 msgid "ABOUT US"
 msgstr "DESPRE NOI"
 
-#: no reference:
+
 msgid "More"
 msgstr "Mai mult"
 
-#: no reference:
+
 msgid "Featured"
 msgstr "Recomandate"
 
-#: no reference:
+
 msgid "All time popular"
 msgstr "Tot timpul populare"
 
-#: no reference:
+
 msgid "Likes"
 msgstr "Likes"
 
-#: no reference:
+
 msgid "Register"
 msgstr "Înregistrare"
+
+
+msgid "of"
+msgstr "de"
+
+
+msgid "Euro Member Countries"
+msgstr "țările membre ale euro"
+
+
+msgid "Your comment is awaiting moderation"
+msgstr "Comentariul dvs. așteaptă să fie moderat"
+
+
+msgid "Follow us on Instagram"
+msgstr "Urmați-ne pe Instagram"
+
+
+msgid "Back"
+msgstr "înapoi"
+
+
+msgid "Sign in"
+msgstr "Conectare"
+
+
+msgid "Sign up"
+msgstr "Inscrie-te"
+
+
+msgid "Join"
+msgstr "A adera"
+
+
+msgid "Welcome!"
+msgstr "Bine ati venit!"
+
+
+msgid "Log into your account"
+msgstr "Conecteaza-te la contul tau"
+
+
+msgid "Password recovery"
+msgstr "Recuperare parola"
+
+
+msgid "Please check your email (index or spam folder), the password was sent there."
+msgstr "Vă rugăm să verificați email-ul (indexul sau spam dosar), parola a fost trimisă acolo."
+
+
+msgid "Australian Dollar"
+msgstr "Dolar australian"
+
+
+msgid "Bulgarian Lev"
+msgstr "Leva bulgară"
+
+
+msgid "Brazilian Real"
+msgstr "Realul brazilian"
+
+
+msgid "Canadian Dollar"
+msgstr "Dolarul canadian"
+
+
+msgid "Swiss Franc"
+msgstr "Franc elvețian"
+
+
+msgid "Chinese Yuan Renminbi"
+msgstr "Yuani renminbi Chineză"
+
+
+msgid "Czech Republic Koruna"
+msgstr "Koruna Republica Cehă"
+
+
+msgid "Danish Krone"
+msgstr "Coroane daneze"
+
+
+msgid "British Pound"
+msgstr "Lira sterlină"
+
+
+msgid "Hong Kong Dollar"
+msgstr "Dolar Hong Kong"
+
+
+msgid "Croatian Kuna"
+msgstr "Kuna croată"
+
+
+msgid "Hungarian Forint"
+msgstr "Forint maghiar"
+
+
+msgid "Indonesian Rupiah"
+msgstr "Rupie indoneziană"
+
+
+msgid "Israeli Shekel"
+msgstr "Shekel Israeli"
+
+
+msgid "Indian Rupee"
+msgstr "Rupie indiană"
+
+
+msgid "Japanese Yen"
+msgstr "Yeni japonezi"
+
+
+msgid "Korean (South) Won"
+msgstr "Coreeană (sud), a câștigat"
+
+
+msgid "Mexican Peso"
+msgstr "Peso mexican"
+
+
+msgid "Malaysian Ringgit"
+msgstr "Ringitt malaezian"
+
+
+msgid "Norwegian Krone"
+msgstr "Coroană norvegiană"
+
+
+msgid "New Zealand Dollar"
+msgstr "Dolar nou zeelanda"
+
+
+msgid "Philippine Peso"
+msgstr "Peso Philippine"
+
+
+msgid "Polish Zloty"
+msgstr "Zloți polonezi"
+
+
+msgid "Romanian (New) Leu"
+msgstr "Română (nou) leu"
+
+
+msgid "Russian Ruble"
+msgstr "Rubla rusă"
+
+
+msgid "Swedish Krona"
+msgstr "Coroana suedeză"
+
+
+msgid "Singapore Dollar"
+msgstr "Dolar singapore"
+
+
+msgid "Thai Baht"
+msgstr "Baht thai"
+
+
+msgid "Turkish Lira"
+msgstr "Liră turcească"
+
+
+msgid "United States Dollar"
+msgstr "Dolarul Statelor Unite"
+
+
+msgid "South African Rand"
+msgstr "Rand sud-african"
+
+
+msgid "Privacy Policy"
+msgstr "Politica de confidentialitate"
+
+
+msgid "views"
+msgstr "vizualizari"
+
+
+msgid "Modified date:"
+msgstr "Data modificata:"
+
+
+msgid "Please enter your name here"
+msgstr "Introduceți aici numele dvs."
+
+
+msgid "Please enter your email address here"
+msgstr "Vă rugăm să introduceți adresa dvs. de e-mail aici"
+
+
+msgid "You have entered an incorrect email address!"
+msgstr "Ați introdus o adresă de e-mail incorectă!"
+
+
+msgid "Please enter your comment!"
+msgstr "Vă rugăm să introduceți comentariul dvs.!"
+
+
+msgid "Logged in as"
+msgstr "Conectat ca"
+
+
+msgid "Log out?"
+msgstr "Ieșiți?"
+
+
+msgid "Logged in as %s. Edit your profile."
+msgstr "Conectat ca% s. Editeaza-ti profilul."
+
+
+msgid "Edit"
+msgstr "Editați | ×"
+
+
+msgid "Login"
+msgstr "Logare"
+
+
+msgid "Send My Password"
+msgstr "Trimite parola"
+
+
+msgid "Create an account"
+msgstr "Creează un cont"
+
+
+msgid "Welcome! Register for an account"
+msgstr "Bine ati venit! înregistrați-vă pentru un cont"
+
+
+msgid "About me"
+msgstr "Despre mine"
+
+
+msgid "Save my name, email, and website in this browser for the next time I comment."
+msgstr "Salvați numele meu, adresa de e-mail și site-ul web în acest browser pentru data viitoare i comentariu."
+
+
+msgid "My account"
+msgstr "Contul meu"
+
+
+msgid "Orders"
+msgstr "Comenzi"
+
+
+msgid "Addresses"
+msgstr "Adrese"
+
+
+msgid "Account settings"
+msgstr "Setările contului"
+
+
+msgid "Hello"
+msgstr "Buna ziua"
+
+
+msgid "No products in the cart."
+msgstr "Nu există produse în coș."
+
+
+msgid "Product categories"
+msgstr "Categorii de produse"
+
+
+msgid "Product tags"
+msgstr "Etichete de produs"
+
+
+msgid "Success"
+msgstr "Succes"
+
+
+msgid "Acknowledgment is required!"
+msgstr "Este necesară recunoașterea!"
+
+
+msgid "Please fill in a valid email."
+msgstr "Vă rugăm să completați un e-mail valid."
+
+
+msgid "Please fill in an email address."
+msgstr "Vă rugăm să completați o adresă de e-mail."
+
+
+msgid "Get into your account."
+msgstr "Intra in contul tau."
+
+
+msgid "My subscription account"
+msgstr "Contul meu de abonament"
+
+
+msgid "Account details"
+msgstr "Detalii cont"
+
+
+msgid "Subscriptions"
+msgstr "Abonamente"
+
+
+msgid "My woo account"
+msgstr "Contul meu woo"
+
+
+msgid "Log out"
+msgstr "Deconectați-vă"
+
+
+msgid "Email address"
+msgstr "Adresa de email"
+
+
+msgid "Username"
+msgstr "Nume de utilizator"
+
+
+msgid "Password"
+msgstr "Parola"
+
+
+msgid "must contain at least one lower case (a..z)"
+msgstr "trebuie să conțină cel puțin o literă mică (a..z)"
+
+
+msgid "must contain at least one upper case (A..Z)"
+msgstr "trebuie să conțină cel puțin o literă mare (a..z)"
+
+
+msgid "must contain at least 6 characters in length"
+msgstr "trebuie să conțină cel puțin 6 caractere lungime"
+
+
+msgid "Repeat password"
+msgstr "Repeta parola"
+
+
+msgid "Already have an account?"
+msgstr "Ai deja un cont?"
+
+
+msgid "Recover password"
+msgstr "Recuperează parola"
+
+
+msgid "Username or Email address"
+msgstr "Nume de utilizator sau Adresa de email"
+
+
+msgid "Forgot password?"
+msgstr "Ați uitat parola?"
+
+
+msgid "Don't have an account?"
+msgstr "Nu ai cont?"
+
+
+msgid "Dashboard"
+msgstr "Bord"
+
+
+msgid "Welcome to your account!"
+msgstr "Bun venit in contul tau!"
+
+
+msgid "Hello %1$s (not %2$s? %3$s)! From your account dashboard you can view your subscriptions and manage your account details."
+msgstr "Salut %1$s (nu %2$s? %3$s)! din tabloul de bord al contului, vă puteți vedea abonamentele și puteți gestiona detaliile contului."
+
+
+msgid "Lost Password"
+msgstr "Parola pierdută"
+
+
+msgid "Manage your account details."
+msgstr "Gestionați detaliile contului dvs."
+
+
+msgid "First name"
+msgstr "Nume"
+
+
+msgid "Last name"
+msgstr "Numele de familie"
+
+
+msgid "Display name"
+msgstr "Numele afisat"
+
+
+msgid "Current password"
+msgstr "Parola actuală"
+
+
+msgid "(leave blank to leave unchanged)"
+msgstr "(lasa gol pentru a lasa neschimbat)"
+
+
+msgid "New password"
+msgstr "Parolă Nouă"
+
+
+msgid "Confirm new password"
+msgstr "Confirmă noua parolă"
+
+
+msgid "Save changes"
+msgstr "Salvează modificările"
+
+
+msgid "All your subscriptions."
+msgstr "Toate abonamentele tale."
+
+
+msgid "Plan"
+msgstr "Plan"
+
+
+msgid "Payment type"
+msgstr "Tipul de plată"
+
+
+msgid "Status"
+msgstr "Stare"
+
+
+msgid "Months"
+msgstr "Luni"
+
+
+msgid "Start date"
+msgstr "Data de început"
+
+
+msgid "End date"
+msgstr "Data de încheiere"
+
+
+msgid "missing plan"
+msgstr "plan lipsă"
+
+
+msgid "Free"
+msgstr "Gratuit"
+
+
+msgid "Active"
+msgstr "Activ"
+
+
+msgid "Trial"
+msgstr "Proces"
+
+
+msgid "Blocked"
+msgstr "Blocat"
+
+
+msgid "Closed"
+msgstr "închis"
+
+
+msgid "Not paid"
+msgstr "Neplatit"
+
+
+msgid "Awaiting payment"
+msgstr "în așteptarea plății"
+
+
+msgid "Subscription info"
+msgstr "Informații despre abonament"
+
+
+msgid "ID"
+msgstr "ID"
+
+
+msgid "Name"
+msgstr "Nume"
+
+
+msgid "Company name"
+msgstr "Numele companiei"
+
+
+msgid "VAT"
+msgstr "TVA"
+
+
+msgid "Address"
+msgstr "Abordare"
+
+
+msgid "City"
+msgstr "Oraș"
+
+
+msgid "Country/State"
+msgstr "Tara/stat"
+
+
+msgid "Email"
+msgstr "E-mail"
+
+
+msgid "Postal code"
+msgstr "Cod poștal"
+
+
+msgid "Direct bank transfer details"
+msgstr "Detaliile transferului bancar direct"
+
+
+msgid "Account name"
+msgstr "Nume de cont"
+
+
+msgid "Account number"
+msgstr "Numar de cont"
+
+
+msgid "Bank name"
+msgstr "Numele băncii"
+
+
+msgid "Routing number"
+msgstr "Numărul de rutare"
+
+
+msgid "IBAN"
+msgstr "IBAN"
+
+
+msgid "Bic/Swift"
+msgstr "Bic/swift"
+
+
+msgid "Instructions"
+msgstr "Instrucțiuni"
+
+
+msgid "No subscription created."
+msgstr "Nu a fost creat niciun abonament."
+
+
+msgid "Choose plan"
+msgstr "Alege planul"
+
+
+msgid "Payment methods"
+msgstr "Metode de plata"
+
+
+msgid "Total"
+msgstr "Total"
+
+
+msgid "Period"
+msgstr "Perioadă"
+
+
+msgid "Subscription summary"
+msgstr "Rezumatul abonamentului"
+
+
+msgid "Phone"
+msgstr "Telefon"
+
+
+msgid "Postcode"
+msgstr "Cod poștal"
+
+
+msgid "County"
+msgstr "Judetul"
+
+
+msgid "Town/City"
+msgstr "Oraș/oraș"
+
+
+msgid "Street address"
+msgstr "Adresa străzii"
+
+
+msgid "Country/Region"
+msgstr "Tara/regiune"
+
+
+msgid "VAT Number"
+msgstr "TVA"
+
+
+msgid "(optional)"
+msgstr "(optional)"
+
+
+msgid "Billing details"
+msgstr "Detalii de facturare"
+
+
+msgid "User information"
+msgstr "Informații despre utilizator"
+
+
+msgid "It seems that no available payment methods have been configured."
+msgstr "Se pare că nu au fost configurate metode de plată disponibile."
+
+
+msgid "Thank you! We are delighted to see you here. Your subscription will be activated soon!"
+msgstr "Mulțumesc! suntem încântați să vă vedem aici. abonamentul tau va fi activat in curand!"
+
+
+msgid "Our bank details"
+msgstr "Detaliile noastre bancare"
+
+
+msgid "Your subscription details"
+msgstr "Detaliile abonamentului dvs"
+
+
+msgid "View subscription"
+msgstr "Vizualizați abonamentul"
+
+
+msgid "You have not selected a valid subscription plan."
+msgstr "Nu ați selectat un plan de abonament valid."
+
+
+msgid "Field empty"
+msgstr "Câmp gol"
+
+
+msgid "Empty first name"
+msgstr "Prenume gol"
+
+
+msgid "Empty last name"
+msgstr "Nume de familie gol"
+
+
+msgid "Empty country"
+msgstr "Tara goala"
+
+
+msgid "Empty address"
+msgstr "Adresa goală"
+
+
+msgid "Empty city"
+msgstr "Oraș gol"
+
+
+msgid "Empty county"
+msgstr "Judetul gol"
+
+
+msgid "Empty postcode"
+msgstr "Cod poștal gol"
+
+
+msgid "Empty phone"
+msgstr "Telefon gol"
+
+
+msgid "Empty email"
+msgstr "E-mail gol"
+
+
+msgid "Email or username empty!"
+msgstr "E-mail sau nume de utilizator gol!"
+
+
+msgid "Pass empty!"
+msgstr "Trece gol!"
+
+
+msgid "Username incorrect!"
+msgstr "Nume de utilizator incorect!"
+
+
+msgid "Invalid Pass Pattern!"
+msgstr "Model de trecere nevalid!"
+
+
+msgid "Please activate your account by following the link sent to your email address."
+msgstr "Vă rugăm să vă activați contul urmând linkul trimis la adresa dvs. de e-mail."
+
+
+msgid "Resend activation link"
+msgstr "Retrimiteți linkul de activare"
+
+
+msgid "In order to have access to this section, you have to activate your account."
+msgstr "Pentru a avea acces la aceasta sectiune trebuie sa iti activezi contul."
+
+
+msgid "Email empty!"
+msgstr "E-mail gol!"
+
+
+msgid "Username empty!"
+msgstr "Numele de utilizator este gol!"
+
+
+msgid "Pass pattern incorrect!"
+msgstr "Model de trecere incorect!"
+
+
+msgid "Retyped pass empty!"
+msgstr "Permis reintrodus gol!"
+
+
+msgid "Retyped pass exactly!"
+msgstr "Trecerea rescrisă exact!"
+
+
+msgid "User already exists!"
+msgstr "Utilizatorul deja există!"
+
+
+msgid "Email already exists!"
+msgstr "E-mail există deja!"
+
+
+msgid "Your account could not be created."
+msgstr "Contul dvs. nu a putut fi creat."
+
+
+msgid "Please check your email (inbox or spam folder) to validate your account."
+msgstr "Vă rugăm să vă verificați e-mailul (inbox sau dosarul de spam) pentru a vă valida contul."
+
+
+msgid "User empty!"
+msgstr "Utilizator gol!"
+
+
+msgid "User does not exists!"
+msgstr "Utilizatorul nu există!"
+
+
+msgid "New activation link was generated. Please check your email (inbox or spam folder) to validate your account."
+msgstr "A fost generat un nou link de activare. vă rugăm să vă verificați e-mailul (inbox sau dosarul de spam) pentru a vă valida contul."
+
+
+msgid "CAPTCHA verification failed!"
+msgstr "Verificarea captcha a eșuat!"
+
+
+msgid "CAPTCHA user score failed. Please contact us!"
+msgstr "Scorul utilizatorului captcha a eșuat. va rog sa ne contactati!"
+
+
+msgid "Loading"
+msgstr "Se încarcă"
+
+
+msgid "Here are the results for the search:"
+msgstr "Iată rezultatele căutării:"
+
+
+msgid "Price"
+msgstr "Preț"
+
+
+msgid "EXCLUSIVE"
+msgstr "EXCLUSIV"
+
+
+msgid "Tel:"
+msgstr "Tel:"
+
+
+msgid "Share"
+msgstr "Acțiune"
+
+
+msgid "Print"
+msgstr "Imprimare"
+
+
+msgid "At"
+msgstr "La"
+
+
+msgid "Comments are closed."
+msgstr "Comentariile sunt închise."
+
+
+msgid "My account"
+msgstr "Contul meu"
+
+
+msgid "Payment method"
+msgstr "Modalitate de plată"
 

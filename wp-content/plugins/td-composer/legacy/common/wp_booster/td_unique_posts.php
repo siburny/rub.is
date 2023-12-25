@@ -29,6 +29,16 @@ class td_unique_posts {
 
         if (is_page()) {
 
+            if ( class_exists('Mobile_Detect')) {
+                $mobile_detect = new Mobile_Detect();
+                if ( $mobile_detect->isMobile() ) {
+                    $tdc_mobile_page_id = get_post_meta( $page_id, 'tdc_mobile_template_id', true );
+                    if ( ! empty( $tdc_mobile_page_id ) && 'publish' === get_post_status( $tdc_mobile_page_id ) ) {
+                        $page_id = $tdc_mobile_page_id;
+                    }
+                }
+            }
+
 	        // previous meta
 	        //$td_unique_articles = get_post_meta($page_id, 'td_unique_articles', true);
 

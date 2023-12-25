@@ -118,7 +118,6 @@
   background-color: #000;
   font-size: 10px;
   line-height: 1;
-  margin-right: 10px;
   padding: 2px 6px 3px;
   color: #fff;
   border-radius: 100px;
@@ -136,7 +135,7 @@
 }
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list {
   position: absolute;
-  min-width: 233px;
+  min-width: 248px;
   width: 100%;
   padding: 12px;
   background-color: #fff;
@@ -150,6 +149,23 @@
 }
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list.tdb-mobile-templates-align-right {
   right: 0;
+}
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list.loading:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  display: table;
+  top: 100%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.0' width='15px' height='15px' viewBox='0 0 128 128' xml:space='preserve'><rect x='0' y='0' width='100%' height='100%' fill='%23FFFFFF' /><g><path d='M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z' fill='%23000000' fill-opacity='1'/><animateTransform attributeName='transform' type='rotate' from='0 64 64' to='360 64 64' dur='800ms' repeatCount='indefinite'></animateTransform></g></svg>") no-repeat 50% 50%;
+  transition: opacity 2s ease;
 }
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list:empty {
   display: none !important;
@@ -190,7 +206,11 @@
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el:hover .tdb-template-el-mobile-list-edit {
   display: block;
 }
-#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-edit {
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el:hover .tdb-template-el-mobile-list-delete {
+  display: block;
+}
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-edit,
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-delete {
   position: relative;
   top: 0;
   right: -7px;
@@ -198,7 +218,6 @@
   width: 9px;
   height: 9px;
   padding: 4px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%23777'/></g></svg>");
   background-repeat: no-repeat;
   background-position: center;
   line-height: 1;
@@ -206,8 +225,17 @@
   margin: -4px 0 -4px 2px;
   border-radius: 4px;
 }
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-edit {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%23777'/></g></svg>");
+}
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-edit:hover {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%231a9a75'/></g></svg>");
+}
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-delete {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15'><g><path d='M3.989,3.74a0.233,0.233,0,0,0,.234.234h7.567a0.233,0.233,0,0,0,.234-0.234V3.47A0.467,0.467,0,0,0,11.556,3H9.76L9.585,2.307a0.439,0.439,0,0,0-.176-0.186,0.5,0.5,0,0,0-.254-0.068H6.928a0.5,0.5,0,0,0-.254.068,0.439,0.439,0,0,0-.176.186L6.323,3H4.458a0.467,0.467,0,0,0-.469.469V3.74Zm7.783,1.528A0.259,0.259,0,0,0,11.7,5.092a0.212,0.212,0,0,0-.166-0.078H4.546a0.213,0.213,0,0,0-.166.078,0.26,0.26,0,0,0-.068.176L5.07,11.106a0.887,0.887,0,0,0,.293.625,0.916,0.916,0,0,0,.645.254h4a0.916,0.916,0,0,0,.645-0.254,0.887,0.887,0,0,0,.293-0.625Z' fill='%23777'/></g></svg>");
+}
+#wpadminbar #wp-admin-bar-tdc_page_mobile_template .tdb-template-el-mobile-list-el .tdb-template-el-mobile-list-delete:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15'><g><path d='M3.989,3.74a0.233,0.233,0,0,0,.234.234h7.567a0.233,0.233,0,0,0,.234-0.234V3.47A0.467,0.467,0,0,0,11.556,3H9.76L9.585,2.307a0.439,0.439,0,0,0-.176-0.186,0.5,0.5,0,0,0-.254-0.068H6.928a0.5,0.5,0,0,0-.254.068,0.439,0.439,0,0,0-.176.186L6.323,3H4.458a0.467,0.467,0,0,0-.469.469V3.74Zm7.783,1.528A0.259,0.259,0,0,0,11.7,5.092a0.212,0.212,0,0,0-.166-0.078H4.546a0.213,0.213,0,0,0-.166.078,0.26,0.26,0,0,0-.068.176L5.07,11.106a0.887,0.887,0,0,0,.293.625,0.916,0.916,0,0,0,.645.254h4a0.916,0.916,0,0,0,.645-0.254,0.887,0.887,0,0,0,.293-0.625Z' fill='%231a9a75'/></g></svg>");
 }
 #wpadminbar #wp-admin-bar-td_analyze_css_menu > a {
   position: relative;
@@ -331,13 +359,13 @@
   visibility: hidden;
   position: absolute;
   display: flex;
-  top: -30px;
+  flex-direction: column;
+  bottom: calc(100% + 3px);
   left: 50%;
   transform: translateX(-50%);
-  height: 100%;
   margin: auto;
   background-color: #fff;
-  padding: 6px !important;
+  padding: 6px 12px 6px 6px !important;
   -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12);
 }
@@ -364,10 +392,16 @@
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-template-el-options > div {
   display: inline-block;
-  width: 15px;
-  height: 15px;
+  height: 18px;
   margin: 0 2px;
   cursor: pointer;
+  font-size: 10px;
+  line-height: 16px;
+  padding-left: 20px;
+  background-position-x: left !important;
+}
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-template-el-options > div:hover {
+  color: #1a9a75;
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-template-el-edit {
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%23777'/></g></svg>") no-repeat 50% 50%;
@@ -394,11 +428,11 @@
   padding: 12px;
   background-color: #fff;
   color: #000;
-  -webkit-box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.15);
-  box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0px 8px 15px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 8px 15px 1px rgba(0, 0, 0, 0.15);
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
-  z-index: -1;
+  z-index: 1;
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates.tdb-templates-align-right {
   right: 0;
@@ -450,6 +484,9 @@
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el.tdb-current .tdb-template-el-title,
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el.tdb-current .tdb-template-el-title:hover {
   color: #1a9a75;
+}
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el.tdb-current .tdb-template-el-title .tdb-template-el-title-input {
+  pointer-events: auto;
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-global {
   position: relative;
@@ -587,6 +624,23 @@
   display: none;
   text-align: left;
 }
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list.loading:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  display: table;
+  top: 100%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.0' width='15px' height='15px' viewBox='0 0 128 128' xml:space='preserve'><rect x='0' y='0' width='100%' height='100%' fill='%23FFFFFF' /><g><path d='M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z' fill='%23000000' fill-opacity='1'/><animateTransform attributeName='transform' type='rotate' from='0 64 64' to='360 64 64' dur='800ms' repeatCount='indefinite'></animateTransform></g></svg>") no-repeat 50% 50%;
+  transition: opacity 2s ease;
+}
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-inner {
   overflow-y: auto;
   max-height: 100px;
@@ -624,7 +678,8 @@
   color: #1a9a75;
   pointer-events: none;
 }
-#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-el:hover .tdb-template-el-mobile-list-edit {
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-el:hover .tdb-template-el-mobile-list-edit,
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-el:hover .tdb-template-el-mobile-list-delete {
   display: block;
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-title {
@@ -646,7 +701,8 @@
   margin: 0 14px !important;
   width: auto !important;
 }
-#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-edit {
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-edit,
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-delete {
   position: relative;
   top: 0;
   right: -7px;
@@ -654,7 +710,6 @@
   width: 9px;
   height: 9px;
   padding: 4px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%23777'/></g></svg>");
   background-repeat: no-repeat;
   background-position: center;
   line-height: 1;
@@ -662,8 +717,18 @@
   margin: -4px 0 -4px 2px;
   border-radius: 4px;
 }
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-edit {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%23777'/></g></svg>");
+}
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-edit:hover {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 15 15'><g><path d='M7.731,4.986L3.263,9.455,3.009,11.486a0.477,0.477,0,0,0,.527.527L5.6,11.759l4.469-4.469ZM12.2,3.833a0.943,0.943,0,0,1,0,1.328L11.085,6.275,8.747,3.97,9.861,2.857a0.943,0.943,0,0,1,1.328,0Z' fill='%231a9a75'/></g></svg>");
+}
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-delete {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15'><g><path d='M3.989,3.74a0.233,0.233,0,0,0,.234.234h7.567a0.233,0.233,0,0,0,.234-0.234V3.47A0.467,0.467,0,0,0,11.556,3H9.76L9.585,2.307a0.439,0.439,0,0,0-.176-0.186,0.5,0.5,0,0,0-.254-0.068H6.928a0.5,0.5,0,0,0-.254.068,0.439,0.439,0,0,0-.176.186L6.323,3H4.458a0.467,0.467,0,0,0-.469.469V3.74Zm7.783,1.528A0.259,0.259,0,0,0,11.7,5.092a0.212,0.212,0,0,0-.166-0.078H4.546a0.213,0.213,0,0,0-.166.078,0.26,0.26,0,0,0-.068.176L5.07,11.106a0.887,0.887,0,0,0,.293.625,0.916,0.916,0,0,0,.645.254h4a0.916,0.916,0,0,0,.645-0.254,0.887,0.887,0,0,0,.293-0.625Z' fill='%23777'/></g></svg>");
+}
+#wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates .tdb-template-el .tdb-template-el-mobile-list-delete:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15'><g><path d='M3.989,3.74a0.233,0.233,0,0,0,.234.234h7.567a0.233,0.233,0,0,0,.234-0.234V3.47A0.467,0.467,0,0,0,11.556,3H9.76L9.585,2.307a0.439,0.439,0,0,0-.176-0.186,0.5,0.5,0,0,0-.254-0.068H6.928a0.5,0.5,0,0,0-.254.068,0.439,0.439,0,0,0-.176.186L6.323,3H4.458a0.467,0.467,0,0,0-.469.469V3.74Zm7.783,1.528A0.259,0.259,0,0,0,11.7,5.092a0.212,0.212,0,0,0-.166-0.078H4.546a0.213,0.213,0,0,0-.166.078,0.26,0.26,0,0,0-.068.176L5.07,11.106a0.887,0.887,0,0,0,.293.625,0.916,0.916,0,0,0,.645.254h4a0.916,0.916,0,0,0,.645-0.254,0.887,0.887,0,0,0,.293-0.625Z' fill='%231a9a75'/></g></svg>");
 }
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates[data-type="search"],
 #wpadminbar [id*='wp-admin-bar-tdb_template'] .tdb-templates[data-type="404"],
@@ -694,6 +759,8 @@
 #wpadminbar #wp-admin-bar-tdb_template_woo_archive > a,
 #wpadminbar #wp-admin-bar-tdb_template_woo_search_archive > a,
 #wpadminbar #wp-admin-bar-tdb_template_woo_shop_base > a,
+#wpadminbar #wp-admin-bar-tdb_template_cpt > a,
+#wpadminbar #wp-admin-bar-tdb_template_cpt_tax > a,
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template > a,
 #wpadminbar #wp-admin-bar-td_analyze_css_menu > a {
   max-width: 250px !important;
@@ -715,6 +782,8 @@
 #wpadminbar #wp-admin-bar-tdb_template_woo_archive > a:hover,
 #wpadminbar #wp-admin-bar-tdb_template_woo_search_archive > a:hover,
 #wpadminbar #wp-admin-bar-tdb_template_woo_shop_base > a:hover,
+#wpadminbar #wp-admin-bar-tdb_template_cpt > a:hover,
+#wpadminbar #wp-admin-bar-tdb_template_cpt_tax > a:hover,
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template > a:hover,
 #wpadminbar #wp-admin-bar-td_analyze_css_menu > a:hover {
   color: #666 !important;
@@ -731,6 +800,8 @@
 #wpadminbar #wp-admin-bar-tdb_template_woo_archive > a .tdb-template-el-global-checked,
 #wpadminbar #wp-admin-bar-tdb_template_woo_search_archive > a .tdb-template-el-global-checked,
 #wpadminbar #wp-admin-bar-tdb_template_woo_shop_base > a .tdb-template-el-global-checked,
+#wpadminbar #wp-admin-bar-tdb_template_cpt > a .tdb-template-el-global-checked,
+#wpadminbar #wp-admin-bar-tdb_template_cpt_tax > a .tdb-template-el-global-checked,
 #wpadminbar #wp-admin-bar-tdc_page_mobile_template > a .tdb-template-el-global-checked,
 #wpadminbar #wp-admin-bar-td_analyze_css_menu > a .tdb-template-el-global-checked {
   position: relative;
@@ -738,23 +809,52 @@
   margin-right: 1px;
   top: -1px;
 }
+#wpadminbar #wp-admin-bar-tdb_template_single,
+#wpadminbar #wp-admin-bar-tdb_template_category,
+#wpadminbar #wp-admin-bar-tdb_template_404,
+#wpadminbar #wp-admin-bar-tdb_template_date,
+#wpadminbar #wp-admin-bar-tdb_template_search,
+#wpadminbar #wp-admin-bar-tdb_template_attachment,
+#wpadminbar #wp-admin-bar-tdb_template_author,
+#wpadminbar #wp-admin-bar-tdb_template_tag,
+#wpadminbar #wp-admin-bar-tdb_template_woo_product,
+#wpadminbar #wp-admin-bar-tdb_template_woo_archive,
+#wpadminbar #wp-admin-bar-tdb_template_woo_search_archive,
+#wpadminbar #wp-admin-bar-tdb_template_woo_shop_base,
+#wpadminbar #wp-admin-bar-tdb_template_cpt,
+#wpadminbar #wp-admin-bar-tdb_template_cpt_tax {
+  z-index: 9999999;
+}
+#wpadminbar #wp-admin-bar-tdc_create_mobile_page,
+#wpadminbar .tdb-load-mobile-template {
+  float: none !important;
+  cursor: pointer;
+}
 #wpadminbar #wp-admin-bar-tdc_create_mobile_page .ab-item,
 #wpadminbar .tdb-load-mobile-template .ab-item {
-  width: 32px;
+  background-size: 8px;
+  background-color: #E9E9E8;
+  flex: 0 0 auto;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
   padding: 0;
   background-repeat: no-repeat !important;
   background-position: center !important;
   cursor: pointer;
 }
 #wpadminbar #wp-admin-bar-tdc_create_mobile_page .ab-item {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M6,13V8H1V6H6V1H8V6h5V8H8v5Z' transform='translate(-1 -1)' fill='lightgrey'/></svg>") !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path d='M3,8V5H0V3H3V0H5V3H8V5H5V8Z' fill='%23777'/></svg>");
+}
+#wpadminbar #wp-admin-bar-tdc_create_mobile_page:hover .ab-item {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path d='M3,8V5H0V3H3V0H5V3H8V5H5V8Z' fill='%231a9a75'/></svg>");
 }
 #wpadminbar .tdb-load-mobile-template .ab-item {
-  background-color: #000 !important;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M13,15H1V12H5v2H9V12h4v3h0ZM3,8h8L6.964,12ZM6,8V3H8V8Z' transform='translate(-1 -3)' fill='white'/></svg>") !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='7.969' viewBox='0 0 8 7.969'><path d='M8,7.969H0v-2H3v1H5v-1H8v2H8ZM1,2.984H3V0H4.953l.063,2.984H6.969L4.016,5.954Z' fill='%23777'/></svg>");
 }
-#wpadminbar .tdb-load-mobile-template .ab-item:hover {
-  background-color: #306c71 !important;
+#wpadminbar .tdb-load-mobile-template:hover .ab-item {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='7.969' viewBox='0 0 8 7.969'><path d='M8,7.969H0v-2H3v1H5v-1H8v2H8ZM1,2.984H3V0H4.953l.063,2.984H6.969L4.016,5.954Z' fill='%231a9a75'/></svg>");
 }
 .tdb-templates-header {
   display: flex;

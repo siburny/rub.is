@@ -26,6 +26,13 @@ class td_review {
 		}
 	}
 
+    //used for review meta, don't convert rating to stars anymore
+    static function calculate_total_stars_for_meta($td_review) {
+        if (!empty($td_review['has_review'])) {
+            return round(self::calculate_total($td_review), 1);
+        }
+    }
+
     //converts 0 - 5 to stars
     private static function number_to_stars($total_stars) {
 

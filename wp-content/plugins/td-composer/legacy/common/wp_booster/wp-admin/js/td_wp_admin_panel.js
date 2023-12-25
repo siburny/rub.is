@@ -12,7 +12,7 @@ if (typeof td_get_template_directory_uri === 'undefined') {
 jQuery().ready(function() {
 
     //IE8+ hack (loses focus on controller to remove the blue selected background), but still remain the select the same option blue background
-    jQuery('.td-panel-dropdown').change(function(){
+    jQuery('.td-panel-dropdown').on('change', function(){
         jQuery(this).blur();
     });
 
@@ -72,6 +72,9 @@ jQuery().ready(function() {
 
     //amp options page
     tdmHideAmpOptions();
+
+    //display the video cache videos on the system status page
+    td_display_video_cache_videos();
 
     /**
      * cloud category template type panel selection
@@ -672,7 +675,7 @@ function td_upload_image_font(id_upload_field) {
     });
 
     //if the user paste a url into the id_upload_field
-    jQuery('#' + id_upload_field).change(function(){
+    jQuery('#' + id_upload_field).on('change', function(){
         jQuery('#' + id_upload_field + '_display img').attr('src', jQuery('#' +  id_upload_field).val());
 
         if(jQuery('#' +  id_upload_field).val() == '' ) {
@@ -1236,7 +1239,7 @@ function updateCustomFonts() {
 
 //update custom fonts on input field focusout
 function updateCustomFontsOnFocusout(){
-    jQuery('input[name*="td_fonts_user_insert"]').focusout(updateCustomFonts);
+    jQuery('input[name*="td_fonts_user_insert"]').on('focusout', updateCustomFonts);
 }
 
 
@@ -1299,7 +1302,7 @@ function td_ajax_form_submit() {
 // floating button
 var td_wp_admin_resize_timer_id;
 var td_wp_admin_distance_to_bottom = 0;
-jQuery(window).resize(function() {
+jQuery(window).on('resize', function() {
     clearTimeout(td_wp_admin_resize_timer_id);
     td_wp_admin_resize_timer_id = setTimeout(td_ap_admin_done_resizing, 500);
 });
@@ -1327,7 +1330,7 @@ function td_reposition_the_button() {
 function td_floating_save_button() {
     td_ap_admin_done_resizing();
 
-    jQuery(window).scroll(function(){
+    jQuery(window).on('scroll', function(){
         //console.log(td_wp_admin_distance_to_bottom);
         td_reposition_the_button();
     });
@@ -1354,10 +1357,14 @@ function td_resize_tiny_mce_for_sidebar() {
         //console.log('xxx');
 
         var $contentIfr = jQuery("#content_ifr");
+        var $descriptionIfr = jQuery("#description_ifr");
         var $contentGut = jQuery(".block-editor-page");
 
-        if ( $contentIfr.length ) {
+        if ( $contentIfr.length || $descriptionIfr.length ) {
             var $body = $contentIfr.contents().find("body");
+            if( !$body.length ) {
+                $body = $descriptionIfr.contents().find("body");
+            }
             if ( 'no_sidebar' === sidebar_position ) {
                 $body.addClass("mceContentBody-max-width-big").removeClass("mceContentBody-max-width-small");
             } else {
@@ -1563,6 +1570,7 @@ function td_envato_process_response(data) {
     //code is not registered on the forum
     jQuery('.td-activate-envato-code').hide();
     jQuery('.td-activate-registration').show();
+
 }
 
 
@@ -1597,13 +1605,24 @@ function td_envato_code_check() {
     envatoCodeInput.prop('disabled', true);
     submitButton.addClass('td-activate-button-loading');
 
+    // create support account check
+    var create_account_check = jQuery('.td-create-support-account .td-checkbox'),
+        create_support_account = 'yes';
+    if ( create_account_check.length ) {
+        var td_create_account_input = jQuery('#td_create_account');
+        if ( td_create_account_input.length && td_create_account_input.val() === 'no' ) {
+            create_support_account = 'no';
+        }
+    }
+
     //ajax call
     jQuery.ajax({
         type: "POST",
         url: td_ajax_url,
         data: {
             action: 'td_ajax_check_envato_code',
-            envato_code: envatoCode
+            envato_code: envatoCode,
+            create_support_account: create_support_account
         },
         success: function( data, textStatus, XMLHttpRequest ) {
             //hide - loading button
@@ -1850,102 +1869,102 @@ function td_register_forum_user() {
  * manual activation response
  * @param data
  */
-function td_manual_activation_response(data) {
-    var currentCode = jQuery('.td-manual-envato-code input').val(),
-        td_data_object = jQuery.parseJSON(data); //get the data object
-
-    //clear empty spaces
-    currentCode = currentCode.replace(/\s+/g, '');
-
-    //drop the result - it's from a old query
-    if ( td_data_object.envato_code !== currentCode ) {
-        return;
-    }
-
-    if (td_data_object.theme_activated === true) {
-        tdConfirm.showModalOk('Theme activation',
-            'Theme successfully activated using manual activation. Thanks for buying our product.',
-            function() {
-                //redirect
-                window.location.replace('?page=td_theme_welcome');
-            }
-        );
-        return;
-    }
-
-    //invalid code
-    jQuery('.td-manual-activation-failed').show();
-}
+// function td_manual_activation_response(data) {
+//     var currentCode = jQuery('.td-manual-envato-code input').val(),
+//         td_data_object = jQuery.parseJSON(data); //get the data object
+//
+//     //clear empty spaces
+//     currentCode = currentCode.replace(/\s+/g, '');
+//
+//     //drop the result - it's from a old query
+//     if ( td_data_object.envato_code !== currentCode ) {
+//         return;
+//     }
+//
+//     if (td_data_object.theme_activated === true) {
+//         tdConfirm.showModalOk('Theme activation',
+//             'Theme successfully activated using manual activation. Thanks for buying our product.',
+//             function() {
+//                 //redirect
+//                 window.location.replace('?page=td_theme_welcome');
+//             }
+//         );
+//         return;
+//     }
+//
+//     //invalid code
+//     jQuery('.td-manual-activation-failed').show();
+// }
 
 
 /**
  * theme manual activation
  */
-function td_theme_manual_activation() {
-    //form data
-    var serverId = jQuery('.td-manual-server-id input').val(),
-        envatoCodeContainer = jQuery('.td-manual-envato-code'),
-        envatoCodeInput = envatoCodeContainer.find('input'),
-        envatoCode = envatoCodeInput.val(),
-        tdKeyContainer = jQuery('.td-manual-activation-key'),
-        tdKeyInput = tdKeyContainer.find('input'),
-        tdKey = tdKeyInput.val(),
-        submitButton = jQuery('.td-manual-activate-button'),
-        inputError = false;
-
-    //empty server id
-    if (serverId.length === 0) {
-        return;
-    }
-
-    //empty envato code
-    if (envatoCode.length === 0) {
-        envatoCodeContainer.addClass('td-err');
-        envatoCodeContainer.find('.td-manual-envato-code-missing').show();
-        inputError = true;
-    }
-
-    //empty activation key
-    if (tdKey.length === 0) {
-        tdKeyContainer.addClass('td-err');
-        tdKeyContainer.find('.td-manual-activation-key-missing').show();
-        inputError = true;
-    }
-
-    if (inputError === true) {
-        return;
-    }
-
-    //show - loading button
-    submitButton.prop('disabled', true);
-    envatoCodeInput.prop('disabled', true);
-    tdKeyInput.prop('disabled', true);
-    submitButton.addClass('td-activate-button-loading');
-
-    //ajax call
-    jQuery.ajax({
-        type: "POST",
-        url: td_ajax_url,
-        data: {
-            action: 'td_ajax_manual_activation',
-            envato_code: envatoCode,
-            td_server_id: serverId,
-            td_key: tdKey
-        },
-        success: function( data, textStatus, XMLHttpRequest ) {
-            //hide - loading button
-            submitButton.removeClass('td-activate-button-loading');
-            envatoCodeInput.prop('disabled', false);
-            tdKeyInput.prop('disabled', false);
-            submitButton.prop('disabled', false);
-
-            td_manual_activation_response(data);
-        },
-        error: function( MLHttpRequest, textStatus, errorThrown ) {
-            //console.log(errorThrown);
-        }
-    });
-}
+// function td_theme_manual_activation() {
+//     //form data
+//     var serverId = jQuery('.td-manual-server-id input').val(),
+//         envatoCodeContainer = jQuery('.td-manual-envato-code'),
+//         envatoCodeInput = envatoCodeContainer.find('input'),
+//         envatoCode = envatoCodeInput.val(),
+//         tdKeyContainer = jQuery('.td-manual-activation-key'),
+//         tdKeyInput = tdKeyContainer.find('input'),
+//         tdKey = tdKeyInput.val(),
+//         submitButton = jQuery('.td-manual-activate-button'),
+//         inputError = false;
+//
+//     //empty server id
+//     if (serverId.length === 0) {
+//         return;
+//     }
+//
+//     //empty envato code
+//     if (envatoCode.length === 0) {
+//         envatoCodeContainer.addClass('td-err');
+//         envatoCodeContainer.find('.td-manual-envato-code-missing').show();
+//         inputError = true;
+//     }
+//
+//     //empty activation key
+//     if (tdKey.length === 0) {
+//         tdKeyContainer.addClass('td-err');
+//         tdKeyContainer.find('.td-manual-activation-key-missing').show();
+//         inputError = true;
+//     }
+//
+//     if (inputError === true) {
+//         return;
+//     }
+//
+//     //show - loading button
+//     submitButton.prop('disabled', true);
+//     envatoCodeInput.prop('disabled', true);
+//     tdKeyInput.prop('disabled', true);
+//     submitButton.addClass('td-activate-button-loading');
+//
+//     //ajax call
+//     jQuery.ajax({
+//         type: "POST",
+//         url: td_ajax_url,
+//         data: {
+//             action: 'td_ajax_manual_activation',
+//             envato_code: envatoCode,
+//             td_server_id: serverId,
+//             td_key: tdKey
+//         },
+//         success: function( data, textStatus, XMLHttpRequest ) {
+//             //hide - loading button
+//             submitButton.removeClass('td-activate-button-loading');
+//             envatoCodeInput.prop('disabled', false);
+//             tdKeyInput.prop('disabled', false);
+//             submitButton.prop('disabled', false);
+//
+//             td_manual_activation_response(data);
+//         },
+//         error: function( MLHttpRequest, textStatus, errorThrown ) {
+//             //console.log(errorThrown);
+//         }
+//     });
+// }
 
 
 
@@ -1964,7 +1983,7 @@ function td_theme_activation() {
     });
 
     //theme activation - on keydown - hide envato code errors
-    jQuery('.td-envato-code input').keydown(function(event){
+    jQuery('.td-envato-code input').on('keydown', function(event){
         if ( ( event.which && 13 === event.which ) ||
             ( event.keyCode && 13 === event.keyCode )) {
             //on enter trigger click on "Activate" button
@@ -1978,7 +1997,7 @@ function td_theme_activation() {
     });
 
     //theme activation - on keydown - hide forum user registration form errors
-    jQuery('.td-activate-registration input').keydown(function(event){
+    jQuery('.td-activate-registration input').on('keydown', function(event){
         var currentInput = jQuery(this),
             currentInputContainer = currentInput.parent(),
             currentInputErrors = currentInputContainer.find('.td-activate-err');
@@ -1996,27 +2015,27 @@ function td_theme_activation() {
     });
 
     //manual activation
-    jQuery('.td-manual-activate-button').on('click', function(){
-        td_theme_manual_activation();
-    });
+    // jQuery('.td-manual-activate-button').on('click', function(){
+    //     td_theme_manual_activation();
+    // });
 
     //manual activation - on keydown - hide errors
-    jQuery('.td-manual-activation input').keydown(function(event){
-        var currentInput = jQuery(this),
-            currentInputContainer = currentInput.parent(),
-            currentInputErrors = currentInputContainer.find('.td-activate-err');
-
-        //hide errors
-        currentInputContainer.removeClass('td-err');
-        currentInputErrors.hide();
-
-        //on enter trigger submit
-        if (( event.which && 13 === event.which ) ||
-            ( event.keyCode && 13 === event.keyCode )) {
-            jQuery('.td-manual-activate-button').trigger('click');
-            return;
-        }
-    });
+    // jQuery('.td-manual-activation input').keydown(function(event){
+    //     var currentInput = jQuery(this),
+    //         currentInputContainer = currentInput.parent(),
+    //         currentInputErrors = currentInputContainer.find('.td-activate-err');
+    //
+    //     //hide errors
+    //     currentInputContainer.removeClass('td-err');
+    //     currentInputErrors.hide();
+    //
+    //     //on enter trigger submit
+    //     if (( event.which && 13 === event.which ) ||
+    //         ( event.keyCode && 13 === event.keyCode )) {
+    //         jQuery('.td-manual-activate-button').trigger('click');
+    //         return;
+    //     }
+    // });
 }
 
 
@@ -2024,7 +2043,7 @@ function td_theme_activation() {
  *
  */
 function tdFooterPageSelection() {
-    jQuery('#td-panel-footer select[name="td_option[tds_footer_page]"]').change(function(event) {
+    jQuery('#td-panel-footer select[name="td_option[tds_footer_page]"]').on('change', function(event) {
         var $this = jQuery(this),
             $viewFooterPage = jQuery('#td-panel-footer .td-view-footer-page');
 
@@ -2072,4 +2091,77 @@ function get_param_by_name(name) {
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(window.location.search);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+function td_display_video_cache_videos() {
+
+    jQuery('.td-button-system-status-view').on('click',function (e) {
+
+        e.preventDefault();
+
+        var $this = jQuery(this),
+            service = $this.data('service'),
+            source = $this.data('source'),
+            sourceName = $this.data('source-name'),
+
+            $videosInfo = $this.siblings('.td-system-status-inner-table-videos-info');
+
+
+        if( !$this.hasClass('td-button-system-status-view-open') && !$this.hasClass('td-button-system-status-view-loading') ) {
+            $this.addClass('td-button-system-status-view-loading');
+
+            //ajax call
+            jQuery.ajax({
+                type: "POST",
+                url: td_ajax_url,
+                data: {
+                    action: 'td_ajax_video_cache_videos',
+                    td_video_service: service,
+                    td_video_source: source,
+                    td_video_source_name: sourceName
+                },
+                success: function( data, textStatus, XMLHttpRequest ) {
+
+                    data = jQuery.parseJSON(data);
+
+                    $this.removeClass('td-button-system-status-view-loading');
+                    $this.addClass('td-button-system-status-view-open');
+                    $this.text('Hide Details');
+
+                    if( !data.length ) {
+                        $videosInfo.html('<div class="td-remote-value-no-data">There is no video data for this source</div>');
+                    } else {
+                        jQuery.each(data, function (key, $videoInfo) {
+                            $videosInfo.append(
+                                '<div class="td-remote-value-data-container">' +
+                                    '<div class="td-video-id-details"><a class="td-button-system-status-details" title="' + $videoInfo.title + '">' + $videoInfo.title + '</a></div>' +
+
+                                    '<div class="td-array-viewer">' +
+                                        '<span>Title:</span> ' + $videoInfo.title +
+                                        '<span>Thumb:</span> ' + $videoInfo.thumb +
+                                        '<span>Standard:</span> ' + $videoInfo.standard +
+                                        '<span>Time:</span> ' + $videoInfo.time +
+                                        '<span>Timestamp:</span> ' + $videoInfo.timestamp +
+                                        '<span>Embed HTML:</span> ' + $videoInfo.embedHtml +
+                                    '</div>' +
+                                '</div>'
+                            );
+                        });
+                    }
+
+                },
+                error: function( MLHttpRequest, textStatus, errorThrown ) {
+                    //console.log(errorThrown);
+                }
+            });
+        } else {
+            $this.removeClass('td-button-system-status-view-open');
+            $this.text('View Details');
+
+            $videosInfo.html('');
+        }
+
+    });
+
 }

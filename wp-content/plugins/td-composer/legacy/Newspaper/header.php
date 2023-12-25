@@ -9,6 +9,7 @@
 </head>
 
 <body <?php body_class() ?> itemscope="itemscope" itemtype="<?php echo td_global::$http_or_https?>://schema.org/WebPage">
+<?php do_action( 'td_wp_body_open' ) ?>
 
     <?php /* scroll to top */
     $td_hide_totop_on_mob = '';

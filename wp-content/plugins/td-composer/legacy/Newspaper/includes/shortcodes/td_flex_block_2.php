@@ -51,12 +51,98 @@ class td_flex_block_2 extends td_block {
             }
         }
 
-        // next prev position
-        $nextprev_position = $res_ctx->get_shortcode_att('nextprev_position');
-        if( $nextprev_position == 'bottom' ) {
-            $res_ctx->load_settings_raw( 'nextprev_position', 'bottom: 0;' );
-        } else {
-            $res_ctx->load_settings_raw( 'nextprev_position', 'top: 0;' );
+        // nex prev position
+        $nextprev_position = $res_ctx->get_shortcode_att( 'nextprev_position' );
+        $nextprev_split = $res_ctx->get_shortcode_att('nextprev_split');
+
+        switch ( $nextprev_position ) {
+            case 'top-left':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-start' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-start' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-start' );
+                }
+
+                break;
+            case 'top-center':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-start' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'center' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'center' );
+                }
+
+                break;
+            case '':
+            case 'top':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-start' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-end' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-end' );
+                }
+
+                break;
+            case 'center-left':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'center' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-start' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-start' );
+                }
+
+                break;
+            case 'center-center':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'center' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'center' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'center' );
+                }
+
+                break;
+            case 'center-right':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'center' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-end' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-end' );
+                }
+
+                break;
+            case 'bottom-left':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-end' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-start' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-start' );
+                }
+
+                break;
+            case 'bottom-center':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-end' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'center' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'center' );
+                }
+
+                break;
+            case 'bottom':
+                $res_ctx->load_settings_raw( 'nextprev_pos_vert', 'flex-end' );
+                $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'flex-end' );
+
+                if( $nextprev_split == '' ) {
+                    $res_ctx->load_settings_raw( 'nextprev_split', 'flex-end' );
+                }
+
+                break;
+        }
+
+        // split icons
+        if( $nextprev_split != '' ) {
+            $res_ctx->load_settings_raw( 'nextprev_pos_horiz', 'space-between' );
         }
 
         // next prev space
@@ -93,6 +179,12 @@ class td_flex_block_2 extends td_block {
         $res_ctx->load_settings_raw( 'pag_icons_size', $pag_icons_size );
         if( $pag_icons_size != '' && is_numeric( $pag_icons_size ) ) {
             $res_ctx->load_settings_raw( 'pag_icons_size', $pag_icons_size . 'px' );
+        }
+        // space between icons
+        $pag_icons_space = $res_ctx->get_shortcode_att('pag_icons_space');
+        $res_ctx->load_settings_raw( 'pag_icons_space', $pag_icons_space );
+        if( $pag_icons_space != '' && is_numeric( $pag_icons_space ) ) {
+            $res_ctx->load_settings_raw( 'pag_icons_space', $pag_icons_space . 'px' );
         }
 
 
@@ -259,7 +351,9 @@ class td_flex_block_2 extends td_block {
             $res_ctx->load_settings_raw( 'review_space', $review_space . 'px' );
         }
         $review_size = $res_ctx->get_shortcode_att('review_size');
-        $res_ctx->load_settings_raw( 'review_size', 10 + $review_size/0.5 . 'px' );
+        if ( $review_size != '' && is_numeric( $review_size ) ) {
+            $res_ctx->load_settings_raw('review_size', 10 + $review_size / 0.5 . 'px');
+        }
         $review_distance = $res_ctx->get_shortcode_att('review_distance');
         $res_ctx->load_settings_raw( 'review_distance', $review_distance );
         if( $review_distance != '' && is_numeric( $review_distance ) ) {
@@ -275,6 +369,11 @@ class td_flex_block_2 extends td_block {
         $res_ctx->load_settings_raw( 'show_date', $show_date );
         $res_ctx->load_settings_raw( 'show_review', $show_review );
         $res_ctx->load_settings_raw( 'show_com', $show_com );
+        $show_btn = $res_ctx->get_shortcode_att('show_btn');
+        if( $show_btn == '' ) {
+            $show_btn = 'none';
+        }
+        $res_ctx->load_settings_raw( 'show_btn', $show_btn );
 
 
         // exclusive label
@@ -336,6 +435,30 @@ class td_flex_block_2 extends td_block {
             $res_ctx->load_font_settings( 'f_excl' );
         }
 
+        // read more button
+        $btn_margin = $res_ctx->get_shortcode_att('btn_margin');
+        $res_ctx->load_settings_raw( 'btn_margin', $btn_margin );
+        if( $btn_margin != '' && is_numeric( $btn_margin ) ) {
+            $res_ctx->load_settings_raw( 'btn_margin', $btn_margin . 'px' );
+        }
+
+        $btn_padding = $res_ctx->get_shortcode_att('btn_padding');
+        $res_ctx->load_settings_raw( 'btn_padding', $btn_padding );
+        if( $btn_padding != '' && is_numeric( $btn_padding ) ) {
+            $res_ctx->load_settings_raw( 'btn_padding', $btn_padding . 'px' );
+        }
+
+        $btn_border_width = $res_ctx->get_shortcode_att('btn_border_width');
+        $res_ctx->load_settings_raw( 'btn_border_width', $btn_border_width );
+        if( $btn_border_width != '' && is_numeric( $btn_border_width ) ) {
+            $res_ctx->load_settings_raw( 'btn_border_width', $btn_border_width . 'px' );
+        }
+
+        $btn_radius = $res_ctx->get_shortcode_att('btn_radius');
+        $res_ctx->load_settings_raw( 'btn_radius', $btn_radius );
+        if( $btn_radius != '' && is_numeric( $btn_radius ) ) {
+            $res_ctx->load_settings_raw( 'btn_radius', $btn_radius . 'px' );
+        }
 
 
         /*-- FONTS-- */
@@ -346,6 +469,7 @@ class td_flex_block_2 extends td_block {
 	    $res_ctx->load_font_settings( 'f_cat' );
 	    $res_ctx->load_font_settings( 'f_meta' );
 	    $res_ctx->load_font_settings( 'f_ex' );
+        $res_ctx->load_font_settings( 'f_btn' );
 
         $res_ctx->load_font_settings( 'f_vid_title' );
         $res_ctx->load_font_settings( 'f_vid_time' );
@@ -383,6 +507,7 @@ class td_flex_block_2 extends td_block {
 	    $res_ctx->load_settings_raw( 'date_txt', $res_ctx->get_shortcode_att('date_txt') );
 	    $res_ctx->load_settings_raw( 'ex_txt', $res_ctx->get_shortcode_att('ex_txt') );
 	    $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
+        $res_ctx->load_settings_raw( 'rev_txt', $res_ctx->get_shortcode_att('rev_txt') );
         $res_ctx->load_settings_raw( 'com_icon', $res_ctx->get_shortcode_att('com_icon') );
 
         // mix blend
@@ -461,11 +586,30 @@ class td_flex_block_2 extends td_block {
         $res_ctx->load_settings_raw( 'vid_t_color', $res_ctx->get_shortcode_att('vid_t_color') );
         $res_ctx->load_settings_raw( 'vid_t_bg_color', $res_ctx->get_shortcode_att('vid_t_bg_color') );
 
+        // read more button
+        $res_ctx->load_settings_raw( 'btn_bg', $res_ctx->get_shortcode_att('btn_bg') );
+        $res_ctx->load_settings_raw( 'btn_bg_hover', $res_ctx->get_shortcode_att('btn_bg_hover') );
+        $res_ctx->load_settings_raw( 'btn_txt', $res_ctx->get_shortcode_att('btn_txt') );
+        $res_ctx->load_settings_raw( 'btn_txt_hover', $res_ctx->get_shortcode_att('btn_txt_hover') );
+        $res_ctx->load_settings_raw( 'btn_border', $res_ctx->get_shortcode_att('btn_border') );
+        $res_ctx->load_settings_raw( 'btn_border_hover', $res_ctx->get_shortcode_att('btn_border_hover') );
+
     }
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
+
         $unique_block_modal_class = $this->block_uid . '_m';
 
         $compiled_css = '';
@@ -501,13 +645,49 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-block-title-over {
 				    padding: @block_title_space;
 				}
-				/* @nextprev_position */
+				/* @nextprev_position_v_top */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
-				    @nextprev_position
+				    top: 0;
+				    bottom: auto;
+				    transform: none;
+				}
+				/* @nextprev_position_v_center */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    top: 50%;
+				    bottom: auto;
+				    transform: translateY(-50%);
+				}
+				/* @nextprev_position_v_bottom */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    top: auto;
+				    bottom: 0;
+				    transform: none;
+				}
+				/* @nextprev_position_h_left */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    left: 0;
+				    right: auto;
+				    transform: none;
+				}
+				/* @nextprev_pos_vert */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    align-items: @nextprev_pos_vert;
+				}
+				/* @nextprev_pos_horiz */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    justify-content: @nextprev_pos_horiz;
+				}
+				/* @nextprev_split_on */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    justify-content: space-between;
+				}
+				/* @nextprev_split_off */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
+				    display: block;
 				}
 				/* @nextprev */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap {
-				    margin: @nextprev;
+				    padding: @nextprev;
 				}
 				/* @pag_padding */
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a,
@@ -535,6 +715,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap .td-next-prev-icon-svg svg {
 				    width: @pag_icons_size;
 				    height: calc( @pag_icons_size + 1px );
+				}
+				/* @pag_icons_space */
+				.$unique_block_class.td_with_ajax_pagination .td-next-prev-wrap a:first-child {
+				    margin-right: @pag_icons_space;
 				}
 				
 				
@@ -652,7 +836,7 @@ class td_flex_block_2 extends td_block {
 					margin: @art_excerpt;
 				}
 				/* @show_cat */
-				.$unique_block_class .td-post-category {
+				.$unique_block_class .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat;
 				}
 				/* @show_excerpt */
@@ -701,6 +885,29 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-module-comments {
 					display: @show_com;
 				}
+				/* @show_btn */
+				.$unique_block_class .td-read-more {
+					display: @show_btn;
+				}
+				/* @btn_margin */
+				.$unique_block_class .td-read-more {
+					margin: @btn_margin;
+				}
+				/* @btn_padding */
+				.$unique_block_class .td-read-more a {
+					padding: @btn_padding;
+				}
+				/* @btn_border_width */
+				.$unique_block_class .td-read-more a {
+					border-width: @btn_border_width;
+					border-style: solid;
+					border-color: #000;
+				}
+				/* @btn_radius */
+				.$unique_block_class .td-read-more a {
+					border-radius: @btn_radius;
+				}
+				
                 
                 
                 /* @excl_show */
@@ -751,6 +958,10 @@ class td_flex_block_2 extends td_block {
                 .$unique_block_class .td-module-exclusive .td-module-title a:before {
                     @f_excl
                 }
+				/* @f_btn */
+				.$unique_block_class .td-read-more a {
+					@f_btn
+				}
 				
 				
 				/* @f_header */
@@ -919,6 +1130,10 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-module-comments a:before {
 					color: @com_icon;
 				}
+				/* @rev_txt */
+				.$unique_block_class .entry-review-stars {
+					color: @rev_txt;
+				}
 				
 				/* @mix_type */
 				html:not([class*='ie']) .$unique_block_class .entry-thumb:before {
@@ -1025,6 +1240,30 @@ class td_flex_block_2 extends td_block {
 				.$unique_block_class .td-post-vid-time {
 					background-color: @vid_t_bg_color;
 				}
+				/* @btn_bg */
+				.$unique_block_class .td-read-more a {
+					background-color: @btn_bg !important;
+				}
+				/* @btn_bg_hover */
+				.$unique_block_class .td-read-more:hover a {
+					background-color: @btn_bg_hover !important;
+				}
+				/* @btn_txt */
+				.$unique_block_class .td-read-more a {
+					color: @btn_txt;
+				}
+				/* @btn_txt_hover */
+				.$unique_block_class .td-read-more:hover a {
+					color: @btn_txt_hover;
+				}
+				/* @btn_border */
+				.$unique_block_class .td-read-more a {
+					border-color: @btn_border !important;
+				}
+				/* @btn_border_hover */
+				.$unique_block_class .td-read-more:hover a {
+					border-color: @btn_border_hover !important;
+				}
 				
 			</style>";
 
@@ -1082,8 +1321,10 @@ class td_flex_block_2 extends td_block {
 
                 //get the ajax pagination for this block
                 $prev_icon = $this->get_icon_att('prev_tdicon');
+                $prev_icon_class = $this->get_att('prev_tdicon');
                 $next_icon = $this->get_icon_att('next_tdicon');
-                $buffy .= $this->get_block_pagination($prev_icon, $next_icon);
+                $next_icon_class = $this->get_att('next_tdicon');
+                $buffy .= $this->get_block_pagination($prev_icon, $next_icon, $prev_icon_class, $next_icon_class);
             $buffy .= '</div>';
 
 

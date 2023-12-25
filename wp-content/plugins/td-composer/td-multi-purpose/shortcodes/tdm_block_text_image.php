@@ -9,7 +9,17 @@ class tdm_block_text_image extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $raw_css =
             "<style>
@@ -54,6 +64,13 @@ class tdm_block_text_image extends td_block {
                 .$unique_block_class .tdm-descr a {
                     color: @links_color;
                 }
+                
+                
+                /* @icon_align */
+                .$unique_block_class i {
+                    position: relative;
+                    top: @icon_align;
+                }
 
 
 
@@ -85,6 +102,12 @@ class tdm_block_text_image extends td_block {
         // description color
         $res_ctx->load_settings_raw( 'description_color', $res_ctx->get_shortcode_att( 'description_color' ) );
         $res_ctx->load_settings_raw( 'links_color', $res_ctx->get_shortcode_att( 'links_color' ) );
+
+        // button icon vertical align
+        $icon_align = $res_ctx->get_shortcode_att( 'icon_align' );
+        if ( $icon_align != '0' ) {
+            $res_ctx->load_settings_raw( 'icon_align', $icon_align . 'px');
+        }
 
 
 
@@ -124,6 +147,19 @@ class tdm_block_text_image extends td_block {
                 $image_width_html = ' width="' . $info_img[1] . '"';
                 $image_height_html = ' height="' . $info_img[2] . '"';
             }
+        }
+
+        $image_info = '';
+        if ( '' !== $image ) {
+            $image_info = tdc_util::get_image($atts);
+        }
+        $image_title = '';
+        if( isset($image_info['title']) && $image_info['title'] !== '' ) {
+            $image_title = ' title="' . $image_info['title'] .  '"';
+        }
+        $image_alt = '';
+        if( isset($image_info['alt']) && $image_info['alt'] != '' ) {
+            $image_alt = ' alt="' . $image_info['alt'] .  '"';
         }
 
 		$additional_classes = array();
@@ -171,10 +207,10 @@ class tdm_block_text_image extends td_block {
             $buffy_image .= '<div class="td-block-span6 tdm-col tdm-col-img">';
                 if ( ! empty( $image ) ) {
                     if ( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
-                        $buffy_image .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_url . '" ' . $image_width_html . $image_height_html . '>';
+                        $buffy_image .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_url . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
 
                     } else {
-                        $buffy_image .= '<img class="tdm-image td-fix-index" src="' . tdc_util::get_image_or_placeholder($image) . '" ' . $image_width_html . $image_height_html . ' alt="">';
+                        $buffy_image .= '<img class="tdm-image td-fix-index" src="' . tdc_util::get_image_or_placeholder($image) . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . ' alt="">';
                     }
                 }
             $buffy_image .= '</div>';

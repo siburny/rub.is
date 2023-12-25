@@ -16,7 +16,7 @@ class td_module_trending_now extends td_module {
         ob_start();
         ?>
 
-        <div class="<?php echo $this->get_module_classes(array("td-trending-now-post-$order_no", "td-trending-now-post")); ?>">
+        <div class="<?php echo $this->get_module_classes(array("td-trending-now-post-$order_no", "td-trending-now-post", 'td-cpt-'. $this->post->post_type)); ?>">
 
             <?php echo $this->get_title($title_length, $title_tag)?>
 

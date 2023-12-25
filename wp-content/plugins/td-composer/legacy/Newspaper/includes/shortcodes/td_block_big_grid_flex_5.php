@@ -386,6 +386,140 @@ class td_block_big_grid_flex_5 extends td_block {
         $res_ctx->load_settings_raw( 'show_date3', $show_date3 );
         $res_ctx->load_settings_raw( 'show_review3', $show_review3 );
 
+        // exclusive label
+        if( !empty( has_filter('td_composer_map_exclusive_label_array', 'td_subscription::add_exclusive_label_settings') ) ) {
+            // show exclusive label
+            $excl_show1 = $res_ctx->get_shortcode_att('excl_show_1');
+            $res_ctx->load_settings_raw( 'excl_show_1', $excl_show1 );
+            if( $excl_show1 == '' ) {
+                $res_ctx->load_settings_raw( 'excl_show_1', 'inline-block' );
+            }
+            $excl_show2 = $res_ctx->get_shortcode_att('excl_show_2');
+            $res_ctx->load_settings_raw( 'excl_show_2', $excl_show2 );
+            if( $excl_show2 == '' ) {
+                $res_ctx->load_settings_raw( 'excl_show_2', 'inline-block' );
+            }
+            $excl_show3 = $res_ctx->get_shortcode_att('excl_show_3');
+            $res_ctx->load_settings_raw( 'excl_show_3', $excl_show3 );
+            if( $excl_show3 == '' ) {
+                $res_ctx->load_settings_raw( 'excl_show_3', 'inline-block' );
+            }
+
+            // exclusive label text
+            $res_ctx->load_settings_raw( 'excl_txt_1', $res_ctx->get_shortcode_att('excl_txt_1') );
+            $res_ctx->load_settings_raw( 'excl_txt_2', $res_ctx->get_shortcode_att('excl_txt_2') );
+            $res_ctx->load_settings_raw( 'excl_txt_3', $res_ctx->get_shortcode_att('excl_txt_3') );
+
+            // exclusive label margin
+            $excl_margin1 = $res_ctx->get_shortcode_att('excl_margin_1');
+            $res_ctx->load_settings_raw( 'excl_margin_1', $excl_margin1 );
+            if( $excl_margin1 != '' && is_numeric( $excl_margin1 ) ) {
+                $res_ctx->load_settings_raw( 'excl_margin_1', $excl_margin1 . 'px' );
+            }
+            $excl_margin2 = $res_ctx->get_shortcode_att('excl_margin_2');
+            $res_ctx->load_settings_raw( 'excl_margin_2', $excl_margin2 );
+            if( $excl_margin2 != '' && is_numeric( $excl_margin2 ) ) {
+                $res_ctx->load_settings_raw( 'excl_margin_2', $excl_margin2 . 'px' );
+            }
+           $excl_margin3 = $res_ctx->get_shortcode_att('excl_margin_3');
+            $res_ctx->load_settings_raw( 'excl_margin_3', $excl_margin3 );
+            if( $excl_margin3 != '' && is_numeric( $excl_margin3 ) ) {
+                $res_ctx->load_settings_raw( 'excl_margin_3', $excl_margin3 . 'px' );
+            }
+
+            // exclusive label padding
+            $excl_padd1 = $res_ctx->get_shortcode_att('excl_padd_1');
+            $res_ctx->load_settings_raw( 'excl_padd_1', $excl_padd1 );
+            if( $excl_padd1 != '' && is_numeric( $excl_padd1 ) ) {
+                $res_ctx->load_settings_raw( 'excl_padd_1', $excl_padd1 . 'px' );
+            }
+            $excl_padd2 = $res_ctx->get_shortcode_att('excl_padd_2');
+            $res_ctx->load_settings_raw( 'excl_padd_2', $excl_padd2 );
+            if( $excl_padd2 != '' && is_numeric( $excl_padd2 ) ) {
+                $res_ctx->load_settings_raw( 'excl_padd_2', $excl_padd2 . 'px' );
+            }
+            $excl_padd3 = $res_ctx->get_shortcode_att('excl_padd_3');
+            $res_ctx->load_settings_raw( 'excl_padd_3', $excl_padd3 );
+            if( $excl_padd3 != '' && is_numeric( $excl_padd3 ) ) {
+                $res_ctx->load_settings_raw( 'excl_padd_3', $excl_padd3 . 'px' );
+            }
+
+            // exclusive label border size
+            $excl_border1 = $res_ctx->get_shortcode_att('all_excl_border_1');
+            $res_ctx->load_settings_raw( 'all_excl_border_1', $excl_border1 );
+            if( $excl_border1 != '' && is_numeric( $excl_border1 ) ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_1', $excl_border1 . 'px' );
+            }
+            $excl_border2 = $res_ctx->get_shortcode_att('all_excl_border_2');
+            $res_ctx->load_settings_raw( 'all_excl_border_2', $excl_border2 );
+            if( $excl_border2 != '' && is_numeric( $excl_border2 ) ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_2', $excl_border2 . 'px' );
+            }
+            $excl_border3 = $res_ctx->get_shortcode_att('all_excl_border_3');
+            $res_ctx->load_settings_raw( 'all_excl_border_3', $excl_border3 );
+            if( $excl_border3 != '' && is_numeric( $excl_border2 ) ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_3', $excl_border3 . 'px' );
+            }
+
+            // exclusive label border style
+            $res_ctx->load_settings_raw( 'all_excl_border_style_1', $res_ctx->get_shortcode_att('all_excl_border_style_1') );
+            $res_ctx->load_settings_raw( 'all_excl_border_style_2', $res_ctx->get_shortcode_att('all_excl_border_style_2') );
+            $res_ctx->load_settings_raw( 'all_excl_border_style_3', $res_ctx->get_shortcode_att('all_excl_border_style_3') );
+
+            // exclusive label border radius
+            $excl_radius_1 = $res_ctx->get_shortcode_att('excl_radius_1');
+            $res_ctx->load_settings_raw( 'excl_radius_1', $excl_radius_1 );
+            if( $excl_radius_1 != '' && is_numeric( $excl_radius_1 ) ) {
+                $res_ctx->load_settings_raw( 'excl_radius_1', $excl_radius_1 . 'px' );
+            }
+            $excl_radius_2 = $res_ctx->get_shortcode_att('excl_radius_2');
+            $res_ctx->load_settings_raw( 'excl_radius_2', $excl_radius_2 );
+            if( $excl_radius_2 != '' && is_numeric( $excl_radius_2 ) ) {
+                $res_ctx->load_settings_raw( 'excl_radius_2', $excl_radius_2 . 'px' );
+            }
+            $excl_radius_3 = $res_ctx->get_shortcode_att('excl_radius_3');
+            $res_ctx->load_settings_raw( 'excl_radius_3', $excl_radius_3 );
+            if( $excl_radius_3 != '' && is_numeric( $excl_radius_3 ) ) {
+                $res_ctx->load_settings_raw( 'excl_radius_3', $excl_radius_3 . 'px' );
+            }
+
+
+            $res_ctx->load_settings_raw( 'excl_color_1', $res_ctx->get_shortcode_att('excl_color_1') );
+            $res_ctx->load_settings_raw( 'excl_color_2', $res_ctx->get_shortcode_att('excl_color_2') );
+            $res_ctx->load_settings_raw( 'excl_color_3', $res_ctx->get_shortcode_att('excl_color_3') );
+            $res_ctx->load_settings_raw( 'excl_color_h_1', $res_ctx->get_shortcode_att('excl_color_h_1') );
+            $res_ctx->load_settings_raw( 'excl_color_h_2', $res_ctx->get_shortcode_att('excl_color_h_2') );
+            $res_ctx->load_settings_raw( 'excl_color_h_3', $res_ctx->get_shortcode_att('excl_color_h_3') );
+            $res_ctx->load_settings_raw( 'excl_bg_1', $res_ctx->get_shortcode_att('excl_bg_1') );
+            $res_ctx->load_settings_raw( 'excl_bg_2', $res_ctx->get_shortcode_att('excl_bg_2') );
+            $res_ctx->load_settings_raw( 'excl_bg_3', $res_ctx->get_shortcode_att('excl_bg_3') );
+            $res_ctx->load_settings_raw( 'excl_bg_h_1', $res_ctx->get_shortcode_att('excl_bg_h_1') );
+            $res_ctx->load_settings_raw( 'excl_bg_h_2', $res_ctx->get_shortcode_att('excl_bg_h_2') );
+            $res_ctx->load_settings_raw( 'excl_bg_h_3', $res_ctx->get_shortcode_att('excl_bg_h_3') );
+            $excl_border_color1 = $res_ctx->get_shortcode_att('all_excl_border_color_1');
+            $res_ctx->load_settings_raw( 'all_excl_border_color_1', $excl_border_color1 );
+            if( $excl_border_color1 == '' ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_color_1', '#000' );
+            }
+            $excl_border_color2 = $res_ctx->get_shortcode_att('all_excl_border_color_2');
+            $res_ctx->load_settings_raw( 'all_excl_border_color_2', $excl_border_color2 );
+            if( $excl_border_color2 == '' ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_color_2', '#000' );
+            }
+           $excl_border_color3 = $res_ctx->get_shortcode_att('all_excl_border_color_3');
+            $res_ctx->load_settings_raw( 'all_excl_border_color_3', $excl_border_color3 );
+            if( $excl_border_color3 == '' ) {
+                $res_ctx->load_settings_raw( 'all_excl_border_color_3', '#000' );
+            }
+            $res_ctx->load_settings_raw( 'excl_border_color_h_1', $res_ctx->get_shortcode_att('excl_border_color_h_1') );
+            $res_ctx->load_settings_raw( 'excl_border_color_h_2', $res_ctx->get_shortcode_att('excl_border_color_h_2') );
+            $res_ctx->load_settings_raw( 'excl_border_color_h_3', $res_ctx->get_shortcode_att('excl_border_color_h_3') );
+
+
+            $res_ctx->load_font_settings( 'f_excl_1' );
+            $res_ctx->load_font_settings( 'f_excl_2' );
+            $res_ctx->load_font_settings( 'f_excl_3' );
+        }
 
         // colors
         $res_ctx->load_color_settings( 'overlay_general', 'overlay_general', 'overlay_general_gradient', '', '' );
@@ -493,7 +627,17 @@ class td_block_big_grid_flex_5 extends td_block {
 
     public function get_custom_css() {
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
 
         $compiled_css = '';
 
@@ -867,15 +1011,15 @@ class td_block_big_grid_flex_5 extends td_block {
 				}
 				
 				/* @show_cat1 */
-				body .$unique_block_class .td_module_flex_6 .td-post-category {
+				body .$unique_block_class .td_module_flex_6 .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat1;
 				}
 				/* @show_cat2 */
-				body .$unique_block_class .td_module_flex_7 .td-post-category {
+				body .$unique_block_class .td_module_flex_7 .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat2;
 				}
 				/* @show_cat3 */
-				body .$unique_block_class .td_module_flex_8 .td-post-category {
+				body .$unique_block_class .td_module_flex_8 .td-post-category:not(.td-post-extra-category) {
 					display: @show_cat3;
 				}
 				
@@ -1244,6 +1388,153 @@ class td_block_big_grid_flex_5 extends td_block {
                         filter: @fe_brightness_h @fe_contrast_h @fe_saturate_h;
                     }
                 }
+                
+                                
+                 /* @excl_show_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    display: @excl_show_1;
+                }
+                /* @excl_show_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    display: @excl_show_2;
+                }
+                /* @excl_show_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    display: @excl_show_3;
+                }
+                /* @excl_txt_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    content: '@excl_txt_1';
+                }
+                /* @excl_txt_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    content: '@excl_txt_2';
+                }
+                /* @excl_txt_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    content: '@excl_txt_3';
+                }
+                /* @excl_margin_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    margin: @excl_margin_1;
+                }
+                /* @excl_margin_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    margin: @excl_margin_2;
+                }
+                /* @excl_margin_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    margin: @excl_margin_3;
+                }
+                /* @excl_padd_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    padding: @excl_padd_1;
+                }
+                /* @excl_padd_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    padding: @excl_padd_2;
+                }
+                /* @excl_padd_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    padding: @excl_padd_3;
+                }
+                /* @all_excl_border_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    border: @all_excl_border_1 @all_excl_border_style_1 @all_excl_border_color_1;
+                }
+                /* @all_excl_border_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    border: @all_excl_border_2 @all_excl_border_style_2 @all_excl_border_color_2;
+                }
+                /* @all_excl_border_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    border: @all_excl_border_3 @all_excl_border_style_3 @all_excl_border_color_3;
+                }
+                /* @excl_radius_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    border-radius: @excl_radius_1;
+                }
+                /* @excl_radius_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    border-radius: @excl_radius_2;
+                }
+                /* @excl_radius_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    border-radius: @excl_radius_3;
+                }
+                /* @excl_color_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    color: @excl_color_1;
+                }
+                /* @excl_color_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    color: @excl_color_2;
+                }
+                /* @excl_color_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    color: @excl_color_3;
+                }
+                /* @excl_color_h_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive:hover .td-module-title a:before {
+                    color: @excl_color_h_1;
+                }
+                /* @excl_color_h_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive:hover .td-module-title a:before {
+                    color: @excl_color_h_2;
+                }
+                /* @excl_color_h_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive:hover .td-module-title a:before {
+                    color: @excl_color_h_3;
+                }
+                /* @excl_bg_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    background-color: @excl_bg_1;
+                }
+                /* @excl_bg_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    background-color: @excl_bg_2;
+                }
+                /* @excl_bg_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    background-color: @excl_bg_3;
+                }
+                /* @excl_bg_h_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive:hover .td-module-title a:before {
+                    background-color: @excl_bg_h_1;
+                }
+                /* @excl_bg_h_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive:hover .td-module-title a:before {
+                    background-color: @excl_bg_h_2;
+                }
+                /* @excl_bg_h_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive:hover .td-module-title a:before {
+                    background-color: @excl_bg_h_3;
+                }
+                /* @excl_border_color_h_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive:hover .td-module-title a:before {
+                    border-color: @excl_border_color_h_1;
+                }
+                /* @excl_border_color_h_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive:hover .td-module-title a:before {
+                    border-color: @excl_border_color_h_2;
+                }
+                /* @excl_border_color_h_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive:hover .td-module-title a:before {
+                    border-color: @excl_border_color_h_3;
+                }
+                /* @f_excl_1 */
+                .$unique_block_class .td_module_flex_6.td-module-exclusive .td-module-title a:before {
+                    @f_excl_1
+                }
+                /* @f_excl_2 */
+                .$unique_block_class .td_module_flex_7.td-module-exclusive .td-module-title a:before {
+                    @f_excl_2
+                }
+                /* @f_excl_3 */
+                .$unique_block_class .td_module_flex_8.td-module-exclusive .td-module-title a:before {
+                    @f_excl_3
+                }
+
 				
 			</style>";
 

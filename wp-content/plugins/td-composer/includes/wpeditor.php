@@ -30,9 +30,18 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 			wp_enqueue_style( 'common' );
 			wp_enqueue_style( 'forms' );
 
-			wp_enqueue_style( 'td-wp-admin-td-panel-2', TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/css/wp-admin.css', false, TD_THEME_VERSION, 'all' );
+			wp_enqueue_style(
+                    'td-wp-admin-td-panel-2',
+                    TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/css/wp-admin.css',
+                    false,
+                    TD_THEME_VERSION
+            );
 
-			wp_enqueue_script( 'td_confirm', TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdConfirm.js', array( 'jquery' ) );
+			wp_enqueue_script(
+                    'td_confirm',
+                    TDC_URL_LEGACY_COMMON . '/wp_booster/wp-admin/js/tdConfirm.js',
+                    array( 'jquery' )
+            );
 
 		?>
 
@@ -320,8 +329,6 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 			}
 		</script>
 
-
-
 	</head>
 	<body onload="loadIframe()">
 
@@ -401,7 +408,7 @@ require_once (ABSPATH . "wp-admin/includes/screen.php");
 
 		// Dialog internal linking
 		_WP_Editors::enqueue_scripts();
-		do_action('admin_print_footer_scripts');
+		do_action('wp_print_footer_scripts');
 		do_action( 'admin_footer' );
 		_WP_Editors::editor_js();
 

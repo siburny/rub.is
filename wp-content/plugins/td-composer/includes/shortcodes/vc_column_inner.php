@@ -213,7 +213,11 @@ class vc_column_inner extends tdc_composer_block {
             'flex_vert_align' => 'flex-start',
             'flex_order' => '',
             'flex_width' => '',
-            'flex_grow' => ''
+            'flex_grow' => '',
+
+            'hide_for_user_type' => '',
+            'logged_plan_id' => '',
+            'author_plan_id' => '',
 		), $atts);
 
 
@@ -264,6 +268,26 @@ class vc_column_inner extends tdc_composer_block {
         if ( ! empty( $this->atts['is_sticky'] ) ) {
 			$td_pb_class .= ' td-is-sticky';
 		}
+
+        // display restrictions
+        $hide_for_user_type = $this->atts['hide_for_user_type'];
+        if( $hide_for_user_type != '' ) {
+            if( !( td_util::tdc_is_live_editor_ajax() || td_util::tdc_is_live_editor_iframe() ) &&
+                (
+                    ( $hide_for_user_type == 'logged-in' && is_user_logged_in() ) ||
+                    ( $hide_for_user_type == 'guests' && !is_user_logged_in() )
+                )
+            ) {
+                $inner_column_class .= ' tdc-restr-display-none';
+            }
+        } else {
+            $author_plan_ids = $this->atts['author_plan_id'];
+            $all_users_plan_ids = $this->atts['logged_plan_id'];
+
+            if( !td_util::plan_limit($author_plan_ids, $all_users_plan_ids) ) {
+                $inner_column_class .= ' tdc-restr-display-none';
+            }
+        }
 
         td_global::set_in_inner_column( true );
 

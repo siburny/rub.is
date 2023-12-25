@@ -46,7 +46,8 @@ if (have_posts()) {
 				    <div class="td-module-meta-info">
 					    <?php echo $td_mod_single->get_author();?>
 					    <?php echo $td_mod_single->get_date(false,false);?>
-					    <?php echo $td_mod_single->get_comments();?>
+                        <?php echo $td_mod_single->get_modified_date() ?>
+                        <?php echo $td_mod_single->get_comments();?>
 					    <?php
                             if ( ! td_util::is_amp() )
                              echo $td_mod_single->get_views();
@@ -60,15 +61,19 @@ if (have_posts()) {
 
 			    <?php
 			    // override the default featured image by the templates (single.php and home.php/index.php - blog loop)
-			    if (!empty(td_global::$load_featured_img_from_template)) {
-				    echo $td_mod_single->get_image(td_global::$load_featured_img_from_template);
-			    } else {
-					if (TD_THEME_NAME === 'Newsmag') {
-						echo $td_mod_single->get_image('td_640x0');
-					} else {
-						echo $td_mod_single->get_image('td_696x0');
-					}
-			    }
+                if (td_util::is_amp() ){
+                    echo $td_mod_single->get_image(td_global::$load_featured_img_from_template);
+                }else{
+                    if (!empty(td_global::$load_featured_img_from_template)) {
+                        echo $td_mod_single->get_image(td_global::$load_featured_img_from_template);
+                    } else {
+                        if (TD_THEME_NAME === 'Newsmag') {
+                            echo $td_mod_single->get_image('td_640x0');
+                        } else {
+                            echo $td_mod_single->get_image('td_696x0');
+                        }
+                    }
+                }
 			    ?>
 			    <?php echo $td_mod_single->get_social_sharing_top();?>
 			    <?php echo $td_mod_single->get_content();?>

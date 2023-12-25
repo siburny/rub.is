@@ -27,11 +27,13 @@ class td_module_flex_5 extends td_module {
         $modified_date = $this->get_shortcode_att('show_modified_date');
         $time_ago = $this->get_shortcode_att('time_ago');
         $time_ago_add_txt = $this->get_shortcode_att('time_ago_add_txt');
+        $time_ago_txt_pos = $this->get_shortcode_att('time_ago_txt_pos');
         $hide_audio = $this->get_shortcode_att('hide_audio');
 
         $hide_author_date = '';
 
         $hide_cat = '';
+        $hide_label = '';
         $hide_author = '';
         $hide_date = '';
         $hide_rev = '';
@@ -40,6 +42,7 @@ class td_module_flex_5 extends td_module {
         $hide_btn = '';
         if ( !empty($shortcode_class)) {
             $hide_cat = $this->get_shortcode_att('show_cat');
+            $hide_label = $this->get_shortcode_att('modules_extra_cat'); //this includes label position
             $hide_author = $this->get_shortcode_att('show_author');
             $hide_date = $this->get_shortcode_att('show_date');
             $hide_rev = $this->get_shortcode_att('show_review');
@@ -70,7 +73,7 @@ class td_module_flex_5 extends td_module {
                 $hide_btn = 'hide';
             }
 
-            if( $hide_author == 'hide' && $hide_date == 'hide' && ( $hide_rev == 'hide' || $this->get_review() == '' ) && $hide_com == 'hide' && $author_photo == '' ) {
+            if( $hide_author == 'hide' && $hide_date == 'hide' && ( $hide_rev == 'hide' || $this->get_review() == '' ) && $hide_com == 'hide' && $author_photo == '' && $hide_label == 'hide' ) {
                 $hide_author_date = 'hide';
             }
         }
@@ -82,11 +85,29 @@ class td_module_flex_5 extends td_module {
             $btn_title = 'Read more';
         }
 
+        $extra_cat = '';
+
+        if ( $hide_label != 'hide' ) {
+            $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+            $td_custom_cat_name = '';
+            $td_custom_cat_name_url = '#';
+//            var_dump($td_post_theme_settings);
+            if ( !empty($td_post_theme_settings['td_custom_cat_name']) ) {
+                //we have a custom category selected
+                $td_custom_cat_name = $td_post_theme_settings['td_custom_cat_name'];
+                if (!empty($td_post_theme_settings['td_custom_cat_name_url'])) {
+                    $td_custom_cat_name_url = $td_post_theme_settings['td_custom_cat_name_url'];
+                }
+                $extra_cat = '<a href="' . $td_custom_cat_name_url . '" class="td-post-category td-post-extra-category">'  . $td_custom_cat_name . '</a>';
+            }
+        }
+
         // meta info html
         $meta_info = '';
         if (($category_position == '' && $hide_cat != 'hide') || $hide_author_date != 'hide') {
             $meta_info .= '<div class="td-editor-date">';
-                if ($category_position == '' && $hide_cat != 'hide') { $meta_info .= $this->get_category(); }
+            if ($hide_label == '') { $meta_info .= $extra_cat; }
+            if ($category_position == '' && $hide_cat != 'hide') { $meta_info .= $this->get_category(); }
 
                 if( $hide_author_date != 'hide' ) {
                     $meta_info .= '<span class="td-author-date">';
@@ -97,7 +118,7 @@ class td_module_flex_5 extends td_module {
                             $meta_info .= $this->get_author(true);
                         }
                         if( $hide_date != 'hide' ) {
-                            $meta_info .= $this->get_date($modified_date, true, $time_ago, $time_ago_add_txt);
+                            $meta_info .= $this->get_date($modified_date, true, $time_ago, $time_ago_add_txt, $time_ago_txt_pos);
                         }
                         if( $hide_rev != 'hide' ) {
                             $meta_info .= $this->get_review();
@@ -124,7 +145,7 @@ class td_module_flex_5 extends td_module {
         $button .= '</div>';
 
 
-        $additional_classes_array = array();
+        $additional_classes_array = array('td-cpt-'. $this->post->post_type);
         $additional_classes_array = apply_filters( 'td_composer_module_exclusive_class', $additional_classes_array, $this->post );
 
         ?>
@@ -137,12 +158,17 @@ class td_module_flex_5 extends td_module {
                         $art_title_pos == 'top'
                         || ( $info_pos == 'top' && $hide_author_date != 'hide' )
                         || ( ( $category_position == 'above' && $hide_cat != 'hide' ) && $art_title_pos == 'top' )
+                        || ( $hide_label == 'above'  && $art_title_pos == 'top' )
                         || ( $art_excerpt_pos == 'top' && $hide_excerpt != 'hide' )
                         || ( $art_audio_pos == 'top' && $hide_audio == '' )
                         || ( $btn_pos == 'top' && $hide_btn != 'hide' )
                         ) { ?>
                         <div class="td-module-meta-info td-module-meta-info-top">
                             <?php
+                                //extra label
+                                if ( $hide_label == 'above'  && $art_title_pos == 'top' ) {
+                                    echo $extra_cat;
+                                }
                                 // category
                                 if ( ( $category_position == 'above' && $hide_cat != 'hide' ) && $art_title_pos == 'top' ) {
                                     echo $this->get_category();
@@ -200,12 +226,17 @@ class td_module_flex_5 extends td_module {
                         $art_title_pos == 'bottom'
                         || ( $info_pos == 'bottom' && $hide_author_date != 'hide' )
                         || ( ( $category_position == 'above' && $hide_cat != 'hide' ) && $art_title_pos == 'bottom' )
+                        || (  $hide_label == 'above' && $art_title_pos == 'bottom')
                         || ( $art_excerpt_pos == 'bottom' && $hide_excerpt != 'hide' )
                         || ( $art_audio_pos == 'bottom' && $hide_audio == '' )
                         || ( $btn_pos == 'bottom' && $hide_btn != 'hide' )
                         ) { ?>
                     <div class="td-module-meta-info td-module-meta-info-bottom">
                         <?php
+                            // label above title & title under image
+                            if ( $hide_label == 'above'  && $art_title_pos == 'bottom') {
+                                echo $extra_cat;
+                            }
                             // category above title & title under image
                             if ( ( $category_position == 'above' && $hide_cat != 'hide' ) && $art_title_pos == 'bottom') {
                                 echo $this->get_category();

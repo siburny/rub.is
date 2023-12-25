@@ -26,8 +26,8 @@ class td_audio_support {
                 // get the html for the embed
                 $soundCloudEmbedHTML = $soundCloudEmbed->html;
 
-                // set visual false
-                $soundCloudEmbedHTML = str_replace('visual=true', 'visual=false', $soundCloudEmbedHTML);
+                // set visual false & disabled teaser
+                $soundCloudEmbedHTML = str_replace('visual=true', 'visual=false&show_teaser=false', $soundCloudEmbedHTML);
                 // overwrite height
                 $soundCloudEmbedHTML = str_replace('height="400"', 'height="120"', $soundCloudEmbedHTML);
 

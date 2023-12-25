@@ -349,6 +349,12 @@ class td_util {
         if ( !empty($ref_id ) ) {
             $tdc_header_template_id = get_post_meta( $ref_id, 'tdc_header_template_id', true );
             $tdb_template_type      = get_post_meta( $ref_id, 'tdb_template_type', true );
+
+            // header templates must have set as header their contents, to allow editing them in composer
+            if ('header' === $tdb_template_type) {
+                update_post_meta( $ref_id, 'tdc_header_template_id', $ref_id );
+                $tdc_header_template_id = $ref_id;
+            }
         }
 
 
@@ -718,15 +724,38 @@ class td_util {
             global $post;
         }
 
-
         // is_single should not have been working for attachments! But it does.
         if ( is_single() && ! is_attachment() && $post instanceof WP_Post && 'tdb_templates' !== $post->post_type && 'product' !== $post->post_type ) {
 
 	        // read the per post single_template
 	        $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
 
+            // we have a CPT
+            if ( 'post' !== $post->post_type ) {
+                $lang = '';
+                if ( class_exists('SitePress', false ) ) {
+                    global $sitepress;
+                    $sitepress_settings = $sitepress->get_settings();
+                    if ( isset( $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'] ) ) {
+                        $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                        if ( 1 === $translation_mode ) {
+                            $lang = $sitepress->get_current_language();
+                        }
+                    }
+                }
+
+                $td_cpt = td_util::get_option('td_cpt');
+                $option_id = 'td_default_site_post_template' . $lang;
+
+	            $default_template_id = !empty( $td_cpt[$post->post_type][$option_id] ) ? $td_cpt[$post->post_type][$option_id] : '';
+
+                if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+                    $template_id = td_global::tdb_get_template_id( $default_template_id );
+                }
+
+            }
 	        // if we don't have any single_template set on this post, try to load the default global setting
-	        if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
+	        else if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
 
 		        $td_site_post_template = $post_meta_values[ 'td_post_template' ];
 
@@ -769,10 +798,9 @@ class td_util {
 		        }
 	        }
 
-        } else if (function_exists('is_product_category') && is_product_category()) {
+        } else if ( function_exists('is_product_category') && is_product_category() ) {
 
             $tdb_option_key = 'tdb_woo_archive_template';
-
             $queried_object = get_queried_object();
 
             if ( $queried_object instanceof WP_Term ) {
@@ -788,6 +816,54 @@ class td_util {
 
                 } else {
                     $template_id = td_global::tdb_get_template_id($tdb_woo_archive_template);
+                }
+            }
+
+        } else if ( function_exists('is_product_tag') && is_product_tag() ) {
+
+            $tdb_option_key = 'tdb_woo_archive_tag_template';
+            $queried_object = get_queried_object();
+
+            if ( $queried_object instanceof WP_Term ) {
+                $term_id = $queried_object->term_id;
+                $tdb_woo_archive_tag_template = get_term_meta( $term_id, $tdb_option_key, true );
+
+                if ( empty( $tdb_woo_archive_tag_template ) ) {
+                    $default_template_id = td_util::get_option( $tdb_option_key );
+
+                    if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $default_template_id );
+                    }
+
+                } else {
+                    $template_id = td_global::tdb_get_template_id($tdb_woo_archive_tag_template);
+                }
+            }
+
+        } else if (
+                $wp_query->get( 'wc_query' ) &&
+                is_tax() &&
+                !empty( get_queried_object() ) &&
+                function_exists( 'taxonomy_is_product_attribute' ) &&
+                taxonomy_is_product_attribute( get_queried_object()->taxonomy )
+        ) {
+
+            $tdb_option_key = 'tdb_woo_archive_attribute_template';
+            $queried_object = get_queried_object();
+
+            if ( $queried_object instanceof WP_Term ) {
+                $term_id = $queried_object->term_id;
+                $tdb_woo_archive_attribute_template = get_term_meta( $term_id, $tdb_option_key, true );
+
+                if ( empty( $tdb_woo_archive_attribute_template ) ) {
+                    $default_template_id = td_util::get_option( $tdb_option_key );
+
+                    if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $default_template_id );
+                    }
+
+                } else {
+                    $template_id = td_global::tdb_get_template_id( $tdb_woo_archive_attribute_template );
                 }
             }
 
@@ -1021,6 +1097,33 @@ class td_util {
             if ( td_global::is_tdb_template( $tdb_template, true ) ) {
                 $template_id = td_global::tdb_get_template_id( $tdb_template );
             }
+	    } else if ( is_tax() ) {
+
+            $option_id = 'tdb_category_template';
+            if ( class_exists('SitePress', false ) ) {
+                global $sitepress;
+                $sitepress_settings = $sitepress->get_settings();
+                if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+                    $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                    if (1 === $translation_mode) {
+                        $option_id .= $sitepress->get_current_language();
+                    }
+                }
+            }
+
+            $td_cpt_tax = td_util::get_option( 'td_cpt_tax' );
+            $queried_object = get_queried_object();
+
+            if ( $queried_object instanceof WP_Term ) {
+
+                $tax_name = $queried_object->taxonomy;
+	            $default_template_id = !empty( $td_cpt_tax[$tax_name][$option_id] ) ? $td_cpt_tax[$tax_name][$option_id] : '';
+
+	            if ( td_global::is_tdb_template( $default_template_id, true ) ) {
+		            $template_id = td_global::tdb_get_template_id($default_template_id);
+	            }
+
+            }
 	    }
 
         return $template_id;
@@ -1067,6 +1170,12 @@ class td_util {
         if ( !empty($ref_id ) ) {
             $tdc_footer_template_id = get_post_meta( $ref_id, 'tdc_footer_template_id', true );
             $tdb_template_type      = get_post_meta( $ref_id, 'tdb_template_type', true );
+
+            // footer templates must have set as footer their contents, to allow editing them in composer
+            if ('footer' === $tdb_template_type) {
+                update_post_meta( $ref_id, 'tdc_footer_template_id', $ref_id );
+                $tdc_footer_template_id = $ref_id;
+            }
         }
 
 
@@ -1476,7 +1585,7 @@ class td_util {
     static function get_ctp_option($custom_post_type, $option_id) {
 	    $td_options = td_options::get_all();
 
-        if (isset($td_options['td_cpt'][$custom_post_type][$option_id])) {
+	    if (isset($td_options['td_cpt'][$custom_post_type][$option_id])) {
             return $td_options['td_cpt'][$custom_post_type][$option_id];
         } else {
             return '';
@@ -1729,6 +1838,38 @@ class td_util {
 	 * @return bool|string
 	 */
     static function hex2rgba($hex, $opacity) {
+        if (empty($hex)) {
+            return '';
+        }
+
+        // check if the color received is a css variable
+        if( strpos($hex, 'var') !== false ) {
+            // extract the variable name
+            $hex_var = str_replace('-', '_', str_replace(array('var(--', ')'), array('', ''), $hex));
+
+            // get the global colors list
+            $tdc_wm_global_colors = td_util::get_option('tdc_wm_global_colors');
+
+            // proceed if the global colors list is not empty
+            if( $tdc_wm_global_colors != '' ) {
+                // if the color variable received by the function exists in the list
+                // then retrieve its matching hex code
+                if( isset( $tdc_wm_global_colors[$hex_var] ) ) {
+                    $hex = $tdc_wm_global_colors[$hex_var]['color'];
+
+                    // if the color found is NULL, return nothing
+                    if( $hex === NULL ) {
+                        return '';
+                    }
+                }
+            }
+        }
+
+        // if the color received is already of the type rgba, then simply return it
+        if( strpos($hex, 'rgba') !== false ) {
+            return $hex;
+        }
+
         if ( $hex[0] == '#' ) {
             $hex = substr( $hex, 1 );
         }
@@ -1979,7 +2120,7 @@ class td_util {
 
     /**
      * generates a category tree, only on /wp_admin/, uses a buffer
-     * @param bool $add_all_category = if true ads - All categories - at the begining of the list (used for dropdowns)
+     * @param bool $add_all_category = if true ads - All categories - at the beginning of the list (used for dropdowns)
      * @return array
      */
     private static $td_category2id_array_walker_buffer = array();
@@ -2000,7 +2141,7 @@ class td_util {
             self::$td_category2id_array_walker_buffer = $td_category2id_array_walker->td_array_buffer;
         }
 
-        if ($add_all_category === true) {
+        if ( $add_all_category === true ) {
             if ( $add_special_filters ) {
                 return array_merge(
                     array( '- All categories -' => '' ),
@@ -2009,7 +2150,12 @@ class td_util {
                     array( 'Single - More from author' => '_more_author' ),
                     array( 'Single - Related by category' => '_related_cat' ),
                     array( 'Single - Related from tags' => '_related_tag' ),
+                    array( 'Single - Related from taxonomy' => '_related_tax' ),
                     array( 'Author - Current author' => '_current_author' ),
+                    array( 'Tag - Current tag' => '_current_tag' ),
+                    array( 'Date - Current date' => '_current_date' ),
+                    array( 'Search - Current search' => '_current_search' ),
+                    array( 'Taxonomy - Current taxonomy' => '_current_tax' ),
                     array( '-- [By Category] --' => '__' ),
                     self::$td_category2id_array_walker_buffer
                 );
@@ -2026,7 +2172,12 @@ class td_util {
                     array( 'Single - More from author' => '_more_author' ),
                     array( 'Single - Related by category' => '_related_cat' ),
                     array( 'Single - Related from tags' => '_related_tag' ),
+                    array( 'Single - Related from taxonomy' => '_related_tax' ),
                     array( 'Author - Current author' => '_current_author' ),
+	                array( 'Tag - Current tag' => '_current_tag' ),
+	                array( 'Date - Current date' => '_current_date' ),
+	                array( 'Search - Current search' => '_current_search' ),
+	                array( 'Taxonomy - Current taxonomy' => '_current_tax' ),
                     array( '-- [By Category] --' => '__' ),
                     self::$td_category2id_array_walker_buffer
                 );
@@ -2315,36 +2466,30 @@ class td_util {
     }
 
 
-
-
-
-
-    /**
-     * Shows a soft error. The site will run as usual if possible. If the user is logged in and has 'switch_themes'
-     * privileges this will also output the caller file path
-     * @param $file - The file should be __FILE__
-     * @param $message
-     */
-    static function error($file, $message, $more_data = '') {
+	/**
+	 * Shows a soft error. The site will run as usual if possible. If the user is logged in and has 'switch_themes'
+	 * privileges this will also output the caller file path
+	 *
+	 * @param $file - The file should be __FILE__
+	 * @param $message
+	 * @param string $more_data
+	 */
+    static function error( $file, $message, $more_data = '' ) {
 	    ob_start();
 
-
-	    echo '<strong class="td-wp-booster-title">wp_booster error:</strong><br>'. $message;
+	    echo '<strong class="td-wp-booster-title">wp_booster error:</strong><br>' . $message;
 
         echo '<br>' . $file;
-        if (!empty($more_data)) {
+        if ( !empty( $more_data ) ) {
             echo '<br><br><pre>';
             echo 'more data:' . PHP_EOL;
-            print_r($more_data);
+            print_r( $more_data );
             echo '</pre>';
         }
 
 	    $buffer = ob_get_clean();
 
-        if (is_user_logged_in() and current_user_can('switch_themes')){
-
-
-
+        if ( is_user_logged_in() and current_user_can('switch_themes') ) {
 
 	        $error_uuid = td_global::td_generate_unique_id();
             ?>
@@ -2377,12 +2522,10 @@ class td_util {
                     .td-wp-booster-error-show {
                         display: block !important;
                     }
+
                 </style>
 
-
                 <div class="td-wp-booster-error">
-
-
 
                     <?php printf( '%1$s', $buffer ) ?>
 
@@ -2390,19 +2533,17 @@ class td_util {
                         <a href="#" id="<?php echo esc_attr( $error_uuid . '_oc' ) ?>">Display backtrace</a>
                     </div>
 
-
                     <pre id="<?php echo esc_attr( $error_uuid . '_pre' ) ?>">
 <?php print_r(@debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 7)); ?>
                     </pre>
 
-
                     <script>
 
-                        (function () {
+                        ( function () {
+
                             function hasClass(element, cls) {
                                 return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
                             }
-
 
                             document.getElementById("<?php printf( '%1$s_oc', $error_uuid ) ?>").addEventListener("click", function() {
                                 var preId = "<?php printf( '%1$s_pre', $error_uuid ) ?>";
@@ -2414,8 +2555,8 @@ class td_util {
 
 
                             }, false);
-                        })();
 
+                        })();
 
                     </script>
 
@@ -2731,6 +2872,8 @@ class td_util {
         self::update_option($k . 'ta', '');
         self::update_option(td_handle::get_var($ks[0]), '');
 
+        delete_transient('TD_CHECKED_LICENSE');
+
         remove_action('shutdown', array( 'tagdiv_options', 'on_shutdown_save_options' ) );
     }
 
@@ -2751,55 +2894,88 @@ class td_util {
 			'' => 'Default font',
 		);
 
+		// read global fonts
+        $tdc_wm_global_fonts = td_util::get_option('tdc_wm_global_fonts' );
+        $tdc_wm_global_fonts_list = array();
+        if ( !empty( $tdc_wm_global_fonts ) && is_array( $tdc_wm_global_fonts ) ) {
+            $tdc_wm_global_fonts_list['__global'] = '-- Global Fonts --';
+            foreach ( $tdc_wm_global_fonts as $font_option_id => $font_data ) {
+                $tdc_wm_global_fonts_list[ $font_option_id . '_global' ] = $font_data['name'] /*. ' -- ' . trim( $font_data['key'] )*/;
+            }
+        }
+
 		$td_options = td_options::get_all();
 
-        //read the user fonts array
-        if(!empty($td_options['td_fonts_user_inserted'])) {
+        // read the user fonts array
+		$td_fonts_user_inserted_list = array();
+        if( !empty( $td_options['td_fonts_user_inserted'] ) ) {
 
             $user_fonts = $td_options['td_fonts_user_inserted'];
 
+            // custom font links & typekit
+            foreach ( $user_fonts as $key_font => $value_font ) {
 
-            //custom font links & typekit
-            foreach($user_fonts as $key_font => $value_font){
+                // look for the field number
+                $revers_key_font = strrev( $key_font );
+                $explode_key_font = explode( '_', $revers_key_font );
+                $fld_number = intval( $explode_key_font[0] );
 
-                //look for the field number
-                $revers_key_font = strrev($key_font);
-                $explode_key_font = explode('_', $revers_key_font);
-                $fld_number = intval($explode_key_font[0]);
-
-                //add custom user fonts links    (numaratoare incepe de la 1)
-                if(substr($key_font, 0, 10) == 'font_file_') {
+                // add custom user fonts links ( count starts from 1 )
+                if( substr( $key_font, 0, 10 ) == 'font_file_' ) {
                     $font_family_field_nr = 'font_family_' . $fld_number;
 
-                    if(!empty($user_fonts['font_file_' . $fld_number]) and !empty($user_fonts[$font_family_field_nr])) {
-                        $list[ 'file_' . $fld_number ] = $user_fonts[$font_family_field_nr];
+                    if( !empty( $user_fonts['font_file_' . $fld_number] ) and !empty( $user_fonts[$font_family_field_nr] ) ) {
+	                    $td_fonts_user_inserted_list[ 'file_' . $fld_number ] = $user_fonts[$font_family_field_nr];
                     }
 
-                    //add tipekit fonts                  (numaratoare incepe de la 1)
-                } elseif(substr($key_font, 0, 21) == 'type_kit_font_family_') {
+                    // add tipekit fonts ( count starts from 1 )
+                } elseif( substr( $key_font, 0, 21 ) == 'type_kit_font_family_' ) {
                     $type_kit_font_family_field_nr = 'type_kit_font_family_' . $fld_number;
 
-                    if(!empty($user_fonts[$type_kit_font_family_field_nr])) {
-                        $list[ 'tk_' . $fld_number ] = $user_fonts[$type_kit_font_family_field_nr];
+                    if( !empty( $user_fonts[$type_kit_font_family_field_nr] ) ) {
+	                    $td_fonts_user_inserted_list[ 'tk_' . $fld_number ] = $user_fonts[$type_kit_font_family_field_nr];
                     }
                 }
 
             }
+
+            // if there are any fonts in the list prepend identifier
+            if ( !empty( $td_fonts_user_inserted_list ) ) {
+	            $td_fonts_user_inserted_list = array_merge(
+                    $td_fonts_user_inserted_list,
+                    array(
+                        '__custom' => '-- Custom Fonts Links & Typekit --'
+                    )
+	            );
+            }
+
         }
 
+		// font stacks
+		$td_font_stacks_list = array();
+		$td_font_stacks_list['__stacks'] = '-- Font Stacks --';
 		foreach ( td_fonts::$font_stack_list as $font_id => $font_name ) {
-			$list[$font_id] = $font_name;
-		}
-		asort(td_fonts::$font_names_google_list);
-		foreach ( td_fonts::$font_names_google_list as $font_id => $font_name ) {
-			$list[$font_id] = $font_name;
+			$td_font_stacks_list[$font_id] = $font_name;
 		}
 
-		self::$font_family_list = $list;
+		// google fonts
+		$td_google_fonts_list = array();
+		$td_google_fonts_list['__google'] = '-- Google Fonts --';
+		asort(td_fonts::$font_names_google_list);
+		foreach ( td_fonts::$font_names_google_list as $font_id => $font_name ) {
+			$td_google_fonts_list[$font_id] = $font_name;
+		}
+
+        // build fonts list
+		$list = $list + $tdc_wm_global_fonts_list + $td_fonts_user_inserted_list + $td_font_stacks_list + $td_google_fonts_list;
+
 		if ( $flip ) {
 			$list = array_flip( $list );
 			self::$font_family_list_flip = $list;
-		}
+		} else {
+			self::$font_family_list = $list;
+        }
+
 		return $list;
 	}
 
@@ -3198,7 +3374,805 @@ class td_util {
         return $ico_html;
     }
 
-}//end class td_util
+	/**
+	 * inserts a value or key/value pair after a specific key in an array
+     * if key doesn't exist, value is appended to the end of the array
+	 *
+	 * @param array $array
+	 * @param string $key
+	 * @param array $new
+	 *
+	 * @return array
+	 */
+    static function array_insert_after( array $array, $key, array $new ) {
+	    $keys = array_keys( $array );
+	    $index = array_search( $key, $keys );
+	    $pos = false === $index ? count( $array ) : $index + 1;
+
+	    return array_merge( array_slice( $array, 0, $pos ), $new, array_slice( $array, $pos ) );
+    }
+
+
+    static function td_mail_template( $title, $content ) {
+
+        $message = '';
+
+        // If the user has set a logo in the theme panel, then build the html for it
+        $logo_html = '';
+        $td_customLogo = td_util::get_option('tds_logo_upload');
+        if( $td_customLogo != '' ) {
+            $logo_image_width_html = '';
+            $logo_image_height_html = '';
+
+            $td_logo_alt = td_util::get_option('tds_logo_alt');
+            $td_logo_title = td_util::get_option('tds_logo_title');
+            if (!empty($td_logo_title)) {
+                $td_logo_title = ' title="' . $td_logo_title . '"';
+            }
+
+            $attachment_id = attachment_url_to_postid( $td_customLogo );
+            $info_img = wp_get_attachment_image_src( $attachment_id, 'full');
+            if (is_array($info_img)) {
+                $logo_image_width_html = ' width="' . $info_img[1] . '"';
+                $logo_image_height_html = ' height="' . $info_img[2] . '"';
+            }
+
+            $logo_html =
+                '<tr style="padding: 0; vertical-align: top; text-align: left;">
+                            <td align="center" valign="middle" class="header" style="word-wrap: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; margin: 0; Margin: 0; font-size: 14px; mso-line-height-rule: exactly; line-height: 140%; text-align: center; padding: 0 30px 30px 30px;">
+                                <img src="' . $td_customLogo . '" alt="' . $td_logo_alt . '"' . $td_logo_title . $logo_image_width_html . $logo_image_height_html . ' style="outline: none; text-decoration: none; clear: both; -ms-interpolation-mode: bicubic; display: inline-block !important; max-width: 250px"/>
+                            </td>
+                        </tr>';
+        }
+
+
+        // Assemble the final message html
+        $message .=
+            '<!doctype html>
+                <html lang="en">
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                        <meta name="viewport" content="width=device-width">
+                        <title>' . $title . '</title>
+                    </head>
+                
+                    <body style="height: 100% !important; width: 100% !important; min-width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; margin: 0; Margin: 0; font-size: 14px; mso-line-height-rule: exactly; line-height: 140%; background-color: #f7f7f7; text-align: center;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%" class="body" style="border-collapse: collapse; border-spacing: 0; vertical-align: top; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; height: 100% !important; width: 100% !important; min-width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; background-color: #f7f7f7; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; margin: 0; Margin: 0; text-align: left; font-size: 14px; mso-line-height-rule: exactly; line-height: 140%;">
+                            <tr style="padding: 0; vertical-align: top; text-align: left;">
+                                <td align="center" valign="top" class="body-inner wp-mail-smtp" style="word-wrap: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; margin: 0; Margin: 0; font-size: 14px; mso-line-height-rule: exactly; line-height: 140%; text-align: center;">
+                                    <!-- Container -->
+                                    <table border="0" cellpadding="0" cellspacing="0" class="container" style="border-collapse: collapse; border-spacing: 0; padding: 0; vertical-align: top; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; max-width: 600px; margin: 30px auto 30px auto; Margin: 30px auto 30px auto; text-align: inherit;">
+                                        <!-- Header -->
+                                        ' . $logo_html . '
+                                        
+                                        <!-- Content -->
+                                        <tr style="padding: 0; vertical-align: top; text-align: left;">
+                                            <td align="left" valign="top" class="content" style="word-wrap: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; margin: 0; Margin: 0; text-align: left; font-size: 14px; mso-line-height-rule: exactly; line-height: 140%; background-color: #ffffff; padding: 45px 40px 50px 40px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12); border-radius: 3px;">
+                                                <div class="success" style="text-align: center;">
+                                                    ' . $content . '
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                </html>';
+
+
+        return $message;
+
+    }
+
+
+    static function td_new_subscriber_user_notifications( $user_id, $notify = '' ) {
+
+		// Accepts only 'user', 'admin' , 'both' or default '' as $notify.
+		if ( ! in_array( $notify, array( 'user', 'admin', 'both', '' ), true ) ) {
+			return;
+		}
+
+
+        // Get the user data
+		$user = get_userdata( $user_id );
+
+
+		// The blogname option is escaped with esc_html() on the way into the database in sanitize_option().
+		// We want to reverse this for the plain text arena of emails.
+		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+
+
+        // We are sending an email to the site admin to let them know that someone has just registered a new account
+		if ( 'user' !== $notify ) {
+			$switched_locale = switch_to_locale( get_locale() );
+
+            // Build the message content HTML
+            $message_content =
+                '<p class="text-extra-large text-center congrats" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: 500; color: #1d2327; padding: 0; mso-line-height-rule: exactly; line-height: 120%; font-size: 20px; text-align: left; margin: 0 0 35px 0; Margin: 0 0 35px 0;">
+                    New subscriber!
+                </p>
+                <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; mso-line-height-rule: exactly; line-height: 160%; color: #1d2327; margin: 0 0 25px 0; Margin: 0 0 25px 0; font-size: 15px; text-align: justify;">
+                    A new subscriber has registered on your website:
+                </p>
+                <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 25px; background-color: #F2F2F2; color: #59626B; text-align: left; mso-line-height-rule: exactly; line-height: 160%; margin: 0; Margin: 0; font-size: 15px; border-radius: 3px;">
+                    Username: ' . $user->user_login . '<br>
+                    Email: ' . $user->user_email . '
+                </p>';
+
+            // Email info
+			$wp_new_user_notification_email_admin = array(
+				'to'      => get_option( 'admin_email' ),
+				/* translators: New user registration notification email subject. %s: Site title. */
+				'subject' => __( '[%s] New Subscriber Registration' ),
+				'message' => self::td_mail_template('[' . $blogname . '] New Subscriber Registration', $message_content),
+				'headers' => array('Content-Type: text/html; charset=UTF-8'),
+			);
+
+            // Sending the email
+			wp_mail(
+				$wp_new_user_notification_email_admin['to'],
+				wp_specialchars_decode( sprintf( $wp_new_user_notification_email_admin['subject'], $blogname ) ),
+				$wp_new_user_notification_email_admin['message'],
+				$wp_new_user_notification_email_admin['headers']
+			);
+
+			if ( $switched_locale ) {
+				restore_previous_locale();
+			}
+		}
+
+
+        // We are notifying the user that they have just registered an account on the website
+		$tds_validate = get_user_meta($user_id, 'tds_validate', true);
+		if (!empty($tds_validate) && is_array($tds_validate) && !empty($tds_validate['key'])) {
+		    $key = $tds_validate['key'];
+
+		    $switched_locale = switch_to_locale( get_user_locale( $user ) );
+
+            $subscription_activation_link = network_site_url( "wp-login.php?action=tds_validate&key=$key&login=" . rawurlencode( $user->user_login ), 'login' );
+
+            // Build the message content HTML
+            $message_content =
+                '<p class="text-extra-large text-center congrats" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: 500; color: #1d2327; padding: 0; mso-line-height-rule: exactly; line-height: 120%; font-size: 20px; text-align: left; margin: 0 0 35px 0; Margin: 0 0 35px 0;">
+                    Welcome onboard!
+                </p>
+                <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;  font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0;  mso-line-height-rule: exactly; line-height: 160%; margin: 0 0 25px 0; Margin: 0 0 25px 0; font-size: 15px; color: #1d2327; text-align: justify;">
+                    Hi ' . $user->user_login . ',
+                </p>
+                <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; mso-line-height-rule: exactly; line-height: 160%; margin: 0 0 25px 0; Margin: 0 0 25px 0; font-size: 15px; color: #1d2327; text-align: justify;">
+                    Thank you for registering on ' . $blogname . '! To activate your account, please visit the following link:
+                </p>
+                <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 20px 25px; background-color: #F2F2F2; color: #59626B; text-align: left; mso-line-height-rule: exactly; line-height: 160%; margin: 0; Margin: 0; font-size: 15px; border-radius: 3px;">
+                     <a style="text-decoration: none; color: #0489FC; word-break: break-all;" href="' . $subscription_activation_link . '">' . $subscription_activation_link . '</a>
+                </p>';
+
+            // Email info
+            $wp_new_user_notification_email = array(
+                'to'      => $user->user_email,
+                /* translators: Login details notification email subject. %s: Site title. */
+                'subject' => __( '[%s] Activate Account' ),
+                'message' => self::td_mail_template('[' . $blogname . '] Activate Account', $message_content),
+                'headers' => array('Content-Type: text/html; charset=UTF-8'),
+            );
+
+            // Sending the email
+            wp_mail(
+                $wp_new_user_notification_email['to'],
+                wp_specialchars_decode( sprintf( $wp_new_user_notification_email['subject'], $blogname ) ),
+                $wp_new_user_notification_email['message'],
+                $wp_new_user_notification_email['headers']
+            );
+
+            if ( $switched_locale ) {
+                restore_previous_locale();
+            }
+        }
+	}
+
+   static function td_new_subscriber_double_opt_in( $email, $notify = '' ) {
+
+		// Accepts only 'user', 'admin' , 'both' or default '' as $notify.
+		if ( ! in_array( $notify, array( 'user', 'admin', 'both', '' ), true ) ) {
+			return;
+		}
+
+       // The blogname option is escaped with esc_html() on the way into the database in sanitize_option().
+       // We want to reverse this for the plain text arena of emails.
+       $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+
+       $subscription_activation_link = network_site_url("?action=tds_validate_email&email=$email");
+
+       // Build the message content HTML
+       $message_content =
+           '<p class="text-extra-large text-center congrats" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: 500; color: #1d2327; padding: 0; mso-line-height-rule: exactly; line-height: 120%; font-size: 20px; text-align: left; margin: 0 0 35px 0;">
+                Welcome onboard!
+            </p>
+            <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;  font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0;  mso-line-height-rule: exactly; line-height: 160%; margin: 0 0 25px 0; Margin: 0 0 25px 0; font-size: 15px; color: #1d2327; text-align: justify;">
+                Hi,
+            </p>
+            <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 0; mso-line-height-rule: exactly; line-height: 160%; margin: 0 0 25px 0; Margin: 0 0 25px 0; font-size: 15px; color: #1d2327; text-align: justify;">
+                Thank you for subscribing to ' . $blogname . '! To confirm your subscription, please visit the following link:
+            </p>
+            <p class="text-large" style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #444; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif; font-weight: normal; padding: 20px 25px; background-color: #F2F2F2; color: #59626B; text-align: left; mso-line-height-rule: exactly; line-height: 160%; margin: 0; Margin: 0; font-size: 15px; border-radius: 3px;">
+                 <a style="text-decoration: none; color: #0489FC; word-break: break-all;" href="' . $subscription_activation_link . '">' . $subscription_activation_link . '</a>
+            </p>';
+
+       // Email info
+       $wp_new_user_notification_email = array(
+           'to' => $email,
+           /* translators: Login details notification email subject. %s: Site title. */
+           'subject' => __('[%s] Confirm subscription'),
+           'message' => self::td_mail_template('[' . $blogname . ']', $message_content),
+           'headers' => array('Content-Type: text/html; charset=UTF-8'),
+       );
+
+       // Sending the email
+       wp_mail(
+           $wp_new_user_notification_email['to'],
+           wp_specialchars_decode(sprintf($wp_new_user_notification_email['subject'], $blogname)),
+           $wp_new_user_notification_email['message'],
+           $wp_new_user_notification_email['headers']
+       );
+
+	}
+
+
+	static function check_option_id(&$option_id) {
+
+        if (class_exists('SitePress', false)) {
+	        global $sitepress;
+
+	        if ( isset($_GET['td_action']) && ( 'tdc_edit' == $_GET['td_action'] || 'tdc' === $_GET['td_action'] )) {
+
+	    		// we are in composer
+			    $page_id = get_the_ID();
+			    $t_post_id = $sitepress->get_element_trid( $page_id, 'post_post' );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_post', false, true);
+
+				if ( !empty($translations) && is_array($translations) && count($translations)) {
+					foreach ($translations as $translation) {
+						if ( !empty( $translation->element_id ) && $page_id === intval($translation->element_id) && !empty($translation->language_code)) {
+							$option_id .= $translation->language_code;
+						}
+					}
+				}
+
+	        } else {
+
+	            global $sitepress;
+	            $sitepress_settings = $sitepress->get_settings();
+	            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
+	                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+	                if (1 === $translation_mode) {
+	                    $option_id .= $sitepress->get_current_language();
+	                }
+	            }
+	        }
+	    }
+    }
+
+	/**
+     * Get the number of comments for a post by post link from disqus api
+     *
+	 * @param $post - the post object
+	 *
+	 * @return mixed - null if dsq plugin is not active, it's not configured, is set not to load or if the post link is not valid ...
+     * ... the number of comments from dsq otherwise
+	 */
+    static function get_dsq_comments_number( $post ) {
+	    $post_id = $post->ID;
+	    $post_link = get_permalink($post_id);
+	    $comments_number = null;
+
+	    if ( class_exists( 'Disqus_Conditional_Load' ) && $post_link ) {
+
+		    $dsq_can_load = apply_filters( 'dsq_can_load', 'embed' );
+		    if ( is_bool( $dsq_can_load ) ) {
+			    return null;
+		    }
+
+		    $dsq_forum_url = strtolower( get_option('disqus_forum_url') );
+		    $dsq_api_key = esc_attr( get_option('disqus_public_key') );
+
+		    if ( $dsq_api_key && $dsq_forum_url ) {
+			    $api_url = 'https://disqus.com/api/3.0/threads/set.json?thread:link=' . $post_link . '&forum=' . $dsq_forum_url . '&api_key=' . $dsq_api_key;
+			    $dsq_api_response = wp_remote_get( $api_url );
+			    if ( is_wp_error( $dsq_api_response ) ) {
+				    $dsq_api_data = false;
+				    td_log::log( __FILE__, __FUNCTION__, $dsq_api_response->get_error_message() );
+				    //td_util::get_block_error( 'Single Post Comments Counter', $dsq_api_response->get_error_message() );
+			    } else {
+				    $dsq_api_data = json_decode( $dsq_api_response['body'] );
+			    }
+			    if ( $dsq_api_data && 0 === $dsq_api_data->code ) {
+				    foreach ( $dsq_api_data->response as $comment ) {
+					    if ( $post_link === $comment->link ) {
+						    $comments_number = $comment->posts;
+						    break;
+					    }
+				    }
+			    }
+		    }
+
+	    }
+
+	    return $comments_number;
+    }
+
+
+
+
+    static function get_cpts() {
+
+    	// detect custom post types
+        $post_types = get_post_types( array(
+            'public' => true,
+        ), 'objects' );
+
+        $cpts = [];
+        foreach ($post_types as $post_type) {
+
+            switch ($post_type->name) {
+                //case 'post':
+                case 'page':
+                case 'attachment':
+                case 'product':
+                case 'tds_locker':
+                case 'tds_email':
+                case 'tdb_templates':
+                case 'tdc-review-email':
+                    break;
+                default:
+                	$cpts[] = $post_type;
+            }
+        }
+
+        return $cpts;
+	}
+
+	static function get_ctaxes() {
+
+    	$ctaxes = [];
+    	$taxonomies = get_taxonomies([], 'objects');
+
+    	foreach ($taxonomies as $taxonomy ) {
+    		if ( ! $taxonomy->_builtin && $taxonomy->publicly_queryable ) {
+    			$ctaxes[] = $taxonomy;
+		    }
+	    }
+
+    	return $ctaxes;
+	}
+
+
+
+    static function get_custom_field_value_from_string( $string ) {
+
+        // Replace the custom field names with their values
+        $custom_fields_to_replace = [];
+        $custom_field_replacements = [];
+
+        preg_match_all('/{cf_(\S*)}/', $string, $custom_field_matches);
+
+        if( !empty($custom_field_matches) &&
+            is_array($custom_field_matches) &&
+            count($custom_field_matches) >= 2 &&
+            is_array($custom_field_matches[0]) && !empty($custom_field_matches[0]) &&
+            is_array($custom_field_matches[1]) ) {
+
+            foreach ( $custom_field_matches[1] as $index => $field_name ) {
+                if ( $field_name != '' ) {
+                    $custom_field_data = array();
+
+                    if ( td_global::is_tdb_registered() ) {
+                        global $tdb_state_single, $tdb_state_category, $tdb_state_tag, $tdb_state_author, $tdb_state_attachment, $tdb_state_single_page;
+
+                        $atts = array('wp_field' => $field_name);
+
+                        switch ( tdb_state_template::get_template_type() ) {
+                            case 'cpt':
+                            case 'single':
+                                $custom_field_data = $tdb_state_single->post_custom_field->__invoke($atts);
+                                break;
+
+                            case 'category':
+                                $custom_field_data = $tdb_state_category->category_custom_field->__invoke($atts);
+                                break;
+
+                            case 'cpt_tax':
+                                $tdb_state_category->set_tax();
+                                $custom_field_data = $tdb_state_category->category_custom_field->__invoke($atts);
+                                break;
+
+                            case 'tag':
+                                $custom_field_data = $tdb_state_tag->tag_custom_field->__invoke($atts);
+                                break;
+
+                            case 'author':
+                                $custom_field_data = $tdb_state_author->author_custom_field->__invoke($atts);
+                                break;
+
+                            case 'attachment':
+                                $custom_field_data = $tdb_state_attachment->attachment_custom_field->__invoke($atts);
+                                break;
+
+                            default:
+                                $custom_field_data = $tdb_state_single_page->page_custom_field->__invoke($atts);
+                                break;
+                        }
+                    } else {
+                        global $post;
+
+                        $page_id = $post->ID;
+                        $page_obj = get_post($page_id);
+
+                        if ( $page_obj ) {
+                            $custom_field_data = self::get_acf_field_data($field_name, $page_obj);
+
+                            if ( !$custom_field_data['meta_exists'] ) {
+                                if( metadata_exists('post', $page_id, $field_name) ) {
+                                    $custom_field_data['value'] = get_post_meta($page_id, $field_name, true);
+                                    $custom_field_data['type'] = 'text';
+                                    $custom_field_data['meta_exists'] = true;
+                                }
+                            }
+                        }
+                    }
+
+                    $custom_fields_to_replace[$index] = $custom_field_matches[0][$index];
+                    $custom_field_replacements[$index] = '';
+
+                    $custom_field_value = $custom_field_data['value'];
+
+                    if( is_array( $custom_field_value ) ) {
+                        foreach ( $custom_field_value as $key => $value ) {
+                            if( is_array( $value ) ) {
+                                $custom_field_replacements[$index] .= $value['label'];
+                            } else if( self::isAssocArray( $custom_field_value ) ) {
+                                if( $key == 'label' ) {
+                                    $custom_field_replacements[$index] .= $value;
+                                }
+                            } else {
+                                $custom_field_replacements[$index] .= $value;
+                            }
+
+                            if( $key != array_key_last( $custom_field_value ) ) {
+                                $custom_field_replacements[$index] .= ', ';
+                            }
+                        }
+                    } else {
+                        if ( $custom_field_data['value'] == 'Sample field data' ) {
+                            $custom_field_replacements[$index] = '';
+                        } else {
+                            $custom_field_replacements[$index] = $custom_field_data['value'];
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+        if( !empty( $custom_fields_to_replace ) ) {
+            $string = str_replace($custom_fields_to_replace, $custom_field_replacements, $string);
+        }
+
+
+        // Replace the {url_post_id} string
+        if( !( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
+            if (strpos($string, '{url_post_id}')) {
+                $replace_with = '';
+
+                if (isset($_GET['post_id'])) {
+                    $replace_with = $_GET['post_id'];
+                }
+
+                $string = str_replace('{url_post_id}', $replace_with, $string);
+            }
+        }
+
+
+        return $string;
+
+    }
+
+    static function get_acf_field_data($field_name, $queried_obj) {
+
+        $field_data = array(
+            'value' => '',
+            'type' => '',
+            'meta_exists' => false,
+        );
+
+        if( class_exists('ACF') ) {
+            $acf_field = get_field_object($field_name, $queried_obj);
+
+            if ( $acf_field ) {
+                $field_data['value'] = $acf_field['value'];
+                $field_data['type'] = $acf_field['type'];
+                $field_data['meta_exists'] = true;
+
+                if( isset($acf_field['taxonomy']) ) {
+                    $field_data['taxonomy'] = $acf_field['taxonomy'];
+                }
+
+                if ( empty($field_data['value']) && $acf_field['type'] == 'image' && ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
+                    $field_data['value'] = array(
+                        'url' => TDC_URL . '/assets/images/placeholders/custom_field_image_type.png',
+                        'title' => '',
+                        'alt' => '',
+                    );
+                }
+            }
+        }
+
+        return $field_data;
+
+    }
+
+    static function isAssocArray( $array ) {
+        return count( array_filter( array_keys( $array ), 'is_string') ) > 0;
+    }
+
+    static function get_gm_api_key() {
+
+        $gm_api_key = '';
+        if ( TDC_DEPLOY_MODE == 'dev' || TD_DEPLOY_MODE == 'demo' ) {
+            $gm_api_key = 'AIzaSyD_V87V3vN78k7rxf5fe5b0myePAJpzoWc';
+        } else {
+            if( td_util::get_option('tds_gm_api_key') != '' ) {
+                $gm_api_key = td_util::get_option('tds_gm_api_key');
+            }
+        }
+
+        return $gm_api_key;
+    }
+
+    static function get_overall_post_rating($post_id) {
+
+        $post_linked_posts = get_post_meta($post_id, 'tdc-post-linked-posts', true);
+
+        if( isset( $post_linked_posts['tdc-review'] ) ) {
+            $post_reviews_ids = $post_linked_posts['tdc-review'];
+
+            if( !empty( $post_reviews_ids ) ) {
+                $post_reviews = get_posts(array(
+                    'post__in' => $post_reviews_ids,
+                    'post_type' => 'tdc-review'
+                ));
+
+                if( !empty( $post_reviews ) ) {
+                    $post_reviews_ratings_total = 0;
+                    $post_reviews_count = count($post_reviews);
+
+                    foreach ( $post_reviews as $post_review ) {
+                        $post_review_ratings_average = self::get_overall_review_rating($post_review->ID);
+
+                        if( $post_review_ratings_average ) {
+                            $post_reviews_ratings_total += $post_review_ratings_average;
+                        }
+                    }
+
+                    return round( ( $post_reviews_ratings_total / $post_reviews_count ) * 2 ) / 2;
+                }
+            }
+        }
+
+
+        return false;
+
+    }
+
+    static function get_overall_review_rating($post_id) {
+
+        $post_review_ratings_meta = get_post_meta($post_id, 'tdc-review-ratings', true);
+
+        if( !empty( $post_review_ratings_meta ) ) {
+            $post_review_ratings_average = 0;
+            $post_review_ratings_sum = 0;
+
+            foreach ( $post_review_ratings_meta as $post_review_rating_id => $post_review_rating_data ) {
+                $post_review_ratings_sum += $post_review_rating_data['score'];
+            }
+
+            $post_review_ratings_average = $post_review_ratings_sum / count($post_review_ratings_meta);
+
+            return ( round( $post_review_ratings_average * 2 ) / 2 );
+        }
+
+
+        return false;
+
+    }
+
+    static function display_user_ratings_stars( $rating_average, $full_star_icon = '', $full_star_icon_data = '', $half_star_icon = '', $half_star_icon_data = '', $empty_star_icon = '', $empty_star_icon_data = '' ) {
+
+        $rating_average_floor = floor($rating_average);
+        $rating_average_ceil = ceil($rating_average);
+
+        if( $empty_star_icon == '' ) {
+            $empty_star_icon = '<i class="td-icon-user-rev-star-empty"></i>';
+        }
+        if( $half_star_icon == '' ) {
+            $half_star_icon = '<i class="td-icon-user-rev-star-half"></i>';
+        }
+        if( $full_star_icon == '' ) {
+            $full_star_icon = '<i class="td-icon-user-rev-star-full"></i>';
+        }
+
+        $buffy = '<div class="td-user-rev-stars">';
+            for( $i = 0; $i < $rating_average_floor; $i++ ) {
+                $buffy .= '<div class="td-user-rev-star td-user-rev-star-full" ' . $full_star_icon_data . '>' . $full_star_icon . '</div>';
+            }
+            if( $rating_average_floor != $rating_average ) {
+                $buffy .= '<div class="td-user-rev-star td-user-rev-star-half" ' . $half_star_icon_data . '>' . $half_star_icon . '</div>';
+            }
+            for( $i = 5; $i > $rating_average_ceil; $i-- ) {
+                $buffy .= '<div class="td-user-rev-star td-user-rev-star-empty" ' . $empty_star_icon_data . '>' . $empty_star_icon . '</div>';
+            }
+        $buffy .= '</div>';
+
+        return $buffy;
+
+    }
+
+    static function get_display_restrictions_atts($group = '') {
+        $tdbTemplateType = '';
+        if ( defined( 'TD_CLOUD_LIBRARY' ) ) {
+            $tdbTemplateType = tdb_util::get_get_val('tdbTemplateType');
+        }
+
+        $author_plan_id_description = 'This setting only applies on Single Post and Author Cloud Templates.';
+        if( $tdbTemplateType == 'single' || $tdbTemplateType == 'cpt' ) {
+            $author_plan_id_description = 'Show the element only if the author of this article is subscribed to one of the plan IDs you enter here.';
+        } else if ( $tdbTemplateType == 'author' ) {
+            $author_plan_id_description = 'Show the element only if the author is subscribed to one of the plan IDs you enter here.';
+        }
+
+        return array(
+            array(
+                "param_name" => "separator",
+                "type" => "text_separator",
+                'heading' => 'Display restrictions',
+                "value" => "",
+                "class" => "",
+                "group" => $group,
+            ),
+            array(
+                'param_name' => 'hide_for_user_type',
+                "type" => "dropdown",
+                "value" => array(
+                    'Off' => '',
+                    'Logged in users' => 'logged-in',
+                    'Visitors' => 'guests',
+                ),
+                "heading" => 'Hide for',
+                "description" => "Choose the type of user you want this element to be hidden from.",
+                "holder" => "div",
+                'class' => 'tdc-dropdown-big',
+                "group" => $group,
+                'toggle_enable_params' => 'subscr-restr',
+                'toggle_enable_params_reverse' => true,
+            ),
+            array(
+                "param_name" => "separator",
+                "type" => "text_separator",
+                'heading' => 'Subscriptions',
+                "value" => "",
+                "class" => "tdc-separator-small " . ( !defined( 'TD_SUBSCRIPTION' ) ? 'tdc-hidden' : '' ),
+                "group" => $group,
+                'toggle_enabled_by' => 'subscr-restr',
+            ),
+            array(
+                "param_name"  => "logged_plan_id",
+                "type"        => "textfield",
+                "value"       => '',
+                "heading"     => 'Default plans restriction',
+                "description" => 'Show the element only if the logged in user is subscribed to one of the plan IDs you enter here.',
+                "holder"      => "div",
+                "class"       => "tdc-textfield-big " . ( !defined( 'TD_SUBSCRIPTION' ) ? 'tdc-hidden' : '' ),
+                "placeholder" => "",
+                "group" => $group,
+                'toggle_enabled_by' => 'subscr-restr',
+            ),
+            array(
+                "param_name"  => "author_plan_id",
+                "type"        => "textfield",
+                "value"       => '',
+                "heading"     => 'Author plans restriction',
+                "description" => $author_plan_id_description,
+                "holder"      => "div",
+                "class"       => "tdc-textfield-big " . ( !defined( 'TD_SUBSCRIPTION' ) ? 'tdc-hidden' : '' ),
+                "placeholder" => "",
+                "group" => $group,
+                'toggle_enabled_by' => 'subscr-restr',
+            )
+        );
+    }
+
+    static function plan_limit( $author_plan_ids = '', $all_users_plan_ids = '' ) {
+
+        $current_user = wp_get_current_user();
+        $current_user_id = $current_user->ID;
+        $is_current_user_admin = in_array('administrator', $current_user->roles);
+
+        $is_subscribed = true;
+
+        if( !( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
+            if ( defined( 'TD_CLOUD_LIBRARY' ) ) {
+                if( defined( 'TD_SUBSCRIPTION' ) && $author_plan_ids != '' ) {
+                    $tdb_template_type = tdb_state_template::get_template_type();
+
+                    if( $tdb_template_type == 'cpt' || $tdb_template_type == 'single' || $tdb_template_type == 'author' ) {
+                        global $tdb_state_single, $tdb_state_author;
+
+                        $is_subscribed = false;
+                        $author_plan_ids = explode(',', $author_plan_ids);
+                        $author_id = '';
+
+                        if ( $tdb_template_type == 'cpt' || $tdb_template_type == 'single' ) {
+                            $author_id = get_post_field('post_author', $tdb_state_single->post_id->__invoke());
+                        } else if ( $tdb_template_type == 'author' ) {
+                            $author_id = $tdb_state_author->author_id->__invoke();
+                        }
+
+                        foreach ( $author_plan_ids as $plan_id ) {
+                            if( tds_util::is_user_subscribed_to_plan( $author_id, $plan_id ) ) {
+                                $is_subscribed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if( defined( 'TD_SUBSCRIPTION' ) && $all_users_plan_ids != '' ) {
+                $is_subscribed = false;
+                $all_users_plan_ids = explode(',', $all_users_plan_ids);
+
+                foreach ( $all_users_plan_ids as $plan_id ) {
+                    if( tds_util::is_user_subscribed_to_plan( $current_user_id, $plan_id ) ) {
+                        $is_subscribed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $is_subscribed;
+
+    }
+
+    static function get_custom_svg_icon( $icon_id, $custom_class = '' ) {
+
+        $buffy = '';
+
+
+        $tdc_wm_custom_svg_icons = td_util::get_option('tdc_wm_custom_svg_icons');
+
+        if( $tdc_wm_custom_svg_icons != '' ) {
+            if( isset( $tdc_wm_custom_svg_icons[$icon_id] ) ) {
+                $tdc_wm_custom_svg_icon = $tdc_wm_custom_svg_icons[$icon_id];
+                $data_icon = '';
+
+                if( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) {
+                    $data_icon = 'data-td-svg-icon="' . $icon_id . '"';
+                }
+
+                $buffy .= '<div class="tdc-wm-custom-svg-icon ' . $custom_class . '" ' . $data_icon . '>';
+                    $buffy .= base64_decode($tdc_wm_custom_svg_icon['code']);
+                $buffy .= '</div>';
+            }
+        }
+
+
+        return $buffy;
+
+    }
+
+} // end class td_util
 
 
 

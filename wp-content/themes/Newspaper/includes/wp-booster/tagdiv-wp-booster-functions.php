@@ -310,6 +310,9 @@ if ( ! function_exists( 'tagdiv_check_theme_version' )) {
                                 return $transient;
                             });
                             delete_site_transient('update_themes');
+                        }  elseif ( 0 == version_compare( $latest_version_serial, TD_THEME_VERSION ) ) {
+                            // clear flag to update theme to the latest version when updating theme and Composer via FTP
+                            delete_transient( 'td_update_theme_latest_version_' . TD_THEME_NAME );
                         }
                     }
                 }
@@ -317,6 +320,108 @@ if ( ! function_exists( 'tagdiv_check_theme_version' )) {
 
             return $versions;
         }
+
+        return false;
+	}
+}
+
+
+/**
+ * get plugin versions and set the transient
+ */
+if ( ! function_exists( 'tagdiv_check_plugin_subscription_version' )) {
+
+	function tagdiv_check_plugin_subscription_version() {
+
+		if ( is_plugin_active('td-subscription/td-subscription.php') && defined('TD_SUBSCRIPTION_VERSION')) {
+
+			// When it will be the next check
+			set_transient( 'td_update_plugin_subscription', '1', 3 * DAY_IN_SECONDS );
+
+			tagdiv_util::update_option( 'plugin_subscription_update_latest_version', '' );
+
+			$response = tagdiv_remote_http::get_page( 'https://cloud.tagdiv.com/wp-json/wp/v2/media?search=.zip' );
+
+			if ( false !== $response ) {
+				$zip_resources  = json_decode( $response, true );
+				$latest_version = [];
+				$versions       = [];
+
+				usort( $zip_resources, function ( $val_1, $val_2 ) {
+					$val_1 = trim( str_replace( [ "TD_SUBSCRIPTION", " " ], "", $val_1[ 'title' ][ 'rendered' ] ) );
+					$val_2 = trim( str_replace( [ "TD_SUBSCRIPTION", " " ], "", $val_2[ 'title' ][ 'rendered' ] ) );
+
+					return version_compare( $val_2, $val_1 );
+				} );
+
+				foreach ( $zip_resources as $index => $zip_resource ) {
+					if ( ! empty( $zip_resource[ 'title' ][ 'rendered' ] ) && ! empty( $zip_resource[ 'source_url' ] ) && false !== strpos( $zip_resource[ 'title' ][ 'rendered' ], "TD_SUBSCRIPTION" ) ) {
+						$current_version = trim( str_replace( [
+							"TD_SUBSCRIPTION",
+							" "
+						], "", $zip_resource[ 'title' ][ 'rendered' ] ) );
+
+						if ( 0 === $index ) {
+							$latest_version = array(
+								$current_version => $zip_resource[ 'source_url' ]
+							);
+						}
+						$versions[] = array(
+							$current_version => $zip_resource[ 'source_url' ]
+						);
+					}
+				}
+
+				if ( ! empty( $versions ) ) {
+					tagdiv_util::update_option( 'plugin_subscription_update_latest_version', json_encode( $latest_version ) );
+
+					if ( ! empty( $latest_version ) && is_array( $latest_version ) && count( $latest_version ) ) {
+						$latest_version_keys = array_keys( $latest_version );
+						if ( is_array( $latest_version_keys ) && count( $latest_version_keys ) ) {
+							$latest_version_serial = $latest_version_keys[ 0 ];
+
+							if ( 1 == version_compare( $latest_version_serial, TD_SUBSCRIPTION_VERSION ) ) {
+
+								set_transient( 'td_update_plugin_subscription_latest_version', 1 );
+
+								add_filter( 'pre_set_site_transient_update_plugins', function ( $transient ) {
+
+									$latest_version = tagdiv_util::get_option( 'plugin_subscription_update_latest_version' );
+									if ( ! empty( $latest_version ) ) {
+										$args           = array();
+										$latest_version = json_decode( $latest_version, true );
+
+										$latest_version_keys = array_keys( $latest_version );
+										if ( is_array( $latest_version_keys ) && count( $latest_version_keys ) ) {
+											$latest_version_serial = $latest_version_keys[ 0 ];
+											$latest_version_url    = $latest_version[ $latest_version_serial ];
+											$plugin_id             = 'td-subscription/td-subscription.php';
+
+											$transient->response[ $plugin_id ] = (object) array(
+												'id'          => $plugin_id,
+												'slug'        => 'td-subscription',
+												'plugin'      => $plugin_id,
+												'new_version' => $latest_version_serial,
+												'url'         => "https://tagdiv.com/td_subscription",
+												'package'     => add_query_arg( $args, $latest_version_url ),
+											);
+										}
+									}
+
+									return $transient;
+								} );
+								delete_site_transient( 'update_plugins' );
+							} elseif ( 0 == version_compare( $latest_version_serial, TD_SUBSCRIPTION_VERSION ) ) {
+								// clear flag to update theme to the latest version when updating theme and Composer via FTP
+								delete_transient( 'td_update_plugin_subscription_latest_version' );
+							}
+						}
+					}
+				}
+
+				return $versions;
+			}
+		}
 
         return false;
 	}

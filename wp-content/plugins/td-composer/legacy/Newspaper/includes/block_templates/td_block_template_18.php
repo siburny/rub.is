@@ -75,7 +75,7 @@ class td_block_template_18 extends td_block_template {
                     padding: 2px 10px;
                 }
             }
-            .td_block_template_18 .td-block-title .td-block-speech-bubble {
+            .td_block_template_18 .td-block-title-wrap .td-block-title .td-block-speech-bubble {
                 font-family: 'Open Sans', arial, sans-serif !important;
                 font-size: 12px !important;
                 font-weight: 600;
@@ -191,6 +191,17 @@ class td_block_template_18 extends td_block_template {
                 -webkit-background-clip: text !important;
                 -webkit-text-fill-color: transparent;
             }
+            
+            
+            /* @speech_bubble_text_size */
+            body .$unique_block_class .td-block-title-wrap .td-block-title .td-block-speech-bubble {
+                font-size: @speech_bubble_text_size !important;
+            }
+            /* @subtitle_text_size */
+            body .$unique_block_class .td-block-title .td-block-subtitle {
+                font-size: @subtitle_text_size;
+            }
+            
 
 
             /* @speech_bubble_color */
@@ -264,6 +275,18 @@ class td_block_template_18 extends td_block_template {
         //color two is empty
         if (!empty($td_css_compiler->settings['header_color_a']) && empty($td_css_compiler->settings['header_color_b'])) {
             $td_css_compiler->load_setting_raw('header_color_b', '#2a81cb');
+        }
+
+        $speech_bubble_text_size = $this->get_att('speech_bubble_text_size');
+        $td_css_compiler->load_setting_raw('speech_bubble_text_size', $speech_bubble_text_size);
+        if( $speech_bubble_text_size != '' && is_numeric( $speech_bubble_text_size ) ) {
+            $td_css_compiler->load_setting_raw('speech_bubble_text_size', $speech_bubble_text_size . 'px');
+        }
+
+        $subtitle_text_size = $this->get_att('subtitle_text_size');
+        $td_css_compiler->load_setting_raw('subtitle_text_size', $subtitle_text_size);
+        if( $subtitle_text_size != '' && is_numeric( $subtitle_text_size ) ) {
+            $td_css_compiler->load_setting_raw('subtitle_text_size', $subtitle_text_size . 'px');
         }
 
         $td_css_compiler->load_setting_raw('speech_bubble_color', $this->get_att('speech_bubble_color'));

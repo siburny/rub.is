@@ -41,6 +41,12 @@ class td_global {
 	// The inner column number - default 1
 	private static $inner_column_number = 1;
 
+	// Flag set by tdm_block_popup
+	private static $in_modal = false;
+
+	// Flag set by tdm_header_menu
+	private static $in_menu = false;
+
 
 	// The column width - default 1/1 (full width)
 	private static $column_width = '1/1';
@@ -195,6 +201,41 @@ class td_global {
 		return self::$in_ed_element;
 	}
 
+
+	/**
+	 * Set the $in_modal
+	 *
+	 * @param $in_row
+	 */
+	static function set_in_modal($in_modal) {
+		self::$in_modal = $in_modal;
+	}
+
+	/**
+	 * Just get the $in_modal flag
+	 * @return bool
+	 */
+	static function get_in_modal() {
+		return self::$in_modal;
+	}
+
+
+	/**
+	 * Set the $in_menu
+	 *
+	 * @param $in_row
+	 */
+	static function set_in_menu($in_menu) {
+		self::$in_menu = $in_menu;
+	}
+
+	/**
+	 * Just get the $in_menu flag
+	 * @return bool
+	 */
+	static function get_in_menu() {
+		return self::$in_menu;
+	}
 
 	/**
 	 * Set $column_width and $column_number
@@ -676,7 +717,7 @@ class td_global {
 	    while ( strlen( $newuniquid ) < 3 ) {
 	    	$newuniquid .= $uniquid[ rand(0, 12)];
 	    }
-	    if ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() || is_admin()) {
+	    if ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() || is_admin() ) {
 	        return 'tdi_' . self::$td_unique_counter . '_' . $newuniquid;
 	    } else {
 	    	return 'tdi_' . self::$td_unique_counter;// . '_' . $newuniquid;
@@ -730,7 +771,8 @@ class td_global {
 
     			$posts = get_posts(array(
                     'p' => self::tdb_get_template_id( $template_id ),
-                    'post_type' => 'tdb_templates'
+                    'post_type' => 'tdb_templates',
+				    'numberposts' => -1,
                 ));
 
 			    return count($posts) > 0;

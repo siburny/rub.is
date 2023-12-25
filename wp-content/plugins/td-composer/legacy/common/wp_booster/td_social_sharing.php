@@ -189,7 +189,9 @@ class td_social_sharing {
             .td-social-tumblr i,
             .td-social-stumbleupon i,
             .td-social-vk i,
-            .td-social-viber i {
+            .td-social-viber i,
+            .td-social-flipboard i,
+            .td-social-koo i {
                 font-size: 14px;
             }
             .td-social-telegram i {
@@ -210,7 +212,8 @@ class td_social_sharing {
             .td-social-pinterest .td-icon-pinterest {
                 font-size: 13px;
             }
-            .td-social-whatsapp .td-icon-whatsapp {
+            .td-social-whatsapp .td-icon-whatsapp,
+            .td-social-kakao .td-icon-kakao {
                 font-size: 18px;
             }
             .td-social-reddit .td-social-but-icon {
@@ -248,6 +251,49 @@ class td_social_sharing {
                 left: -1px;
                 font-size: 16px;
             }
+            .td-social-gettr .td-icon-gettr {
+                font-size: 25px;
+            }
+            .td-ps-notext .td-social-gettr .td-icon-gettr {
+                left: -5px;
+            }
+            .td-social-copy_url {
+                position: relative;
+            }
+            .td-social-copy_url-check {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #fff;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .2s ease-in-out;
+                z-index: 11;
+            }
+            .td-social-copy_url .td-icon-copy_url {
+                left: -1px;
+                font-size: 17px;
+            }
+            .td-social-copy_url-disabled {
+                pointer-events: none;
+            }
+            .td-social-copy_url-disabled .td-icon-copy_url {
+                opacity: 0;
+            }
+            .td-social-copy_url-copied .td-social-copy_url-check {
+                opacity: 1;
+            }
+            @keyframes social_copy_url_loader {
+                0% {
+                    -webkit-transform: rotate(0);
+                    transform: rotate(0)
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg)
+                }
+            }
             .td-social-expand-tabs i {
                 top: -2px;
                 left: -1px;
@@ -284,8 +330,10 @@ class td_social_sharing {
             }
             .td-ps-bg .td-social-mail .td-social-but-icon,
             .td-ps-bg .td-social-digg .td-social-but-icon,
+            .td-ps-bg .td-social-copy_url .td-social-but-icon,
             .td-ps-bg .td-social-mail .td-social-but-text,
-            .td-ps-bg .td-social-digg .td-social-but-text {
+            .td-ps-bg .td-social-digg .td-social-but-text,
+            .td-ps-bg .td-social-copy_url .td-social-but-text {
                 background-color: #000;
             }
             .td-ps-bg .td-social-print .td-social-but-icon,
@@ -324,6 +372,23 @@ class td_social_sharing {
             .td-ps-bg .td-social-naver .td-social-but-text {
                 background-color: #3ec729;
             }
+            .td-ps-bg .td-social-flipboard .td-social-but-icon,
+            .td-ps-bg .td-social-flipboard .td-social-but-text {
+                background-color: #f42827;
+            }
+            .td-ps-bg .td-social-kakao .td-social-but-icon,
+            .td-ps-bg .td-social-kakao .td-social-but-text {
+                background-color: #dd604a;
+            }
+            .td-ps-bg .td-social-gettr .td-social-but-icon,
+            .td-ps-bg .td-social-gettr .td-social-but-text {
+                background-color: #fc223b;
+            }
+            .td-ps-bg .td-social-koo .td-social-but-icon,
+            .td-ps-bg .td-social-koo .td-social-but-text {
+                background-color: #facd00;
+            }
+
             .td-ps-dark-bg .td-social-network {
                 color: #fff;
             }
@@ -376,8 +441,10 @@ class td_social_sharing {
             }
             .td-ps-border-colored .td-social-mail .td-social-but-icon,
             .td-ps-border-colored .td-social-digg .td-social-but-icon,
+            .td-ps-border-colored .td-social-copy_url .td-social-but-icon,
             .td-ps-border-colored .td-social-mail .td-social-but-text,
-            .td-ps-border-colored .td-social-digg .td-social-but-text {
+            .td-ps-border-colored .td-social-digg .td-social-but-text,
+            .td-ps-border-colored .td-social-copy_url .td-social-but-text {
                 border-color: #000;
             }
             .td-ps-border-colored .td-social-print .td-social-but-icon,
@@ -412,9 +479,25 @@ class td_social_sharing {
             .td-ps-border-colored .td-social-viber .td-social-but-text {
                 border-color: #5d54a4;
             }
-            .td-ps-border-colored .td-social-viber .td-social-but-icon,
-            .td-ps-border-colored .td-social-viber .td-social-but-text {
+            .td-ps-border-colored .td-social-naver .td-social-but-icon,
+            .td-ps-border-colored .td-social-naver .td-social-but-text {
                 border-color: #3ec729;
+            }
+            .td-ps-border-colored .td-social-flipboard .td-social-but-icon,
+            .td-ps-border-colored .td-social-flipboard .td-social-but-text {
+                border-color: #f42827;
+            }
+            .td-ps-border-colored .td-social-kakao .td-social-but-icon,
+            .td-ps-border-colored .td-social-kakao .td-social-but-text {
+                border-color: #dd604a;
+            }
+            .td-ps-border-colored .td-social-gettr .td-social-but-icon,
+            .td-ps-border-colored .td-social-gettr .td-social-but-text {
+                border-color: #fc223b;
+            }
+            .td-ps-border-colored .td-social-koo .td-social-but-icon,
+            .td-ps-border-colored .td-social-koo .td-social-but-text {
+                border-color: #facd00;
             }
             .td-ps-icon-bg .td-social-but-icon {
                 height: 100%;
@@ -439,7 +522,8 @@ class td_social_sharing {
                 background-color: #f54200;
             }
             .td-ps-icon-bg .td-social-mail .td-social-but-icon,
-            .td-ps-icon-bg .td-social-digg .td-social-but-icon {
+            .td-ps-icon-bg .td-social-digg .td-social-but-icon,
+            .td-ps-icon-bg .td-social-copy_url .td-social-but-icon {
                 background-color: #000;
             }
             .td-ps-icon-bg .td-social-print .td-social-but-icon {
@@ -468,6 +552,18 @@ class td_social_sharing {
             }
             .td-ps-icon-bg .td-social-naver .td-social-but-icon {
                 background-color: #3ec729;
+            }
+            .td-ps-icon-bg .td-social-flipboard .td-social-but-icon {
+                background-color: #f42827;
+            }
+            .td-ps-icon-bg .td-social-kakao .td-social-but-icon {
+                background-color: #dd604a;
+            }
+            .td-ps-icon-bg .td-social-gettr .td-social-but-icon {
+                background-color: #fc223b;
+            }
+            .td-ps-icon-bg .td-social-koo .td-social-but-icon {
+                background-color: #facd00;
             }
             .td-ps-icon-bg .td-social-but-text {
                 margin-left: -3px;
@@ -513,7 +609,8 @@ class td_social_sharing {
                 border-left-color: #f54200;
             }
             .td-ps-icon-arrow .td-social-mail .td-social-but-icon:after,
-            .td-ps-icon-arrow .td-social-digg .td-social-but-icon:after {
+            .td-ps-icon-arrow .td-social-digg .td-social-but-icon:after,
+            .td-ps-icon-arrow .td-social-copy_url .td-social-but-icon:after {
                 border-left-color: #000;
             }
             .td-ps-icon-arrow .td-social-print .td-social-but-icon:after {
@@ -543,6 +640,18 @@ class td_social_sharing {
             .td-ps-icon-arrow .td-social-naver .td-social-but-icon:after {
                 border-left-color: #3ec729;
             }
+            .td-ps-icon-arrow .td-social-flipboard .td-social-but-icon:after {
+                border-left-color: #f42827;
+            }
+            .td-ps-icon-arrow .td-social-kakao .td-social-but-icon:after {
+                border-left-color: #dd604a;
+            }
+            .td-ps-icon-arrow .td-social-gettr .td-social-but-icon:after {
+                border-left-color: #fc223b;
+            }
+            .td-ps-icon-arrow .td-social-koo .td-social-but-icon:after {
+                border-left-color: #facd00;
+            }
             .td-ps-icon-arrow .td-social-expand-tabs .td-social-but-icon:after {
                 display: none;
             }
@@ -562,7 +671,9 @@ class td_social_sharing {
                 color: #f54200;
             }
             .td-ps-icon-color .td-social-mail .td-social-but-icon,
-            .td-ps-icon-color .td-social-digg .td-social-but-icon {
+            .td-ps-icon-color .td-social-digg .td-social-but-icon,
+            .td-ps-icon-color .td-social-copy_url .td-social-but-icon,
+            .td-ps-icon-color .td-social-copy_url-check {
                 color: #000;
             }
             .td-ps-icon-color .td-social-print .td-social-but-icon {
@@ -592,6 +703,18 @@ class td_social_sharing {
             .td-ps-icon-color .td-social-naver .td-social-but-icon {
                 color: #3ec729;
             }
+            .td-ps-icon-color .td-social-flipboard .td-social-but-icon {
+                color: #f42827;
+            }
+            .td-ps-icon-color .td-social-kakao .td-social-but-icon {
+                color: #dd604a;
+            }
+            .td-ps-icon-color .td-social-gettr .td-social-but-icon {
+                color: #fc223b;
+            }
+            .td-ps-icon-color .td-social-koo .td-social-but-icon {
+                color: #facd00;
+            }
             .td-ps-text-color .td-social-but-text {
                 font-weight: 700;
             }
@@ -611,7 +734,8 @@ class td_social_sharing {
                 color: #f54200;
             }
             .td-ps-text-color .td-social-mail .td-social-but-text,
-            .td-ps-text-color .td-social-digg .td-social-but-text {
+            .td-ps-text-color .td-social-digg .td-social-but-text,
+            .td-ps-text-color .td-social-copy_url .td-social-but-text {
                 color: #000;
             }
             .td-ps-text-color .td-social-print .td-social-but-text {
@@ -640,6 +764,18 @@ class td_social_sharing {
             }
             .td-ps-text-color .td-social-naver .td-social-but-text {
                 color: #3ec729;
+            }
+            .td-ps-text-color .td-social-flipboard .td-social-but-text {
+                color: #f42827;
+            }
+            .td-ps-text-color .td-social-kakao .td-social-but-text {
+                color: #dd604a;
+            }
+            .td-ps-text-color .td-social-gettr .td-social-but-text {
+                color: #fc223b;
+            }
+            .td-ps-text-color .td-social-koo .td-social-but-text {
+                color: #facd00;
             }
             .td-ps-text-color .td-social-expand-tabs .td-social-but-text {
                 color: #b1b1b1;
@@ -694,8 +830,10 @@ class td_social_sharing {
             }
             .td-ps-bar .td-social-mail .td-social-but-icon,
             .td-ps-bar .td-social-digg .td-social-but-icon,
+            .td-ps-bar .td-social-copy_url .td-social-but-icon,
             .td-ps-bar .td-social-mail .td-social-but-text,
-            .td-ps-bar .td-social-digg .td-social-but-text {
+            .td-ps-bar .td-social-digg .td-social-but-text,
+            .td-ps-bar .td-social-copy_url .td-social-but-text {
                 -webkit-box-shadow: inset 0px -3px 0px 0px rgba(255, 255, 255, 0.28);
                 box-shadow: inset 0px -3px 0px 0px rgba(255, 255, 255, 0.28);
             }
@@ -740,6 +878,8 @@ class td_social_sharing {
             .td-ps-big .td-social-stumbleupon i,
             .td-ps-big .td-social-vk i,
             .td-ps-big .td-social-viber i,
+            .td-ps-big .td-social-fliboard i,
+            .td-ps-big .td-social-koo i,
             .td-ps-big .td-social-share-text i {
                 font-size: 22px;
             }
@@ -756,7 +896,9 @@ class td_social_sharing {
                 font-size: 20px;
             }
             .td-ps-big .td-social-whatsapp i,
-            .td-ps-big .td-social-naver i {
+            .td-ps-big .td-social-naver i,
+            .td-ps-big .td-social-flipboard i,
+            .td-ps-big .td-social-kakao i {
                 font-size: 26px;
             }
             .td-ps-big .td-social-pinterest .td-icon-pinterest {
@@ -777,6 +919,16 @@ class td_social_sharing {
             }
             .td-ps-big .td-social-naver .td-icon-naver {
                 left: 0;
+            }
+            .td-ps-big .td-social-gettr .td-icon-gettr {
+                left: -1px;
+            }
+            .td-ps-big .td-social-copy_url .td-icon-copy_url {
+                left: 0;
+                font-size: 25px;
+            }
+            .td-ps-big .td-social-copy_url-check {
+                font-size: 18px;
             }
             .td-ps-big .td-social-but-text {
                 margin-left: 0;
@@ -866,7 +1018,8 @@ class td_social_sharing {
                 display: none;
             }
             .td-post-sharing-style7 .td-social-mail .td-social-but-icon:before,
-            .td-post-sharing-style7 .td-social-digg .td-social-but-icon:before {
+            .td-post-sharing-style7 .td-social-digg .td-social-but-icon:before,
+            .td-post-sharing-style7 .td-social-copy_url .td-social-but-icon:before {
                 background-color: rgba(255, 255, 255, 0.2);
             }
             .td-post-sharing-style7 .td-social-print .td-social-but-icon:before {
@@ -988,10 +1141,21 @@ class td_social_sharing {
                         	continue;
                         }
 
-                        $buffy .= '<a class="td-social-sharing-button td-social-sharing-button-js td-social-network td-social-' . $service_id . '" href="' . $service_info['url'] . '" title="' . $service_info['title'] . '" ' . $rel . '>
-                                        <div class="td-social-but-icon"><i class="td-icon-' . $service_id . '"></i></div>
-                                        <div class="td-social-but-text">' . $service_info['title'] . '</div>
-                                    </a>';
+                        if( $service_id == 'copy_url' && td_util::is_amp() ) {
+                            continue;
+                        }
+
+                        $buffy .= '<a class="td-social-sharing-button td-social-sharing-button-js td-social-network td-social-' . $service_id . '" href="' . $service_info['url'] . '" title="' . $service_info['title'] . '" ' . $rel . '>';
+                            $buffy .= '<div class="td-social-but-icon">';
+                                if( $service_id == 'copy_url' ) {
+                                    $buffy .= '<div class="td-social-copy_url-check td-icon-check"></div>';
+                                }
+
+                                $buffy .= '<i class="td-icon-' . $service_id . '"></i>';
+                            $buffy .= '</div>';
+
+                            $buffy .= '<div class="td-social-but-text">' . $service_info['title'] . '</div>';
+                        $buffy .= '</a>';
                     }
 
                 $buffy .= '</div>'; // ./td-post-sharing-visible
@@ -1148,6 +1312,41 @@ class td_social_sharing {
                     'title' => 'Naver'
                 );
                 break;
+
+            case 'flipboard':
+                return array(
+                    'url' => 'https://share.flipboard.com/bookmarklet/popout?v=2&title=' . htmlspecialchars(urlencode(html_entity_decode($page_title))) . '&url=' . urlencode($page_permalink),
+                    'title' => 'Flip'
+                );
+                break;
+
+            case 'copy_url':
+                return array(
+                    'url' => $page_permalink,
+                    'title' => 'Copy URL'
+                );
+                break;
+
+            case 'kakao':
+                return array(
+                    'url' => 'https://story.kakao.com/s/share?url=' . urlencode($page_permalink) . '&text=' . htmlspecialchars(urlencode(html_entity_decode($page_title))),
+                    'title' => 'Kakao Story'
+                );
+                break;
+
+            case 'gettr':
+            return array(
+                'url' => 'https://gettr.com/share?text=' . htmlspecialchars(urlencode(html_entity_decode($page_title))) . '&url=' . urlencode($page_permalink),
+                'title' => 'Gettr'
+            );
+            break;
+
+            case 'koo':
+            return array(
+                'url' => 'https://www.kooapp.com/create?title=' . urlencode($page_permalink),
+                'title' => 'Koo'
+            );
+            break;
 
             default:
 	            $services = array();

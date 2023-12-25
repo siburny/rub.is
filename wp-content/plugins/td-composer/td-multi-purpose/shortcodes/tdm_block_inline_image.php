@@ -9,7 +9,17 @@ class tdm_block_inline_image extends td_block {
         $compiled_css = '';
 
         // $unique_block_class - the unique class that is on the block. use this to target the specific instance via css
-        $unique_block_class = ((td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax()) ? 'tdc-row .' : '') . $this->block_uid;
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        $in_element = td_global::get_in_element();
+        $unique_block_class_prefix = '';
+        if( $in_element || $in_composer ) {
+            $unique_block_class_prefix = 'tdc-row .';
+
+            if( $in_element && $in_composer ) {
+                $unique_block_class_prefix = 'tdc-row-composer .';
+            }
+        }
+        $unique_block_class = $unique_block_class_prefix . $this->block_uid;
         $unique_block_modal_class = $this->block_uid . '_m';
 
         $raw_css =
@@ -71,6 +81,10 @@ class tdm_block_inline_image extends td_block {
                 /* @img_width */
                 .$unique_block_class {
                     width: @img_width;
+                }
+                /* @img_height */
+                .$unique_block_class img {
+                    height: @img_height;
                 }
                 
 				/* @overlay_color_gradient */
@@ -229,6 +243,14 @@ class tdm_block_inline_image extends td_block {
                 $res_ctx->load_settings_raw( 'img_width',  $img_width . 'px;' );
             }
         }
+        // image height
+        $img_height = $res_ctx->get_shortcode_att( 'img_height' );
+        $res_ctx->load_settings_raw( 'img_height', $img_height );
+        if( $img_height != '' ) {
+            if ( is_numeric( $img_height ) ) {
+                $res_ctx->load_settings_raw( 'img_height',  $img_height . 'px;' );
+            }
+        }
 
 
 
@@ -341,17 +363,46 @@ class tdm_block_inline_image extends td_block {
 			, $atts);
 
         $image = $this->get_shortcode_att( 'image' );
+
         $caption_text = rawurldecode( base64_decode( strip_tags( $this->get_shortcode_att( 'caption_text' ) ) ) );
         $caption_position = $this->get_shortcode_att( 'caption_position' );
+
         $modal_image = $this->get_shortcode_att( 'modal_image' );
         $display_inline = $this->get_shortcode_att( 'display_inline' );
+
+        $image_width = $this->get_shortcode_att( 'img_width' );
+        $image_height = $this->get_shortcode_att( 'img_height' );
+
+        // get desktop value also on responsive
+        $image_width_all = json_decode( tdc_b64_decode($image_width), true );
+        $image_height_all = json_decode( tdc_b64_decode($image_height), true );
+        if ( is_array($image_width_all) && is_array($image_height_all) ) {
+            $image_width = $image_width_all['all'];
+            $image_height = $image_height_all['all'];
+        }
 
         $image_info = '';
         $image_width_html = '';
         $image_height_html = '';
+
         if ( '' !== $image ) {
-			$image_info = tdc_util::get_image($atts);
-            if (is_array($image_info)) {
+
+            // just in case that we have an url instead of attachment id
+            $url_host = parse_url( $image,PHP_URL_HOST);
+            if ( !is_numeric($image) ) {
+                if ( $url_host === $_SERVER['HTTP_HOST'] ) {
+                    $image = preg_replace("/(?:[-_]?\d{2,4}x\d{2,4})+(?=\.jpg$)/", "", $image);
+                    $atts['image'] = attachment_url_to_postid($image);
+                }
+            }
+
+            $image_info = tdc_util::get_image($atts);
+
+            // get width/height from shortcode options
+            if ( $image_width != '' && $image_height != '' ) {
+                $image_width_html = ' width="' . $image_width . '"';
+                $image_height_html = ' height="' . $image_height . '"';
+            } elseif ( is_array($image_info) ) { // width/height from full img
                 $image_width_html = ' width="' . $image_info ["width"] . '"';
                 $image_height_html = ' height="' . $image_info["height"] . '"';
             }
@@ -400,8 +451,10 @@ class tdm_block_inline_image extends td_block {
             if( $video_url != '' ) {
                 $video_source = td_video_support::detect_video_service($video_url);
 
+                $autoplay_vid = $this->get_att( 'autoplay_vid' );
+
                 $video_popup_class = 'td-image-video-modal';
-                $video_popup_data = 'data-video-source="' . $video_source . '" data-video-url="'. esc_url( $video_url ) . '"';
+                $video_popup_data = 'data-video-source="' . $video_source . '" data-video-autoplay="' . $autoplay_vid . '" data-video-url="'. esc_url( $video_url ) . '"';
 
                 $video_rec = '';
                 if( $this->get_att( 'video_rec' ) != '' ) {
@@ -425,35 +478,56 @@ class tdm_block_inline_image extends td_block {
         }
 
 
+        // video custom url
+        $url = $this->get_att('url');
+        $url_target = '';
+        if( $this->get_att('url_target') != '' ) {
+            $url_target = 'target="blank"';
+        }
+        $url_rel = '';
+        if( $this->get_att('url_rel') != '' ) {
+            $url_rel = 'rel="' . $this->get_att('url_rel') . '"';
+        }
+        $buffy_wrap_tag_open = '';
+        $buffy_wrap_tag_close = '';
+        if( $url != '' && $video_popup == '' && empty( $modal_image ) ) {
+            $buffy_wrap_tag_open = 'a href="' . $url . '" ' . $url_target . ' ' . $url_rel;
+            $buffy_wrap_tag_close = 'a';
+        } else {
+            $buffy_wrap_tag_open = 'div';
+            $buffy_wrap_tag_close = 'div';
+        }
+
+
 	    $buffy = '<div class="tdm_block ' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
 
-	    if ( empty( $image_info['url'] ) ) {
-		    $buffy .= td_util::get_block_error( 'Inline single image', "Configure this block/widget's to have an image" );
-	    } else {
-		    //get the block css
-		    $buffy .= $this->get_block_css();
+            if ( empty( $image_info['url'] ) ) {
+                $buffy .= td_util::get_block_error( 'Inline single image', "Configure this block/widget's to have an image" );
+            } else {
+                //get the block css
+                $buffy .= $this->get_block_css();
 
-		    $buffy .= '<div class="tdm-inline-image-wrap ' . $video_popup_class . '" ' . $video_popup_data . '>';
-                if( !empty( $modal_image ) && ( $video_popup == '' || $video_url == '' ) ) {
-                    $buffy .= '<a href="' . $image_info['url'] . '">';
-                        $buffy .= '<img class="tdm-image td-fix-index td-modal-image" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
-                    $buffy .= '</a>';
-                } else {
-                    if( $video_popup != '' && $video_url != '' ) {
-                        $buffy .= '<span class="td-video-play-ico"><i class="td-icon-video-thumb-play"></i></span>';
+                $buffy .= '<' . $buffy_wrap_tag_open . ' class="tdm-inline-image-wrap ' . $video_popup_class . '" ' . $video_popup_data . '>';
+                    if( !empty( $modal_image ) && ( $video_popup == '' || $video_url == '' ) ) {
+                        $buffy .= '<a href="' . $image_info['url'] . '">';
+                            $buffy .= '<img class="tdm-image td-fix-index td-modal-image" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
+                        $buffy .= '</a>';
+                    } else {
+                        if( $video_popup != '' && $video_url != '' ) {
+                            $buffy .= '<span class="td-video-play-ico"><i class="td-icon-video-thumb-play"></i></span>';
+                        }
+                        if ( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
+                            $buffy .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
+                        } else {
+                            $buffy .= '<img class="tdm-image td-fix-index" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
+                        }
                     }
-                    if ( empty( $tds_animation_stack ) && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() && !td_util::is_mobile_theme() && !td_util::is_amp() ) {
-                        $buffy .= '<img class="tdm-image td-fix-index td-lazy-img" data-type="image_tag" data-img-url="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
-                    }else {
-                        $buffy .= '<img class="tdm-image td-fix-index" src="' . $image_info['url'] . '" ' . $image_title . $image_alt . $image_width_html . $image_height_html . '>';
-                    }
+                $buffy .= '</' . $buffy_wrap_tag_close . '>';
+
+                if( $caption_text != '' ) {
+                    $buffy .= '<div class="tdm-caption">' . $caption_text . '</div>';
                 }
-            $buffy .= '</div>';
-
-            if( $caption_text != '' ) {
-                $buffy .= '<div class="tdm-caption">' . $caption_text . '</div>';
             }
-	    }
 
         $buffy .= '</div>';
 

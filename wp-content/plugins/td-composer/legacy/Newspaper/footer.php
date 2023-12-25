@@ -132,7 +132,6 @@ if ( td_util::tdc_is_live_editor_iframe() || td_util::is_template_footer() ) {
 </style>
 
 </div><!--close td-outer-wrap-->
-
 <?php wp_footer(); ?>
 
 </body>

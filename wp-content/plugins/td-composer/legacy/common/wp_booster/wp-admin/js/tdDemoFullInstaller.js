@@ -1,7 +1,7 @@
 /**
  * Created by ra on 3/15/2016.
  *
- * Installs the full demo. It has a list of steps and it starts recusivley from 0 to the last step. If an error is encounter,
+ * Installs the full demo. It has a list of steps and it starts recursively from 0 to the last step. If an error is encounter,
  * the class will show a warning to the user but it will continue with the install as if nothing happened
  */
 
@@ -9,10 +9,9 @@
 /* global jQuery:{} */
 /* global console:{} */
 /* global alert:{} */
-/* global confirm:{} */
 /* global td_ajax_url:{} */
 /* global tdDemoProgressBar:{} */
-
+/* global tdWpAdminImportNonce:{} */
 
 var tdDemoFullInstaller = {};
 
@@ -20,18 +19,21 @@ var tdDemoFullInstaller = {};
     'use strict';
     tdDemoFullInstaller = {
 
-
         /**
          * Recursive function, it will start from step 0 and work it's way up from there.
          * On error the function will show an alert and it will continue with the install process
          * @see tdDemoFullInstaller._getSteps()
          * @param demoId - the demo id that you want to install
          * @param step - not needed, it will be 0 by default
-         * @param onFinishCallback - this callback is called whent he install is finished. Event on error, the install will be finished!
+         * @param onFinishCallback - this callback is called when the install is finished. Event on error, the install will be finished!
          * @param noContent - boolean - not needed. If it's true the .._no_content.php file steps are loaded
          */
         installNextStep: function (demoId, step, onFinishCallback, noContent) {
-            if (typeof step === 'undefined') {
+
+            //console.log('%c tdDemoFullInstaller START !! .. demoId: ' + demoId + ' step: ' + step, 'color: #40a200;');
+            //return;
+
+            if ( typeof step === 'undefined' ) {
                 step = 0;
             }
 
@@ -48,36 +50,30 @@ var tdDemoFullInstaller = {};
                 currentStep.data.td_demo_action += '_no_content';
             }
 
-
-
             //console.log(currentStep);
-
             currentStep.data.td_magic_token = tdWpAdminImportNonce;
 
             jQuery.ajax({
                 type: 'POST',
                 url: tdDemoFullInstaller._getAdminAjax(currentStep.data.td_demo_action),
-                cache:false,
+                cache: false,
                 data: currentStep.data,
                 dataType: 'json',
-                success: function(data, textStatus, XMLHttpRequest){
-                    if (typeof steps[step + 1] !== 'undefined') {
-                        tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback, content);
+                success: function(){
+                    if ( typeof steps[step + 1] !== 'undefined' ) {
+                        tdDemoFullInstaller.installNextStep( demoId, step + 1, onFinishCallback, content );
                     } else {
                         // on finish finally call the callback
                         onFinishCallback();
                     }
                 },
-                error: function(MLHttpRequest, textStatus, errorThrown){
+                error: function(MLHttpRequest, textStatus, errorThrown) {
 
                     var responseText = MLHttpRequest.responseText.replace(/<br>/g, '\n');
-
 
                     console.log('textStatus: ' + textStatus);
                     console.log('errorThrown: ' + errorThrown);
                     console.log('responseText: ' + responseText);
-
-
 
                     alert('tagDiv Importer detects that your server is not properly configured. Don\'t worry, the importer will continue to install the demo after you click the OK button.\n' +
                         '\n' +
@@ -87,19 +83,17 @@ var tdDemoFullInstaller = {};
                         '- Contact our support via email contact@tagdiv.com (please provide your product license key)'
                     );
 
-
-
                     // continue even on error :)
-                    if (typeof steps[step + 1] !== 'undefined') {
+                    if ( typeof steps[step + 1] !== 'undefined' ) {
                         tdDemoFullInstaller.installNextStep(demoId, step + 1, onFinishCallback, content);
                     } else {
                         // on finish finally call the callback
                         onFinishCallback();
                     }
+
                 }
             });
         },
-
 
 
         /**
@@ -124,7 +118,6 @@ var tdDemoFullInstaller = {};
         /**
          * generates the steps needed for a particular demoId
          * @param demoId
-          @param noContent - boolean - not needed. If it's true the .._no_content.php file steps are loaded
          * @returns {{0: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: string}}, 1: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 2: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 3: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 4: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 5: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 6: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}, 7: {progress: number, data: {action: string, td_demo_action: string, td_demo_id: *}}}}
          * @private
          */
@@ -229,6 +222,7 @@ var tdDemoFullInstaller = {};
                 }
             };
         }
+
     };
 })();
 

@@ -300,6 +300,16 @@ class td_api_base {
 
 
 
+    /**
+     * return whether the component is set or not
+     * @param $component_id
+     */
+    static function component_is_set($component_id) {
+        return isset(self::$components_list[$component_id]);
+    }
+
+
+
 
 
 
@@ -582,9 +592,22 @@ class td_api_category_template extends td_api_base {
 
     static function get_current_category_template(&$category_id = '', &$is_global = false, &$is_tdb_template = false) {
 
-    	$tdc_option_key = 'tdc_category_template';
-	    $tds_option_key = 'tds_category_template';
-	    $tdb_option_key = 'tdb_category_template';
+        $tdc_option_key = 'tdc_category_template';
+        $tds_option_key = 'tds_category_template';
+
+        $lang = '';
+        if ( class_exists('SitePress', false ) ) {
+            global $sitepress;
+            $sitepress_settings = $sitepress->get_settings();
+            if ( isset( $sitepress_settings['custom_posts_sync_option'][ 'tdb_templates'] ) ) {
+                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
+                if ( 1 === $translation_mode ) {
+                    $lang = $sitepress->get_current_language();
+                }
+            }
+        }
+
+	    $tdb_option_key = 'tdb_category_template' . $lang;
 
 	    $queried_object = get_queried_object();
         if ( $queried_object instanceof WP_Term ) {
@@ -608,8 +631,24 @@ class td_api_category_template extends td_api_base {
 			        $template_id = parent::get_default_component_id( __CLASS__ );
 		        }
 	        } else {
-		        $is_tdb_template = true;
-		        $template_id     = td_global::tdb_get_template_id( $tdb_individual_category_template );
+
+				// check if it's valid and exists
+		        if ( td_global::is_tdb_template( $tdb_individual_category_template, true ) ) {
+			        $template_id     = td_global::tdb_get_template_id( $tdb_individual_category_template );
+			        $is_tdb_template = true;
+		        } else {
+
+					// get the global cloud tpl
+			        $tdb_category_template = td_options::get( $tdb_option_key );
+			        if ( td_global::is_tdb_template( $tdb_category_template, true ) ) {
+				        $template_id     = td_global::tdb_get_template_id( $tdb_category_template );
+				        $is_tdb_template = true;
+			        } else {
+				        // get the standard tpl
+				        $template_id = td_util::get_option( $tds_option_key );
+			        }
+		        }
+
 	        }
         }
 
@@ -917,37 +956,8 @@ class td_api_footer_template extends td_api_base {
     		$option_id .= '_mobile';
 	    }
 
-	    if (class_exists('SitePress', false)) {
+	    td_util::check_option_id($option_id);
 
-	    	global $sitepress;
-
-	    	if ( isset($_GET['td_action']) && ( 'tdc_edit' == $_GET['td_action'] || 'tdc' === $_GET['td_action'] )) {
-
-	    		// we are in composer
-			    $page_id = get_the_ID();
-			    $t_post_id = $sitepress->get_element_trid( $page_id, 'post_post' );
-				$translations = $sitepress->get_element_translations($t_post_id, 'post_post', false, true);
-
-				if ( !empty($translations) && is_array($translations) && count($translations)) {
-					foreach ($translations as $translation) {
-						if ( !empty( $translation->element_id ) && $page_id === intval($translation->element_id) && !empty($translation->language_code)) {
-							$option_id .= $translation->language_code;
-						}
-					}
-				}
-				
-	        } else {
-
-	            $sitepress_settings = $sitepress->get_settings();
-	            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
-	                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
-	                if (1 === $translation_mode) {
-	                    $option_id .= $sitepress->get_current_language();
-	                }
-	            }
-	        }
-	    }
-	    
 		$tdb_footer_template = td_util::get_option($option_id);
 
     	if ( empty( $tdb_footer_template ) ) {
@@ -1196,38 +1206,8 @@ class td_api_header_style extends td_api_base {
     		$option_id .= '_mobile';
 	    }
 
-    	if (class_exists('SitePress', false)) {
+	    td_util::check_option_id($option_id);
 
-	    	global $sitepress;
-
-	    	if ( isset($_GET['td_action']) && ( 'tdc_edit' == $_GET['td_action'] || 'tdc' === $_GET['td_action'] )) {
-
-	    		// we are in composer
-			    $page_id = get_the_ID();
-			    $t_post_id = $sitepress->get_element_trid( $page_id, 'post_post' );
-				$translations = $sitepress->get_element_translations($t_post_id, 'post_post', false, true);
-
-				if ( !empty($translations) && is_array($translations) && count($translations)) {
-					foreach ($translations as $translation) {
-						if ( !empty( $translation->element_id ) && $page_id === intval($translation->element_id) && !empty($translation->language_code)) {
-							$option_id .= $translation->language_code;
-						}
-					}
-				}
-
-	        } else {
-
-	            global $sitepress;
-	            $sitepress_settings = $sitepress->get_settings();
-	            if ( isset($sitepress_settings['custom_posts_sync_option'][ 'tdb_templates']) ) {
-	                $translation_mode = (int)$sitepress_settings['custom_posts_sync_option']['tdb_templates'];
-	                if (1 === $translation_mode) {
-	                    $option_id .= $sitepress->get_current_language();
-	                }
-	            }
-	        }
-	    }
-	    
         $tdb_header_template = td_util::get_option($option_id);
 
     	if ( empty( $tdb_header_template ) ) {
@@ -1960,8 +1940,8 @@ class td_api_text {
 				<div class="td-supported-plugin">Orbit Fox <span> - extend your website features</span></div>
 				<div class="td-supported-plugin">WooCommerce <span>- eCommerce solution</span></div>
 				<div class="td-supported-plugin">WordPress (Yoast) SEO <span> - SEO plugin</span></div>
-				<div class="td-supported-plugin">Wp User Avatar <span> - Change users avatars</span></div>
-				<div class="td-supported-plugin">WP GDPR Compliance <span> - GDPR compliance plugin</span></div>',
+				<div class="td-supported-plugin">Simple Local Avatar <span> - Change users avatars</span></div>
+				<div class="td-supported-plugin">GDPR Cookie Consent <span> - GDPR compliance plugin</span></div>',
 
 		// existing content documentation url
 		// *overwritten in 012
@@ -2005,7 +1985,7 @@ class td_api_features {
 		'video_playlists' => true,
 		'tagdiv_slide_gallery' => true,
 		'text_logo' => true,
-		'check_for_updates' => true,
+		'check_for_updates' => false,
 	);
 
 
@@ -2035,6 +2015,7 @@ class td_api_features {
 
 
 }
+
 
 /**
  * Class td_api_autoload - here we keep files for auto loading @see td_autoload_classes

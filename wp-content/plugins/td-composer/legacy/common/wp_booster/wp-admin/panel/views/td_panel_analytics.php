@@ -56,6 +56,40 @@ ga(&#x27;send&#x27;, &#x27;pageview&#x27;);
 
 <div class="td-box-row">
     <div class="td-box-description td-box-full">
+        <span class="td-box-title">After body script Code</span>
+        <p>
+            This code will be placed after the <code>&lt;body&gt;</code> tag in HTML. Please include the &lt;script&gt; &lt;/script&gt; tags.
+        </p>
+    </div>
+</div>
+
+
+<!-- paste your code here -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">PASTE YOUR CODE HERE</span>
+        <p>
+            Body JavaScript code
+            <?php td_util::tooltip_html('
+                        <h3>Add the code after the body tag</h3>
+                        <p>Your code will be placed in the body, just after the body tag opens on all the site\'s pages.</p>
+                ', 'right')?>
+        </p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::textarea(array(
+            'ds' => 'td_option',
+            'option_id' => 'td_body_code',
+        ));
+        ?>
+    </div>
+</div>
+
+<div class="td-box-section-separator"></div>
+
+<div class="td-box-row">
+    <div class="td-box-description td-box-full">
         <span class="td-box-title">Footer script Code</span>
         <p>
             This code will be placed before the <code>&lt;/body&gt;</code> tag in HTML. Please include the &lt;script&gt; &lt;/script&gt; tags.
