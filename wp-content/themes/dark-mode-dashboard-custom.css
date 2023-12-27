@@ -1,0 +1,20 @@
+.nav-tab-wrapper .updraftplus-nav-tab.nav-tab-active,
+.nav-tab-wrapper .updraftplus-nav-tab.nav-tab-active:hover,
+.nav-tab-wrapper .updraftplus-nav-tab.nav-tab-active:focus,
+.nav-tab-wrapper .updraftplus-nav-tab.nav-tab-active:focus:active {
+    background-color: #191f25 !important;
+}
+.updraftplus-nav-tab {
+    background-color: #23282d !important;
+}
+.updraft_next_scheduled_backups_wrapper>div,
+#ud_massactions,
+#updraft-delete-waitwarning,
+.updraft_time_now_label,
+.updraft_time_now {
+    background: none !important;
+}
+#future-posts li:nth-child(odd),
+#published-posts li:nth-child(odd) {
+    background-color: #23282d !important;    
+}
