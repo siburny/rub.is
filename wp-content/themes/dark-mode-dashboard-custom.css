@@ -35,3 +35,11 @@ blockquote,
 .wp-block-quote.has-text-align-right {
     border-left: 3px solid rgb(15,190,124);
 }
+
+.editormd-preview,
+.editormd-html-preview,
+.editormd-preview-container,
+.editormd-preview li {
+    background-color: #191f25 !important;
+    color: #bbc8d4;
+}
