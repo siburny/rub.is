@@ -44,8 +44,6 @@ blockquote,
     color: #bbc8d4;
 }
 
-#content code {
-    background-color: #272822;
-    padding: 3px;
-    font-weight: bold;
+.pln {
+    color: #bbc8d4 !important;
 }
