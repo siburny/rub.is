@@ -43,3 +43,8 @@ blockquote,
     background-color: #191f25 !important;
     color: #bbc8d4;
 }
+code {
+    background-color: #272822;
+    padding: 3px;
+    font-weight: bold;
+}
