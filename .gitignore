@@ -5,3 +5,4 @@ backup/
 *.wpress
 .vscode
 wp-content/plugins/datecalc/vendor
+wp-content/updraft
