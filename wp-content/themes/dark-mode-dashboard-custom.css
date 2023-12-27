@@ -39,11 +39,21 @@ blockquote,
 .editormd-preview,
 .editormd-html-preview,
 .editormd-preview-container,
-.editormd-preview li {
+.editormd-preview pre:not(.prettyprinted) li {
     background-color: #191f25 !important;
     color: #bbc8d4;
 }
 
-.pln {
-    color: #bbc8d4 !important;
+p code {
+    background-color: #272822;
+    padding: 3px;
+    font-weight: bold;
 }
+
+body.wp-admin:not(.gutenberg-editor-page) #wpbody code {
+    background: none;
+}
+
+/*.prettyprinted code span {
+    color: #bbc8d4;
+}*/
