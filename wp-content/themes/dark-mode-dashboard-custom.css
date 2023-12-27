@@ -18,3 +18,20 @@
 #published-posts li:nth-child(odd) {
     background-color: #23282d !important;    
 }
+.components-placeholder.components-placeholder {
+    background-color: #191f25 !important;
+}
+.blocks-shortcode__textarea {
+    background-color: #50626f !important;
+    color: #ffffff !important;
+}
+p:last-child {
+    margin-bottom: 0px !important;
+}
+
+blockquote,
+.wp-block-quote,
+.wp-block-quote.is-style-large,
+.wp-block-quote.has-text-align-right {
+    border-left: 3px solid rgb(15,190,124);
+}
